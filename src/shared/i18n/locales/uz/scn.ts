@@ -45,4 +45,12 @@ export const scn = {
   "settings": "Sozlamalarni ochish",
   "camFail": "Kamerani ochib bo'lmadi",
   "uploadFail": "Yuklab bo'lmadi. Qayta urinib ko'ring.",
+  "ocrT": "Matnni tanish",
+  "ocrX": "PDF ichidan qidirish va Word'da tahrirlash uchun (sekinroq)",
+  "ocrNone": "Matnsiz (faqat rasm)",
+  "lUz": "O'zbek (lotin)",
+  "lUzCyrl": "Ўзбек (кирилл)",
+  "lRu": "Русский",
+  "lEn": "English",
+  "ocrFail": "Matnni taniy olmadi, fayl rasm sifatida saqlandi.",
 };

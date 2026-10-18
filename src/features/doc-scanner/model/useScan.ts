@@ -27,7 +27,7 @@ const move = <T,>(list: T[], from: number, to: number): T[] => {
 export function useScan() {
   const [pages, setPages] = useState<ScanPage[]>([]);
   const [current, setCurrent] = useState(0);
-  const [filter, setFilter] = useState<ScanFilter>("document");
+  const [filter, setFilter] = useState<ScanFilter>("original");
   const [denied, setDenied] = useState(false);
   const count = useRef(0);
   useEffect(() => {

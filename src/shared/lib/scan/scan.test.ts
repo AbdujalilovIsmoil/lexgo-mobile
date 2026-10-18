@@ -1,7 +1,8 @@
 import { ascii, crc32, utf8 } from "./bytes";
-import { buildDocx } from "./docx";
+import { buildDocx, buildDocxText } from "./docx";
 import { matrixFor, SCAN_FILTERS } from "./filters";
 import { defaultScanName, outputOf } from "./formats";
+import { paragraphsOf, textOf, type OcrLine } from "./ocr";
 import { buildPdf } from "./pdf";
 import { buildZip } from "./zip";
 
@@ -91,4 +92,45 @@ it("keeps the PDF xref consistent for many pages and a large JPEG", () => {
   const offsets = [...s.slice(start).matchAll(/(\d{10}) 00000 n/g)].map((m) => Number(m[1]));
   expect(offsets).toHaveLength(95);
   offsets.forEach((o, i) => expect(s.slice(o, o + `${i + 1} 0 obj`.length)).toBe(`${i + 1} 0 obj`));
+});
+
+const line = (text: string, y: number, h = 0.03): OcrLine => ({ text, box: { x: 0.1, y, w: 0.6, h } });
+const hex = (t: string) => Array.from(t, (c) => c.charCodeAt(0).toString(16).padStart(4, "0")).join("");
+
+it("groups OCR lines into paragraphs by vertical gap and column jumps", () => {
+  const lines = [line("Shartnoma", 0.1), line("No 5", 0.135), line("Taraflar", 0.3), line("ikkinchi ustun", 0.1)];
+  expect(paragraphsOf(lines)).toEqual(["Shartnoma No 5", "Taraflar", "ikkinchi ustun"]);
+  expect(textOf([{ lines: [line("a", 0.1)] }, { lines: [line("b\u0000", 0.1)] }])).toBe("a\n\nb");
+});
+
+it("adds an invisible Cyrillic text layer to the PDF and keeps the xref valid", () => {
+  const pdf = buildPdf([{ bytes: jpeg, width: 1000, height: 1400, lines: [line("Ўзбекистон Республикаси", 0.1), line("   ", 0.2)] }, { bytes: jpeg, width: 1000, height: 1400 }]);
+  const s = text(pdf);
+  expect(s).toContain(`<${hex("Ўзбекистон Республикаси")}> Tj`);
+  expect(s.match(/ Tj ET/g)).toHaveLength(1); // the blank line is skipped
+  expect(s).toContain("3 Tr");
+  expect(s.match(/\/Font << \/F0 9 0 R >>/g)).toHaveLength(2);
+  expect(s).toContain("/Subtype /Type0");
+  expect(s).toContain("/ToUnicode 11 0 R");
+  expect(s).toContain("xref\n0 13\n");
+  const start = Number(/startxref\n(\d+)/.exec(s)![1]);
+  const offsets = [...s.slice(start).matchAll(/(\d{10}) 00000 n/g)].map((m) => Number(m[1]));
+  expect(offsets).toHaveLength(12);
+  offsets.forEach((o, i) => expect(s.slice(o, o + `${i + 1} 0 obj`.length)).toBe(`${i + 1} 0 obj`));
+});
+
+it("writes no font objects when nothing was recognised", () => {
+  const s = text(buildPdf([{ bytes: jpeg, width: 100, height: 100, lines: [line("", 0.1)] }]));
+  expect(s).not.toContain("/Type0");
+  expect(s).toContain("xref\n0 6\n");
+});
+
+it("builds an editable docx from OCR text with escaping and a page break per scan", () => {
+  const z = readZip(buildDocxText([{ lines: [line("A & B <ish>", 0.1), line("Ўзбек", 0.4)] }, { lines: [] }]));
+  expect(Object.keys(z)).toEqual(["[Content_Types].xml", "_rels/.rels", "word/document.xml"]);
+  const doc = z["word/document.xml"].toString();
+  expect(doc).toContain("A &amp; B &lt;ish&gt;");
+  expect(doc).toContain("Ўзбек");
+  expect(doc.match(/<w:p>/g)).toHaveLength(3);
+  expect(doc.match(/<w:pageBreakBefore\/>/g)).toHaveLength(1);
 });

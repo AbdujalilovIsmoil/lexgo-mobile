@@ -1,0 +1,23 @@
+plugins {
+  id 'com.android.library'
+  id 'expo-module-gradle-plugin'
+}
+
+group = 'org.cognilabs.textocr'
+version = '1.0.0'
+
+android {
+  namespace "org.cognilabs.textocr"
+  defaultConfig {
+    versionCode 1
+    versionName '1.0.0'
+  }
+}
+
+repositories {
+  maven { url 'https://jitpack.io' } // Tesseract4Android is published there
+}
+
+dependencies {
+  implementation 'cz.adaptech.tesseract4android:tesseract4android:4.8.0'
+}

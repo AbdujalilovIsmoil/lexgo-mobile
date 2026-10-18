@@ -15,7 +15,8 @@ import { useT } from "@/shared/i18n";
 import { successHaptic } from "@/shared/lib/haptics";
 import { shareFile } from "@/shared/lib/files";
 import { defaultScanName, type ScanFormat } from "@/shared/lib/scan/formats";
-import { Button } from "@/shared/ui";
+import type { OcrLang } from "@/shared/lib/scan/ocr";
+import { Button, toast } from "@/shared/ui";
 import { ActionList, AdminPage } from "@/shared/ui/admin";
 import { confirmDialog } from "@/shared/ui/dialog";
 
@@ -49,14 +50,16 @@ export default function ProScanPage() {
     e.preventDefault();
     confirmDialog({ title: t("scn.discard"), message: t("scn.discardX"), confirmLabel: t("scn.leave"), cancelLabel: t("scn.keep"), danger: true, icon: "trash-2", onConfirm: () => { allow.current = true; nav.dispatch(e.data.action); } });
   }), [nav, has, t]);
-  const run = async (f: ScanFormat, then: (file: Awaited<ReturnType<typeof exportScan>>) => Promise<boolean | void>) => {
+  const run = async (f: ScanFormat, ocr: OcrLang[], then: (file: Awaited<ReturnType<typeof exportScan>>) => Promise<boolean | void>) => {
     if (working.current) return;
     working.current = true;
     setBusy(true);
     setError("");
     try {
-      const done = await then(await exportScan(scan.pages, scan.filter, f, name));
+      const file = await exportScan(scan.pages, scan.filter, f, name, ocr);
+      const done = await then(file);
       if (!mounted.current) return; // the user already left: do not pop another screen
+      if (file.textFailed) toast(t("scn.ocrFail"), "err");
       if (done === false) setError(t("scn.uploadFail"));
       else {
         successHaptic();
@@ -73,14 +76,14 @@ export default function ProScanPage() {
       if (mounted.current) setBusy(false);
     }
   };
-  const upload = (f: ScanFormat) => run(f, async (file) => {
+  const upload = (f: ScanFormat, ocr: OcrLang[]) => run(f, ocr, async (file) => {
     try {
       return (await up.upload([file])) > 0;
     } finally {
       try { new File(file.uri).delete(); } catch { /* the cache is cleaned by the system anyway */ }
     }
   });
-  const share = (f: ScanFormat) => run(f, (file) => shareFile(file.uri, file.mime));
+  const share = (f: ScanFormat, ocr: OcrLang[]) => run(f, ocr, (file) => shareFile(file.uri, file.mime));
   return (
     <AdminPage title={t("scn.title")} subtitle={has ? t("scn.pages", { n: scan.pages.length }) : t("scn.sub")} right={<View />}
       footer={has ? <Button title={t("scn.next")} icon="arrow-right" iconRight variant="gradient" full onPress={() => { if (!touched) setName(defaultScanName()); setSheet(true); }} /> : undefined}>
@@ -93,7 +96,7 @@ export default function ProScanPage() {
       ) : (
         <EmptyScan onCamera={() => void scan.add("camera")} onGallery={() => void scan.add("gallery")} denied={scan.denied} />
       )}
-      <ExportSheet visible={sheet} onClose={() => setSheet(false)} pages={scan.pages.length} name={name} onName={(v) => { setTouched(true); setName(v); }} busy={busy} error={error} folder={t("scn.into", { name: where })} onUpload={(f) => void upload(f)} onShare={(f) => void share(f)} />
+      <ExportSheet visible={sheet} onClose={() => setSheet(false)} pages={scan.pages.length} name={name} onName={(v) => { setTouched(true); setName(v); }} busy={busy} error={error} folder={t("scn.into", { name: where })} onUpload={(f, o) => void upload(f, o)} onShare={(f, o) => void share(f, o)} />
       <ActionList visible={addMenu} onClose={() => setAddMenu(false)} title={t("scn.add")} actions={[{ key: "cam", label: t("scn.cam"), icon: "camera", onPress: () => void scan.add("camera") }, { key: "gal", label: t("scn.gal"), icon: "image", onPress: () => void scan.add("gallery") }]} />
     </AdminPage>
   );

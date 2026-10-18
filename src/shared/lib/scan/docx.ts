@@ -1,4 +1,5 @@
 import { utf8 } from "./bytes";
+import { paragraphsOf, type OcrPage } from "./ocr";
 import type { JpegPage } from "./pdf";
 import { buildZip } from "./zip";
 
@@ -29,5 +30,26 @@ export function buildDocx(pages: DocxImage[]): Uint8Array {
     { name: "word/document.xml", data: xml(`<w:document ${NS}><w:body>${body}${sect}</w:body></w:document>`) },
     { name: "word/_rels/document.xml.rels", data: xml(`<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">${pages.map((p, i) => `<Relationship Id="rId${i + 1}" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/image" Target="media/scan${i + 1}.${p.ext}"/>`).join("")}</Relationships>`) },
     ...pages.map((p, i) => ({ name: `word/media/scan${i + 1}.${p.ext}`, data: p.bytes })),
+  ]);
+}
+
+const esc = (t: string) => t.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+
+// A Word document with the recognised text: one paragraph per detected paragraph, every scanned page starts on a new page.
+export function buildDocxText(pages: OcrPage[]): Uint8Array {
+  const xml = (s: string) => utf8(`<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n${s}`);
+  const body = pages
+    .map((pg, i) => {
+      const paras = paragraphsOf(pg.lines);
+      return (paras.length ? paras : [""])
+        .map((t, j) => `<w:p><w:pPr>${i > 0 && j === 0 ? "<w:pageBreakBefore/>" : ""}<w:spacing w:after="120"/></w:pPr>${t ? `<w:r><w:t xml:space="preserve">${esc(t)}</w:t></w:r>` : ""}</w:p>`)
+        .join("");
+    })
+    .join("");
+  const sect = '<w:sectPr><w:pgSz w:w="11906" w:h="16838"/><w:pgMar w:top="1134" w:right="1134" w:bottom="1134" w:left="1134" w:header="0" w:footer="0" w:gutter="0"/></w:sectPr>';
+  return buildZip([
+    { name: "[Content_Types].xml", data: xml('<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/word/document.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"/></Types>') },
+    { name: "_rels/.rels", data: xml('<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="word/document.xml"/></Relationships>') },
+    { name: "word/document.xml", data: xml(`<w:document ${NS}><w:body>${body}${sect}</w:body></w:document>`) },
   ]);
 }

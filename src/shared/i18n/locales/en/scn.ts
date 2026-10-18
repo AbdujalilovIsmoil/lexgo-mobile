@@ -45,4 +45,12 @@ export const scn = {
   "settings": "Open settings",
   "camFail": "Could not open the camera",
   "uploadFail": "Upload failed. Please try again.",
+  "ocrT": "Text recognition",
+  "ocrX": "To search inside the PDF and edit in Word (slower)",
+  "ocrNone": "No text (picture only)",
+  "lUz": "Uzbek (Latin)",
+  "lUzCyrl": "Uzbek (Cyrillic)",
+  "lRu": "Russian",
+  "lEn": "English",
+  "ocrFail": "The text could not be read, so the file was saved as pictures.",
 };

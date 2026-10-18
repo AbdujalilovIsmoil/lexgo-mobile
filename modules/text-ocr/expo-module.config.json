@@ -1,0 +1,5 @@
+{
+  "platforms": ["apple", "android"],
+  "apple": { "modules": ["TextOcrModule"] },
+  "android": { "modules": ["org.cognilabs.textocr.TextOcrModule"] }
+}
