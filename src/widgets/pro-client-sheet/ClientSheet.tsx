@@ -3,58 +3,76 @@ import { StyleSheet, View } from "react-native";
 import { useRouter } from "expo-router";
 import { useClientDetail, useStartChat } from "@/entities/pro-clients";
 import { useSession } from "@/entities/session";
-import { RequestDocSheet } from "@/features/pro-client-form";
 import { useT } from "@/shared/i18n";
-import { fmtDate } from "@/shared/lib/format";
 import { openTel } from "@/shared/lib/links";
 import { useKept } from "@/shared/lib/useKept";
 import { useSheetNavigate } from "@/shared/lib/useSheetNavigate";
 import { ApiError } from "@/shared/api";
-import { Avatar, BottomSheet, Button, ErrorView, Segmented, SheetScroll, Skeleton, Text } from "@/shared/ui";
+import { BottomSheet, ErrorView, SheetScroll, Skeleton, Text } from "@/shared/ui";
+import { ChipBar } from "@/shared/ui/admin";
+import { ClientHero } from "./ClientHero";
+import { ContactCard } from "./ContactCard";
+import { CaseSheet } from "@/widgets/pro-case-detail";
 import { LinkedList } from "./LinkedList";
+import { QuickActions, type QuickAction } from "./QuickActions";
 
 type Tab = "timeline" | "cases" | "orders" | "payments" | "documents";
 const TABS: Tab[] = ["timeline", "cases", "orders", "payments", "documents"];
 
-// Client card: contact, notes, actions (chat, call, request a document) and the shared history in tabs.
+// Client card: who they are, the quick actions (call, chat), contact facts and the shared history in chips.
 export function ClientSheet({ id, onClose }: { id: string | null; onClose: () => void }) {
-  const { t, locale } = useT();
+  const { t } = useT();
   const router = useRouter();
   const kept = useKept(id);
   const q = useClientDetail(kept ?? "");
   const [tab, setTab] = useState<Tab>("timeline");
-  const [req, setReq] = useState(false);
+  const [caseId, setCaseId] = useState<string | null>(null); // a case opens as a sheet on top of this one, not as a page
   const go = useSheetNavigate(onClose);
   const me = useSession()?.user.id ?? "";
   const start = useStartChat();
   const d = q.data;
+  const items: (QuickAction | null)[] = d
+    ? [
+        d.phone ? { key: "call", icon: "phone", label: t("aw3.callPhone"), onPress: () => openTel(d.phone) } : null,
+        d.chats[0] || !d.manual
+          ? {
+              key: "chat", icon: "message-circle", label: t("aw3.chat"), loading: start.isPending,
+              onPress: () => (d.chats[0] ? go(() => router.push(`/chat/${d.chats[0].id}` as never)) : start.mutate({ clientId: d.id, sellerId: me }, { onSuccess: (room) => room && go(() => router.push(`/chat/${room}` as never)) })),
+            }
+          : null,
+      ]
+    : [];
+  const actions = items.filter((x): x is QuickAction => !!x);
   return (
-    <BottomSheet visible={!!id} onClose={onClose} title={d?.name || t("aw3.title")} snaps={[0.72, 0.95]}>
+    <BottomSheet visible={!!id} onClose={onClose} title={t("aw3.card")} snaps={[0.78, 0.95]}>
       <SheetScroll>
-        {q.isLoading ? <Skeleton height={160} round={20} /> : q.isError ? (q.error instanceof ApiError && q.error.status === 404 ? <Text variant="small" tone="gray" center>{t("aw3.notFound")}</Text> : <ErrorView error={q.error} onRetry={() => void q.refetch()} compact />) : d ? (
+        {q.isLoading ? (
+          <View style={{ gap: 14 }}>
+            <Skeleton height={64} round={20} />
+            <Skeleton height={84} round={14} />
+            <Skeleton height={150} round={20} />
+          </View>
+        ) : q.isError ? (
+          q.error instanceof ApiError && q.error.status === 404 ? <Text variant="small" tone="gray" center>{t("aw3.notFound")}</Text> : <ErrorView error={q.error} onRetry={() => void q.refetch()} compact />
+        ) : d ? (
           <>
-            <View style={s.head}>
-              <Avatar name={d.name || "?"} size={52} />
-              <View style={{ flex: 1 }}>
-                <Text variant="body" weight="bold">{d.name}</Text>
-                <Text variant="small" tone="gray">{[d.phone, d.company, d.region].filter(Boolean).join(" · ")}</Text>
-                {d.createdAt ? <Text variant="caption" tone="gray2">{t("aw3.since", { date: fmtDate(d.createdAt, locale) })}</Text> : null}
+            <ClientHero d={d} />
+            <QuickActions actions={actions} />
+            <ContactCard d={d} />
+            <View style={s.history}>
+              <Text variant="h4">{t("aw3.history")}</Text>
+              <View style={s.tabs}>
+                <ChipBar options={TABS.map((x) => ({ value: x, label: t(`aw3.tab.${x}`), count: d[x].length || undefined }))} value={tab} onChange={setTab} />
               </View>
+              <LinkedList rows={d[tab]} icon={{ timeline: "clock", cases: "briefcase", orders: "shopping-bag", payments: "credit-card", documents: "file-text" }[tab] as "clock"} onOpen={tab === "cases" ? (cid) => setCaseId(cid) : tab === "orders" ? (oid) => go(() => router.push(`/pro/orders/${oid}` as never)) : undefined} />
             </View>
-            {d.notes ? <Text variant="small" tone="gray">{d.notes}</Text> : null}
-            <View style={s.actions}>
-              {d.phone ? <Button title={t("aw3.callPhone")} icon="phone" size="sm" variant="soft" onPress={() => openTel(d.phone)} /> : null}
-              {d.chats[0] || !d.manual ? <Button title={t("aw3.chat")} icon="message-circle" size="sm" variant="soft" loading={start.isPending} onPress={() => (d.chats[0] ? go(() => router.push(`/chat/${d.chats[0].id}` as never)) : start.mutate({ clientId: d.id, sellerId: me }, { onSuccess: (room) => room && go(() => router.push(`/chat/${room}` as never)) }))} /> : null}
-              {!d.manual ? <Button title={t("aw3.reqDoc")} icon="file-plus" size="sm" variant="soft" onPress={() => setReq(true)} /> : null}
-            </View>
-            <Segmented options={TABS.map((x) => ({ value: x, label: `${t(`aw3.tab.${x}`)}${d[x].length ? ` ${d[x].length}` : ""}` }))} value={tab} onChange={setTab} />
-            <LinkedList rows={d[tab]} icon={{ timeline: "clock", cases: "briefcase", orders: "shopping-bag", payments: "credit-card", documents: "file-text" }[tab] as "clock"} onOpen={tab === "cases" ? (cid) => go(() => router.push(`/pro/cases/${cid}` as never)) : tab === "orders" ? (oid) => go(() => router.push(`/pro/orders/${oid}` as never)) : undefined} />
-            <RequestDocSheet visible={req} onClose={() => setReq(false)} clientId={d.id} clientName={d.name} />
           </>
         ) : null}
       </SheetScroll>
+      <CaseSheet id={caseId} onClose={() => setCaseId(null)} />
     </BottomSheet>
   );
 }
 
-const s = StyleSheet.create({ head: { flexDirection: "row", alignItems: "center", gap: 12 }, actions: { flexDirection: "row", flexWrap: "wrap", gap: 8 } });
+// The chip row scrolls edge to edge: it cancels the sheet gutter (18) and brings its own (16).
+const s = StyleSheet.create({ history: { gap: 12 }, tabs: { marginHorizontal: -18 } });

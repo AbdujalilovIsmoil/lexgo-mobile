@@ -58,4 +58,7 @@ export const aw3: Messages["aw3"] = {
   reqTitle: "Document name",
   reqMsg: "Message (optional)",
   notFound: "No shared work with this client",
+  card: "Client card",
+  history: "History and documents",
+  region: "Region",
 };

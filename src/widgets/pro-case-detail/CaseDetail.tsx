@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { RefreshControl, ScrollView, StyleSheet, View } from "react-native";
-import { useCase, useCaseDocs, useCaseRoom } from "@/entities/pro-cases";
+import { useCase, useCaseRoom } from "@/entities/pro-cases";
 import { useClients } from "@/entities/pro-clients";
 import { useTree } from "@/entities/pro-files";
 import { useEvents } from "@/entities/pro-calendar";
@@ -9,7 +9,7 @@ import { CaseFormSheet } from "@/features/pro-case-form";
 import { useT } from "@/shared/i18n";
 import { useInsets } from "@/shared/lib/insets";
 import { useColors } from "@/shared/theme";
-import { EmptyState, ErrorView, Skeleton, Text } from "@/shared/ui";
+import { EmptyState, ErrorView, SheetScroll, Skeleton, Text } from "@/shared/ui";
 import { CaseActions } from "./CaseActions";
 import { CaseAi } from "./CaseAi";
 import { CaseDocs } from "./CaseDocs";
@@ -20,8 +20,8 @@ import { CaseTabs, type CaseTab } from "./CaseTabs";
 import { CaseTasks } from "./CaseTasks";
 
 // Case detail: hero (client, status, progress, deadline, next step), shortcuts, the description, then docs / tasks / events /
-// history / AI as tabs with item counts.
-export function CaseDetail({ id }: { id: string }) {
+// history / AI as tabs with item counts. `inSheet`: the body of a bottom sheet (sheet scroll, no pull-to-refresh) instead of a page.
+export function CaseDetail({ id, inSheet }: { id: string; inSheet?: boolean }) {
   const { t } = useT();
   const c = useColors();
   const insets = useInsets();
@@ -29,8 +29,7 @@ export function CaseDetail({ id }: { id: string }) {
   const clients = useClients().data;
   const room = useCaseRoom(id, q.data?.orderId ?? "");
   const tree = useTree(id).data;
-  const records = useCaseDocs(id).data;
-  const files = (tree?.files ?? []).filter((f) => f.caseId === id).length + (records ?? []).length;
+  const files = (tree?.files ?? []).filter((f) => f.caseId === id).length;
   const tasks = (useTasks().data ?? []).filter((x) => x.caseId === id).length;
   const events = (useEvents().data ?? []).filter((e) => e.caseId === id).length;
   const [tab, setTab] = useState<CaseTab>("docs");
@@ -40,8 +39,8 @@ export function CaseDetail({ id }: { id: string }) {
   const item = q.data;
   if (!item) return <EmptyState icon="briefcase" title={t("aw4.notFound")} />;
   const owner = clients?.find((x) => x.id === item.clientUserId);
-  return (
-    <ScrollView contentContainerStyle={[s.pad, { paddingBottom: insets.bottom + 40 }]} refreshControl={<RefreshControl refreshing={q.isRefetching} onRefresh={() => void q.refetch()} />} showsVerticalScrollIndicator={false}>
+  const content = (
+    <>
       <CaseHero item={item} client={owner?.name} />
       <CaseActions item={item} phone={owner?.phone} roomId={room.data ?? ""} onManage={() => setManage(true)} />
       {item.description ? (
@@ -53,6 +52,12 @@ export function CaseDetail({ id }: { id: string }) {
       <CaseTabs value={tab} onChange={setTab} counts={{ docs: files, tasks, events }} />
       {tab === "docs" ? <CaseDocs caseId={id} /> : tab === "tasks" ? <CaseTasks caseId={id} /> : tab === "events" ? <CaseEvents caseId={id} /> : tab === "history" ? <CaseHistory caseId={id} /> : <CaseAi caseId={id} />}
       <CaseFormSheet visible={manage} onClose={() => setManage(false)} item={item} />
+    </>
+  );
+  if (inSheet) return <SheetScroll contentContainerStyle={{ paddingHorizontal: 16 }}>{content}</SheetScroll>;
+  return (
+    <ScrollView contentContainerStyle={[s.pad, { paddingBottom: insets.bottom + 40 }]} refreshControl={<RefreshControl refreshing={q.isRefetching} onRefresh={() => void q.refetch()} />} showsVerticalScrollIndicator={false}>
+      {content}
     </ScrollView>
   );
 }

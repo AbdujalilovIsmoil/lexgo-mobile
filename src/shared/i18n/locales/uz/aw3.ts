@@ -56,4 +56,7 @@ export const aw3 = {
   reqTitle: "Hujjat nomi",
   reqMsg: "Xabar (ixtiyoriy)",
   notFound: "Bu mijoz bilan ish topilmadi",
+  card: "Mijoz kartasi",
+  history: "Tarix va hujjatlar",
+  region: "Hudud",
 };
