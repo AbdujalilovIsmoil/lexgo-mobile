@@ -10,6 +10,10 @@ export { listMyDocs, getMyDoc, listPool, claimDoc, transferDoc } from "./api/que
 export { getEditor, getSources, selectSource, uploadSource, saveDraft, finalizeDoc, fulfillFile, createMeeting } from "./api/editorApi";
 export { isCurrentSource } from "./api/normalizeEditor";
 export { DocRow } from "./ui/DocRow";
+export { DocRowSkeleton } from "./ui/DocRowSkeleton";
+export { AgoText } from "./ui/AgoText";
 export { DocStatus } from "./ui/DocStatus";
 export { FlowBadge } from "./ui/FlowBadge";
 export { docPath, editorPath, POOL_PATH, chatRoute, callRoute } from "./lib/routes";
+export { filesOf, mainFile, actionOf, factsOf, tabCounts, filterChips, type FileEntry, type SheetAction, type Fact, type FactKey, type DocChip } from "./lib/sheetLogic";
+export { agoOf, isLate, summaryOf, flowCounts, stepsOf, cutText, type Ago, type SummaryTile, type StepKey, type StepState } from "./lib/listLogic";

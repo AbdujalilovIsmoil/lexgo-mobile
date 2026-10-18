@@ -1,9 +1,10 @@
 import { useState } from "react";
-import { StyleSheet, View } from "react-native";
+import { ScrollView, StyleSheet, View } from "react-native";
 import { Chip, IconButton } from "@/shared/ui";
 import { SearchBox } from "@/shared/ui/admin";
 import { useT } from "@/shared/i18n";
 import type { DocMode } from "@/entities/my-document";
+import { filterChips } from "@/features/my-documents";
 import { DocFilterSheet } from "./DocFilterSheet";
 import { DocScope, type StatKey } from "./DocScope";
 
@@ -36,18 +37,18 @@ export function DocListHeader({ counts, statusCounts, total, loading, group, mod
   ];
   const word = (v: string) => (t(`dm2.status.${v.toLowerCase()}`) === `dm2.status.${v.toLowerCase()}` ? v : t(`dm2.status.${v.toLowerCase()}`));
   const states = [{ value: "", label: t("dm11.allStatuses") }, ...seen.map((v) => ({ value: v, label: word(v) }))];
+  const chips = filterChips({ mode, status }, { mode: (m) => t(`docSheet.modeShort.${m}`), status: word });
   return (
     <View style={s.col}>
       <DocScope counts={counts} value={group} onChange={onGroup} loading={loading} />
       <View style={s.search}>
         <View style={s.flex}><SearchBox value={q} onChangeText={onQuery} placeholder={t("dm1.searchPh")} /></View>
-        <IconButton icon="sliders" label={t("dm11.filters")} badge={!!mode || !!status} onPress={() => setOpen(true)} />
+        <IconButton icon="sliders" label={t("docSheet.filter")} badge={!!mode || !!status} onPress={() => setOpen(true)} />
       </View>
-      {mode || status ? (
-        <View style={s.chips}>
-          {mode ? <Chip label={modes.find((m) => m.value === mode)?.label ?? mode} active icon="x" onPress={() => onMode("")} /> : null}
-          {status ? <Chip label={word(status)} active icon="x" onPress={() => onStatus("")} /> : null}
-        </View>
+      {chips.length ? (
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={s.chips}>
+          {chips.map((c) => <Chip key={c.key} label={c.label} active icon="x" onPress={() => (c.key === "mode" ? onMode("") : onStatus(""))} />)}
+        </ScrollView>
       ) : null}
       <DocFilterSheet visible={open} onClose={() => setOpen(false)} mode={mode} status={status} modes={modes} states={states} statusCounts={statusCounts} total={total} onMode={onMode} onStatus={onStatus} onReset={() => { onMode(""); onStatus(""); }} />
     </View>
@@ -58,5 +59,5 @@ const s = StyleSheet.create({
   col: { gap: 12, marginHorizontal: -16, paddingBottom: 12 },
   search: { flexDirection: "row", alignItems: "center", paddingRight: 16, gap: 0 },
   flex: { flex: 1 },
-  chips: { flexDirection: "row", flexWrap: "wrap", gap: 8, paddingHorizontal: 16 },
+  chips: { gap: 8, paddingHorizontal: 16 },
 });

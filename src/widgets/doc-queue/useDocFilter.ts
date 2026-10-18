@@ -13,6 +13,6 @@ export function useDocFilter() {
     const when = (d: DocReq) => Date.parse(d.updatedAt || d.createdAt) || 0;
     return items.filter((d) => hit(d) && (flow === "all" || d.flow === flow)).sort((a, b) => (newest ? when(b) - when(a) : when(a) - when(b)));
   };
-  return { q, setQ, flow, setFlow, newest, toggleSort: () => setNewest((v) => !v), apply, key: `${dq}|${flow}|${newest}` };
+  return { q, setQ, flow, setFlow, newest, toggleSort: () => setNewest((v) => !v), setNewest, reset: () => { setQ(""); setFlow("all"); setNewest(true); }, apply, key: `${dq}|${flow}|${newest}` };
 }
 export type DocFilter = ReturnType<typeof useDocFilter>;

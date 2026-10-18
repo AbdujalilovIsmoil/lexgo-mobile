@@ -24,5 +24,6 @@ export function normDoc(v: unknown): MyDoc {
     pageCount: asNum(d.page_count),
     file: row.fileReady ? { name: docFileName(row.title, row.format, "document"), mime: asStr(cf.mime_type), path: `/document-requests/${row.id}/file` } : null,
     updatedAt: asStr(d.updated_at),
+    language: asStr(d.language ?? d.lang),
   };
 }

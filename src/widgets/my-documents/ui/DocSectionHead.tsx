@@ -21,7 +21,7 @@ export function DocSectionHead({ kind, n }: { kind: "you" | "rest"; n: number })
 }
 
 const s = StyleSheet.create({
-  col: { gap: 3, paddingTop: 6 },
+  col: { gap: 3, paddingTop: 10 },
   row: { flexDirection: "row", alignItems: "center", gap: 8 },
   dot: { width: 9, height: 9, borderRadius: 5 },
   flex: { flex: 1 },

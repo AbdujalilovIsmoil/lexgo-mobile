@@ -27,6 +27,7 @@ export type MyDoc = DocRow & {
   pageCount: number;
   file: DocFileInfo | null;
   updatedAt: string;
+  language: string;
 };
 
 export type DocVersion = { id: string; number: number; createdAt: string; contractId: string; answerCount: number };

@@ -1,4 +1,8 @@
 export { useDocList, type GroupFilter } from "./model/useDocList";
+export { usePay } from "./model/usePay";
+export { useShare } from "./model/useShare";
+export { PAGE, pageInfo, growWindow, nextCount, type PageInfo } from "./model/pageWindow";
+export { filterChips, type FilterChip } from "./model/filterChips";
 export { useDocRealtime } from "./model/useDocRealtime";
 export { useCtorPrompt } from "./model/useCtorPrompt";
 export { CtorSheet } from "./ui/CtorSheet";

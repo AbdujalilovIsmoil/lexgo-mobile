@@ -6,3 +6,5 @@ export { DocDetailBody } from "./ui/DocDetailBody";
 export type { SheetKey } from "./ui/sheetKey";
 export { DocListItem } from "./ui/DocListItem";
 export { DocSectionHead } from "./ui/DocSectionHead";
+export { DocList } from "./ui/DocList";
+export { DocDetailSheet } from "./ui/DocDetailSheet";

@@ -1,9 +1,16 @@
-import { matchTemplates } from "./match";
+import { categoryKey, matchTemplates, type DocTemplate } from "./match";
 
-const rows = [{ id: "1", name: "Mehnat shartnomasi", category: "labor", language: "uz" }, { id: "2", name: "Ijara shartnomasi", category: "civil", language: "uz" }];
-it("filters by name or category, ignoring case", () => {
-  expect(matchTemplates(rows, "  IJARA ").map((r) => r.id)).toEqual(["2"]);
-  expect(matchTemplates(rows, "labor").map((r) => r.id)).toEqual(["1"]);
-  expect(matchTemplates(rows, "")).toHaveLength(2);
-  expect(matchTemplates(rows, "zzz")).toEqual([]);
+const t = (o: Partial<DocTemplate>): DocTemplate => ({ id: "1", name: "Ijara shartnomasi", category: "legal-doc-civil", language: "uz-cyrl", description: "Uy-joy ijarasi", fields: 12, sections: 2, price: 0, updatedAt: "", sourceFile: "", ...o });
+
+it("needs every word of the query, in any order, in the name, description or category", () => {
+  const rows = [t({ id: "1" }), t({ id: "2", name: "Ariza", description: "Sudga ariza" }), t({ id: "3", name: "Jinoyat arizasi", category: "legal-doc-criminal" })];
+  expect(matchTemplates(rows, "  ").length).toBe(3);
+  expect(matchTemplates(rows, "shartnomasi ijara").map((x) => x.id)).toEqual(["1"]);
+  expect(matchTemplates(rows, "sudga").map((x) => x.id)).toEqual(["2"]);
+  expect(matchTemplates(rows, "criminal ariza").map((x) => x.id)).toEqual(["3"]);
+});
+
+it("maps a branch slug to its i18n key", () => {
+  expect(categoryKey("legal-doc-civil")).toBe("tpl.cat.civil");
+  expect(categoryKey("other")).toBe("");
 });

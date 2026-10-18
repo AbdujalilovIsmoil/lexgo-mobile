@@ -1,0 +1,19 @@
+import { StyleSheet, View } from "react-native";
+import { Button, Text } from "@/shared/ui";
+import { useT } from "@/shared/i18n";
+import { nextCount, type PageInfo } from "@/shared/lib/pageWindow";
+
+// Under the last card: the "10 / 37" counter and, while there is more, a short "Yana 10 ta" button (scrolling to the end
+// loads the next ten by itself; the button is the tap alternative).
+export function DocListFooter({ page, onMore }: { page: PageInfo; onMore: () => void }) {
+  const { t } = useT();
+  if (page.total <= 0) return null;
+  return (
+    <View style={s.col}>
+      <Text variant="caption" tone="gray" accessibilityLiveRegion="polite">{t("proDocSheet.counter", { a: page.loaded, b: page.total })}</Text>
+      {page.more ? <Button title={t("proDocSheet.more", { n: nextCount(page.loaded, page.total) })} icon="chevron-down" variant="soft" onPress={onMore} style={s.btn} /> : null}
+    </View>
+  );
+}
+
+const s = StyleSheet.create({ col: { alignItems: "center", gap: 10, paddingTop: 16 }, btn: { minHeight: 44, minWidth: 160 } });
