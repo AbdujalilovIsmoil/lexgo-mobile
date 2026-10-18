@@ -1,9 +1,12 @@
 export { useCheckoutFlow } from "./useCheckoutFlow";
 export { useBannerPick } from "./useBannerPick";
-export { PlacementStep } from "./PlacementStep";
+export { PlacementStep, SellerRow } from "./PlacementStep";
 export { ServiceStep } from "./ServiceStep";
 export { BannerForm } from "./BannerForm";
 export { PackageStep } from "./PackageStep";
 export { PlacementPreview } from "./PlacementPreview";
-export { SummaryCard } from "./SummaryCard";
+export { Receipt } from "./Receipt";
+export { StepHeader } from "./StepHeader";
+export { TotalBar } from "./TotalBar";
+export { canLeave, stepsFor, visibleStep, type StepKey } from "./steps";
 export { ResultSheet } from "./ResultSheet";

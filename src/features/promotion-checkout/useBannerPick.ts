@@ -1,32 +1,43 @@
-import { useState } from "react";
-import { useUploadBanner } from "@/entities/promotion";
+import { useUploadBanner, BANNER_MAX_MB, type BannerCheck } from "@/entities/promotion";
+import { ApiError } from "@/shared/api";
 import { pickImages } from "@/shared/lib/upload";
 import { toast } from "@/shared/ui";
 import { useT } from "@/shared/i18n";
 
-export type Banner = { imageUrl: string; fileUrl: string; localUri: string; title: string; subtitle: string; ctaLabel: string; ctaUrl: string };
-export const NO_BANNER: Banner = { imageUrl: "", fileUrl: "", localUri: "", title: "", subtitle: "", ctaLabel: "", ctaUrl: "" };
+export type Banner = {
+  imageUrl: string; // https link typed by the seller
+  fileUrl: string; // stored file of an uploaded picture
+  localUri: string; // preview of the uploaded picture ("" for HEIC, which the phone cannot always draw)
+  fileName: string;
+  check: BannerCheck | null; // the server's verdict on the uploaded picture
+  uploading: boolean;
+  title: string;
+  subtitle: string;
+  ctaLabel: string;
+  ctaUrl: string;
+};
+export const NO_BANNER: Banner = { imageUrl: "", fileUrl: "", localUri: "", fileName: "", check: null, uploading: false, title: "", subtitle: "", ctaLabel: "", ctaUrl: "" };
+/** Patch that removes the picture (file or link) but keeps the texts. */
+export const NO_PICTURE: Partial<Banner> = { imageUrl: "", fileUrl: "", localUri: "", fileName: "", check: null };
 
-// Gallery picture → POST /promotions/banner-assets (multipart) → the stored file's URL.
-export function useBannerPick(onUploaded: (patch: Partial<Banner>) => void) {
+// Gallery picture → POST /promotions/banner-assets (multipart) → stored file + the picture check (active · manual review · rejected).
+export function useBannerPick(onChange: (patch: Partial<Banner>) => void) {
   const { t } = useT();
   const up = useUploadBanner();
-  const [busy, setBusy] = useState(false);
   const pick = async () => {
-    const r = await pickImages({ maxMb: 10, exts: /\.(jpe?g|png|webp|heic)$/i });
+    const r = await pickImages({ maxMb: BANNER_MAX_MB, exts: /\.(jpe?g|png|webp|heic)$/i });
     if (!r) return;
     const f = r.files[0];
-    if (r.error || !f) return toast(t(r.error === "tooBig" ? "sl11.banner.tooBig" : "sl11.banner.badType"), "err");
-    setBusy(true);
+    if (r.error || !f) return toast(r.error === "tooBig" ? t("promoSeller.ck.bannerTooBig", { mb: BANNER_MAX_MB }) : t("promoSeller.ck.bannerType"), "err");
+    onChange({ ...NO_PICTURE, uploading: true, fileName: f.name, localUri: /\.heic$/i.test(f.name) ? "" : f.uri });
     try {
-      const url = await up.mutateAsync({ uri: f.uri, name: f.name });
-      if (!url) throw new Error("no url");
-      onUploaded({ fileUrl: url, localUri: f.uri, imageUrl: "" });
-    } catch {
-      toast(t("sl11.banner.failed"), "err");
-    } finally {
-      setBusy(false);
+      const check = await up.mutateAsync({ uri: f.uri, name: f.name });
+      if (!check.fileUrl) throw new Error("no url");
+      onChange({ uploading: false, fileUrl: check.fileUrl, check });
+    } catch (e) {
+      onChange({ ...NO_PICTURE, uploading: false });
+      toast(e instanceof ApiError && e.detail ? e.detail : t("promoSeller.ck.bannerUploadError"), "err");
     }
   };
-  return { busy, pick: () => void pick() };
+  return { pick: () => void pick() };
 }

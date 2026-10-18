@@ -6,7 +6,8 @@ import { useT } from "@/shared/i18n";
 import { promotionAnswers } from "../api/inboxApi";
 import { matches, signalOf } from "../lib/signal";
 import { usePendingStore } from "./pendingStore";
-import { promotionKeys } from "./queries";
+import { isRunning } from "../lib/settle";
+import { promotionKeys, usePromoStatus } from "./queries";
 
 // Settles pending checkouts: the realtime answer first, the notification inbox after a missed event.
 export function usePromotionLive(uid: string): void {
@@ -41,5 +42,16 @@ export function usePromotionLive(uid: string): void {
     };
   });
   useResync(() => settle.current());
+  // The request turned into a running promotion (approved in Telegram): forget the pending entry and say so once.
+  const status = usePromoStatus();
+  const running = useRef(() => {});
+  useEffect(() => {
+    running.current = () => {
+      const items = status.data?.items;
+      if (!uid || !items?.length) return;
+      announce("approved", usePendingStore.getState().drop(uid, (p) => isRunning(p, items)).length);
+    };
+  });
+  useEffect(() => running.current(), [status.data, uid]);
   useEffect(() => settle.current(), [uid]);
 }

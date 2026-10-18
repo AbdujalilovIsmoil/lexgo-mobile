@@ -1,14 +1,19 @@
+import { useState } from "react";
+import { StyleSheet, View } from "react-native";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useAccount, useMyProfile } from "@/entities/pro-profile";
 import { useSession } from "@/entities/session";
-import { BannerForm, PackageStep, PlacementPreview, PlacementStep, ResultSheet, ServiceStep, SummaryCard, useBannerPick, useCheckoutFlow } from "@/features/promotion-checkout";
+import { BannerForm, PackageStep, PlacementPreview, PlacementStep, Receipt, ResultSheet, SellerRow, ServiceStep, StepHeader, TotalBar, canLeave, stepsFor, useBannerPick, useCheckoutFlow, visibleStep, type StepKey } from "@/features/promotion-checkout";
 import { usePromotionLive } from "@/entities/promotion";
-import { Button, confirmDialog } from "@/shared/ui";
+import { Text } from "@/shared/ui";
 import { AdminPage, KeyboardLift } from "@/shared/ui/admin";
 import { PageScroll } from "@/shared/ui/sel";
 import { useT } from "@/shared/i18n";
 
-// New promotion: placement → service / banner → package → preview → request. The payment is approved in Telegram.
+const NAME = { banner: "placementBanner", profile_boost: "placementProfile", service_boost: "placementService" } as const;
+
+// New promotion (web «Reklama berish») as a wizard, one focused step at a time: Joy → Paket → Banner (when the package takes one)
+// → Tasdiq. A sticky bar keeps the running total in view. The payment is approved by an admin in Telegram; some packages go live at once.
 export default function PromotionNewPage() {
   const { t } = useT();
   const router = useRouter();
@@ -19,23 +24,48 @@ export default function PromotionNewPage() {
   const profile = useMyProfile().data;
   const account = useAccount().data;
   usePromotionLive(uid);
+  const [want, setWant] = useState<StepKey>("place");
   const p = f.flow.placement;
+  const steps = stepsFor(f.accepts && !!f.pkg);
+  const step = visibleStep(steps, want);
+  const at = steps.indexOf(step);
+  const last = at === steps.length - 1;
   const name = account?.name || profile?.name || "";
-  const ask = () =>
-    confirmDialog({ title: t("sl11.confirmTitle"), message: t("sl11.confirmText"), confirmLabel: t("sl11.request"), cancelLabel: t("adm.cancel"), icon: "send", onConfirm: f.submit });
+  const ok = canLeave(step, { placement: !!p, needsService: f.needsService, hasService: !!f.svc, hasPackage: !!f.pkg, bannerBlocked: f.bannerBlocked, ready: f.ready });
+  const hint = step === "place" && f.hint === "service" ? "promoSeller.ck.pickServiceFirst" : step === "banner" && f.hint === "needed" ? "promoSeller.ck.bannerNeeded" : step === "banner" && f.hint === "review" ? "promoSeller.ck.bannerStatus.manual_review" : "";
+  const note = last ? f.error : hint ? t(hint) : "";
+  const go = (to: number) => setWant(steps[Math.max(0, Math.min(steps.length - 1, to))]);
+  const rows = p && f.pkg
+    ? [{ label: t("promoSeller.ck.placementTitle"), value: t(`promoSeller.${NAME[p]}`) }, ...(f.needsService ? [{ label: t("promoSeller.ck.service"), value: f.svc?.name ?? "" }] : []), { label: t("promoSeller.ck.package"), value: f.pkg.title }]
+    : [];
+  const footer = <TotalBar pkg={f.pkg} note={note} isError={!!f.error && last} canBack={at > 0} last={last} enabled={ok} busy={f.submitting} onBack={() => go(at - 1)} onNext={() => (last ? void f.submit() : go(at + 1))} />;
   return (
-    <AdminPage title={t("sl11.title")} footer={<Button title={t("sl11.request")} icon="send" full loading={f.submitting} disabled={!f.ready} onPress={ask} />}>
+    <AdminPage title={t(preset.service ? "promoSeller.ck.title" : "promoSeller.ck.titleAny")} footer={footer}>
       <KeyboardLift>
-        <PageScroll>
-          <PlacementStep value={p} onChange={f.setPlacement} />
-          {p === "service_boost" ? <ServiceStep services={f.services} value={f.flow.serviceId} onChange={f.setService} /> : null}
-          {p === "banner" ? <BannerForm banner={f.flow.banner} onChange={f.setBanner} busy={banner.busy} onPick={banner.pick} /> : null}
-          {p ? <PackageStep packages={f.packages} loading={f.loadingPackages} value={f.flow.packageId} onChange={f.setPackage} /> : null}
-          {p && f.pkg ? <PlacementPreview placement={p} name={name} avatarUrl={account?.avatarUrl ?? ""} serviceTitle={f.svc?.name ?? ""} banner={f.flow.banner} label={f.pkg.surfaceLabel} /> : null}
-          {p && f.pkg ? <SummaryCard pkg={f.pkg} placement={p} target={p === "service_boost" ? (f.svc?.name ?? "—") : name} /> : null}
+        <PageScroll key={step}>
+          <StepHeader steps={steps} current={step} />
+          {step === "place" ? (
+            <>
+              <Text variant="small" tone="gray">{t(preset.service ? "promoSeller.ck.lead" : "promoSeller.ck.leadAny")}</Text>
+              <PlacementStep value={p} onChange={f.setPlacement}>
+                {f.needsService ? <ServiceStep services={f.services} loading={f.loadingServices} value={f.flow.serviceId} onChange={f.setService} /> : <SellerRow name={name} />}
+              </PlacementStep>
+            </>
+          ) : null}
+          {step === "package" ? <PackageStep packages={f.packages} loading={f.loadingPackages} error={f.packagesQuery.isError ? f.packagesQuery.error : null} onRetry={() => void f.packagesQuery.refetch()} value={f.flow.packageId} onChange={f.setPackage} /> : null}
+          {step === "banner" ? <BannerForm banner={f.flow.banner} required={f.required} onChange={f.setBanner} onPick={banner.pick} /> : null}
+          {step === "confirm" && p && f.pkg ? (
+            <View style={s.gap}>
+              <Text variant="h4" accessibilityRole="header">{t("promoSeller.ck.confirmLead")}</Text>
+              <PlacementPreview placement={p} name={name} avatarUrl={account?.avatarUrl ?? ""} serviceTitle={f.svc?.name ?? ""} banner={f.flow.banner} label={f.pkg.surfaceLabel} />
+              <Receipt pkg={f.pkg} placement={p} target={f.needsService ? (f.svc?.name ?? "—") : name} />
+            </View>
+          ) : null}
         </PageScroll>
       </KeyboardLift>
-      <ResultSheet result={f.result} onClose={() => { f.closeResult(); router.replace("/pro/promotions"); }} />
+      <ResultSheet result={f.result} rows={rows} onRetry={f.closeResult} onClose={() => { f.closeResult(); router.replace("/pro/promotions"); }} />
     </AdminPage>
   );
 }
+
+const s = StyleSheet.create({ gap: { gap: 14 } });

@@ -1,5 +1,5 @@
 import { Image, StyleSheet, View } from "react-native";
-import type { Placement } from "@/entities/promotion";
+import { isBannerUrl, type Placement } from "@/entities/promotion";
 import { useColors } from "@/shared/theme";
 import { Avatar, GradientBox, Pill, Text } from "@/shared/ui";
 import { SectionCard } from "@/shared/ui/admin";
@@ -13,7 +13,8 @@ type Props = { placement: Placement; name: string; avatarUrl: string; serviceTit
 export function PlacementPreview({ placement, name, avatarUrl, serviceTitle, banner: b, label }: Props) {
   const { t } = useT();
   const c = useColors();
-  const pic = b.localUri || b.imageUrl;
+  const pic = b.localUri || (isBannerUrl(b.imageUrl) ? b.imageUrl.trim() : "");
+  const who = name || t("promoSeller.ck.previewSeller");
   return (
     <SectionCard title={t("sl11.preview.title")}>
       {placement === "banner" ? (
@@ -21,23 +22,24 @@ export function PlacementPreview({ placement, name, avatarUrl, serviceTitle, ban
           {pic ? <Image source={{ uri: pic }} style={StyleSheet.absoluteFill} resizeMode="cover" /> : null}
           <View style={[s.shade, { backgroundColor: pic ? "rgba(2,10,28,0.45)" : "transparent" }]}>
             <Pill label={t("sl11.preview.ad")} tone="glass" small />
-            <Text variant="h4" tone="white" numberOfLines={2}>{b.title || name}</Text>
+            <Text variant="h4" tone="white" numberOfLines={2}>{b.title || who}</Text>
             <Text variant="small" tone="white" numberOfLines={2}>{b.subtitle || t("sl11.preview.bannerSub")}</Text>
-            <Pill label={b.ctaLabel || t("sl11.preview.cta")} tone="ok" small />
+            <Pill label={b.ctaLabel || t("promoSeller.ck.previewCta")} tone="ok" small />
           </View>
         </GradientBox>
       ) : (
         <View style={[s.card, { borderColor: c.accent, backgroundColor: c.surface }]}>
-          <Avatar name={name} uri={avatarUrl || undefined} size={46} />
+          <Avatar name={who} uri={avatarUrl || undefined} size={46} />
           <View style={s.col}>
             <View style={s.row}>
-              <Text variant="body" weight="bold" numberOfLines={1} style={s.col}>{placement === "service_boost" ? serviceTitle : name}</Text>
-              <Pill label={t(placement === "service_boost" ? "sl11.preview.sponsored" : "sl11.preview.ad")} tone="cy" small />
+              <Text variant="body" weight="bold" numberOfLines={1} style={s.col}>{placement === "service_boost" ? serviceTitle : who}</Text>
+              <Pill label={placement === "service_boost" ? t("sl11.preview.sponsored") : t("promoSeller.ck.previewTop")} tone="cy" small />
             </View>
-            <Text variant="caption" tone="gray" numberOfLines={1}>{placement === "service_boost" ? name : label || t("sl11.preview.recommended")}</Text>
+            <Text variant="caption" tone="gray" numberOfLines={1}>{placement === "service_boost" ? who : label || t("sl11.preview.recommended")}</Text>
           </View>
         </View>
       )}
+      {placement === "banner" && !pic ? <Text variant="caption" tone="gray2">{t("promoSeller.ck.previewBannerNoImage")}</Text> : null}
       <Text variant="caption" tone="gray2">{t(`sl11.preview.where.${placement}`)}</Text>
     </SectionCard>
   );

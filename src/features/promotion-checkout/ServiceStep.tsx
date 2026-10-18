@@ -1,24 +1,27 @@
+import { StyleSheet, View } from "react-native";
 import type { ProService } from "@/entities/pro-service";
-import { Icon, Text } from "@/shared/ui";
-import { RowCard, SectionCard } from "@/shared/ui/admin";
-import { useColors } from "@/shared/theme";
+import { Notice } from "@/shared/ui/sel";
+import { Skeleton, Text } from "@/shared/ui";
 import { useSom } from "@/shared/lib/sel";
 import { useT } from "@/shared/i18n";
+import { Choice } from "./Choice";
 
-type Props = { services: ProService[]; value: string; onChange: (id: string) => void };
+type Props = { services: ProService[]; loading: boolean; value: string; onChange: (id: string) => void };
 
-// Step 2 (service boost) — which of the seller's active services to push.
-export function ServiceStep({ services, value, onChange }: Props) {
+// Which of the seller's active services to push (service promotion only).
+export function ServiceStep({ services, loading, value, onChange }: Props) {
   const { t } = useT();
-  const c = useColors();
   const som = useSom();
-  const rows = services.filter((s) => s.status === "active" && s.catalogActive);
   return (
-    <SectionCard title={t("sl11.step.service")}>
-      {!rows.length ? <Text variant="small" tone="gray">{t("sl11.noServices")}</Text> : null}
-      {rows.map((s) => (
-        <RowCard key={s.id} icon="briefcase" title={s.name} subtitle={s.effectivePrice ? som(s.effectivePrice) : undefined} onPress={() => onChange(s.id)} right={<Icon name={value === s.id ? "check-circle" : "circle"} size={22} color={value === s.id ? c.accent : c.gray2} />} />
-      ))}
-    </SectionCard>
+    <View style={s.box}>
+      <Text variant="small" weight="semibold">{t("promoSeller.ck.pickService")}</Text>
+      {loading ? <Skeleton height={56} round={14} /> : null}
+      {!loading && !services.length ? <Notice tone="warn" text={t("promoSeller.ck.pickServiceNone")} /> : null}
+      <View accessibilityRole="radiogroup" accessibilityLabel={t("promoSeller.ck.pickService")} style={s.box}>
+        {services.map((x) => <Choice key={x.id} icon="briefcase" title={x.name} sub={x.effectivePrice ? `${som(x.effectivePrice)}` : undefined} on={value === x.id} onPress={() => onChange(x.id)} />)}
+      </View>
+    </View>
   );
 }
+
+const s = StyleSheet.create({ box: { gap: 8 } });

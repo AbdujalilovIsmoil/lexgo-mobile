@@ -1,13 +1,21 @@
 import { http } from "@/shared/api";
 import { appendFile } from "@/shared/lib/upload";
-import { asDict, asStr, listFrom, uzs } from "@/shared/lib/json";
-import { normCatalog } from "./normalize";
+import { asDict, listFrom } from "@/shared/lib/json";
+import { normBannerCheck, normCatalog, normCheckout } from "./normalize";
 import { normAnalytics, normRunning, normStatus } from "./normStatus";
-import type { Analytics, CheckoutInput, CheckoutResult, Catalog, Placement, PromoStatus, Running } from "../model/types";
+import type { Analytics, BannerCheck, AnalyticsFilter, CheckoutInput, CheckoutResult, Catalog, Placement, PromoStatus, Running } from "../model/types";
 
-export const listPackages = async (placement?: Placement): Promise<Catalog> => normCatalog(await http(`/promotions/packages${placement ? `?placement=${placement}` : ""}`));
+// Only packages on sale (status=active), like the web checkout.
+export const listPackages = async (placement?: Placement): Promise<Catalog> => normCatalog(await http(`/promotions/packages?status=active${placement ? `&placement=${placement}` : ""}`), placement);
 export const getStatus = async (): Promise<PromoStatus> => normStatus(await http("/promotions/me"));
-export const getAnalytics = async (): Promise<Analytics> => normAnalytics(await http("/promotions/analytics"));
+// GET /promotions/analytics?placement=&date_from=&date_to= (the web sends the same filters).
+export async function getAnalytics(f: AnalyticsFilter = {}): Promise<Analytics> {
+  const qs = new URLSearchParams();
+  if (f.placement) qs.set("placement", f.placement);
+  if (f.from) qs.set("date_from", f.from);
+  if (f.to) qs.set("date_to", f.to);
+  return normAnalytics(await http(`/promotions/analytics${qs.size ? `?${qs}` : ""}`));
+}
 
 // GET /promotions/active?seller_user_id=… — what clients can see of this seller right now.
 export async function listActive(sellerUserId: string): Promise<Running[]> {
@@ -15,12 +23,11 @@ export async function listActive(sellerUserId: string): Promise<Running[]> {
   return listFrom(await http(`/promotions/active?${qs}`), "items", "data", "promotions").map(normRunning);
 }
 
-// POST /promotions/banner-assets (multipart `file`) → the stored file's URL.
-export async function uploadBanner(file: { uri: string; name: string }): Promise<string> {
+// POST /promotions/banner-assets (multipart `file`) → the stored file's URL and the picture check (active · manual_review · rejected).
+export async function uploadBanner(file: { uri: string; name: string }): Promise<BannerCheck> {
   const form = new FormData();
   appendFile(form, "file", file);
-  const d = asDict(await http("/promotions/banner-assets", { method: "POST", body: form }));
-  return asStr(d.file_url ?? asDict(d.asset).file_url ?? asDict(d.data).file_url);
+  return normBannerCheck(await http("/promotions/banner-assets", { method: "POST", body: form }));
 }
 
 // The provider is always telegram_manual: an admin approves the request inline in Telegram and
@@ -38,20 +45,14 @@ export async function checkout(i: CheckoutInput): Promise<CheckoutResult> {
     banner_subtitle: i.subtitle?.trim() || undefined,
     banner_cta_label: i.ctaLabel?.trim() || undefined,
     banner_cta_url: i.ctaUrl?.trim() || undefined,
+    preview_context: { surface: i.previewSurface || undefined, placement: i.placement, service_title: i.serviceTitle || undefined },
     idempotency_key: i.idempotencyKey,
   };
   // A single-service boost has its own route (TZ 20); profile and banner promotions use the general one.
   // Both take the same PromotionCheckoutRequest body and answer 404 "package not found" for an unknown package.
   const path = i.placement === "service_boost" && i.serviceId ? `/lawyers/me/services/${encodeURIComponent(i.serviceId)}/promotion-checkout` : "/promotions/checkout";
   const d = asDict(await http(path, { method: "POST", body }));
-  const gate = asDict(d.payment_gate ?? d.payment);
-  return {
-    requestId: asStr(d.checkout_request_id ?? d.request_id ?? gate.id),
-    workId: asStr(d.work_id ?? gate.work_id),
-    amount: uzs(gate, "amount") || uzs(d, "amount"),
-    currency: asStr(gate.currency ?? d.currency, "UZS") || "UZS",
-    telegramSent: gate.telegram_sent === true || d.telegram_sent === true,
-  };
+  return normCheckout(d);
 }
 
 // POST /promotions/events — a client-side impression / click of a promotion surface (used by the client marketplace).

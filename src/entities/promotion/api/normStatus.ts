@@ -28,7 +28,13 @@ export function normRunning(v: unknown): Running {
 
 export function normStatus(v: unknown): PromoStatus {
   const d = asDict(v);
-  const items = asArr(d.items).map(normRunning);
+  // `items` is the flat list; `by_placement` repeats it per placement (use it when the flat list is missing).
+  const grouped = Object.values(asDict(d.by_placement)).flatMap(asArr);
+  const seen = new Set<string>();
+  const items = [...asArr(d.items), ...grouped].map(normRunning).filter((r) => {
+    const key = r.id || `${r.placement}|${r.serviceId}|${r.endsAt}`;
+    return !seen.has(key) && !!seen.add(key);
+  });
   return { active: d.active === true || items.length > 0, daysLeft: asNum(d.days_left), endsAt: asStr(d.ends_at), items };
 }
 

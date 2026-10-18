@@ -1,31 +1,47 @@
-import { useRouter } from "expo-router";
-import { useActivePromos, useAnalytics, usePending, usePromoStatus, usePromotionLive } from "@/entities/promotion";
+import { useState } from "react";
+import { activeSince, usePending, usePromoStatus, usePromotionLive, promotionKeys } from "@/entities/promotion";
+import { useProServices } from "@/entities/pro-service";
+import { useQueryClient } from "@tanstack/react-query";
 import { useSession } from "@/entities/session";
-import { AnalyticsCard, PendingList, RunningList } from "@/widgets/promotion";
-import { IconButton, Skeleton } from "@/shared/ui";
-import { AdminPage, QueryBoundary } from "@/shared/ui/admin";
+import { PendingList } from "@/widgets/promotion";
+import { AdminPage } from "@/shared/ui/admin";
 import { PageScroll } from "@/shared/ui/sel";
 import { useT } from "@/shared/i18n";
+import { useAutoRefresh } from "./useAutoRefresh";
+import { ActiveSection } from "./ui/ActiveSection";
+import { Intro } from "./ui/Intro";
+import { PlacementList } from "./ui/PlacementList";
+import { ReachCard } from "./ui/ReachCard";
+import { ServiceRows } from "./ui/ServiceRows";
 
-// Promotions (TZ 20): what is running, what waits for the Telegram approval, and how it performs.
+// Seller promotions (web «Profilingizni targ'ib qiling»), action first: heading → what runs now («Faol targ'ib») → waiting requests → the three ad placements
+// (each card is the button to buy) → reach numbers with the 14-day trend → per-service promotion.
 export default function PromotionsPage() {
   const { t } = useT();
-  const router = useRouter();
+  const qc = useQueryClient();
   const uid = useSession()?.user.id ?? "";
   const status = usePromoStatus();
-  const stats = useAnalytics();
+  const services = useProServices();
   const pending = usePending(uid);
-  const live = useActivePromos(uid);
+  const [busy, setBusy] = useState(false);
   usePromotionLive(uid);
+  useAutoRefresh();
+  const running = status.data?.items ?? [];
+  const refresh = async () => {
+    setBusy(true);
+    await Promise.all([qc.invalidateQueries({ queryKey: promotionKeys.all }), services.refetch()]).catch(() => {});
+    setBusy(false);
+  };
   return (
-    <AdminPage title={t("nav1.menu.promotions")} right={<IconButton icon="plus" onPress={() => router.push("/pro/promotions/new")} />}>
-      <QueryBoundary query={status}>
-        <PageScroll onRefresh={() => void Promise.all([status.refetch(), stats.refetch(), live.refetch()])} refreshing={status.isRefetching}>
-          <PendingList items={pending.pending} />
-          <RunningList items={status.data?.items ?? []} liveIds={new Set((live.data ?? []).map((x) => x.id))} />
-          {stats.isLoading ? <Skeleton height={220} round={20} /> : stats.data ? <AnalyticsCard data={stats.data} spend={(status.data?.items ?? []).reduce((n, x) => n + x.price, 0)} /> : null}
-        </PageScroll>
-      </QueryBoundary>
+    <AdminPage title={t("nav1.menu.promotions")}>
+      <PageScroll onRefresh={() => void refresh()} refreshing={busy} gap={22}>
+        <ActiveSection items={running} />
+        <Intro />
+        <PendingList items={pending.pending} />
+        <PlacementList running={running} pending={pending.pending} loading={status.isLoading} />
+        <ReachCard since={activeSince(running)} />
+        <ServiceRows running={running} />
+      </PageScroll>
     </AdminPage>
   );
 }
