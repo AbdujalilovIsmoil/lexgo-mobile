@@ -1,0 +1,33 @@
+import type { Messages } from "../uz";
+
+export const sp5: Messages["sp5"] = {
+  title: "AI assistant",
+  subtitle: "The AI answers first. If that doesn't help, write to an operator.",
+  kicker: "AI assistant",
+  failed: "The AI could not answer. Please try again.",
+  retry: "Retry",
+  noAnswer: "No answer found — write to an operator.",
+  open: "Open: {name}",
+  routes: {
+    plans: "Plans",
+    payments: "Payments",
+    analysis: "Document analysis",
+    services: "Services",
+    documents: "My documents",
+    lawyers: "Lawyers",
+    orders: "Orders",
+    urgent: "Urgent advocate",
+    notifications: "Notifications",
+    profile: "Profile",
+    works: "My works",
+    messages: "Messages",
+    ai: "AI chat",
+    home: "Home",
+    page: "Page",
+  },
+  followUp: "Ask a follow-up…",
+  ask: "Send",
+  solved: "Solved",
+  operator: "Write to an operator",
+  solvedToast: "Great! Ask again any time.",
+};

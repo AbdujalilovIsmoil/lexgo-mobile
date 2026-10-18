@@ -1,0 +1,36 @@
+export const cl7 = {
+  unknown: "Bo'lim topilmadi",
+  unknownText: "Bunday ro'yxat mavjud emas.",
+  kinds: {
+    works: { title: "Faol ishlar", sub: "Hali yakunlanmagan ishlaringiz" },
+    documents: { title: "Mening hujjatlarim", sub: "Hujjatlar arxivi" },
+    orders: { title: "Buyurtmalar", sub: "Marketplace buyurtmalaringiz" },
+    payments: { title: "To'lovlar", sub: "To'lov so'rovlaringiz" },
+    chats: { title: "Xabarlar", sub: "Xavfsiz suhbatlar" },
+  },
+  filters: {
+    all: "Barchasi",
+    ready: "Tayyor",
+    active: "Faol",
+    pending: "Kutilmoqda",
+    unread: "O'qilmagan",
+  },
+  empty: {
+    documents: "Hujjat yo'q",
+    documentsText: "Tayyorlagan hujjatlaringiz shu yerda paydo bo'ladi.",
+    orders: "Buyurtma yo'q",
+    ordersText: "Marketplace'da xizmat buyurtma qilsangiz, u shu yerda ko'rinadi.",
+    payments: "To'lov yo'q",
+    paymentsText: "To'lov so'rovlari shu yerda ko'rinadi.",
+    chats: "Xabar yo'q",
+    chatsText: "Yangi xabarlar bo'lmaganda bu ro'yxat bo'sh.",
+  },
+  payKind: {
+    order: "Buyurtma to'lovi",
+    subscription_plan_telegram_approval: "Obuna to'lovi",
+    subscription_plan: "Obuna to'lovi",
+    document_request: "Hujjat to'lovi",
+    urgent_advokat: "Tezkor xizmat to'lovi",
+    document_analysis: "Hujjat tahlili to'lovi",
+  },
+};

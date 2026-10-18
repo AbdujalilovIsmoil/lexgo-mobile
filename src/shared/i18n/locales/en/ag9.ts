@@ -1,0 +1,42 @@
+import type { Messages } from "../uz";
+
+export const ag9: Messages["ag9"] = {
+  tab: { releases: "Releases", runtime: "Live" },
+  check: {
+    title: "Server check",
+    lead: "Nothing is saved",
+    ok: "The server found no errors",
+    bad: "Errors: {n}",
+    apply: "Show the errors on the fields",
+    target: "Applies to",
+    operation: "Operation",
+    approval: "Approval needed",
+    changed: "Fields that change",
+  },
+  rel: {
+    title: "Releases",
+    lead: "A set of approved objects is published together",
+    empty: "No releases",
+    new: "New release",
+    newHint: "Pick approved or published objects",
+    env: "Environment",
+    pickObjects: "Objects",
+    noObjects: "No approved objects",
+    objects: "Number of objects",
+    objectsN: "{n} objects",
+    valid: "Passed validation",
+    publishedAt: "Published",
+    validate: "Validate again",
+    publish: "Publish",
+    publishAsk: "Release {name} will be published to {env}.",
+    created: "Release created",
+    validated: "Release validated",
+    published: "Release published",
+  },
+  run: {
+    title: "Live configuration",
+    lead: "The Studio objects the platform runs right now",
+    empty: "Nothing yet",
+    emptyText: "Shows up here once a release is published",
+  },
+};

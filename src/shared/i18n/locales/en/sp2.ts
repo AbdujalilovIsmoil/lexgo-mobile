@@ -1,0 +1,25 @@
+import type { Messages } from "../uz";
+
+export const sp2: Messages["sp2"] = {
+  title: "New chat",
+  message: "Briefly describe the problem",
+  messagePh: "For example: payment fails when buying a plan",
+  topic: "What's it about? (optional)",
+  autoTopic: "Topic detected from your text: {topic}",
+  autoHint: "If you skip the topic, we'll detect it from your text.",
+  urgent: "Urgent",
+  urgentHint: "Turn on if it can't wait",
+  aiShared: "The operator will see your AI chat",
+  askAi: "Ask the AI first",
+  submit: "Start the chat",
+  created: "Chat started: {id}",
+  createdPlain: "Chat started",
+  failed: "Could not start the chat. Please try again.",
+  resumeTitle: "You already have an active chat",
+  resumeText: "Instead of starting over, continue this chat — the operator sees the whole conversation.",
+  resume: "Continue",
+  newAnyway: "Start a new one anyway",
+  composeTitle: "New chat with an operator",
+  composeLead: "Describe the problem — an operator replies in this chat.",
+  cancel: "Cancel",
+};

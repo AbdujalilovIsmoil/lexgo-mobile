@@ -1,0 +1,13 @@
+export { useInstructorUi, openInstructor, closeInstructor, ENGAGED_MS } from "./model/uiStore";
+export { useInstructorChat, type InstructorMsg } from "./model/chatStore";
+export { useOverlay, finishStep, type OverlayStep } from "./model/overlayStore";
+export { sendToInstructor } from "./model/sendFlow";
+export { startSupportHandoff } from "./model/handoff";
+export { restoreInstructor } from "./model/restore";
+export { scheduleRuntimeSync, resetRuntimeSync } from "./model/runtimeSync";
+export { useInstructorRealtime } from "./model/useInstructorRealtime";
+export { setActiveContract } from "./model/contractRef";
+export { abortRun } from "./model/runner/context";
+export { queueEvent } from "./model/events";
+export { replayReply, canReplay, offersSupport } from "./model/replay";
+export { newInstructorChat } from "./model/newChat";

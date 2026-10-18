@@ -1,0 +1,15 @@
+export const wks = {
+  active: "В процессе",
+  done: "Завершены",
+  total: "Всего",
+  kind: "Тип",
+  status: "Статус",
+  assignee: "Адвокат",
+  opened: "Открыто",
+  noAssignee: "Пока не назначен",
+  full: "Полная информация",
+  id: "ID работы",
+  copied: "Скопировано",
+  complaint: "Текст жалобы",
+  next: "Следующий шаг",
+};

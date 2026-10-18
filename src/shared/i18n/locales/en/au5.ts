@@ -1,0 +1,32 @@
+import type { Messages } from "../uz";
+
+export const au5: Messages["au5"] = {
+  title: "App lock",
+  desc: "When on, Face ID or a fingerprint is required when the app opens and after it has been in the background for a while. Your sign-in stays on the device; signing in to the account still needs your password/2FA.",
+  switch: "Biometric lock",
+  passcodeOnly: "Only the device passcode is used",
+  none: "No biometrics or screen lock is set up on this device",
+  kind: { face: "Face ID", fingerprint: "Fingerprint", iris: "Iris" },
+  openSettings: "Open device settings",
+  test: "Test the lock",
+  testOk: "Confirmed.",
+  enabled: "App lock is on.",
+  disabled: "App lock is off.",
+  confirmOn: "Confirm to turn the lock on",
+  confirmOff: "Confirm to turn the lock off",
+  notConfirmed: "Not confirmed. Try again.",
+  unavailable: "Set up a screen lock or biometrics on the device first.",
+  afterTitle: "When to lock",
+  after: { "0": "Immediately", "1": "1 minute", "5": "5 minutes", "15": "15 minutes" },
+  note: "The lock is asked for when you return to the app after this long in the background.",
+  lockedTitle: "LexGo is locked",
+  lockedText: "Confirm it is you to continue.",
+  unlock: "Unlock",
+  usePassword: "Sign out and use password",
+  prompt: "Unlock LexGo",
+  result: {
+    lockout: "Too many attempts. The device asks you to wait.",
+    unavailable: "Biometrics are unavailable.",
+    failed: "Not confirmed. Try again.",
+  },
+};

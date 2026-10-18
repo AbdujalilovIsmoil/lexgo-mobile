@@ -1,0 +1,12 @@
+export * from "./model/types";
+export { useSessionStore, useSession, useIsAuthed } from "./model/store";
+export { useLockStore, LOCK_TIMEOUTS } from "./model/lockStore";
+export * as authApi from "./api";
+export type { RegisterInput } from "./api/registerApi";
+export { OTP_TTL_MS } from "./api/normalize";
+export { bindSessionToHttp } from "./lib/bindHttp";
+export { useProfileRefresh } from "./lib/useProfileRefresh";
+export { refreshProfile } from "./lib/refreshProfile";
+export { accountGate, isSellerUser, mergeUser, type AccountGate } from "./lib/accountState";
+export { describeAuthError, type AuthErr, type AuthErrKind } from "./lib/authError";
+export { retryAfterOf, isCodeExpired } from "./lib/retryAfter";

@@ -1,0 +1,32 @@
+export const admAiRegC = {
+  up: {
+    title: "Fayldan reglament yuklash",
+    lead: "Backend fayldan matnni ajratadi va uni reglament versiyasi qilib saqlaydi.",
+    choose: "Fayl tanlash",
+    rules: ".docx, .doc yoki .pdf · 20 MB gacha",
+    badType: "Faqat .docx, .doc yoki .pdf fayl yuklang",
+    tooBig: "Fayl juda katta: 20 MB gacha bo'lsin",
+    empty: "Fayl bo'sh",
+    needFile: "Avval faylni tanlang",
+    target: "Reglament",
+    submit: "Yuklash",
+    done: "Fayl yuklandi: {title} · v{v}",
+  },
+  gapStatus: {
+    open: "Ochiq",
+    resolved: "Hal qilingan",
+    closed: "Yopilgan",
+    ignored: "E'tiborsiz",
+    answered: "Javob berilgan",
+  },
+  roles: {
+    client: "Mijoz",
+    yurist: "Yurist",
+    advokat: "Advokat",
+    lawyer: "Yurist",
+    advocate: "Advokat",
+    guest: "Mehmon",
+    staff: "Xodim",
+    operator: "Operator",
+  },
+};

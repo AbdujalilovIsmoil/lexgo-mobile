@@ -1,0 +1,40 @@
+import type { Messages } from "../uz";
+
+export const aw9: Messages["aw9"] = {
+  title: "Statistics",
+  sub: "Workload, income and performance",
+  workload: "Workload",
+  finance: "Finance",
+  performance: "My performance",
+  cases: "Cases by status",
+  w: {
+    active_cases: "Active cases",
+    courts_today: "Hearings today",
+    deadlines_today: "Deadlines today",
+    unread_messages: "New messages",
+    documents_to_review: "Documents to review",
+  },
+  f: {
+    earnings_today: "Income today",
+    earnings_month: "Income this month",
+    pending_payout: "Expected payout",
+    earnings_via_lexgo: "Via LexGo",
+    payable: "Payable",
+  },
+  p: { response: "Response rate", acceptance: "Acceptance rate", avg: "Average response", rating: "Rating" },
+  minutes: "{n} min",
+  newBadge: "New",
+  newHint: "The rating shows after {n} reviews.",
+  tipSpeed: "Average response is {now} min — bring it under {target} min.",
+  tipRate: "Raise your response rate above 90%.",
+  tipGood: "Great numbers — keep it up.",
+  super: {
+    title: "Road to Super advocate",
+    rating: "Rating above 4.5",
+    response: "Response rate above 90%",
+    exp: "At least 3 years of experience (you have {n})",
+    cases: "At least 10 cases (you have {n})",
+  },
+  payouts: { title: "Payouts", pending: "Pending", paid: "Paid", empty: "No payouts yet" },
+  forbidden: "Statistics are for approved professionals",
+};

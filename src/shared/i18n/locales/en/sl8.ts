@@ -1,0 +1,37 @@
+import type { Messages } from "../uz";
+
+export const sl8: Messages["sl8"] = {
+  week: "Weekly schedule",
+  day: {
+    "0": "Monday",
+    "1": "Tuesday",
+    "2": "Wednesday",
+    "3": "Thursday",
+    "4": "Friday",
+    "5": "Saturday",
+    "6": "Sunday",
+  },
+  dayOff: "Day off",
+  from: "From",
+  to: "To",
+  hour: "Hour",
+  minute: "Minute",
+  spread: "Same hours for all days",
+  weekdays: "Mon–Fri only",
+  deadlines: "Response deadlines",
+  dl: { manual: "Regular order", auto: "Auto assignment", sos: "SOS (urgent)" },
+  deadlinesHint: "Counted during working hours. Default: 30 / 15 / 5 minutes.",
+  presence: "Status",
+  connection: "App connection",
+  socket: { online: "Connected", connecting: "Connecting…", offline: "Not connected" },
+  marketStatus: "In the marketplace",
+  market: { online: "Clients see you online", offline: "You appear offline", hidden: "Profile not listed yet (not verified)" },
+  presenceHint: "The “online” status clients see comes from the server; the schedule sets your working hours and answer deadlines.",
+  source: { default: "Default schedule", custom: "Your schedule" },
+  issue: {
+    hours: "The end time must be after the start time.",
+    noDay: "Turn on at least one working day.",
+    deadline: "The deadline must be 1 to 1440 minutes.",
+  },
+  saved: "Schedule saved",
+};

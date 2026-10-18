@@ -1,0 +1,15 @@
+export const spf = {
+  about: "Haqida",
+  services: "Xizmatlar",
+  results: "Natijalar",
+  info: "Ma'lumot",
+  pick: "Xizmat tanlash",
+  chat: "Chat",
+  chatTitle: "Shaxsiy chat",
+  chatLead: "Mutaxassis bilan to'g'ridan-to'g'ri yozishmada maslahatlashing. Chat bir martalik to'lovdan keyin ochiladi.",
+  chatFee: "Bir martalik to'lov",
+  chatPay: "To'lash va chatni ochish",
+  chatNote: "To'lov provayder sahifasida amalga oshiriladi. Tasdiqlangach, chat avtomatik ochiladi.",
+  chatOpening: "Chat ochilmoqda…",
+  unavailable: "To'lov tizimi hozircha ishlamayapti. Keyinroq urinib ko'ring.",
+};

@@ -1,0 +1,20 @@
+export const dc3 = {
+  enter: "Kiriting",
+  datePh: "KK.OO.YYYY",
+  pickDate: "Kalendar",
+  today: "Bugun",
+  dateFormat: "Sana KK.OO.YYYY ko'rinishida yoziladi.",
+  weekdays: ["Du", "Se", "Ch", "Pa", "Ju", "Sh", "Ya"],
+  months: ["Yanvar", "Fevral", "Mart", "Aprel", "May", "Iyun", "Iyul", "Avgust", "Sentabr", "Oktabr", "Noyabr", "Dekabr"],
+  err: {
+    required: "Majburiy maydon",
+    email: "Email noto'g'ri",
+    phone: "Telefon raqami to'liq emas",
+    date: "Sana noto'g'ri (KK.OO.YYYY)",
+    pattern: "Format noto'g'ri",
+    min: "Qiymat juda kichik",
+    max: "Qiymat juda katta",
+    short: "Juda qisqa",
+    long: "Juda uzun",
+  },
+};

@@ -1,0 +1,52 @@
+import { brand } from "./palette";
+import type { ThemeColors } from "./types";
+
+export type { ThemeColors } from "./types";
+
+
+// Light values are the :root tokens; dark values the html[data-theme="dark"] ones.
+export const lightColors: ThemeColors = {
+  bg: brand.white,
+  surface: brand.white,
+  surface2: "#F1F4F9",
+  glass: "rgba(255,255,255,0.9)",
+  ink: "#0A1526",
+  gray: "#5C6E85",
+  gray2: "#8A99AC",
+  line: "#E4EBF5",
+  tint: brand.b50,
+  tint2: brand.b100,
+  accent: brand.b600,
+  accentStrong: brand.b700,
+  ok: "#00A870",
+  okBg: "#E1F6EE",
+  err: "#D92D20",
+  errBg: "#FDECEC",
+  warn: "#B45309",
+  warnBg: "#FEF3C7",
+  cyBg: "#DEF9FC",
+  cyText: "#00707E",
+};
+
+export const darkColors: ThemeColors = {
+  bg: "#0A1120",
+  surface: "#121C31",
+  surface2: "#18253E",
+  glass: "rgba(14,22,40,0.86)",
+  ink: "#E7EEF8",
+  gray: "#A5B4C8",
+  gray2: "#8494AB",
+  line: "#2C3D60",
+  tint: "#0D182C",
+  tint2: "#172B4E",
+  accent: "#6EA8FF",
+  accentStrong: "#A3C8FF",
+  ok: "#3DDC97",
+  okBg: "rgba(52,211,153,0.14)",
+  err: "#FF9494",
+  errBg: "rgba(248,113,113,0.14)",
+  warn: "#FBC15E",
+  warnBg: "rgba(251,191,36,0.14)",
+  cyBg: "rgba(96,165,250,0.14)",
+  cyText: "#6EA8FF",
+};

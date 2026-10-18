@@ -1,0 +1,16 @@
+// TEMPORARY fixtures for screenshots (deleted before the final report).
+const now = Date.now();
+const iso = (d: number) => new Date(now - d * 86_400_000).toISOString();
+export const cabinet = { accountStatus: "pending", sellerType: "advokat", limitedAccess: true, limitedReason: "", actions: { acceptOrders: false, secureChat: false, calls: false }, verificationStatus: "pending", verified: false };
+export const progress = { status: "incomplete", completed: 2, total: 5, reason: "", steps: [
+  { key: "profile", title: "", required: true, completed: true }, { key: "identity", title: "", required: true, completed: false },
+  { key: "documents", title: "", required: true, completed: false }, { key: "services", title: "", required: true, completed: true }, { key: "pricing", title: "", required: true, completed: false }] };
+export const docs = [{ id: "d1", workId: "DOC-4F2K", name: "litsenziya.pdf", kind: "license", status: "pending", createdAt: iso(1) }];
+export const profile = { userId: "u1", publicId: "LGP-0042", name: "Aziz Karimov", sellerType: "advokat", region: "Toshkent", district: "Yunusobod", licenseNumber: "ADV-2015-4821", barAssociation: "", advocateStructure: "byuro", organizationName: "", experienceYears: 8, lawyerExperienceYears: 11, specializations: ["family", "labor", "fixture-aliment"], languages: ["uz", "ru"], bio: "Oilaviy va mehnat nizolari bo'yicha 11 yillik tajriba.", education: "", totalCases: 40, winsCount: 22, partialWinsCount: 8, successRate: 75, hourlyPrice: 400000, verificationStatus: "pending", verified: false, badgeLabel: "", rating: 0, reviewsCount: 0, onlineNow: false, available: true, serviceTitles: [], priceFrom: 0, priceTo: 0 };
+export const account = { name: "Aziz Karimov", email: "", avatarUrl: "", phone: "+998900000000" };
+export const avail = { timezone: "Asia/Tashkent", source: "custom", exceptions: [], deadlines: { manual: 30, auto: 15, sos: 5 }, weekly: [0, 1, 2, 3, 4, 5, 6].map((day) => ({ day, enabled: day < 6, start: "09:00", end: day === 5 ? "14:00" : "19:00" })) };
+const band = { recommended: 390000, min: 273000, max: 390000, base: 250000, currency: "UZS", modifiers: [{ code: "region", key: "tashkent_city", label: "", percent: null, multiplier: 1, amount: 0 }, { code: "experience", key: "", label: "", percent: 20, multiplier: 1.2, amount: 50000 }, { code: "seller_premium", key: "", label: "", percent: 30, multiplier: 1.3, amount: 90000 }] };
+const svc = (id: string, name: string, status: string, price: number, extra = {}) => ({ id, name, categoryTitle: "Oilaviy huquq", subcategory: "", catalogPrice: 250000, catalogActive: true, advokatRequired: false, status, selectedPrice: price, effectivePrice: price || 0, note: "", visible: status === "active" && price > 0, promotion: null, profileBoost: null, limits: band, ...extra });
+export const services = { sellerId: "u1", region: "tashkent", verified: false, verificationStatus: "pending", sellerType: "advokat", accountStatus: "pending", items: [
+  svc("s1", "Nikoh shartnomasi", "active", 300000, { promotion: { id: "p1", serviceId: "s1", packageTitle: "Service top", daysLeft: 4, endsAt: iso(-4) } }),
+  svc("s2", "Aliment undirish bo'yicha maslahat", "active", 0), svc("s3", "Vasiylik masalasi", "paused", 280000), svc("s4", "Ajrashish hujjatlari", "inactive", 0)] };

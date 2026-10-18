@@ -1,0 +1,23 @@
+export const admTplB = {
+  types: {
+    text: "matn",
+    date: "sana",
+    money: "pul",
+    number: "son",
+    phone: "telefon",
+    pinfl: "JShShIR",
+    checkbox: "belgi",
+    multiline: "ko'p qatorli",
+  },
+  fieldsFound: "{n} ta maydon topildi",
+  noFields: "{{…}} belgilar topilmadi — faylni tekshiring.",
+  draftNote: "Shablon qoralama holatda; ro'yxatda «Tahrirlash» orqali turlarni tekshirib, faollashtiring.",
+  upload: "Yuklash",
+  docxDone: "Shablon yaratildi: {n} ta maydon.",
+  zipDone: "{n} ta shablon import qilindi (qoralama).",
+  slugTaken: "Bu slug band — boshqasini yozing.",
+  onlyDocx: "Faqat DOCX qabul qilinadi.",
+  onlyZip: "Faqat ZIP qabul qilinadi.",
+  tooBig: "Fayl 20 MB dan katta.",
+  importError: "Import bo'lmadi.",
+};

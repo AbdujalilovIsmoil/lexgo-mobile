@@ -1,0 +1,38 @@
+import type { Messages } from "../uz";
+
+export const ag6: Messages["ag6"] = {
+  course: {
+    new: "Новый курс",
+    hint: "Черновик клиентам не виден",
+    count: "Курсов: {n}",
+    empty: "Курсов нет",
+    category: "Направление",
+    level: "Уровень",
+    levels: { beginner: "Начальный", intermediate: "Средний", advanced: "Продвинутый" },
+    lessonsLabel: "Количество уроков",
+    minutesLabel: "Длительность (минуты)",
+    lessons: "Уроков: {n}",
+    minutes: "{n} мин",
+    priceHint: "0 = бесплатно",
+    free: "Бесплатно",
+    cover: "Ссылка на обложку",
+    publish: "Опубликовать сразу",
+    publishHint: "Если выключено, курс будет черновиком. Позже курс нельзя изменить",
+    created: "Курс создан",
+  },
+  offer: {
+    new: "Новое предложение",
+    hint: "Личное предложение одному клиенту",
+    count: "Предложений: {n}",
+    empty: "Предложений нет",
+    pickClient: "Выберите клиента",
+    client: "Клиент",
+    plan: "Тариф подписки",
+    noPlan: "Без тарифа",
+    validUntil: "Срок действия",
+    until: "до {d}",
+    redeemed: "куплено {n} раз",
+    redeemedLabel: "Сколько раз куплено",
+    created: "Предложение создано",
+  },
+};

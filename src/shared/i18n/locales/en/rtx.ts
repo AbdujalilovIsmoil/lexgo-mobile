@@ -1,0 +1,1 @@
+export const rtx = { avg: "Average rating", count: "{n} ratings", waiting: "{n} waiting for a rating", rate: "Rate", ask: "How did it go?", askFor: "Rate {name}", who: "You are rating", noName: "Specialist", steps: "How it works" };

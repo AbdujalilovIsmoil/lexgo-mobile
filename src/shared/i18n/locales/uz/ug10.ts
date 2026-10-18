@@ -1,0 +1,21 @@
+export const ug10 = {
+  claimed: "So'rov olindi.",
+  taken: "Bu so'rovni boshqa xodim olib ulgurdi.",
+  completed: "So'rov yakunlandi",
+  cancelled: "So'rov bekor qilindi",
+  transferred: "Ish boshqa advokatga o‘tkazildi",
+  moved: "Status o'zgartirildi",
+  meeting: "Uchrashuv boshlandi",
+  chatDone: "Chat yakunlandi",
+  ev: {
+    call: "Navbatchi advokat siz bilan bog'lanmoqda",
+    claimed: "Advokat so'rovingizni qabul qildi",
+    scheduled: "Uchrashuv vaqti belgilandi",
+    meeting: "Uchrashuv boshlandi — qo'shiling",
+    completed: "So'rov yakunlandi. Ishni baholashingiz mumkin",
+    cancelled: "So'rov bekor qilindi",
+    transferred: "Ish boshqa advokatga o‘tkazildi",
+    created: "Yangi tezkor so'rov tushdi",
+    assist: "Operator siz uchun tezkor advokat so'rovi yaratdi",
+  },
+};

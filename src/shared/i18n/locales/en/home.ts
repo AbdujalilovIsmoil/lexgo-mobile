@@ -1,0 +1,31 @@
+import type { Messages } from "../uz";
+
+export const home: Messages["home"] = {
+  greeting: "Hello",
+  guest: "Guest",
+  heroLead: "Legal help is now",
+  heroAccent: "a few taps away",
+  tagLawyers: '{n} lawyers',
+  tagRegions: '{n} regions',
+  docTitle: 'Let AI check your document',
+  docSub: "Upload a PDF, DOCX or TXT — we'll find errors and risks.",
+  docCta: 'Upload document',
+  heroSub: "Find a lawyer, prepare a document in 5 minutes or get a free answer from AI.",
+  freeTag: "First 5 requests free",
+  askAi: "Ask AI",
+  askAiSub: "First 5 requests are free",
+  askPlaceholder: "Describe your problem…",
+  quickTitle: "Quick services",
+  stats: {
+    lawyers: "Lawyers",
+    templates: "Templates",
+    coverage: "Regions",
+  },
+  topLawyers: "Top lawyers",
+  subscriptionTitle: "Personal lawyer subscription",
+  subscriptionSub: "Pay once a month — unlimited consultations and document reviews.",
+  subscriptionCta: "View plans",
+  warrantyTitle: "Guarantee",
+  warrantySub: "If a lawyer doesn't reply, your case moves to another lawyer.",
+  directionsTitle: "Practice areas",
+};

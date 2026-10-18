@@ -1,0 +1,26 @@
+import type { Messages } from "../uz";
+
+export const og3: Messages["og3"] = {
+  title: "Members",
+  memberTitle: "Organization member",
+  add: "Add member",
+  addHint: "Pick a specialist and set their role in the organization.",
+  addSubmit: "Add",
+  editHint: "Change the role in the organization.",
+  editRole: "Change role",
+  search: "Search by name",
+  already: "Member",
+  role: "Role",
+  rolePh: "e.g. Senior lawyer",
+  roleHint: "Visible inside the organization only.",
+  added: "Member added",
+  renamed: "Role saved",
+  empty: "No members",
+  emptyText: "Add specialists and follow their work.",
+  noMatch: "No members match the filter.",
+  notFound: "Specialist not found",
+  notFoundText: "This specialist is not a member of your organization.",
+  unrated: "Not rated yet",
+  filter: { all: "All", verified: "Verified", pending: "Pending", busy: "Busy" },
+  tab: { services: "Services", workload: "Workload" },
+};

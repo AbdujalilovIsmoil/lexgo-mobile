@@ -1,0 +1,16 @@
+export const dc4 = {
+  previewTitle: "Hujjat ko'rinishi",
+  previewSub: "Server shablonni javoblaringiz bilan to'ldirdi",
+  previewEmpty: "Ko'rinish hozircha bo'sh.",
+  previewFailed: "Ko'rinishni yuklab bo'lmadi.",
+  complete: "To'ldirilganlik: {n}%",
+  ready: "Hujjat tayyor",
+  paid: "To'langan",
+  free: "Bepul",
+  view: "Ko'rish",
+  share: "Ulashish / saqlash",
+  noFile: "Fayl hali tayyor emas.",
+  shareFailed: "Faylni yuklab bo'lmadi.",
+  myDocs: "Mening hujjatlarim",
+  another: "Boshqa hujjat tanlash",
+};

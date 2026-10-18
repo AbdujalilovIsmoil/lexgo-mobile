@@ -1,0 +1,32 @@
+import type { Messages } from "../uz";
+
+export const mk4: Messages["mk4"] = {
+  title: "My orders",
+  lead: "The services you bought: status, chat and result.",
+  detail: "Order",
+  loginTitle: "Sign in to see your orders",
+  loginText: "Your purchases are tied to your account.",
+  searchPh: "Service, ADV number or specialist",
+  tabs: {
+    all: "All",
+    pending: "Awaiting payment",
+    active: "Active",
+    completed: "Completed",
+    cancelled: "Cancelled",
+  },
+  stage: { pending: "Awaiting payment", active: "In progress", completed: "Completed", cancelled: "Cancelled" },
+  steps: { request: "Request", confirm: "Payment", work: "Work", done: "Done" },
+  empty: "You have not bought a marketplace service yet",
+  emptyText: "Pick a service in the specialists list — the order shows up here.",
+  emptyFilter: "No orders match these filters",
+  browse: "Choose a specialist",
+  seller: "Specialist",
+  yourNote: "Your note",
+  history: "Status history",
+  pendingTitle: "Waiting for payment confirmation",
+  pendingText: "The payment is being confirmed through Telegram. The chat opens once it is.",
+  payWaiting: "Waiting",
+  payCancelled: "Cancelled",
+  rate: "Rate or report",
+  notFound: "Order not found",
+};

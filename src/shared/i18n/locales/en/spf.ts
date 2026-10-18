@@ -1,0 +1,15 @@
+export const spf = {
+  about: "About",
+  services: "Services",
+  results: "Results",
+  info: "Details",
+  pick: "Pick a service",
+  chat: "Chat",
+  chatTitle: "Private chat",
+  chatLead: "Talk to the specialist in a private conversation. The chat opens after a one-time payment.",
+  chatFee: "One-time fee",
+  chatPay: "Pay and open the chat",
+  chatNote: "You pay on the provider's page. Once it is confirmed the chat opens automatically.",
+  chatOpening: "Opening the chat…",
+  unavailable: "The payment system is unavailable right now. Please try again later.",
+};

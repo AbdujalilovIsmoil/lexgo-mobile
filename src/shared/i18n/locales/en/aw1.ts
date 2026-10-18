@@ -1,0 +1,53 @@
+import type { Messages } from "../uz";
+
+export const aw1: Messages["aw1"] = {
+  hi: "Welcome, {name}",
+  greet: "Today: {meetings} meetings and {tasks} tasks.",
+  ban: {
+    title: "Your profile is not approved yet",
+    text: "Everything opens once your profile and documents are reviewed.",
+    cta: "Continue verification",
+    blocked: "Restricted for now:",
+    progress: "Profile completeness: {done}/{total}",
+  },
+  act: { acceptOrders: "Accepting orders", secureChat: "Secure chat", calls: "Calls" },
+  c: {
+    docs: "Document requests",
+    urgent: "Urgent work",
+    orders: "Marketplace orders",
+    meetings: "Today's meetings",
+    tasks: "Open tasks",
+    unread: "New messages",
+    cases: "Active cases",
+    clients: "Clients",
+  },
+  q: {
+    title: "Quick actions",
+    case: "New case",
+    client: "New client",
+    doc: "Upload document",
+    event: "Schedule meeting",
+  },
+  up: { title: "Upcoming events", empty: "No upcoming events" },
+  tk: { title: "Tasks", empty: "No open tasks" },
+  all: "All",
+  st: {
+    title: "Professional statistics",
+    rating: "Rating",
+    income: "Income this month",
+    response: "Response rate",
+    done: "Completed cases",
+  },
+  tools: {
+    title: "Work tools",
+    cases: "Cases",
+    calendar: "Calendar",
+    tasks: "Tasks",
+    files: "Files",
+    stats: "Statistics",
+    referrals: "Referrals",
+  },
+  sub: { title: "Subscription", active: "Active · until {date}", none: "No active plan — unlock more features" },
+  org: { title: "Organization", text: "Members, workload and monitoring" },
+  ref: { title: "Invite colleagues", text: "Your commission goes down" },
+};

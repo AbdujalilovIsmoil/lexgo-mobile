@@ -1,0 +1,38 @@
+import type { Messages } from "../uz";
+
+export const sl2: Messages["sl2"] = {
+  stepsTitle: "Steps",
+  steps: {
+    profile: "Profile details",
+    identity: "Identity check",
+    documents: "Documents",
+    services: "Services",
+    pricing: "Pricing",
+  },
+  stepDone: "Done",
+  stepRequired: "Required",
+  stepOptional: "Optional",
+  fill: "Fill in",
+  upload: "Upload",
+  progress: "{done} of {total} steps done",
+  reason: "Reason: {text}",
+  limited: "Limited cabinet: until approval, taking orders, chat and calls are closed.",
+  sectionsTitle: "Profile sections",
+  sections: {
+    personal: "Personal details",
+    kind: "Role and professional kind",
+    license: "Licence and diploma",
+    experience: "Experience and directions",
+    region: "Region",
+    organization: "Organization",
+  },
+  sectionDone: "Complete",
+  securityTitle: "Security",
+  telegram: "Telegram",
+  twoFactor: "Two-step sign-in",
+  linked: "Linked",
+  notLinked: "Not linked: needed for confirmation codes",
+  on: "On",
+  off: "Off: turning it on is recommended",
+  openSecurity: "Security settings",
+};

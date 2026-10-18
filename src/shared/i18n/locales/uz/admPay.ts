@@ -1,0 +1,16 @@
+export const admPay = {
+  gross: "Umumiy tushum",
+  platformFee: "Platforma komissiyasi",
+  providerFee: "Provayder komissiyasi",
+  sellerShare: "Sotuvchi ulushi",
+  paidCount: "to'langan",
+  byProvider: "Provayderlar bo'yicha",
+  fees: "Komissiya",
+  empty: "To'lovlar yo'q",
+  emptyText: "Tanlangan holatda to'lov topilmadi.",
+  markPaid: "To'langan deb belgilash",
+  markPaidText: "{sum} sotuvchiga to'langan deb belgilansinmi?",
+  noteLabel: "Izoh",
+  notePh: "Ixtiyoriy izoh",
+  paidDone: "To'lov to'langan deb belgilandi",
+};

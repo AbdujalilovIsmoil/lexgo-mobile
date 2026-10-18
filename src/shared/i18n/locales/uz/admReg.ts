@@ -1,0 +1,16 @@
+export const admReg = {
+  lead: "Yurist va advokatlarning ro'yxatdan o'tish so'rovlari",
+  role: { advokat: "Advokat", yurist: "Yurist", advokat_tashkiloti: "Advokat tashkiloti" },
+  roleLabel: "Rol",
+  status: { approval_pending: "Tasdiq kutilmoqda", accepted: "Qabul qilindi" },
+  accept: "Qabul qilish",
+  reject: "Rad etish",
+  acceptTitle: "So'rovni qabul qilasizmi?",
+  acceptText: "{name} sotuvchi sifatida tasdiqlanadi.",
+  rejectTitle: "So'rovni rad etasizmi?",
+  rejectText: "{name} ro'yxatdan o'tish so'rovi rad etiladi.",
+  acceptedDone: "So'rov qabul qilindi",
+  rejectedDone: "So'rov rad etildi",
+  empty: "So'rovlar yo'q",
+  emptyText: "Tanlangan filtr bo'yicha so'rov topilmadi.",
+};

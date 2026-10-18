@@ -1,0 +1,31 @@
+import type { Messages } from "../uz";
+
+export const home: Messages["home"] = {
+  greeting: "Здравствуйте",
+  guest: "Гость",
+  heroLead: "Юридическая помощь",
+  heroAccent: "в пару касаний",
+  tagLawyers: 'Адвокатов: {n}',
+  tagRegions: 'Регионов: {n}',
+  docTitle: 'Пусть AI проверит ваш документ',
+  docSub: 'Загрузите PDF, DOCX или TXT — найдём ошибки и риски.',
+  docCta: 'Загрузить документ',
+  heroSub: "Найдите адвоката, подготовьте документ за 5 минут или получите бесплатный ответ от ИИ.",
+  freeTag: "Первые 5 запросов бесплатно",
+  askAi: "Спросить AI",
+  askAiSub: "Первые 5 запросов бесплатно",
+  askPlaceholder: "Опишите вашу проблему…",
+  quickTitle: "Быстрые услуги",
+  stats: {
+    lawyers: "Адвокатов",
+    templates: "Шаблонов",
+    coverage: "Регионов",
+  },
+  topLawyers: "Топ адвокаты",
+  subscriptionTitle: "Подписка на личного адвоката",
+  subscriptionSub: "Платите раз в месяц — безлимитные консультации и проверка документов.",
+  subscriptionCta: "Смотреть тарифы",
+  warrantyTitle: "Гарантия",
+  warrantySub: "Если адвокат не ответит, дело передадут другому адвокату.",
+  directionsTitle: "Направления",
+};

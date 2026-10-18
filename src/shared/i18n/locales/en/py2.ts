@@ -1,0 +1,47 @@
+import type { Messages } from "../uz";
+
+export const py2: Messages["py2"] = {
+  detail: "Payment",
+  notFound: "Payment not found. Refresh the list.",
+  facts: "Details",
+  kind: "Purpose",
+  method: "Method",
+  workId: "Number",
+  err: { provider: "The payment provider is not connected yet. Try again later." },
+  need: { title: "A payment or plan is required", text: "This action needs an active plan or a payment.", cta: "View plans" },
+  pc: {
+    pending_confirmation: { title: "Waiting for approval", text: "The request was sent to an operator on Telegram. Once it is approved or cancelled, the status updates here by itself." },
+    awaiting: { title: "Waiting for payment", text: "Finish the payment on the provider page. The status updates automatically once it is confirmed." },
+    paid: { title: "Payment received", text: "The server confirmed the payment. The receipt is available." },
+    failed: { title: "Payment failed", text: "The payment did not go through. Try again or pick another method." },
+    cancelled: { title: "Payment cancelled", text: "The request was cancelled or declined. Nothing was charged." },
+    refunded: { title: "Payment refunded", text: "The amount was refunded in full or in part." },
+    openPage: "Open payment page",
+    check: "Check status",
+    receipt: "View receipt",
+  },
+  receipt: {
+    title: "Receipt",
+    valid: "Receipt is genuine",
+    invalid: "Receipt not verified",
+    paid: "Amount paid",
+    open: "Open receipt (PDF)",
+  },
+  split: {
+    title: "How the money was split",
+    gross: "Gross amount",
+    platform: "Platform fee",
+    provider: "Provider fee",
+    seller: "Specialist share",
+  },
+  refund: {
+    cta: "Request a refund",
+    title: "Refund request",
+    reason: "Reason",
+    reasonPh: "Why are you asking for a refund?",
+    hint: "At least 10 characters. The call centre will review the request.",
+    send: "Send request",
+    sent: "Refund request sent",
+    sentId: "Refund request sent ({id})",
+  },
+};

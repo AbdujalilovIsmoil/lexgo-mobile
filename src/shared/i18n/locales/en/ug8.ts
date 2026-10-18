@@ -1,0 +1,28 @@
+import type { Messages } from "../uz";
+
+export const ug8: Messages["ug8"] = {
+  complete: "Complete",
+  completeLead: "The result reaches the client as a notification and as a message in the secure chat.",
+  completeSubmit: "Complete",
+  summary: "Summary",
+  summaryPh: "Consultation finished. Recommendations given to the client.",
+  nextPh: "A further document will be sent if needed",
+  completeAsk: "Complete this request? The result goes to the client and their rating window opens.",
+  cancel: "Cancel",
+  cancelLead: "The reason is shown to the client.",
+  cancelSubmit: "Cancel request",
+  reasonPh: "For example: the client cancelled",
+  cancelAsk: "Cancel this request? This cannot be undone.",
+  moveTo: "Change status",
+  move: "Move",
+  notePh: "Note (optional)",
+  transfer: "Hand over",
+  transferLead: "Pass the work to another advocate — they continue the chat and the meeting with the client.",
+  transferSubmit: "Hand over",
+  transferReasonPh: "For example: a better practice-area fit",
+  chatEnd: "End the chat",
+  chatEndLead: "The group chat closes, the request completes and the client's rating window opens. The client cannot end the chat.",
+  chatEndAsk: "End the chat? No more messages can be sent afterwards.",
+  chatEndSubmit: "End chat",
+  chatSummaryPh: "Short summary (optional)",
+};

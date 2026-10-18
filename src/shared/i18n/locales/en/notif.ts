@@ -1,0 +1,40 @@
+import type { Messages } from "../uz";
+
+export const notif: Messages["notif"] = {
+  st: {
+    open_pool: "Waiting for a lawyer",
+    claimed: "Lawyer accepted",
+    in_review: "In review",
+    payment_required: "Payment required",
+    ready: "Ready",
+    rejected: "Rejected",
+  },
+  title: "Notification",
+  new: "New",
+  delivered: "Delivered via",
+  status: "Status",
+  number: "Number",
+  price: "Price",
+  amount: "Amount",
+  pages: "Pages",
+  file: "File",
+  lawyer: "Lawyer",
+  time: "Time",
+  cats: {
+    orders: "Order",
+    payments: "Payment",
+    chat: "Message",
+    documents: "Document",
+    system: "System",
+    marketing: "Offer",
+  },
+  ch: {
+    in_app: "App",
+    push: "Push",
+    telegram: "Telegram",
+    email: "Email",
+    sms: "SMS",
+    secure_chat: "Secure chat",
+    meeting_invite: "Meeting",
+  },
+};

@@ -1,0 +1,36 @@
+import { StatusBar } from "expo-status-bar";
+import { StyleSheet, View } from "react-native";
+import { useInsets } from "@/shared/lib/insets";
+import { useSession } from "@/entities/session";
+import { GradientBox, Text } from "@/shared/ui";
+import { useT } from "@/shared/i18n";
+import { HeroRobot } from "./HeroRobot";
+import { HeroTitle } from "./HeroTitle";
+import { HeroTags } from "./HeroTags";
+import { HeroTopRow } from "./HeroTopRow";
+
+// Dark gradient hero (.hero): greeting row, headline, the robot with its bubble, tags.
+export function HomeHero() {
+  const { t } = useT();
+  const insets = useInsets();
+  const session = useSession();
+  return (
+    <GradientBox variant="dark" round={0} style={[s.hero, { paddingTop: insets.top + 12 }]}>
+      <StatusBar style="light" />
+      <View style={s.glow} pointerEvents="none" />
+      <HeroTopRow name={session?.user.name} />
+      <HeroTitle />
+      <Text variant="lead" style={s.sub}>
+        {t("home.heroSub")}
+      </Text>
+      <HeroRobot />
+      <HeroTags />
+    </GradientBox>
+  );
+}
+
+const s = StyleSheet.create({
+  hero: { paddingHorizontal: 16, paddingBottom: 28, borderBottomLeftRadius: 28, borderBottomRightRadius: 28, gap: 14 },
+  glow: { position: "absolute", top: -120, right: -80, width: 320, height: 320, borderRadius: 160, backgroundColor: "rgba(0,207,232,0.18)" },
+  sub: { color: "#C4DEFF", maxWidth: 420 },
+});

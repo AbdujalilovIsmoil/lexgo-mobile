@@ -1,0 +1,20 @@
+import { http } from "@/shared/api";
+import { listOf, normMilestone, normOrder, normStep } from "./normalize";
+import type { Milestone, OrderStep, ProOrder } from "../model/types";
+
+const enc = encodeURIComponent;
+
+// role_view=seller → only the orders this seller owns; unpaid ones are not served (TZ 18).
+export const listOrders = async (): Promise<ProOrder[]> =>
+  listOf(await http("/marketplace/me/orders?role_view=seller"), "items", "data").map(normOrder).filter((o) => o.id);
+
+export const getHistory = async (id: string): Promise<OrderStep[]> => listOf(await http(`/orders/${enc(id)}/status-history`), "items", "data").map(normStep);
+
+export const getMilestones = async (id: string): Promise<Milestone[]> => listOf(await http(`/orders/${enc(id)}/milestones`), "items", "data").map(normMilestone);
+
+export const acceptOrder = (id: string) => http(`/orders/${enc(id)}/accept`, { method: "POST" });
+
+export const declineOrder = (id: string, reason: string, note: string) => http(`/orders/${enc(id)}/decline`, { method: "POST", body: { reason, note: note.trim() || undefined } });
+
+// PATCH /orders/{id}/status — the seller's progress moves (started → in_progress → result_ready → delivered).
+export const moveOrder = (id: string, status: string, note: string) => http(`/orders/${enc(id)}/status`, { method: "PATCH", body: { status, note: note.trim() } });

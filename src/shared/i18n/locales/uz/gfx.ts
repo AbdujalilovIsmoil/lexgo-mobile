@@ -1,0 +1,1 @@
+export const gfx = { all: "Hammasi", sent: "Yuborilgan", received: "Olingan", give: "Sovg'a qilish", giveHint: "Obuna yoki xizmat", claim: "Kodni kiritish", claimHint: "Sovg'a olish", code: "Sovg'a kodi", tap: "Nusxalash uchun bosing" };

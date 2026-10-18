@@ -1,0 +1,33 @@
+import type { Messages } from "../uz";
+
+export const sp5: Messages["sp5"] = {
+  title: "AI-помощник",
+  subtitle: "Сначала отвечает AI. Не помогло — напишите оператору.",
+  kicker: "AI-помощник",
+  failed: "AI не смог ответить. Попробуйте ещё раз.",
+  retry: "Повторить",
+  noAnswer: "Ответ не найден — напишите оператору.",
+  open: "Открыть: {name}",
+  routes: {
+    plans: "Тарифы",
+    payments: "Платежи",
+    analysis: "Анализ документа",
+    services: "Услуги",
+    documents: "Мои документы",
+    lawyers: "Адвокаты",
+    orders: "Заказы",
+    urgent: "Срочный адвокат",
+    notifications: "Уведомления",
+    profile: "Профиль",
+    works: "Мои работы",
+    messages: "Сообщения",
+    ai: "AI-чат",
+    home: "Главная",
+    page: "Страница",
+  },
+  followUp: "Задайте ещё вопрос…",
+  ask: "Отправить",
+  solved: "Решено",
+  operator: "Написать оператору",
+  solvedToast: "Отлично! Если появятся вопросы — пишите.",
+};

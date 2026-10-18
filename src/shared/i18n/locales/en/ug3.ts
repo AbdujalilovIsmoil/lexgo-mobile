@@ -1,0 +1,27 @@
+import type { Messages } from "../uz";
+
+export const ug3: Messages["ug3"] = {
+  rateTitle: "Rate the work",
+  rateLead: "You can leave a rating for 15 minutes after it is completed.",
+  rateCta: "Rate",
+  thanks: "Thank you for the rating",
+  given: "You gave {n} out of 5",
+  left: "{time} left",
+  closedTitle: "The rating window has closed",
+  closedText: "The 15 minutes are up, so this work can no longer be rated.",
+  gateTitle: "This option is not open yet",
+  gateText: "A second opinion from a panel of advocates is open to clients who have already used an advocate or lawyer through LexGo.",
+  gateHow: "You can get a single advocate's opinion right now, or use one of these and the panel option opens too.",
+  ctaSingle: "Get a single advocate's opinion",
+  ctaVideo: "Online consultation with an advocate",
+  ctaChat: "Start a chat consultation",
+  ctaDocument: "Prepare a document with an advocate",
+  ctaBrowse: "Browse services",
+  cancelTitle: "Cancel this request",
+  cancelConfirm: "Yes, cancel it",
+  keepIt: "No",
+  cancelDefault: "Cancelled by the client",
+  cancelReasonPh: "Reason (optional)",
+  cancelAsk: "Cancel this request? This cannot be undone.",
+  cancelLead: "The reason is optional — the advocate and the operator can see it.",
+};

@@ -1,0 +1,33 @@
+import type { Messages } from "../uz";
+
+export const og9: Messages["og9"] = {
+  kind: { advokat: "Advocate", yurist: "Lawyer", advokat_tashkiloti: "Law firm" },
+  st: {
+    approved: "Verified",
+    verified: "Verified",
+    pending: "Pending",
+    rejected: "Rejected",
+    declined: "Declined",
+    active: "Active",
+    inactive: "Inactive",
+    suspended: "Suspended",
+    new: "New",
+    created: "Created",
+    open: "Open",
+    claimed: "Claimed",
+    sent_to_seller: "Sent to specialist",
+    accepted: "Accepted",
+    started: "Started",
+    in_progress: "In progress",
+    result_ready: "Result ready",
+    completed: "Completed",
+    closed: "Closed",
+    cancelled: "Cancelled",
+    pending_payment: "Awaiting payment",
+    paid: "Paid",
+    unpaid: "Unpaid",
+    partially_paid: "Partially paid",
+    refunded: "Refunded",
+    failed: "Failed",
+  },
+};

@@ -1,0 +1,16 @@
+export const lw = {
+  tabs: {"about": "Haqida", "services": "Xizmatlar", "results": "Natijalar", "info": "Ma'lumot"},
+  rating: "Reyting",
+  experience: "Tajriba",
+  success: "Muvaffaqiyat",
+  price: "Narx",
+  priceNote: "so'mdan",
+  wins: {"full": "To'liq g'alaba", "partial": "Qisman g'alaba", "other": "Boshqa natija"},
+  cases: "Jami ishlar",
+  noBio: "Mutaxassis hali o'zi haqida ma'lumot qo'shmagan.",
+  choose: "Xizmat tanlash",
+  chat: "Maxfiy chat",
+  verified: "LexGo shaxs va litsenziyani tasdiqlagan",
+  reviews: "{n} ta baho",
+  yearsShort: "yil",
+};

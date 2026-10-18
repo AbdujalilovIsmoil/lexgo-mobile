@@ -1,0 +1,15 @@
+export const wks = {
+  active: "In progress",
+  done: "Finished",
+  total: "Total",
+  kind: "Type",
+  status: "Status",
+  assignee: "Advocate",
+  opened: "Opened",
+  noAssignee: "Not assigned yet",
+  full: "Full details",
+  id: "Work ID",
+  copied: "Copied",
+  complaint: "Complaint text",
+  next: "Next step",
+};

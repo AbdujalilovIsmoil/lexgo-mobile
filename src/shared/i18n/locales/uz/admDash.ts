@@ -1,0 +1,21 @@
+export const admDash = {
+  hi: "Xush kelibsiz, {name}",
+  empty: "Hozircha panel ma‘lumoti yo‘q",
+  filter: { region: "Hudud", allRegions: "Barcha hududlar", demo: "Demo", regionNote: "Hudud va davr serverga yuboriladi. Server qo'llamaydigan ko'rsatkichlarda eslatma bor; dinamika ilovada davrga qirqiladi." },
+  demo: { banner: "Hozircha real faoliyat yo'q — namunaviy ko'rsatkichlar ko'rsatilmoqda. Birinchi lid, buyurtma yoki to'lov paydo bo'lishi bilan real ma'lumotlar avtomatik chiqadi.", forced: "Demo rejim yoqilgan: real ma'lumotlar o'rniga namunaviy ko'rsatkichlar ko'rsatilmoqda. O'chirish uchun «Demo» tugmasini bosing." },
+  hint: { regionNa: "hudud filtri bu ko'rsatkichga qo'llanmaydi", dateNa: "sana filtri bu ko'rsatkichga qo'llanmaydi" },
+  units: { mln: "mln", mlrd: "mlrd" },
+  role: { yurist: "Yuristlar", advokat: "Advokatlar", advokat_tashkiloti: "Advokatlik tashkilotlari", client: "Mijozlar" },
+  region: {
+    tashkent: "Toshkent shahri",
+    samarkand: "Samarqand",
+    fergana: "Farg'ona",
+    bukhara: "Buxoro",
+    namangan: "Namangan",
+    andijan: "Andijon",
+    kashkadarya: "Qashqadaryo",
+    khorezm: "Xorazm",
+    jizzakh: "Jizzax",
+    navoi: "Navoiy",
+  },
+};

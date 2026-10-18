@@ -1,0 +1,40 @@
+import type { Messages } from "../uz";
+
+export const aw9: Messages["aw9"] = {
+  title: "Статистика",
+  sub: "Нагрузка, доход и показатели",
+  workload: "Рабочая нагрузка",
+  finance: "Финансы",
+  performance: "Мои показатели",
+  cases: "Дела по статусам",
+  w: {
+    active_cases: "Активные дела",
+    courts_today: "Заседания сегодня",
+    deadlines_today: "Сроки сегодня",
+    unread_messages: "Новые сообщения",
+    documents_to_review: "Документы на проверку",
+  },
+  f: {
+    earnings_today: "Доход за сегодня",
+    earnings_month: "Доход за месяц",
+    pending_payout: "Ожидаемая выплата",
+    earnings_via_lexgo: "Через LexGo",
+    payable: "К выплате",
+  },
+  p: { response: "Ответы", acceptance: "Принятие заказов", avg: "Среднее время ответа", rating: "Рейтинг" },
+  minutes: "{n} мин",
+  newBadge: "Новичок",
+  newHint: "Рейтинг появится после {n} отзывов.",
+  tipSpeed: "Среднее время ответа {now} мин — сократите до {target} мин.",
+  tipRate: "Поднимите долю ответов выше 90%.",
+  tipGood: "Показатели хорошие — так держать.",
+  super: {
+    title: "Путь к статусу «Супер адвокат»",
+    rating: "Рейтинг выше 4.5",
+    response: "Доля ответов выше 90%",
+    exp: "Опыт от 3 лет (у вас {n})",
+    cases: "От 10 дел (у вас {n})",
+  },
+  payouts: { title: "Выплаты", pending: "Ожидается", paid: "Выплачено", empty: "Выплат пока нет" },
+  forbidden: "Статистика доступна подтверждённым специалистам",
+};

@@ -1,0 +1,17 @@
+export const admCcH = {
+  search: "Qidiruv",
+  d: "{n} kun",
+  h: "{n} soat",
+  m: "{n} daq",
+  late: "SLA buzilgan",
+  recent: "So'nggi ochilganlar",
+  findClient: "Mijoz qidirish: ism, telefon yoki LexGo ID",
+  live: "Jonli · har daqiqada yangilanadi",
+  brief: "Navbat, Tezkor Advokat, shikoyatlar, lidlar va mijozlar — hammasi bir joyda. Bo'limni bosing.",
+  queueNote: "SLA bo'yicha tartiblangan",
+  urgentNote: "Ochiq so'rovlar",
+  complaintsNote: "Sifat bo'yicha shikoyatlar",
+  boardNote: "Lid kartalari",
+  clientsNote: "Ism, telefon yoki LexGo ID",
+  callsNote: "Qo'ng'iroqlar jurnali",
+};

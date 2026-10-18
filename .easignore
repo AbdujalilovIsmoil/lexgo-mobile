@@ -1,0 +1,14 @@
+node_modules/
+.expo/
+dist/
+ios/
+android/
+play-store/
+*.aab
+*.apk
+*.zip
+*.jks
+*.p12
+.env
+.env.local
+.DS_Store

@@ -1,0 +1,25 @@
+// Shared building blocks of every admin screen. Import from "@/shared/ui/admin".
+export { AdminPage } from "./AdminPage";
+export { QueryBoundary } from "./QueryBoundary";
+export { PagedList } from "./PagedList";
+export { RowCard } from "./RowCard";
+export { StatusPill } from "./StatusPill";
+export { KpiTile } from "./KpiTile";
+export { KpiGrid } from "./KpiGrid";
+export { SectionCard } from "./SectionCard";
+export { FactRows, type Fact } from "./FactRows";
+export { ChipBar } from "./ChipBar";
+export { SearchBox } from "./SearchBox";
+export { DateRangeBar } from "./DateRangeBar";
+export { useDateRange, type DatePreset, type DateRange } from "./useDateRange";
+export { DateField, maskDate, isDate } from "./DateField";
+export { Field } from "./Field";
+export { SwitchField } from "./SwitchField";
+export { MultiChips } from "./MultiChips";
+export { SelectField } from "./SelectField";
+export { OptionSheet } from "./OptionSheet";
+export { FormSheet } from "./FormSheet";
+export { ActionList, type ActionItem } from "./ActionList";
+export { useFormState } from "./useFormState";
+export * from "../charts";
+export { KeyboardLift } from "./KeyboardLift";

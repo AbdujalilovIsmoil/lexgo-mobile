@@ -1,0 +1,27 @@
+import type { Messages } from "../uz";
+
+export const plans: Messages["plans"] = {
+  title: "Subscription plans",
+  lead: "A personal lawyer for one monthly payment. Your family is covered too.",
+  term1: "1 month",
+  term6: "6 months",
+  term12: "12 months",
+  perMonth: "UZS / month",
+  totalFor: "Total for {term}",
+  youSave: "Save {pct}%",
+  mostChosen: "Most popular",
+  choose: "Choose",
+  chooseLogin: "Sign in to choose",
+  features: "What's included",
+  gift: "Gift it",
+  giftSub: "Gift a 3 / 6 / 12-month subscription to someone close",
+  empty: "No plans available yet.",
+  requestSent: "Request sent. The plan activates once confirmed.",
+  requestTitle: "Choose plan",
+  requestLead: "A request for “{plan}” will be sent. The plan activates automatically after confirmation.",
+  requestSubmit: "Send request",
+  telegram: "Confirm via Telegram",
+  current: "Current plan",
+  none: "No active plan",
+  paymentSoon: "Payments aren't connected yet. Payme and Click are coming soon.",
+};

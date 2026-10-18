@@ -1,0 +1,15 @@
+export const wks = {
+  active: "Jarayonda",
+  done: "Yakunlangan",
+  total: "Jami",
+  kind: "Turi",
+  status: "Holat",
+  assignee: "Advokat",
+  opened: "Ochilgan",
+  noAssignee: "Hali biriktirilmagan",
+  full: "To'liq tafsilotlar",
+  id: "Ish ID",
+  copied: "Nusxa olindi",
+  complaint: "Shikoyat matni",
+  next: "Keyingi qadam",
+};

@@ -1,0 +1,16 @@
+export const ms2 = {
+  callAdvocate: "Advokatga qo'ng'iroq",
+  closedBar: "Suhbat yakunlangan — yangi xabar yuborib bo'lmaydi.",
+  complete: "Chatni yakunlash",
+  completeText: "Maslahat yakunlanadi, unga yangi xabar yuborib bo'lmaydi.",
+  completeNote: "Xulosani mijoz va keyingi advokat o'qiydi. Mijozda 15 daqiqalik baholash oynasi ochiladi.",
+  completeSubmit: "Yakunlash",
+  completed: "Chat yakunlandi",
+  summary: "Xulosa",
+  summaryPh: "Masalan: guruh chat konsultatsiyasi yakunlandi.",
+  members: "{n} ishtirokchi",
+  membersTitle: "Chat ishtirokchilari",
+  membersNone: "Ishtirokchilar ro'yxati hozircha yo'q.",
+  rateLead: "Maslahat yakunlandi. Iltimos, baholang.",
+  rate: "Baholash",
+};

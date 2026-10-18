@@ -1,0 +1,40 @@
+import type { Messages } from "../uz";
+
+export const notif: Messages["notif"] = {
+  st: {
+    open_pool: "Ожидает адвоката",
+    claimed: "Адвокат принял",
+    in_review: "На проверке",
+    payment_required: "Нужна оплата",
+    ready: "Готово",
+    rejected: "Отклонено",
+  },
+  title: "Уведомление",
+  new: "Новое",
+  delivered: "Каналы доставки",
+  status: "Статус",
+  number: "Номер",
+  price: "Цена",
+  amount: "Сумма",
+  pages: "Страницы",
+  file: "Файл",
+  lawyer: "Адвокат",
+  time: "Время",
+  cats: {
+    orders: "Заказ",
+    payments: "Оплата",
+    chat: "Сообщение",
+    documents: "Документ",
+    system: "Система",
+    marketing: "Предложение",
+  },
+  ch: {
+    in_app: "Приложение",
+    push: "Push",
+    telegram: "Telegram",
+    email: "Email",
+    sms: "SMS",
+    secure_chat: "Закрытый чат",
+    meeting_invite: "Встреча",
+  },
+};

@@ -1,0 +1,15 @@
+export const ad4 = {
+  startTitle: "Qanday boshlaymiz?",
+  startLead: "Muharrirni ochishdan oldin ish qaysi fayldan boshlanishini tanlang.",
+  openEditor: "Muharrirni ochish",
+  sourceTitle: "Muharrir manbasi",
+  sourceLead: "Manbani almashtirsangiz, joriy muharrir sessiyasi yopiladi.",
+  chooseSource: "Manbani tanlash",
+  source: { template: "Toza shablon", blank: "Bo'sh hujjat", ai_draft: "AI tayyorlagan draft", attachment: "Mijoz yuborgan fayl" },
+  uploadOwn: "O'z DOCX faylimni yuklayman",
+  unavailable: "Bu variant bu ish uchun mavjud emas",
+  sourceFail: "Manbani o'zgartirib bo'lmadi.",
+  switchTitle: "Manbani almashtirasizmi?",
+  switchAsk: "Joriy muharrir sessiyasi yopiladi va hujjat yangi manbadan ochiladi. Saqlanmagan o'zgarishlar yo'qolishi mumkin.",
+  switchYes: "Almashtirish",
+};

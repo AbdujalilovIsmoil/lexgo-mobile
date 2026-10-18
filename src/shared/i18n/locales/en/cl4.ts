@@ -1,0 +1,36 @@
+import type { Messages } from "../uz";
+
+export const cl4: Messages["cl4"] = {
+  title: "Work details",
+  facts: { title: "Overview", workId: "Work ID", created: "Opened", updated: "Updated" },
+  info: {
+    need: "Your request",
+    channel: "Channel",
+    region: "Region",
+    minutes: "Duration",
+    result: "Result summary",
+    statusNote: "Note",
+    service: "Service",
+    preferredTime: "Preferred time",
+    caseNumber: "Case number",
+    stage: "Stage",
+    description: "Description",
+    deadline: "Deadline",
+    docType: "Document type",
+    fileName: "Main file",
+  },
+  channel: { chat: "Chat", audio: "Audio call", video: "Video call", call: "Call" },
+  people: {
+    title: "Specialist",
+    specialist: "Specialist",
+    advokat: "Advocate",
+    yurist: "Lawyer",
+    operator: "Call-center operator",
+    waiting: "A specialist is not assigned yet.",
+  },
+  chat: "Open chat",
+  joinCall: "Join the meeting",
+  timeline: { title: "Status history", created: "Work opened" },
+  files: { title: "Files", result: "Result", upload: "Uploaded file" },
+  open: { document: "Open the document", urgent: "Open the request", order: "Open the order", case: "Go to the work", complaint: "Go to the work" },
+};

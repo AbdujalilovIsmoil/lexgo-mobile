@@ -1,0 +1,1 @@
+export const rtx = { avg: "O'rtacha baho", count: "{n} ta baho", waiting: "{n} ta baho kutmoqda", rate: "Baholash", ask: "Suhbat qanday o'tdi?", askFor: "{name} ga baho bering", who: "Kimga baho berasiz", noName: "Mutaxassis", steps: "Jarayon" };

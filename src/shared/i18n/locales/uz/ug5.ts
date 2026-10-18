@@ -1,0 +1,15 @@
+export const ug5 = {
+  title: "Mening Tezkor ishlarim",
+  lead: "Siz ishtirok etayotgan so'rovlar",
+  tabMine: "Mening ishlarim",
+  tabPool: "Ochiq navbat",
+  stage: { active: "Faol", completed: "Yakunlangan", cancelled: "Bekor qilingan", all: "Barchasi" },
+  search: "Mijoz, ish raqami yoki mazmun",
+  empty: "Hozircha ish yo‘q",
+  emptyText: "Sizni Tezkor Advokat so‘roviga biriktirishsa, shu yerda ko‘rinadi.",
+  poolEmpty: "Ochiq so'rov yo'q",
+  poolEmptyText: "Yangi tezkor so'rov tushishi bilan shu yerda ko'rinadi.",
+  join: "Meetingga kirish",
+  joinWaiting: "Meeting hali boshlanmadi — navbatchi advokat uni boshlaganda tugma aktiv bo‘ladi.",
+  openChat: "Chatga o‘tish",
+};

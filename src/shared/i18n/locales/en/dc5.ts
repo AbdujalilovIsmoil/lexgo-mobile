@@ -1,0 +1,26 @@
+import type { Messages } from "../uz";
+
+export const dc5: Messages["dc5"] = {
+  title: "Document with AI",
+  subtitle: "Prepared with AI",
+  unavailable: "AI is not available for this document",
+  unavailableText: "Fill it in yourself or hand it to the duty advocate.",
+  howTitle: "How it works",
+  howText: "Describe your case. The server asks questions, you answer, and the AI drafts the document from the original template.",
+  viewBlank: "View the blank template",
+  needLabel: "What is the document for?",
+  needPh: "E.g. my employer has not paid wages for 3 months, I want to file a court claim",
+  needHint: "At least 10 characters. The clearer you are, the better the document.",
+  langLabel: "Document language",
+  lang: { "uz-latn": "Uzbek (Latin)", "uz-cyrl": "Uzbek (Cyrillic)", ru: "Russian" },
+  extraLabel: "Extra instructions (optional)",
+  extraPh: "Style, requirements, points to stress",
+  getQuestions: "Get questions",
+  extraSection: "Details for the AI",
+  reviewTitle: "Ready",
+  reviewText: "The AI fills in any unanswered fields. The document is built on the server from the original template.",
+  generate: "Prepare document",
+  generating: "The AI is preparing the document…",
+  questionsFailed: "Could not get the questions. Try again.",
+  generateFailed: "The AI could not prepare the document. Try again.",
+};

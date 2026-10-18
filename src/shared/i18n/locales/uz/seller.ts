@@ -1,0 +1,18 @@
+export const seller = {
+  title: "Ish paneli",
+  sub: "Bugungi imkoniyatlar va jarayondagi ishlar",
+  open: "Ochiq buyurtmalar",
+  active: "Mening ishlarim",
+  unread: "Yangi xabarlar",
+  latest: "Yangi imkoniyatlar",
+  marketTitle: "Ishlar bozori",
+  marketLead: "Qabul qilish mumkin bo'lgan ochiq buyurtmalar.",
+  marketEmpty: "Hozircha ochiq buyurtma yo'q",
+  marketEmptyText: "Yangi mijoz so'rovlari shu yerda paydo bo'ladi.",
+  casesTitle: "Mening ishlarim",
+  casesLead: "Qabul qilingan va jarayondagi buyurtmalar.",
+  casesEmpty: "Hali ishlar yo'q",
+  casesEmptyText: "Qabul qilingan buyurtmalar shu yerda ko'rinadi.",
+  acceptWeb: "Buyurtmani qabul qilish hozircha veb-saytda.",
+  ordersLead: "Xizmat buyurtmalaringiz va ularning holati.",
+};

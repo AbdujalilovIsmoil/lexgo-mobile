@@ -1,0 +1,28 @@
+import type { Messages } from "../uz";
+
+export const dm3: Messages["dm3"] = {
+  title: "Document",
+  type: "Document type",
+  advocate: "Advocate",
+  price: "Price",
+  free: "Free",
+  pages: "Pages",
+  created: "Created",
+  fileTitle: "Finished document file",
+  fileDraftTitle: "Document copy",
+  open: "Open",
+  download: "Download",
+  downloadFail: "Could not download the file. Try again.",
+  blankSuffix: "blank template",
+  blank: "Blank template (DOCX)",
+  draftHint: "A DOCX with the current details — not the final document yet.",
+  answers: "Details",
+  missingN: "Required fields still empty: {n}",
+  editAnswers: "Edit details",
+  fillAnswers: "Fill in details",
+  viewAnswers: "View the entered details",
+  ctorTitle: "Your request went to the duty advocate",
+  ctorText: "Do you also want to keep filling the document in yourself?",
+  ctorYes: "Yes, I'll fill it in",
+  ctorNo: "No, I'll wait for the advocate",
+};

@@ -1,0 +1,1 @@
+export const gfx = { all: "All", sent: "Sent", received: "Received", give: "Send a gift", giveHint: "A plan or a service", claim: "Enter a code", claimHint: "Claim a gift", code: "Gift code", tap: "Tap to copy" };

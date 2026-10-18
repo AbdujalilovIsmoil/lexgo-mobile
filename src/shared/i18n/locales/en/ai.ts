@@ -1,0 +1,36 @@
+import type { Messages } from "../uz";
+
+export const ai: Messages["ai"] = {
+  title: "LexGo.AI",
+  status: "Online",
+  welcomeTitle: "How can I help?",
+  welcomeSub: "Describe your issue or pick a topic below.",
+  close: "Leave AI",
+  history: "Chat history",
+  online: "Online · trained on Uzbek law",
+  greeting:
+    "Hello! I'm an AI trained on the legislation of Uzbekistan. Describe your problem in two or three sentences and I'll suggest the practice area, case stage and the right service.",
+  greetingNote: "AI can make mistakes · the final legal decision stays with a lawyer",
+  inputPlaceholder: "Type your question…",
+  quick: [
+    "Summoned for questioning",
+    "Contract breached, goods not delivered",
+    "My salary isn't being paid",
+    "Inheritance isn't being divided",
+    "I want to open an LLC",
+    "How much is the subscription?",
+  ],
+  thinking: "Preparing an answer…",
+  sources: "Sources",
+  seeLawyer: "See a lawyer",
+  newChatStarted: 'New chat started',
+  newChat: "New chat",
+  historyEmpty: "No chats yet",
+  limitReached: "Free requests are used up.",
+  limitLogin: "Sign up to get more free requests.",
+  remaining: "{n} free requests left today",
+  upgradePlan: "View plan",
+  login: "Sign in",
+  sendFailed: "Couldn't send the message. Try again.",
+  disclaimer: "AI answers are guidance; the decision stays with a lawyer.",
+};

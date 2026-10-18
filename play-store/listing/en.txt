@@ -1,0 +1,42 @@
+=== LexGo — Google Play listing (ENGLISH) ===
+
+[App name] (max 30 characters)
+LexGo — Legal Help
+
+[Short description] (max 80 characters)
+Find a lawyer, prepare documents and get AI legal guidance in one app.
+
+[Full description] (max 4000 characters)
+LexGo brings legal services in Uzbekistan together in one app. Describe your problem and quickly find the right service and specialist.
+
+WHAT YOU CAN DO
+
+• AI legal assistant — describe your question in plain words; the app identifies the type of problem and suggests a suitable service and lawyer.
+• Directory of lawyers and legal advisers — search by region, specialization, rating and price, view profiles and place an order.
+• Document preparation — fill in contracts, applications and other documents yourself, generate them with AI, or hand them to an on-duty lawyer.
+• On-duty (urgent) lawyer — send a request for urgent help.
+• Secure chat, audio and video calls — talk to a specialist inside the app.
+• Orders and statuses — follow every step, download the result and rate the work.
+• Plans — choose a package to extend AI and document features.
+• Notifications — stay informed about orders, messages and calls.
+• Help center — chat with a support operator.
+
+FOR LAWYERS AND LEGAL ADVISERS
+
+Register, publish your services, accept orders, work with clients and track your income.
+
+SECURITY
+
+• Mandatory two-step verification for staff and specialists.
+• Password and biometric lock (fingerprint / Face ID).
+• Data is encrypted in transit.
+
+IMPORTANT
+
+The AI assistant provides general information and does not replace advice from a lawyer. For complex matters, contact a qualified specialist.
+
+Languages: Uzbek, Russian, English.
+Questions? Use the "Help" section inside the app.
+
+[What's new] (max 500 characters)
+First release of LexGo: AI assistant, lawyer directory, document preparation, secure chat and calls, orders and notifications.

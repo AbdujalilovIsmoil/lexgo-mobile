@@ -1,0 +1,14 @@
+import { type ReactNode } from "react";
+import { DarkTheme, DefaultTheme, ThemeProvider as NavThemeProvider } from "expo-router";
+import { useTheme } from "@/shared/theme";
+
+// Feeds our palette to React Navigation so screen backgrounds never flash white.
+export function NavigationTheme({ children }: { children: ReactNode }) {
+  const { colors, dark } = useTheme();
+  const base = dark ? DarkTheme : DefaultTheme;
+  const theme = {
+    ...base,
+    colors: { ...base.colors, background: colors.bg, card: colors.surface, text: colors.ink, border: colors.line, primary: colors.accent },
+  };
+  return <NavThemeProvider value={theme}>{children}</NavThemeProvider>;
+}

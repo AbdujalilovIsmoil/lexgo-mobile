@@ -1,0 +1,16 @@
+export const ug6 = {
+  title: "Tezkor advokat navbati",
+  lead: "Jonli: so'rovlar o'zi yangilanadi",
+  search: "Mijoz, telefon yoki ish raqami",
+  empty: "So'rovlar yo'q",
+  emptyText: "Ushbu filtrlar bo'yicha hozircha so'rov yo'q.",
+  claim: "Ishni olish",
+  takeOver: "O'zimga olish",
+  takeOverAsk: "Boshqa operator olgan ishni o'zingizga o'tkazasiz (admin huquqi)",
+  startMeeting: "Uchrashuv boshlash",
+  fKind: "Xizmat turi",
+  fChannel: "Aloqa turi",
+  allKinds: "Barcha xizmatlar",
+  liveOn: "Jonli",
+  liveOff: "Ulanmoqda",
+};

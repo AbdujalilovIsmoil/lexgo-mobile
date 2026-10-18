@@ -1,0 +1,30 @@
+import type { Messages } from "../uz";
+
+export const nt4: Messages["nt4"] = {
+  blocked: "This link cannot be opened for you",
+  closed: "This item is closed or you have no access",
+  open: {
+    chat: "Open the chat",
+    call: "Join the call",
+    doc: "Open the document",
+    order: "Open the order",
+    payment: "Open the payment",
+    ticket: "Open the ticket",
+    urgent: "Open the urgent request",
+    complaint: "Open the complaint",
+    subscription: "Open the subscription",
+    case: "Open the case",
+    calendar: "Open the calendar",
+    promotion: "Open the promotion",
+    registration: "Open the application",
+    gift: "Open gifts",
+    referral: "Open referrals",
+    security: "Open security",
+    lead: "Open leads",
+    approval: "Open approvals",
+    studio: "Open the studio",
+    internal: "Open the internal area",
+    list: "Open the list",
+    link: "Open",
+  },
+};

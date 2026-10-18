@@ -1,0 +1,17 @@
+export const dm9 = {
+  sentTitle: "So'rovingiz yuborildi",
+  sentText: "Navbatchi advokatlar ko'rib chiqadi. Kimdir ishni olishi bilan xabar beramiz.",
+  gateTitle: "To'lov tasdiqlanishi kutilmoqda",
+  gateText: "So'rov hali advokatlarga yuborilmadi. To'lov tasdiqlangach advokatlar navbatiga tushadi.",
+  pages: "{n} sahifa",
+  openDoc: "Hujjatni ochish",
+  toList: "Mening hujjatlarim",
+  existsTitle: "So'rov allaqachon yuborilgan",
+  existsText: "Bu hujjat bo'yicha Navbatchi advokatga so'rov yuborilgan. Ish yakunlanmaguncha yangi so'rov yubora olmaysiz.",
+  openExisting: "Mavjud so'rovni ochish",
+  planTitle: "Tarif kerak",
+  choosePlan: "Tarifni tanlash",
+  backToForm: "Formaga qaytish",
+  unavailable: "Advokat so'rovi mavjud emas",
+  unavailableText: "Bu xizmat uchun advokat so'rovi hozircha qabul qilinmayapti.",
+};

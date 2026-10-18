@@ -1,0 +1,29 @@
+import { useState } from "react";
+import { quoteAnalysis, type DocQuote, type QuoteInput } from "@/entities/doc-analysis";
+
+const keyOf = (o: QuoteInput) => `${o.pageCount}|${o.ocr}|${o.lawyerReview}|${o.urgent}|${Boolean(o.writtenOpinion)}`;
+
+// POST /ai/document-analysis/quote for the current options. A quote is "fresh" only while the
+// options still match the ones it was asked for; a failed call never blocks the analysis.
+export function useQuote(input: QuoteInput) {
+  const [quote, setQuote] = useState<{ key: string; q: DocQuote } | null>(null);
+  const [busy, setBusy] = useState(false);
+  const [failed, setFailed] = useState(false);
+  const fresh = quote && quote.key === keyOf(input) ? quote.q : null;
+
+  const get = async (i: QuoteInput = input): Promise<DocQuote | null> => {
+    setBusy(true);
+    setFailed(false);
+    try {
+      const q = await quoteAnalysis(i);
+      setQuote({ key: keyOf(i), q });
+      return q;
+    } catch {
+      setFailed(true);
+      return null;
+    } finally {
+      setBusy(false);
+    }
+  };
+  return { fresh, busy, failed, get };
+}

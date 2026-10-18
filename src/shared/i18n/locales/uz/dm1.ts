@@ -1,0 +1,17 @@
+export const dm1 = {
+  title: "Mening hujjatlarim",
+  lead: "Barcha hujjatlaringizni bir joyda boshqaring",
+  new: "Yangi hujjat",
+  searchPh: "Hujjat nomi yoki ish raqami…",
+  untitled: "Nomsiz hujjat",
+  stat: { all: "Jami hujjatlar", you: "Sizdan kutilmoqda", review: "Advokatda", ready: "Tayyor" },
+  mode: { all: "Barchasi", manual: "O'zim to'ldirganlar", ai: "AI bilan", lawyer: "Advokat bilan" },
+  empty: "Hozircha hujjat yo'q",
+  emptyText: "Xizmat tanlab hujjat to'ldirganingizda yoki advokatga so'rov yuborganingizda, ular shu yerda ko'rinadi.",
+  filterEmpty: "Hech narsa topilmadi",
+  filterEmptyText: "Boshqa so'z yoki filtrni sinab ko'ring.",
+  reset: "Filtrlarni tozalash",
+  browse: "Hujjat tanlash",
+  menu: { services: "Xizmatlardan hujjat tanlash", custom: "0 dan hujjat (advokat tayyorlaydi)", review: "Mavjud hujjatni tekshirtirish", analysis: "Hujjatni AI tahlil qilish" },
+  meetingActive: "Uchrashuv faol",
+};

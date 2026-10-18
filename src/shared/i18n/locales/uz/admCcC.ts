@@ -1,0 +1,36 @@
+export const admCcC = {
+  cardNoAccess: "Mijozning to'liq kartasi (buyurtmalar, to'lovlar, tarix) uchun sizning rolingizda ruxsat yo'q.",
+  sumOrders: "Buyurtmalar", sumSpent: "Jami to'lagan", sumLeads: "Lidlar",
+  sumChats: "Chatlar", sumComplaints: "Shikoyatlar", sumSubs: "Faol obuna",
+  tab: { orders: "Buyurtmalar", payments: "To'lovlar", leads: "Lidlar", activity: "So'nggi harakatlar" },
+  none: { orders: "Buyurtmalar yo'q.", payments: "To'lovlar yo'q.", leads: "Lidlar yo'q.", activity: "Harakatlar yo'q." },
+  act: {
+    login: "Tizimga kirdi", logout: "Tizimdan chiqdi", ai_classify: "AI tahlil so'radi", document_analysis: "Hujjat tahlili",
+    order_create: "Buyurtma berdi", payment_confirmed: "To'lov tasdiqlandi", gift: "Sovg'a xarid qildi", sos: "SOS bosdi",
+    complaint: "Shikoyat yubordi", review: "Baho qoldirdi", call_center_call: "Navbatchi xizmat qo'ng'irog'i", secure_chat_create: "Chat ochdi",
+  },
+  clStatus: { active: "Faol", inactive: "Nofaol", lead: "Lid" },
+  payKind: {
+    subscription_plan_telegram_approval: "Obuna", subscription_renewal: "Obunani uzaytirish", call_extension: "Qo'ng'iroqni uzaytirish",
+    document_review_extra_pages: "Hujjat tekshiruvi: qo'shimcha sahifalar", marketplace_order: "Xizmat buyurtmasi", order: "Xizmat buyurtmasi",
+    document_request: "Hujjat namunasi", gift: "Obuna sovg'asi", private_chat: "Maxfiy chat", subscription_plan: "Obuna",
+  },
+  src: {
+    web: "Veb-sayt", website: "Veb-sayt", referral: "Tavsiya", ad: "Reklama", ads: "Reklama", organic: "Organik", manual: "Qo'lda", phone: "Telefon",
+    ai_classify: "AI tahlil", telegram: "Telegram", call_center: "Navbatchi xizmat", callcenter: "Navbatchi xizmat",
+  },
+  hours: { open: "Hozir ish vaqti", closed: "Hozir ish vaqti emas", dayOff: "Bugun dam olish kuni" },
+  logCall: "Qo'ng'iroq yozish", callSave: "Saqlash",
+  callLogged: "Qo'ng'iroq yozib qo'yildi.", noCalls: "Qo'ng'iroq yo'q.",
+  dir2: { incoming: "Kiruvchi", outgoing: "Chiquvchi" },
+  dir3: { incoming: "Kiruvchi", outgoing: "Chiquvchi", missed: "O'tkazib yuborilgan" },
+  callSt: {
+    completed: "Yakunlandi", missed: "O'tkazib yuborilgan", no_answer: "Javob yo'q", busy: "Band", failed: "Amalga oshmadi",
+    answered: "Javob berilgan",
+  },
+  res: { answered: "Gaplashildi", no_answer: "Javob bermadi", busy: "Band", callback: "Qayta qo'ng'iroq so'radi", wrong_number: "Noto'g'ri raqam", note: "Izoh (qo'ng'iroqsiz)" },
+  direction: "Yo'nalish", phoneRequired: "Telefon raqamini kiriting.",
+  topicPh: "Masalan: aliment bo'yicha maslahat", duration: "Davomiyligi (daqiqa)",
+  nextPh: "Masalan: ertaga 10:00 da qayta qo'ng'iroq", next: "Keyingi qadam",
+  min: "{n} daqiqa", sec: "{n} soniya",
+};

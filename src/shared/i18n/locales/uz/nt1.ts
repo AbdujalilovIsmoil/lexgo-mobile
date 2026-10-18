@@ -1,0 +1,23 @@
+export const nt1 = {
+  all: "Barchasi",
+  search: "Sarlavha yoki matn bo'yicha qidirish",
+  onlyUnread: "O'qilmaganlar",
+  onlyRead: "O'qilganlar",
+  markShown: "Ko'rsatilganlarni o'qilgan",
+  noMatch: "Mos bildirishnoma topilmadi",
+  noMatchText: "Boshqa bo'limni tanlang yoki qidiruvni tozalang.",
+  loadMore: "Yana yuklash",
+  open: "Ochish",
+  readFailed: "O'qilgan deb belgilab bo'lmadi",
+  hiddenBody: "O'qish uchun ilovani oching",
+  offline: "Internet yo'q",
+  offlineText: "Ulanish tiklangach bildirishnomalar yuklanadi.",
+  cats: {
+    orders: "Buyurtmalar",
+    payments: "To'lovlar",
+    chat: "Chat va qo'ng'iroqlar",
+    documents: "Hujjatlar",
+    system: "Tizim",
+    marketing: "Takliflar",
+  },
+};

@@ -1,0 +1,26 @@
+import type { Messages } from "../uz";
+
+export const ad3: Messages["ad3"] = {
+  saving: "Saving…",
+  saved: "Saved",
+  saveError: "Save failed",
+  saveState: "Save state",
+  noChanges: "No changes",
+  waitSave: "Changes are being saved — wait a few seconds.",
+  send: "Send",
+  finalize: "Send to client",
+  finalizeBtn: "Send to client",
+  finalizeLead: "The finished document is sent to the client and the work is completed.",
+  finalizeAsk: "The document will be sent to the client and the work completed. Continue?",
+  finalizeYes: "Yes, send",
+  notes: "Note for the client (optional)",
+  notesDefault: "Document prepared",
+  sent: "Sent to the client",
+  saveRequired: "The editor file has not reached the server yet. Try again in a few seconds.",
+  finalizeFail: "Could not send. Try again.",
+  fulfillTitle: "Send a finished file",
+  fulfillLead: "Upload a finished DOCX — it goes straight to the client.",
+  chooseFile: "Choose a DOCX file",
+  tooBig: "The file is too large (up to 25 MB).",
+  docxOnly: "Choose a .docx file.",
+};

@@ -1,0 +1,18 @@
+export const admAid = {
+  lead: "Fuqarolardan bepul yuridik yordam so'rovlari",
+  anon: "Anonim",
+  new: "Yangi",
+  empty: "Hozircha so'rovlar yo'q",
+  emptyText: "Yangi so'rovlar shu yerda ko'rinadi.",
+  status: { assigned: "Biriktirilgan" },
+  detailTitle: "So'rov tafsilotlari",
+  request: "So'rov",
+  details: "Vaziyat",
+  origin: "Manba",
+  source: "Kanal",
+  event: "Hodisa",
+  createdBy: "Kim tomonidan",
+  explanation: "Tushuntirish",
+  sourceMap: { manual: "Qo'lda", auto: "Avtomatik", system: "Tizim", intake: "Murojaat", chat: "Chat", call: "Qo'ng'iroq" },
+  eventMap: { created: "Yaratildi", opened: "Ochildi", assigned: "Biriktirildi", closed: "Yopildi", escalated: "Yuqoriga uzatildi", resolved: "Hal qilindi" },
+};

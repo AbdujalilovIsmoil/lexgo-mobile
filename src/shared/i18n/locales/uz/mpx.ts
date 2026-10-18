@@ -1,0 +1,1 @@
+export const mpx = { best: "Eng mos", others: "Boshqa mos variantlar", more: "Yana {n} ta mos mutaxassis", all: "Hammasini ko'rish", found: "{n} ta mutaxassis topildi", open: "Profilni ochish", match: "mos" };

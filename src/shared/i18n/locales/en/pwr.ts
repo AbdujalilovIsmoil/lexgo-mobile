@@ -1,0 +1,6 @@
+import type { Messages } from "../uz";
+
+export const pwr: Messages["pwr"] = {
+  rv: {"pendingTitle": "Cases to review", "pendingLead": "Rate your completed cases.", "noPending": "Nothing to review", "noPendingText": "Completed cases will appear here.", "rate": "Rate", "mineTitle": "My reviews", "noMine": "No reviews", "noMineText": "Your reviews will appear here.", "modalTitle": "Rate the case", "ratingLabel": "Your rating", "commentLabel": "Comment", "commentPh": "Tell us about your experience…", "submit": "Submit", "sending": "Sending…", "thanks": "Thanks for your review!", "error": "Error. Please try again."},
+  wr: {"title": "LexGo warranty", "requestLead": "Not happy with the lawyer's work? Ask for a replacement — a manager reviews it within 24 hours.", "subtitle": "Not happy with the service? We replace the lawyer.", "requestTitle": "Replace the lawyer", "claimsTitle": "My requests", "noClaims": "No requests yet.", "resultTitle": "Request status", "resultSentTitle": "Your request was accepted", "resultStatus": "Status: {status}", "resultNote": "A manager will reach out within 24 hours. Track the status in the list below.", "resultClose": "Got it", "error": "Error. Please try again.", "caseLabel": "Case (optional)", "casePh": "Case name or number"},
+};

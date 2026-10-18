@@ -1,0 +1,2 @@
+export const ax10 = {
+};

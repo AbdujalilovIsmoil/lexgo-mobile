@@ -1,0 +1,32 @@
+export const aw11 = {
+  months: ["Yanvar", "Fevral", "Mart", "Aprel", "May", "Iyun", "Iyul", "Avgust", "Sentabr", "Oktabr", "Noyabr", "Dekabr"],
+  weekdays: ["Du", "Se", "Ch", "Pa", "Ju", "Sh", "Ya"],
+  priority: { low: "Past", medium: "O'rta", high: "Yuqori" },
+  caseStatus: {
+    new: "Yangi",
+    active: "Faol",
+    open: "Ochiq",
+    investigation: "Tergov",
+    court: "Sud",
+    appeal: "Apellyatsiya",
+    completed: "Yakunlangan",
+    archived: "Arxivlangan",
+  },
+  stage: {
+    new: "Yangi",
+    accepted: "Qabul qilingan",
+    filed: "Topshirilgan",
+    in_progress: "Jarayonda",
+    court: "Sud",
+    appeal: "Apellyatsiya",
+    completed: "Yakunlangan",
+  },
+  eventType: {
+    hearing: "Sud majlisi",
+    investigative: "Tergov harakati",
+    meeting: "Uchrashuv",
+    filing_deadline: "Hujjat topshirish muddati",
+    appeal_deadline: "Apellyatsiya muddati",
+    deadline: "Muddat",
+  },
+};

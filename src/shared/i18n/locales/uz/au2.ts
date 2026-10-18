@@ -1,0 +1,15 @@
+export const au2 = {
+  rate: "Juda ko'p urinish. Biroz kuting.",
+  blocked: "Urinishlar chegarasi tugadi. Keyinroq qayta urinib ko'ring.",
+  invalid: "Kiritilgan ma'lumotlarni tekshiring.",
+  retryIn: "Qayta urinish: {time}",
+  signedIn: "Tizimga kirdingiz.",
+  resent: "Yangi kod yuborildi.",
+  lockedTitle: "Kod bloklandi",
+  lockedText: "Eski kod endi ishlamaydi. Yangi kod so'rang.",
+  blockedFor: "Qayta urinish uchun kuting: {time}",
+  newCode: "Yangi kod so'rash",
+  changePhone: "Raqamni o'zgartirish",
+  totpDead: "Tasdiqlash muddati tugadi. Tizimga qayta kiring.",
+  signInAgain: "Qayta kirish",
+};

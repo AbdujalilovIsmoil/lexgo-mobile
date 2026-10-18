@@ -1,0 +1,25 @@
+import type { Messages } from "../uz";
+
+export const flt: Messages["flt"] = {
+  title: "Фильтры",
+  button: "Фильтр",
+  kind: "Тип",
+  region: "Регион",
+  area: "Направление",
+  sort: "Сортировка",
+  rating: "Рейтинг",
+  price: "Цена (до)",
+  any: "Не важно",
+  apply: "Показать",
+  clear: "Сбросить",
+  active: "Фильтров: {n}",
+  ratingFrom: "{n}+",
+  priceUpTo: "до {n}",
+  category: "Категория",
+  service: "Услуга",
+  experience: "Опыт",
+  expN: "{n}+ лет",
+  quickAll: "Все",
+  sortOptions: {"recommended": "Рекомендуем", "rating": "Рейтинг", "experience": "Опыт", "price_asc": "Дешевле"},
+  kindOptions: {"all": "Все", "advokat": "Адвокаты", "yurist": "Юристы"},
+};

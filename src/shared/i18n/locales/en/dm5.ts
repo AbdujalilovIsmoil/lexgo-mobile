@@ -1,0 +1,27 @@
+import type { Messages } from "../uz";
+
+export const dm5: Messages["dm5"] = {
+  reviewDefault: "Please check my document",
+  reviewGate: "The request has not reached the advocates yet — waiting for payment confirmation.",
+  reviewSent: "Document sent for advocate review. Duty advocates will look at it.",
+  reviewTitle: "Send for advocate review",
+  reviewSub: "The duty advocate will check your document",
+  reviewSubmit: "Send",
+  reviewNeed: "What should be checked?",
+  reviewNote: "You don't pick an advocate — the request joins the call-center advocates' queue.",
+  cardTitle: "Advocate review",
+  cardText: "Send the finished or in-progress document to the duty advocate to check.",
+  cardAction: "Send to advocate",
+  payCreated: "Payment request created. Wait for confirmation.",
+  payFail: "Could not create the payment request.",
+  waitTitle: "Waiting for payment confirmation",
+  payTitle: "Payment needed",
+  waitText: "Once the payment is confirmed the document moves on. We will tell you when it changes.",
+  payText: "Create the payment request — only the server confirms it as paid.",
+  pages: "Document: {n} pages · free: {free} · extra: {extra}",
+  tgOk: "The confirmation request was sent to Telegram.",
+  tgFail: "The confirmation request was not sent to Telegram — contact support.",
+  payAction: "Start payment",
+  refresh: "Refresh status",
+  viewPayment: "View payment",
+};
