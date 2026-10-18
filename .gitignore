@@ -3,8 +3,8 @@ node_modules/
 dist/
 web-build/
 expo-env.d.ts
-ios/
-android/
+/ios/
+/android/
 *.jks
 *.p8
 *.p12
@@ -17,3 +17,9 @@ android/
 npm-debug.*
 yarn-error.*
 *.aab
+
+# Native module build output (module android/ios folders are tracked now)
+/modules/*/android/build/
+/modules/*/android/.cxx/
+/modules/*/android/.gradle/
+/modules/*/ios/build/

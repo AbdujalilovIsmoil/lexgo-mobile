@@ -147,7 +147,21 @@
           "defaultChannel": "default"
         }
       ],
-      "expo-background-task"
+      "expo-background-task",
+      [
+        "expo-location",
+        {
+          "locationWhenInUsePermission": "LexGo yaqin atrofdagi mijozlarga sizni taxminiy masofa bilan ko'rsatish uchun, ilova ochiq turganda joylashuvingizdan foydalanadi.",
+          "isAndroidBackgroundLocationEnabled": false,
+          "isIosBackgroundLocationEnabled": false
+        }
+      ],
+      [
+        "react-native-document-scanner-plugin",
+        {
+          "cameraPermission": "LexGo hujjatlarni skanerlash uchun kameradan foydalanadi."
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true
