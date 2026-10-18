@@ -3,8 +3,9 @@ import type { Stats } from "@/entities/pro-workspace";
 import { useT } from "@/shared/i18n";
 import { fmtMoney } from "@/shared/lib/money";
 import type { IconName } from "@/shared/ui";
-import { Block, Grid } from "./Block";
-import { StatTile, StatTileSkeleton, type TileTone } from "./StatTile";
+import { Card } from "@/shared/ui";
+import { Block } from "./Block";
+import { StatRow, StatRowSkeleton, type TileTone } from "./StatRow";
 
 type Def = { key: string; icon: IconName; tone: TileTone };
 const WORKLOAD: Def[] = [
@@ -24,13 +25,14 @@ export function Tiles({ kind, stats, loading }: { kind: "w" | "f"; stats?: Stats
   const data = (kind === "w" ? stats?.workload : stats?.finance) ?? {};
   return (
     <Block title={t(kind === "w" ? "aw9.workload" : "aw9.finance")}>
-      <Grid>
-        {defs.map((d) => {
-          if (loading) return <StatTileSkeleton key={d.key} />;
+      <Card padded={false} style={{ overflow: "hidden" }}>
+        {defs.map((d, i) => {
+          const last = i === defs.length - 1;
+          if (loading) return <StatRowSkeleton key={d.key} last={last} />;
           const v = val(data, d.key);
-          return <StatTile key={d.key} icon={d.icon} tone={d.tone} label={t(`aw9.${kind}.${d.key}`)} value={kind === "w" ? fmtCount(v) : v == null ? "—" : fmtMoney(v)} unit={kind === "f" ? t("adm.currency") : undefined} />;
+          return <StatRow key={d.key} icon={d.icon} tone={d.tone} last={last} label={t(`aw9.${kind}.${d.key}`)} value={kind === "w" ? fmtCount(v) : v == null ? "—" : fmtMoney(v)} unit={kind === "f" ? t("adm.currency") : undefined} />;
         })}
-      </Grid>
+      </Card>
     </Block>
   );
 }
