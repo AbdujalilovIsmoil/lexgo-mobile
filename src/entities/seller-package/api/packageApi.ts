@@ -1,15 +1,19 @@
 import { http } from "@/shared/api";
-import { listFrom } from "@/shared/lib/json";
+import { asArr, asDict } from "@/shared/lib/json";
 import { normPackage } from "./normalize";
 import type { SellerPackage } from "../model/types";
 
 const enc = encodeURIComponent;
 
-// GET /lawyers/me/packages/manage - every active Studio package with enabled / status / price_editable=false / eligibility.
-export const listPackages = async (): Promise<SellerPackage[]> => listFrom(await http("/lawyers/me/packages/manage"), "items", "packages", "data").map(normPackage).filter((p) => p.id);
+// GET /lawyers/me/packages/manage - every Studio package tariff with enabled / status / eligibility.
+export async function listPackages(): Promise<SellerPackage[]> {
+  const data = await http("/lawyers/me/packages/manage");
+  const rows = Array.isArray(data) ? data : asArr(asDict(data).items ?? asDict(data).packages ?? asDict(data).data);
+  return rows.map(normPackage).filter((p) => p.id);
+}
 
-// POST …/{id}/enable - the seller opts in (TZ 5.2).
+// POST …/{id}/enable - the seller opts in to this tariff.
 export const enablePackage = (id: string) => http(`/lawyers/me/packages/${enc(id)}/enable`, { method: "POST" });
 
-// PATCH …/{id}/status - switch an already selected package on / off. No price or content is ever sent.
+// PATCH …/{id}/status - pause ("disabled") or resume ("active"). No price or content is ever sent.
 export const setPackageStatus = (id: string, status: "active" | "disabled") => http(`/lawyers/me/packages/${enc(id)}/status`, { method: "PATCH", body: { status } });

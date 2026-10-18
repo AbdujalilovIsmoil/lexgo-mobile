@@ -3,9 +3,9 @@ import { EmptyState, PressableScale, Text } from "@/shared/ui";
 import { ProfileSection } from "@/shared/ui/profile";
 import { useColors } from "@/shared/theme";
 import { useT } from "@/shared/i18n";
-import type { LawyerService } from "@/entities/lawyer";
+import { usePromoActive, type LawyerService } from "@/entities/lawyer";
 import { SafeDeal } from "@/widgets/lawyer-sheet";
-import { ServiceOption } from "@/widgets/specialist-profile";
+import { ServiceOption } from "./ServiceOption";
 
 type Props = { services: LawyerService[]; selected: string; blocked: string; onSelect: (id: string) => void; onExplain: () => void };
 
@@ -14,6 +14,9 @@ type Props = { services: LawyerService[]; selected: string; blocked: string; onS
 export function ServicesPanel({ services, selected, blocked, onSelect, onExplain }: Props) {
   const { t } = useT();
   const c = useColors();
+  // A service is «Tavsiya etilgan» when the server flags it or a running service boost (GET /promotions/active) names it; those come first.
+  const boosted = new Set((usePromoActive().data ?? []).filter((p) => p.placement === "service_boost" && p.serviceId).map((p) => p.serviceId));
+  const list = services.map((sv) => ({ ...sv, sponsored: sv.sponsored || boosted.has(sv.id) })).sort((a, b) => Number(b.sponsored) - Number(a.sponsored));
   return (
     <View style={{ gap: 14 }}>
       <ProfileSection accent="gold" icon="briefcase" title={t("mkd.services")}>
@@ -21,8 +24,8 @@ export function ServicesPanel({ services, selected, blocked, onSelect, onExplain
           <Text variant="small" weight="bold" tone="accent">{t("mkd.priceHow")}</Text>
         </PressableScale>
         <Text variant="small" tone="gray">{t("mkd.servicesLead")}</Text>
-        {services.length ? (
-          <View style={{ gap: 10 }}>{services.map((sv) => <ServiceOption key={sv.id} service={sv} selected={sv.id === selected} onSelect={() => onSelect(sv.id)} />)}</View>
+        {list.length ? (
+          <View style={{ gap: 10 }}>{list.map((sv) => <ServiceOption key={sv.id} service={sv} selected={sv.id === selected} onSelect={() => onSelect(sv.id)} />)}</View>
         ) : <EmptyState compact icon="briefcase" title={t("mkd.noServices")} />}
         {blocked ? <Text variant="small" tone="warn">{blocked}</Text> : null}
       </ProfileSection>

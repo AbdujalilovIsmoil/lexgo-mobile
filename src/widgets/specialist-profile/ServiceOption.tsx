@@ -1,5 +1,5 @@
 import { StyleSheet, View } from "react-native";
-import { PressableScale, Text } from "@/shared/ui";
+import { Pill, PressableScale, Text } from "@/shared/ui";
 import { radius, useColors } from "@/shared/theme";
 import { selectHaptic } from "@/shared/lib/haptics";
 import { useT } from "@/shared/i18n";
@@ -18,6 +18,7 @@ export function ServiceOption({ service: sv, selected, onSelect }: Props) {
       <View style={s.top}>
         <View style={[s.radio, { borderColor: selected ? c.accent : c.gray2 }]}>{selected ? <View style={[s.dot, { backgroundColor: c.accent }]} /> : null}</View>
         <View style={s.col}>
+          {sv.sponsored ? <View style={s.tag}><Pill label={t("promoSeller.ck.sponsored")} tone="cy" icon="trending-up" small /></View> : null}
           <Text variant="body" weight="bold" numberOfLines={3}>{sv.title}</Text>
           {sv.category ? <Text variant="small" tone="gray">{sv.category}</Text> : null}
           {sv.note ? <Text variant="small" tone="gray">{sv.note}</Text> : null}
@@ -36,5 +37,6 @@ const s = StyleSheet.create({
   radio: { width: 22, height: 22, borderRadius: 11, borderWidth: 2, alignItems: "center", justifyContent: "center", marginTop: 2 },
   dot: { width: 10, height: 10, borderRadius: 5 },
   col: { flex: 1, gap: 3 },
+  tag: { alignSelf: "flex-start" },
   foot: { flexDirection: "row", alignItems: "center", paddingTop: 12, borderTopWidth: 1, borderStyle: "dashed" },
 });

@@ -1,29 +1,59 @@
-import { Pill, type PillTone } from "@/shared/ui";
-import { RowCard } from "@/shared/ui/admin";
+import type { ReactNode } from "react";
+import { StyleSheet, View } from "react-native";
+import { useColors } from "@/shared/theme";
+import { Card, Icon, Pill, Text, Toggle } from "@/shared/ui";
 import { useSom } from "@/shared/lib/sel";
 import { useT } from "@/shared/i18n";
+import { canEdit, isCapped } from "../lib/rules";
 import type { ProService, ServiceStatus } from "../model/types";
 
-const TONE: Record<ServiceStatus, PillTone> = { active: "ok", paused: "warn", inactive: "gray" };
-const TINT: Record<ServiceStatus, string> = { active: "#22C55E", paused: "#F59E0B", inactive: "#8A99AC" };
+type Props = {
+  item: ProService;
+  onPress: () => void;
+  onToggle?: (next: ServiceStatus) => void; // quick switch: active <-> paused
+  toggleDisabled?: boolean;
+  waiting?: boolean;
+  extra?: ReactNode;
+};
 
-// One of the seller's services: name, price actually used, status and whether clients can see it.
-export function ServiceRow({ item, onPress, waiting }: { item: ProService; onPress: () => void; waiting?: boolean }) {
+// A lean service card: name and category, the quick on/off switch, then one line with the price and the few facts worth a glance
+// (listed or not, promoted, price capped). Notes, the corridor and the reasons live in the sheet that opens on tap.
+export function ServiceRow({ item, onPress, onToggle, toggleDisabled, waiting, extra }: Props) {
   const { t } = useT();
+  const c = useColors();
   const som = useSom();
+  const status = t(`proSvc.status.${item.status}`);
+  const price = item.effectivePrice ? som(item.effectivePrice) : t("proSvc.form.noPriceTag");
+  const on = item.status === "active";
+  const sub = [item.categoryTitle, item.subcategory].filter(Boolean).join(" · ") || t("proSvc.card.service");
   return (
-    <RowCard
-      icon="briefcase"
-      tint={TINT[item.status]}
-      title={item.name || "—"}
-      subtitle={item.effectivePrice ? som(item.effectivePrice) : t("sl6.noPrice")}
-      meta={[item.categoryTitle, item.subcategory].filter(Boolean).join(" · ")}
-      right={<Pill label={t(`sl6.status.${item.status}`)} tone={TONE[item.status]} small />}
-      onPress={onPress}
-    >
-      {item.promotion ? <Pill label={t("sl6.promoted", { n: item.promotion.daysLeft })} tone="cy" icon="radio" small /> : null}
-      {!item.promotion && waiting ? <Pill label={t("sl6.waiting")} tone="warn" icon="clock" small /> : null}
-      {item.status === "active" && !item.visible ? <Pill label={t("sl6.hidden")} tone="warn" icon="eye-off" small /> : null}
-    </RowCard>
+    <Card onPress={onPress} accessibilityRole="button" accessibilityLabel={t("proSvc.rowA11y", { name: item.name, status, price })} style={s.card}>
+      <View style={s.head}>
+        <View style={s.col}>
+          <Text variant="body" weight="bold" numberOfLines={2}>{item.name || "—"}</Text>
+          <Text variant="caption" tone="gray2" numberOfLines={1}>{sub}</Text>
+        </View>
+        {onToggle ? <Toggle value={on} onChange={(v) => onToggle(v ? "active" : "paused")} disabled={toggleDisabled || !canEdit(item)} label={status} /> : null}
+      </View>
+      <View style={[s.foot, { borderTopColor: c.line }]}>
+        <Text variant="h4" numberOfLines={1} style={s.price}>{price}</Text>
+        <View style={s.facts}>
+          {item.status !== "active" ? <Pill label={status} tone={item.status === "paused" ? "warn" : "gray"} small /> : null}
+          {on ? <Icon name={item.visible ? "eye" : "eye-off"} size={16} color={item.visible ? c.ok : c.warn} /> : null}
+          {isCapped(item) ? <Icon name="alert-triangle" size={16} color={c.warn} /> : null}
+          {item.promotion ? <Pill label={t("proSvc.card.promotedDays", { days: item.promotion.daysLeft })} tone="cy" icon="radio" small /> : waiting ? <Icon name="clock" size={16} color={c.warn} /> : null}
+        </View>
+      </View>
+      {extra}
+    </Card>
   );
 }
+
+const s = StyleSheet.create({
+  card: { gap: 12, padding: 16, minHeight: 44 },
+  head: { flexDirection: "row", alignItems: "center", gap: 12 },
+  col: { flex: 1, gap: 2 },
+  foot: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", gap: 10, borderTopWidth: 1, paddingTop: 12 },
+  price: { flexShrink: 1 },
+  facts: { flexDirection: "row", alignItems: "center", gap: 10 },
+});

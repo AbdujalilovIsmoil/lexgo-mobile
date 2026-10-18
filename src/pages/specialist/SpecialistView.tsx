@@ -9,14 +9,11 @@ import { PurchaseFlow } from "@/features/market-purchase";
 import { ProfileTabs, type TabDef } from "@/widgets/client-profile";
 import { PriceExplainer, useBuyGate } from "@/widgets/lawyer-sheet";
 import { ProfileCover } from "@/widgets/profile";
-import { BuyBar, SpecialistIdentity } from "@/widgets/specialist-profile";
+import { AboutPanel, BuyBar, ServicesPanel, SpecialistIdentity, SpecialistStats } from "@/widgets/specialist-profile";
 import { BottomSheet, Header, HeroScroll, Reveal, SheetScroll, toast } from "@/shared/ui";
 import { useColors } from "@/shared/theme";
 import { useInsets } from "@/shared/lib/insets";
-import { AboutPanel } from "./AboutPanel";
 import { ReviewsPanel } from "./ReviewsPanel";
-import { ServicesPanel } from "./ServicesPanel";
-import { SpecialistStats } from "./SpecialistStats";
 
 export type SpecialistTab = "services" | "about" | "reviews";
 const TABS: TabDef<SpecialistTab>[] = [

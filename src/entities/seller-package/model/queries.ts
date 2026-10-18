@@ -7,7 +7,8 @@ const inv = [sellerPackageKeys.all];
 
 export const useSellerPackages = () => useQuery({ queryKey: sellerPackageKeys.all, queryFn: listPackages });
 
-export const useEnablePackage = () => useBizMutation({ mutationFn: enablePackage, invalidate: inv, success: "ntd.sellerV2.pkg.enabledDone" });
+export const useEnablePackage = () => useBizMutation({ mutationFn: enablePackage, invalidate: inv, success: "pkgSeller.toast.enable" });
 
-export const usePackageStatus = () =>
-  useBizMutation({ mutationFn: (v: { id: string; status: "active" | "disabled" }) => setPackageStatus(v.id, v.status), invalidate: inv, success: "ntd.sellerV2.pkg.statusDone" });
+// Two fixed-target hooks so each shows its own toast.
+export const usePausePackage = () => useBizMutation({ mutationFn: (id: string) => setPackageStatus(id, "disabled"), invalidate: inv, success: "pkgSeller.toast.disabled" });
+export const useResumePackage = () => useBizMutation({ mutationFn: (id: string) => setPackageStatus(id, "active"), invalidate: inv, success: "pkgSeller.toast.active" });

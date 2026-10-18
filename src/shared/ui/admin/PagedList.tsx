@@ -22,10 +22,11 @@ type Props<T> = {
   off?: { title: string; text?: string };
   columns?: number; // a grid of equal cells (rows are laid out by the caller's item width)
   flat?: boolean; // rows without a gap between them (they carry their own hairlines)
+  bottomPad?: number; // extra room under the last row (a floating button)
 };
 
 // Infinite admin list: skeleton → error/403 (404 = module off when `off` is given) → rows, pull to refresh, "show more".
-export function PagedList<T>({ data, query, renderItem, keyExtractor, header, empty, skeletonHeight = 84, off, flat, columns = 1 }: Props<T>) {
+export function PagedList<T>({ data, query, renderItem, keyExtractor, header, empty, skeletonHeight = 84, off, flat, columns = 1, bottomPad = 0 }: Props<T>) {
   const { t } = useT();
   const insets = useInsets();
   const pending = query.isLoading ? <View style={{ gap: 12 }}>{[0, 1, 2, 3, 4].map((i) => <Skeleton key={i} height={skeletonHeight} round={20} />)}</View> : null;
@@ -41,7 +42,7 @@ export function PagedList<T>({ data, query, renderItem, keyExtractor, header, em
       ListEmptyComponent={pending ?? (query.isError ? (off && query.error instanceof ApiError && query.error.status === 404 ? <EmptyState icon="power" title={off.title} text={off.text} /> : <ErrorView error={query.error} onRetry={() => void query.refetch()} />) : <EmptyState icon={empty?.icon ?? "inbox"} title={empty?.title ?? t("adm.noData")} text={empty?.text} actionLabel={empty?.actionLabel} onAction={empty?.onAction} />)}
       ListFooterComponent={query.hasNextPage ? <Button title={t("adm.loadMore")} variant="soft" full loading={query.isFetchingNextPage} onPress={() => void query.fetchNextPage?.()} style={{ marginTop: 12 }} /> : null}
       ItemSeparatorComponent={() => (flat ? <Divider inset={56} /> : <View style={{ height: columns > 1 ? 20 : 10 }} />)}
-      contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: insets.bottom + 24, flexGrow: 1 }}
+      contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: insets.bottom + 24 + bottomPad, flexGrow: 1 }}
       refreshing={query.isRefetching && !query.isFetchingNextPage}
       onRefresh={() => void query.refetch()}
       onEndReachedThreshold={0.4}

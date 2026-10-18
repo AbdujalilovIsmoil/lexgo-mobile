@@ -1,29 +1,58 @@
-import { View } from "react-native";
-import { SERVICE_STATUSES, hiddenReasons, useRemoveService, useServiceStatus, type ProService, type ServiceScope, type ServiceStatus } from "@/entities/pro-service";
-import { Button, Segmented, Pill, confirmDialog } from "@/shared/ui";
-import { FactRows, FormSheet } from "@/shared/ui/admin";
+import type { ReactNode } from "react";
+import { StyleSheet, View } from "react-native";
+import { SERVICE_STATUSES, canEdit, canPromote, useRemoveService, useServiceStatus, type ProService, type ServiceScope, type ServiceStatus } from "@/entities/pro-service";
+import { BottomSheet, Button, Icon, PressableScale, Pill, Segmented, SheetScroll, Text, confirmDialog, type IconName } from "@/shared/ui";
 import { Notice } from "@/shared/ui/sel";
 import { useKept } from "@/shared/lib/useKept";
-import { useSom } from "@/shared/lib/sel";
+import { useInsets } from "@/shared/lib/insets";
+import { useColors } from "@/shared/theme";
 import { useT } from "@/shared/i18n";
+import { PriceGauge } from "./PriceGauge";
+import { VisibilityCard } from "./VisibilityCard";
 
-type Props = { item: ProService | null; verified: boolean; scope?: ServiceScope; onClose: () => void; onEdit: (s: ProService) => void; onPromote: (s: ProService) => void };
+// Integration slots (texts come from the caller): `banner` sits above the status control (e.g. a rules banner), `extra` under the note
+// (marketplace configuration: negotiation, price explanation, requirements), `lock` blocks switching a service to "active".
+export type SheetLock = { reason: string; actionLabel: string; onOpen: () => void };
+type Props = {
+  item: ProService | null;
+  verified: boolean;
+  waiting?: boolean;
+  scope?: ServiceScope;
+  banner?: ReactNode;
+  extra?: (item: ProService) => ReactNode;
+  lock?: SheetLock | null;
+  onClose: () => void;
+  onEdit: (s: ProService) => void;
+  onPromote: (s: ProService) => void;
+};
 
-// One service in detail: price and corridor, why it is (not) listed, status switch, edit / promote / remove.
-export function ServiceSheet({ item: current, verified, scope, onClose, onEdit, onPromote }: Props) {
+// A round action of the bottom bar (promote, remove): an icon, its name as the accessibility label, dimmed when it cannot be used.
+function RoundAction({ icon, label, onPress, disabled, danger }: { icon: IconName; label: string; onPress: () => void; disabled?: boolean; danger?: boolean }) {
+  const c = useColors();
+  return (
+    <PressableScale onPress={onPress} disabled={disabled} accessibilityRole="button" accessibilityLabel={label} accessibilityState={{ disabled: !!disabled }} style={[s.round, { backgroundColor: danger ? c.errBg : c.tint2, opacity: disabled ? 0.45 : 1 }]}>
+      <Icon name={icon} size={20} color={danger ? c.err : c.accentStrong} />
+    </PressableScale>
+  );
+}
+
+// One service in detail, as blocks: the status switch, the price on its corridor bar, the "why is it (not) listed" checklist, the note,
+// the marketplace settings (slot), and a sticky bar with Edit (primary), Promote and Remove (round icon buttons).
+export function ServiceSheet({ item: current, verified, waiting = false, scope, banner, extra, lock, onClose, onEdit, onPromote }: Props) {
   const { t } = useT();
-  const som = useSom();
+  const c = useColors();
+  const insets = useInsets();
   const item = useKept(current);
   const status = useServiceStatus(scope);
   const remove = useRemoveService(scope);
-  const why = item ? hiddenReasons(item, verified) : [];
+  const change = (next: ServiceStatus) => item && next !== item.status && !(lock && next === "active") && status.mutate({ id: item.id, status: next });
   const ask = () =>
     item &&
     confirmDialog({
-      title: t("sl6.removeTitle"),
-      message: t("sl6.removeText", { name: item.name }),
-      confirmLabel: t("adm.delete"),
-      cancelLabel: t("adm.cancel"),
+      title: t("proSvc.remove.title"),
+      message: [t("proSvc.remove.text", { title: item.name }), item.promotion ? t("proSvc.remove.promoWarn") : ""].filter(Boolean).join("\n\n"),
+      confirmLabel: t("proSvc.remove.confirm"),
+      cancelLabel: t("proSvc.form.cancel"),
       icon: "trash-2",
       danger: true,
       onConfirm: async () => {
@@ -31,26 +60,61 @@ export function ServiceSheet({ item: current, verified, scope, onClose, onEdit, 
         onClose();
       },
     });
+  const promoteHint = item ? (item.promotion ? t("proSvc.card.promotedHint", { days: item.promotion.daysLeft }) : waiting ? t("proSvc.card.pendingHint") : !canPromote(item, waiting) ? t("proSvc.card.promoteInactive") : "") : "";
   return (
-    <FormSheet visible={!!current} onClose={onClose} title={item?.name ?? ""} subtitle={[item?.categoryTitle, item?.subcategory].filter(Boolean).join(" · ")} onSubmit={() => item && onEdit(item)} submitLabel={t("adm.edit")} snaps={[0.7, 0.94]}>
+    <BottomSheet visible={!!current} onClose={onClose} title={item?.name ?? ""} subtitle={[item?.categoryTitle, item?.subcategory].filter(Boolean).join(" · ")} snaps={[0.8, 0.95]}>
+      <SheetScroll contentContainerStyle={s.body}>
+        {item ? (
+          <>
+            {banner}
+            <View style={s.block}>
+              <Segmented<ServiceStatus> options={SERVICE_STATUSES.map((x) => ({ value: x, label: t(`proSvc.status.${x}`) }))} value={item.status} onChange={change} />
+              <Text variant="caption" tone="gray">{t(`proSvc.statusHint.${item.status}`)}</Text>
+              {lock ? (
+                <View style={s.block}>
+                  <Notice tone="warn" icon="lock" text={lock.reason} />
+                  <Button title={lock.actionLabel} variant="soft" size="sm" onPress={lock.onOpen} />
+                </View>
+              ) : null}
+            </View>
+            <PriceGauge item={item} />
+            <VisibilityCard item={item} verified={verified} />
+            <PressableScale onPress={() => canEdit(item) && onEdit(item)} disabled={!canEdit(item)} accessibilityRole="button" accessibilityLabel={t("proSvc.form.note")} style={[s.note, { backgroundColor: c.surface, borderColor: c.line }]}>
+              <View style={s.noteHead}>
+                <Text variant="caption" tone="gray" weight="bold">{t("proSvc.form.note")}</Text>
+                {canEdit(item) ? <Icon name="edit-2" size={14} tone="gray" /> : null}
+              </View>
+              {item.note ? <Text variant="small">{item.note}</Text> : <Text variant="small" tone="accent">{t("proSvc.card.noteEmpty")}</Text>}
+            </PressableScale>
+            {item.promotion || waiting ? (
+              <View style={s.promo}>
+                {item.promotion ? <Pill label={t("proSvc.card.promoted", { days: item.promotion.daysLeft })} tone="cy" icon="radio" /> : <Pill label={t("proSvc.card.pending")} tone="warn" icon="clock" />}
+              </View>
+            ) : null}
+            {canEdit(item) ? null : <Notice tone="warn" icon="lock" text={t("proSvc.card.editLocked")} />}
+            {extra?.(item)}
+            {promoteHint ? <Text variant="caption" tone="gray">{promoteHint}</Text> : null}
+          </>
+        ) : null}
+      </SheetScroll>
       {item ? (
-        <>
-          <Segmented<ServiceStatus> options={SERVICE_STATUSES.map((s) => ({ value: s, label: t(`sl6.status.${s}`) }))} value={item.status} onChange={(s) => status.mutate({ id: item.id, status: s })} />
-          <FactRows rows={[
-            { label: t("sl6.f.price"), value: item.effectivePrice ? som(item.effectivePrice) : t("sl6.noPrice") },
-            { label: t("sl6.f.catalog"), value: item.catalogPrice ? som(item.catalogPrice) : undefined },
-            { label: t("sl6.f.corridor"), value: item.limits ? `${som(item.limits.min)} – ${som(item.limits.max)}` : undefined },
-            { label: t("sl6.f.listed"), value: <Pill label={t(item.visible ? "sl6.yes" : "sl6.no")} tone={item.visible ? "ok" : "warn"} small /> },
-            { label: t("sl6.f.promo"), value: item.promotion ? t("sl6.promoted", { n: item.promotion.daysLeft }) : undefined },
-            { label: t("sl6.f.note"), value: item.note },
-          ]} />
-          {why.map((r) => <Notice key={r} tone="warn" text={t(`sl6.why.${r}`)} />)}
-          <View style={{ flexDirection: "row", gap: 10 }}>
-            <Button title={t("sl6.promote")} icon="radio" variant="soft" size="sm" disabled={item.status !== "active"} onPress={() => onPromote(item)} />
-            <Button title={t("adm.delete")} icon="trash-2" variant="line" size="sm" loading={remove.isPending} onPress={ask} />
-          </View>
-        </>
+        <View style={[s.bar, { borderTopColor: c.line, backgroundColor: c.surface, paddingBottom: insets.bottom + 10 }]}>
+          <Button title={t("proSvc.card.edit")} icon="edit-2" variant="gradient" disabled={!canEdit(item)} onPress={() => onEdit(item)} style={s.edit} full />
+          <RoundAction icon={waiting && !item.promotion ? "clock" : "radio"} label={item.promotion ? t("proSvc.card.promotedShort") : t("proSvc.card.promote")} disabled={!canPromote(item, waiting)} onPress={() => onPromote(item)} />
+          <RoundAction icon="trash-2" label={t("proSvc.card.remove")} danger disabled={remove.isPending} onPress={ask} />
+        </View>
       ) : null}
-    </FormSheet>
+    </BottomSheet>
   );
 }
+
+const s = StyleSheet.create({
+  body: { paddingTop: 12, gap: 14 },
+  block: { gap: 8 },
+  note: { gap: 6, padding: 16, borderRadius: 20, borderWidth: 1 },
+  noteHead: { flexDirection: "row", alignItems: "center", justifyContent: "space-between" },
+  promo: { flexDirection: "row" },
+  bar: { flexDirection: "row", alignItems: "center", gap: 10, paddingHorizontal: 18, paddingTop: 10, borderTopWidth: 1 },
+  edit: { flex: 1 },
+  round: { width: 48, height: 48, borderRadius: 24, alignItems: "center", justifyContent: "center" },
+});

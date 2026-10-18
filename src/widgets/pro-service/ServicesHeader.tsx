@@ -1,39 +1,54 @@
+import type { ReactNode } from "react";
 import { View } from "react-native";
 import { useRouter } from "expo-router";
-import { countBy, type ProService, type ServiceStatus } from "@/entities/pro-service";
+import { usePromoStatus } from "@/entities/promotion";
+import type { ProService, ServiceFilter } from "@/entities/pro-service";
 import { Button } from "@/shared/ui";
-import { ChipBar, KpiGrid, KpiTile, SearchBox } from "@/shared/ui/admin";
 import { Notice } from "@/shared/ui/sel";
 import { useT } from "@/shared/i18n";
+import { PromoteStrip } from "./PromoteStrip";
+import { ServicesHero } from "./ServicesHero";
+import { ServicesToolbar } from "./ServicesToolbar";
 
-export type ServiceFilter = "all" | ServiceStatus;
-type Props = { items: ProService[]; filter: ServiceFilter; onFilter: (f: ServiceFilter) => void; search: string; onSearch: (s: string) => void; verified: boolean; boostDays: number | null };
+export type { ServiceFilter };
+type Props = {
+  before?: ReactNode; // above the hero (the tab switch)
+  aboveList?: ReactNode; // slot right under the hero (the location-sharing card)
+  rules?: ReactNode; // service-rules banner
+  items: ProService[];
+  loading?: boolean;
+  filter: ServiceFilter;
+  onFilter: (f: ServiceFilter) => void;
+  search: string;
+  onSearch: (s: string) => void;
+  verified: boolean;
+  boostDays: number | null;
+  waiting: number;
+  toolbar?: boolean; // search + filter (nothing to search while the list is empty)
+  onAdd: () => void;
+  onPromoteProfile: () => void;
+};
 
-// Counters, the "not verified yet" / "profile boosted" notes, status filter and search for the services list.
-export function ServicesHeader({ items, filter, onFilter, search, onSearch, verified, boostDays }: Props) {
+// Everything above the list: tab switch, hero (counters, add), the promote card, the slot, notes, search and filter.
+export function ServicesHeader({ before, aboveList, rules, items, loading, filter, onFilter, search, onSearch, verified, boostDays, waiting, toolbar = true, onAdd, onPromoteProfile }: Props) {
   const { t } = useT();
   const router = useRouter();
-  const n = countBy(items);
+  const running = usePromoStatus().data?.items ?? [];
   return (
-    <View style={{ gap: 12, paddingBottom: 12 }}>
-      <KpiGrid>
-        <KpiTile label={t("sl6.kpi.active")} value={String(n.active)} icon="play" tint="#22C55E" onPress={() => onFilter("active")} />
-        <KpiTile label={t("sl6.kpi.promoted")} value={String(n.promoted)} icon="radio" tint="#06B6D4" />
-      </KpiGrid>
+    <View style={{ gap: 14, paddingBottom: 14 }}>
+      {before}
+      <ServicesHero items={items} loading={loading} filter={filter} onFilter={onFilter} waiting={waiting} running={running.length} onAdd={onAdd} />
+      <PromoteStrip onPress={onPromoteProfile} running={running} />
+      {aboveList}
+      {rules}
       {verified ? null : (
         <View style={{ gap: 8 }}>
-          <Notice tone="warn" title={t("sl6.unverified.title")} text={t("sl6.unverified.text")} />
-          <Button title={t("sl6.unverified.go")} variant="soft" size="sm" onPress={() => router.push("/pro/onboarding")} />
+          <Notice tone="warn" title={t("proSvc.unverified.title")} text={t("proSvc.unverified.text")} />
+          <Button title={t("proSvc.unverified.action")} variant="soft" size="sm" onPress={() => router.push("/pro/onboarding")} />
         </View>
       )}
-      {boostDays !== null ? <Notice icon="radio" text={t("sl6.boost", { n: boostDays })} /> : null}
-      <ChipBar value={filter} onChange={onFilter} options={[
-        { value: "all", label: t("adm.all"), count: n.all },
-        { value: "active", label: t("sl6.status.active"), count: n.active },
-        { value: "paused", label: t("sl6.status.paused"), count: n.paused },
-        { value: "inactive", label: t("sl6.status.inactive"), count: n.inactive },
-      ]} />
-      <SearchBox value={search} onChangeText={onSearch} placeholder={t("sl6.search")} />
+      {boostDays !== null ? <Notice icon="radio" title={t("proSvc.boost.title")} text={t("proSvc.boost.text", { days: boostDays })} /> : null}
+      {toolbar ? <ServicesToolbar items={items} filter={filter} onFilter={onFilter} search={search} onSearch={onSearch} /> : null}
     </View>
   );
 }

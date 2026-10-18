@@ -23,11 +23,15 @@ export function useServiceForm({ visible, item, sellerId, region, scope, onDone 
   const form = useAppForm(serviceSchema, blank);
   const values = form.watch() as FormValues;
   const [err, setErr] = useState<ServiceError | null>(null);
+  const [agreed, setAgreed] = useState(false); // price-policy consent, asked on every save
+  const [tried, setTried] = useState(false);
   const save = useSaveService(scope);
   useSheetReset(visible, () => {
     setPicked(item ? fromItem(item) : null);
     form.reset(item ? { price: item.selectedPrice ? String(item.selectedPrice) : "", note: item.note, status: item.status } : blank);
     setErr(null);
+    setAgreed(false);
+    setTried(false);
   });
   const complete = !!item?.limits?.modifiers;
   const quote = useQuoteBand(picked && !complete ? picked.id : "", sellerId, region);
@@ -40,14 +44,16 @@ export function useServiceForm({ visible, item, sellerId, region, scope, onDone 
   };
   const submit = form.handleSubmit(async (v) => {
     if (!picked || issue) return;
+    if (!agreed) return setTried(true);
     try {
       await save.mutateAsync({ input: { serviceId: picked.id, selectedPrice: Number(v.price || "0"), note: v.note, status: v.status as ServiceStatus }, create: !item });
       successHaptic();
-      toast(t(item ? "sl6.saved" : "sl6.added"), "ok");
+      toast(t(item ? "proSvc.toast.saved" : "proSvc.toast.added"), "ok");
       onDone();
     } catch (e) {
       setErr(serviceErrorOf(e));
     }
   });
-  return { picked, setPicked, form, values, set, err, band, bandLoading: quote.isFetching && !band, n, issue, submit, saving: save.isPending, change: () => setPicked(null) };
+  const valid = !!picked && !issue && agreed;
+  return { picked, valid, setPicked, form, values, set, err, agreed, setAgreed, policyMissing: tried && !agreed, band, bandLoading: quote.isFetching && !band, n, issue, submit, saving: save.isPending, change: () => setPicked(null) };
 }

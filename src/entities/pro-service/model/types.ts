@@ -1,5 +1,6 @@
 export type ServiceStatus = "active" | "paused" | "inactive";
 export const SERVICE_STATUSES: ServiceStatus[] = ["active", "paused", "inactive"];
+export type ServiceFilter = "all" | ServiceStatus;
 
 // Whose services: the signed-in seller, or (for an organization owner) one member.
 export type ServiceScope = { kind: "me" } | { kind: "org"; orgId: string; memberId: string };
@@ -23,6 +24,7 @@ export type ProService = {
   status: ServiceStatus;
   selectedPrice: number; // 0 = seller did not set one
   effectivePrice: number;
+  priceCapped: boolean; // the server lowered the chosen price to the allowed maximum
   note: string;
   visible: boolean; // listed in the marketplace right now
   promotion: Promo | null; // boosts this service
@@ -30,7 +32,25 @@ export type ProService = {
   limits: PriceBand | null;
 };
 
+// The seller as clients see them (profile header of the live preview): every number may be unknown.
+export type ProSeller = {
+  name: string;
+  avatarUrl: string;
+  kind: "yurist" | "advokat";
+  verified: boolean;
+  rating: number;
+  reviews: number;
+  experienceYears: number;
+  cases: number;
+  successRate: number; // 0..100
+  completed: number | null; // null = the backend does not say
+  about: SellerAbout; // the "Haqida" facts clients read on the profile
+};
+
+export type SellerAbout = { bio: string; district: string; languages: string[]; specializations: string[]; education: string; license: string; bar: string; organization: string };
+
 export type ProServices = {
+  seller: ProSeller;
   items: ProService[];
   sellerId: string;
   region: string;

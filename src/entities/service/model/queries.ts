@@ -23,6 +23,16 @@ export function useServiceCategories() {
   });
 }
 
+// The first page of the catalogue (optionally one category) for pickers that must show something before anything is typed.
+export function useCatalogBrowse(categoryId = "") {
+  const locale = useLocaleStore((s) => s.locale);
+  return useQuery({
+    queryKey: ["services-browse", categoryId, locale] as const,
+    queryFn: () => listServices({ categoryId: categoryId || undefined, limit: 50 }, locale),
+    staleTime: 5 * 60 * 1000,
+  });
+}
+
 export function useServices(categoryId: string) {
   const locale = useLocaleStore((s) => s.locale);
   return useQuery({
