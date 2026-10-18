@@ -7,6 +7,7 @@ export type Draft = {
   caseId: string;
   description: string;
   checklist: CheckItem[];
+  newItem: string; // text typed in the checklist's add row, not yet added
   stage: TaskStage;
   blocked: boolean;
 };
@@ -18,6 +19,7 @@ export const draftOf = (task: ProTask | null, caseId = ""): Draft => ({
   caseId: task?.caseId ?? caseId,
   description: task?.description ?? "",
   checklist: task?.checklist ?? [],
+  newItem: "",
   stage: task ? stageOf(task.status) : STAGES[0],
   blocked: task?.status === "blocked",
 });

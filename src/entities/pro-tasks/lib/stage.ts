@@ -19,3 +19,6 @@ export const isOverdue = (t: ProTask): boolean => !!t.dueDate && !isDone(t) && t
 export function sortTasks(list: ProTask[]): ProTask[] {
   return [...list].sort((a, b) => Number(isOverdue(b)) - Number(isOverdue(a)) || (RANK[a.priority] ?? 1) - (RANK[b.priority] ?? 1) || (a.dueDate || "9").localeCompare(b.dueDate || "9"));
 }
+
+// Neighbouring stage in board order; null at either end.
+export const stepStage = (stage: TaskStage, dir: 1 | -1): TaskStage | null => STAGES[STAGES.indexOf(stage) + dir] ?? null;

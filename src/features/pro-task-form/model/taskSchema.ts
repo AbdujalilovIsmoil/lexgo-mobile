@@ -11,6 +11,7 @@ export const taskSchema = z.object({
   caseId: z.string(),
   description: rules.optText(2000),
   checklist: z.array(z.object({ text: z.string().min(1), done: z.boolean() })),
+  newItem: z.string().max(200, rules.m("max", 200)),
   stage: z.enum(STAGES),
   blocked: z.boolean(),
 });
