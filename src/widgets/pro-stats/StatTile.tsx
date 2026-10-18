@@ -9,9 +9,12 @@ export function useTone(tone: TileTone): { fg: string; bg: string } {
   return { blue: { fg: c.accentStrong, bg: c.tint2 }, ok: { fg: c.ok, bg: c.okBg }, warn: { fg: c.warn, bg: c.warnBg }, err: { fg: c.err, bg: c.errBg }, cy: { fg: c.cyText, bg: c.cyBg } }[tone];
 }
 
+export const TILE_HEIGHT = 140;
+
 type Props = { icon: IconName; tone: TileTone; label: string; value: string; unit?: string };
 
-// One KPI: icon tile, big number, short label. Fixed height so a grid row never jumps; the whole tile reads "label: value".
+// One KPI: icon tile, big number (with a reserved unit line), short label. Every tile has the SAME fixed width (half the row) and
+// height, whatever it holds: no tile is ever taller or wider than another. The whole tile reads "label: value".
 export function StatTile({ icon, tone, label, value, unit }: Props) {
   const { fg, bg } = useTone(tone);
   const unknown = value === "—";
@@ -38,7 +41,7 @@ export function StatTileSkeleton() {
 }
 
 const s = StyleSheet.create({
-  card: { flex: 1, minHeight: 124, padding: 14, gap: 10, justifyContent: "space-between" },
+  card: { flex: 1, minWidth: 0, height: TILE_HEIGHT, padding: 14, gap: 10, justifyContent: "space-between" },
   icon: { width: 36, height: 36, borderRadius: radius.sm, alignItems: "center", justifyContent: "center" },
-  body: { gap: 0 },
+  body: { gap: 0, minHeight: 40 }, // number + unit line: reserved even when there is no unit
 });

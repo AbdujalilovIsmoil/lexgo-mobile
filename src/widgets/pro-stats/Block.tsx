@@ -35,6 +35,6 @@ const s = StyleSheet.create({
   head: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", minHeight: 24 },
   title: { flex: 1 },
   grid: { gap: 12 },
-  row: { flexDirection: "row", gap: 12 },
-  fill: { flex: 1 },
+  row: { flexDirection: "row", gap: 12, alignItems: "stretch" },
+  fill: { flex: 1, minWidth: 0 },
 });
