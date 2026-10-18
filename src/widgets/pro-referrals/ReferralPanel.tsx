@@ -1,34 +1,37 @@
-import { RefreshControl, ScrollView } from "react-native";
+import { useState } from "react";
+import { RefreshControl, ScrollView, View } from "react-native";
 import { useReferral } from "@/entities/pro-referrals";
-import { useT } from "@/shared/i18n";
 import { useInsets } from "@/shared/lib/insets";
-import { fmtMoney } from "@/shared/lib/money";
-import { ErrorView, Skeleton, Text } from "@/shared/ui";
-import { KpiGrid, KpiTile } from "@/shared/ui/admin";
-import { CodeCard } from "./CodeCard";
-import { Invites } from "./Invites";
-import { Ladder } from "./Ladder";
+import { radius } from "@/shared/theme";
+import { ErrorView, Skeleton } from "@/shared/ui";
+import { HowStrip } from "./HowStrip";
+import { InviteCard } from "./InviteCard";
+import { InviteList } from "./InviteList";
+import { LadderTrack } from "./LadderTrack";
+import { QrSheet } from "./QrSheet";
+import { StatTiles } from "./StatTiles";
 
-// Referral screen body: code / link / QR, counters, commission ladder, how it works, invitations.
+// Growth screen: invite card, commission track, stats, invitations, how it works.
 export function ReferralPanel() {
-  const { t } = useT();
   const insets = useInsets();
   const q = useReferral();
-  if (q.isError) return <ErrorView error={q.error} onRetry={() => void q.refetch()} />;
+  const [qr, setQr] = useState(false);
+  if (q.isError && !q.data) return <ErrorView error={q.error} onRetry={() => void q.refetch()} />;
   const r = q.data;
   return (
-    <ScrollView contentContainerStyle={{ padding: 16, gap: 14, paddingBottom: insets.bottom + 40 }} refreshControl={<RefreshControl refreshing={q.isRefetching} onRefresh={() => void q.refetch()} />} showsVerticalScrollIndicator={false}>
-      {r ? <CodeCard r={r} /> : <Skeleton height={220} round={20} />}
-      <KpiGrid>
-        <KpiTile loading={!r} icon="send" label={t("aw10.invited")} value={String(r?.invited ?? 0)} />
-        <KpiTile loading={!r} icon="user-check" label={t("aw10.joined")} value={String(r?.joined ?? 0)} />
-        <KpiTile loading={!r} icon="gift" tint="#22C55E" label={t("aw10.reward")} value={`${fmtMoney(r?.reward ?? 0)} ${t("adm.currency")}`} />
-      </KpiGrid>
-      {r ? <Ladder joined={r.joined} /> : null}
-      <Text variant="h4">{t("aw10.how")}</Text>
-      {(["step1", "step2", "step3"] as const).map((k, i) => <Text key={k} variant="small" tone="gray">{`${i + 1}. ${t(`aw10.${k}`)}`}</Text>)}
-      <Text variant="h4">{t("aw10.invites")}</Text>
-      <Invites items={r?.items ?? []} />
+    <ScrollView contentContainerStyle={{ padding: 16, gap: 24, paddingBottom: insets.bottom + 40 }} refreshControl={<RefreshControl refreshing={q.isRefetching} onRefresh={() => void q.refetch()} />} showsVerticalScrollIndicator={false}>
+      {r ? <InviteCard r={r} onQr={() => setQr(true)} /> : <Skeleton height={176} round={radius.rx} />}
+      {r ? <LadderTrack active={r.joined} /> : <Skeleton height={300} round={radius.rl} />}
+      <StatTiles r={r} />
+      {r ? (
+        <InviteList r={r} />
+      ) : (
+        <View style={{ gap: 10 }}>
+          {[0, 1, 2].map((i) => <Skeleton key={i} height={64} round={radius.r} />)}
+        </View>
+      )}
+      <HowStrip />
+      {r ? <QrSheet visible={qr} onClose={() => setQr(false)} qrPath={r.qrPath} code={r.code} /> : null}
     </ScrollView>
   );
 }

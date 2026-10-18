@@ -1,13 +1,15 @@
-import { View } from "react-native";
+import { useState } from "react";
 import { issuesOf, useAvailability, useSaveAvailability } from "@/entities/pro-availability";
 import { usePublicProfile } from "@/entities/pro-profile";
 import { useSession } from "@/entities/session";
-import { DeadlinesCard, useAvailabilityEdit } from "@/features/pro-availability-edit";
-import { PresenceCard, WeekCard } from "@/widgets/pro-availability";
-import { Button } from "@/shared/ui";
+import { DeadlinesCard, PresetBar, useAvailabilityEdit, useLeaveGuard } from "@/features/pro-availability-edit";
+import { AvailabilitySkeleton, MarketPreview, SaveBar, StatusCard, WeekCard, useNow, useStatusText } from "@/widgets/pro-availability";
 import { AdminPage, QueryBoundary } from "@/shared/ui/admin";
-import { Notice, PageScroll } from "@/shared/ui/sel";
+import { PageScroll } from "@/shared/ui/sel";
 import { useT } from "@/shared/i18n";
+import type { Availability } from "@/entities/pro-availability";
+
+const EMPTY: Availability = { timezone: "Asia/Tashkent", weekly: [], exceptions: [], deadlines: { manual: 30, auto: 15, sos: 5 }, source: "default" };
 
 // Working hours and answer deadlines (GET/PUT /lawyers/me/availability) + how the marketplace shows the seller.
 export default function ProAvailabilityPage() {
@@ -17,22 +19,31 @@ export default function ProAvailabilityPage() {
   const pub = usePublicProfile(userId);
   const ed = useAvailabilityEdit(q.data);
   const save = useSaveAvailability(ed.discard);
+  const now = useNow();
+  const status = useStatusText(ed.cur ?? EMPTY, now, pub.data ? !pub.data.available : false);
   const issues = ed.cur ? issuesOf(ed.cur) : [];
-  const footer = ed.dirty ? (
-    <View style={{ flexDirection: "row", gap: 10 }}>
-      <Button title={t("adm.cancel")} variant="line" onPress={ed.discard} style={{ flex: 1 }} />
-      <Button title={t("adm.save")} loading={save.isPending} disabled={issues.length > 0} onPress={() => ed.cur && save.mutate(ed.cur)} style={{ flex: 1 }} />
-    </View>
-  ) : undefined;
+  const [pulling, setPulling] = useState(false);
+  useLeaveGuard(ed.dirty && !save.isPending);
+  const refresh = async () => {
+    setPulling(true);
+    try {
+      await Promise.all([q.refetch(), pub.refetch()]);
+    } finally {
+      setPulling(false);
+    }
+  };
+  const reason = issues.length ? t(`sl8.issue.${issues[0]}`) : null;
+  const footer = ed.dirty ? <SaveBar reason={reason} saving={save.isPending} onCancel={ed.discard} onSave={() => ed.cur && save.mutate(ed.cur)} /> : undefined;
   return (
     <AdminPage title={t("nav1.menu.availability")} subtitle={ed.cur ? t(`sl8.source.${ed.cur.source}`) : undefined} footer={footer}>
-      <QueryBoundary query={q}>
+      <QueryBoundary query={q} skeleton={<AvailabilitySkeleton />}>
         {ed.cur ? (
-          <PageScroll onRefresh={() => void Promise.all([q.refetch(), pub.refetch()])} refreshing={q.isRefetching}>
-            <PresenceCard pub={pub.data} loading={pub.isLoading} />
-            <WeekCard value={ed.cur} setDay={ed.setDay} spread={ed.spread} weekdays={ed.weekdays} />
+          <PageScroll onRefresh={() => void refresh()} refreshing={pulling}>
+            <StatusCard status={status} />
+            <PresetBar weekly={ed.cur.weekly} onPick={ed.preset} />
+            <WeekCard value={ed.cur} setDay={ed.setDay} copyAll={ed.copyAll} noDay={issues.includes("noDay")} />
             <DeadlinesCard value={ed.cur.deadlines} onChange={ed.setDeadline} />
-            {issues.map((i) => <Notice key={i} tone="err" text={t(`sl8.issue.${i}`)} />)}
+            <MarketPreview pub={pub.data} loading={pub.isLoading} status={status} />
           </PageScroll>
         ) : null}
       </QueryBoundary>

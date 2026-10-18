@@ -53,6 +53,7 @@ export function normDocs(list: unknown[]): OnbDoc[] {
         kind: asStr(p.document_type ?? d.record_type),
         status: asStr(d.status).toLowerCase(),
         createdAt: asStr(d.created_at),
+        reason: asStr(p.rejection_reason ?? p.reject_reason ?? p.reason ?? d.rejection_reason ?? d.reject_reason ?? d.review_note).trim(),
       };
     });
 }

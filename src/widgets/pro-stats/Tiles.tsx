@@ -1,34 +1,36 @@
-import type { Dict } from "@/shared/lib/json";
+import { fmtCount, val } from "@/entities/pro-stats";
+import type { Stats } from "@/entities/pro-workspace";
 import { useT } from "@/shared/i18n";
 import { fmtMoney } from "@/shared/lib/money";
-import { uzs } from "@/shared/lib/json";
-import { n } from "@/entities/pro-workspace";
-import { KpiGrid, KpiTile, SectionCard } from "@/shared/ui/admin";
 import type { IconName } from "@/shared/ui";
+import { Block, Grid } from "./Block";
+import { StatTile, StatTileSkeleton, type TileTone } from "./StatTile";
 
-type Def = { key: string; icon: IconName; tint: string };
+type Def = { key: string; icon: IconName; tone: TileTone };
 const WORKLOAD: Def[] = [
-  { key: "active_cases", icon: "briefcase", tint: "#3B82F6" }, { key: "courts_today", icon: "flag", tint: "#EF4444" },
-  { key: "deadlines_today", icon: "clock", tint: "#F59E0B" }, { key: "unread_messages", icon: "message-circle", tint: "#8B5CF6" },
-  { key: "documents_to_review", icon: "file-text", tint: "#14B8A6" },
+  { key: "active_cases", icon: "briefcase", tone: "blue" }, { key: "courts_today", icon: "flag", tone: "err" },
+  { key: "deadlines_today", icon: "clock", tone: "warn" }, { key: "unread_messages", icon: "message-circle", tone: "cy" },
+  { key: "documents_to_review", icon: "file-text", tone: "ok" },
 ];
+// Today / month earnings live in the hero; these are the rest of the money picture.
 const FINANCE: Def[] = [
-  { key: "earnings_today", icon: "credit-card", tint: "#22C55E" }, { key: "earnings_month", icon: "trending-up", tint: "#22C55E" },
-  { key: "pending_payout", icon: "clock", tint: "#F59E0B" }, { key: "earnings_via_lexgo", icon: "briefcase", tint: "#3B82F6" },
-  { key: "payable", icon: "credit-card", tint: "#8B5CF6" },
+  { key: "pending_payout", icon: "clock", tone: "warn" }, { key: "earnings_via_lexgo", icon: "briefcase", tone: "blue" },
+  { key: "payable", icon: "credit-card", tone: "cy" },
 ];
 
-// Workload counters (numbers) or finance sums (so'm) from the stats payload; missing keys read 0.
-export function Tiles({ kind, data, loading }: { kind: "w" | "f"; data: Dict; loading: boolean }) {
+export function Tiles({ kind, stats, loading }: { kind: "w" | "f"; stats?: Stats; loading: boolean }) {
   const { t } = useT();
   const defs = kind === "w" ? WORKLOAD : FINANCE;
+  const data = (kind === "w" ? stats?.workload : stats?.finance) ?? {};
   return (
-    <SectionCard title={t(kind === "w" ? "aw9.workload" : "aw9.finance")}>
-      <KpiGrid>
-        {defs.map((d) => (
-          <KpiTile key={d.key} loading={loading} icon={d.icon} tint={d.tint} label={t(`aw9.${kind}.${d.key}`)} value={kind === "w" ? String(n(data, d.key)) : `${fmtMoney(uzs(data, d.key))} ${t("adm.currency")}`} />
-        ))}
-      </KpiGrid>
-    </SectionCard>
+    <Block title={t(kind === "w" ? "aw9.workload" : "aw9.finance")}>
+      <Grid>
+        {defs.map((d) => {
+          if (loading) return <StatTileSkeleton key={d.key} />;
+          const v = val(data, d.key);
+          return <StatTile key={d.key} icon={d.icon} tone={d.tone} label={t(`aw9.${kind}.${d.key}`)} value={kind === "w" ? fmtCount(v) : v == null ? "—" : fmtMoney(v)} unit={kind === "f" ? t("adm.currency") : undefined} />;
+        })}
+      </Grid>
+    </Block>
   );
 }

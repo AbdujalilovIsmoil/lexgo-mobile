@@ -1,31 +1,39 @@
+import { StyleSheet, View } from "react-native";
 import { useRouter } from "expo-router";
 import type { Section } from "@/entities/pro-profile";
-import { Icon, ListRow } from "@/shared/ui";
-import { SectionCard } from "@/shared/ui/admin";
-import { useColors } from "@/shared/theme";
+import { Card, Pill, Text, ListRow } from "@/shared/ui";
 import { useT } from "@/shared/i18n";
 
 const ICON = { personal: "user", kind: "briefcase", license: "award", experience: "trending-up", region: "map-pin", organization: "home" } as const;
 
 // The profile parts TZ 31 asks for (personal data · kind · licence/diploma · experience · region · organization);
-// each opens the matching form on the profile screen.
+// a compact list, each row opens the matching form on the profile screen.
 export function ProfileSections({ sections, percent }: { sections: Section[]; percent: number }) {
   const { t } = useT();
-  const c = useColors();
   const router = useRouter();
   return (
-    <SectionCard title={`${t("sl2.sectionsTitle")} · ${percent}%`} padded={false}>
+    <Card style={s.card}>
+      <View style={s.head}>
+        <Text variant="h4" style={s.title}>{t("sl2.sectionsTitle")}</Text>
+        <Pill label={`${percent}%`} tone={percent >= 100 ? "ok" : "warn"} small />
+      </View>
       {sections.map((sec) => (
         <ListRow
           key={sec.key}
           icon={ICON[sec.key]}
           iconTone={sec.done ? "ok" : "warn"}
           title={t(`sl2.sections.${sec.key}`)}
-          sub={sec.done ? t("sl2.sectionDone") : sec.missing.map((m) => t(`sl5.missing.${m}`)).join(", ")}
-          right={<Icon name={sec.done ? "check-circle" : "alert-circle"} size={18} color={sec.done ? c.ok : c.warn} />}
+          sub={sec.done ? undefined : sec.missing.map((m) => t(`sl5.missing.${m}`)).join(", ")}
+          right={<Pill label={sec.done ? t("sl2.sectionDone") : t("onbUx.sectionLeft", { n: sec.missing.length })} tone={sec.done ? "ok" : "warn"} small />}
           onPress={() => router.push({ pathname: "/pro/profile", params: { section: sec.key } } as never)}
         />
       ))}
-    </SectionCard>
+    </Card>
   );
 }
+
+const s = StyleSheet.create({
+  card: { gap: 0, paddingVertical: 12 },
+  head: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", gap: 8, paddingBottom: 4 },
+  title: { flex: 1 },
+});

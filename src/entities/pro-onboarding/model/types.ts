@@ -21,7 +21,7 @@ export type OnbProgress = {
 };
 
 // A proof document the seller uploaded (POST /seller-onboarding/documents).
-export type OnbDoc = { id: string; workId: string; name: string; kind: string; status: string; createdAt: string };
+export type OnbDoc = { id: string; workId: string; name: string; kind: string; status: string; createdAt: string; reason: string };
 
 // What the status screen shows (TZ 31): pending sellers are not public and cannot sell.
 export type OnbState = "incomplete" | "ready" | "submitted" | "approved" | "rejected";

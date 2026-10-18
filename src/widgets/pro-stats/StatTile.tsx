@@ -1,0 +1,44 @@
+import { StyleSheet, View } from "react-native";
+import { radius, useColors } from "@/shared/theme";
+import { Card, Icon, Skeleton, Text, type IconName } from "@/shared/ui";
+
+export type TileTone = "blue" | "ok" | "warn" | "err" | "cy";
+
+export function useTone(tone: TileTone): { fg: string; bg: string } {
+  const c = useColors();
+  return { blue: { fg: c.accentStrong, bg: c.tint2 }, ok: { fg: c.ok, bg: c.okBg }, warn: { fg: c.warn, bg: c.warnBg }, err: { fg: c.err, bg: c.errBg }, cy: { fg: c.cyText, bg: c.cyBg } }[tone];
+}
+
+type Props = { icon: IconName; tone: TileTone; label: string; value: string; unit?: string };
+
+// One KPI: icon tile, big number, short label. Fixed height so a grid row never jumps; the whole tile reads "label: value".
+export function StatTile({ icon, tone, label, value, unit }: Props) {
+  const { fg, bg } = useTone(tone);
+  const unknown = value === "—";
+  return (
+    <Card style={s.card} accessible accessibilityLabel={`${label}: ${unknown ? "—" : unit ? `${value} ${unit}` : value}`}>
+      <View style={[s.icon, { backgroundColor: bg }]}><Icon name={icon} size={18} color={fg} /></View>
+      <View style={s.body}>
+        <Text variant="h3" numberOfLines={1} adjustsFontSizeToFit tone={unknown ? "gray2" : "ink"}>{value}</Text>
+        {unit && !unknown ? <Text variant="caption" tone="gray" numberOfLines={1}>{unit}</Text> : null}
+      </View>
+      <Text variant="caption" tone="gray" numberOfLines={1}>{label}</Text>
+    </Card>
+  );
+}
+
+export function StatTileSkeleton() {
+  return (
+    <Card style={s.card}>
+      <Skeleton width={36} height={36} round={radius.sm} />
+      <Skeleton width="55%" height={24} />
+      <Skeleton width="75%" height={12} />
+    </Card>
+  );
+}
+
+const s = StyleSheet.create({
+  card: { flex: 1, minHeight: 124, padding: 14, gap: 10, justifyContent: "space-between" },
+  icon: { width: 36, height: 36, borderRadius: radius.sm, alignItems: "center", justifyContent: "center" },
+  body: { gap: 0 },
+});

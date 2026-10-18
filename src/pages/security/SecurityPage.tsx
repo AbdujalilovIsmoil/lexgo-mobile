@@ -13,9 +13,9 @@ export default function SecurityPage() {
   const { t } = useT();
   const [tab, setTab] = useState<Tab>("protect");
   const options = [
-    { value: "protect" as const, label: t("admSec.tabProtect"), icon: "shield" as const },
-    { value: "sessions" as const, label: t("admSec.tabSessions"), icon: "smartphone" as const },
-    { value: "history" as const, label: t("admSec.tabHistory"), icon: "clock" as const },
+    { value: "protect" as const, label: t("admSec.tabProtect") },
+    { value: "sessions" as const, label: t("admSec.tabSessions") },
+    { value: "history" as const, label: t("admSec.tabHistory") },
   ];
   return (
     <AdminPage title={t("admSec.title")}>
