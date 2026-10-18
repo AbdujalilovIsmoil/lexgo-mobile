@@ -1,3 +1,4 @@
+import { statUx } from "./statUx";
 import { sp1 } from "./sp1";
 import { sp2 } from "./sp2";
 import { sp3 } from "./sp3";
@@ -10,5 +11,5 @@ import { sp9 } from "./sp9";
 import { sp10 } from "./sp10";
 
 export const tzSp = {
-  sp1, sp2, sp3, sp4, sp5, sp6, sp7, sp8, sp9, sp10,
+  sp1, sp2, sp3, sp4, sp5, sp6, sp7, sp8, sp9, sp10, statUx,
 };

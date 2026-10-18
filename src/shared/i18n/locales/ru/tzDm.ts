@@ -9,7 +9,8 @@ import { dm8 } from "./dm8";
 import { dm9 } from "./dm9";
 import { dm10 } from "./dm10";
 import { dm11 } from "./dm11";
+import { docSheet } from "./docSheet";
 
 export const tzDm = {
-  dm1, dm2, dm3, dm4, dm5, dm6, dm7, dm8, dm9, dm10, dm11,
+  dm1, dm2, dm3, dm4, dm5, dm6, dm7, dm8, dm9, dm10, dm11, docSheet,
 };

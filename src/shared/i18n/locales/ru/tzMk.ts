@@ -8,7 +8,8 @@ import { mk7 } from "./mk7";
 import { mk8 } from "./mk8";
 import { mk9 } from "./mk9";
 import { mk10 } from "./mk10";
+import { promoSeller } from "./promoSeller";
 
 export const tzMk = {
-  mk1, mk2, mk3, mk4, mk5, mk6, mk7, mk8, mk9, mk10,
+  mk1, mk2, mk3, mk4, mk5, mk6, mk7, mk8, mk9, mk10, promoSeller,
 };

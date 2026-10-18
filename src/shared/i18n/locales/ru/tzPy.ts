@@ -10,7 +10,8 @@ import { py9 } from "./py9";
 import { py10 } from "./py10";
 import { pwc } from "./pwc";
 import { pwr } from "./pwr";
+import { onbUx } from "./onbUx";
 
 export const tzPy = {
-  py1, py2, py3, py4, py5, py6, py7, py8, py9, py10, pwc, pwr,
+  py1, py2, py3, py4, py5, py6, py7, py8, py9, py10, pwc, pwr, onbUx,
 };

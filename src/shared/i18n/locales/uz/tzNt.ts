@@ -8,7 +8,8 @@ import { nt7 } from "./nt7";
 import { nt8 } from "./nt8";
 import { nt9 } from "./nt9";
 import { nt10 } from "./nt10";
+import { refUx } from "./refUx";
 
 export const tzNt = {
-  nt1, nt2, nt3, nt4, nt5, nt6, nt7, nt8, nt9, nt10,
+  nt1, nt2, nt3, nt4, nt5, nt6, nt7, nt8, nt9, nt10, refUx,
 };

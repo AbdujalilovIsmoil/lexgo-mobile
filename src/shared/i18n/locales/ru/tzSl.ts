@@ -10,7 +10,8 @@ import { sl9 } from "./sl9";
 import { sl10 } from "./sl10";
 import { sl11 } from "./sl11";
 import { sl12 } from "./sl12";
+import { pkgSeller } from "./pkgSeller";
 
 export const tzSl = {
-  sl1, sl2, sl3, sl4, sl5, sl6, sl7, sl8, sl9, sl10, sl11, sl12,
+  sl1, sl2, sl3, sl4, sl5, sl6, sl7, sl8, sl9, sl10, sl11, sl12, pkgSeller,
 };

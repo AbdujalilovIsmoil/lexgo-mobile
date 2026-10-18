@@ -8,7 +8,8 @@ import { ad7 } from "./ad7";
 import { ad8 } from "./ad8";
 import { ad9 } from "./ad9";
 import { ad10 } from "./ad10";
+import { proDocSheet } from "./proDocSheet";
 
 export const tzAd = {
-  ad1, ad2, ad3, ad4, ad5, ad6, ad7, ad8, ad9, ad10,
+  ad1, ad2, ad3, ad4, ad5, ad6, ad7, ad8, ad9, ad10, proDocSheet,
 };

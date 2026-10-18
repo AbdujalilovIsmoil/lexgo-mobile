@@ -10,7 +10,9 @@ import { aw9 } from "./aw9";
 import { aw10 } from "./aw10";
 import { aw11 } from "./aw11";
 import { aw12 } from "./aw12";
+import { taskForm } from "./taskForm";
+import { proSvc } from "./proSvc";
 
 export const tzAw = {
-  aw1, aw2, aw3, aw4, aw5, aw6, aw7, aw8, aw9, aw10, aw11, aw12,
+  aw1, aw2, aw3, aw4, aw5, aw6, aw7, aw8, aw9, aw10, aw11, aw12, taskForm, proSvc,
 };

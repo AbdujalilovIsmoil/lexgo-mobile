@@ -27,6 +27,7 @@ import { cln } from "./cln";
 import { mcs } from "./mcs";
 import { cal } from "./cal";
 import { scn } from "./scn";
+import { svcRules } from "./svcRules";
 import { csd } from "./csd";
 import { lsb } from "./lsb";
 import { tpl } from "./tpl";
@@ -63,6 +64,7 @@ export const tzCx = {
   mcs: { ...mcs },
   cal: { ...cal },
   scn: { ...scn },
+  svcRules: { ...svcRules },
   csd: { ...csd },
   lsb: { ...lsb },
   tpl: { ...tpl },
