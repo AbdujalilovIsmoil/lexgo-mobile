@@ -2,7 +2,8 @@ import type { Invited } from "@/entities/call";
 
 export type DaySection = { key: string; title: string; data: Invited[] };
 
-const dayKey = (iso: string): string => { const d = new Date(iso); return Number.isNaN(d.getTime()) ? "?" : `${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`; };
+/** Local calendar day of an ISO time or a Date ("?" when it does not parse). */
+export const dayKey = (v: string | Date): string => { const d = new Date(v); return Number.isNaN(d.getTime()) ? "?" : `${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`; };
 
 // Groups meetings (already sorted) by calendar day; the title is "today" / "yesterday" / the date.
 export function groupByDay(items: Invited[], label: (iso: string) => string): DaySection[] {
