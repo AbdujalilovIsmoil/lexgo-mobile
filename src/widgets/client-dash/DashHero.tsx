@@ -1,6 +1,6 @@
 import { StyleSheet, View } from "react-native";
 import { HEADER_GAP, useInsets } from "@/shared/lib/insets";
-import { useSession } from "@/entities/session";
+import { displayName, useSession } from "@/entities/session";
 import { GradientBox, Text, FocusStatusBar } from "@/shared/ui";
 import { useT } from "@/shared/i18n";
 import { HeroTopRow } from "@/widgets/home-hero/HeroTopRow";
@@ -12,7 +12,7 @@ import { DashRail } from "./DashRail";
 export function DashHero() {
   const { t } = useT();
   const insets = useInsets();
-  const name = useSession()?.user.name;
+  const name = displayName(useSession()?.user);
   return (
     <GradientBox variant="dark" round={0} style={[s.hero, { paddingTop: insets.top + HEADER_GAP }]}>
       <FocusStatusBar style="light" />

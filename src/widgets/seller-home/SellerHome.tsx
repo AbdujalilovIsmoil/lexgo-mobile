@@ -2,7 +2,7 @@ import type { ReactNode } from "react";
 import { RefreshControl, ScrollView, View } from "react-native";
 import { useQueryClient } from "@tanstack/react-query";
 import { groupTasks, n, useCabinet } from "@/entities/pro-workspace";
-import { useSession } from "@/entities/session";
+import { displayName, useSession } from "@/entities/session";
 import { useResync } from "@/shared/realtime";
 import { HeaderExtra } from "@/shared/ui/headerExtra";
 import { useInsets } from "@/shared/lib/insets";
@@ -37,7 +37,7 @@ export function SellerHome({ bottomPad, orgEntry }: { bottomPad: number; orgEntr
   const refresh = () => KEYS.forEach((k) => void qc.invalidateQueries({ queryKey: [k] }));
   useResync(refresh);
   const c = cabinet.data;
-  const name = (session?.user.firstName || session?.user.name || "").split(" ")[0];
+  const name = displayName(session?.user);
   const pad = Math.max(bottomPad, insets.bottom + 24);
   const body = { padding: 16, gap: 14 } as const;
   const refreshing = <RefreshControl refreshing={cabinet.isRefetching} onRefresh={refresh} />;

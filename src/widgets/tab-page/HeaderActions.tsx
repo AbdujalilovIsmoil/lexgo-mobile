@@ -1,6 +1,6 @@
 import { StyleSheet, View } from "react-native";
 import { useRouter } from "expo-router";
-import { useSession } from "@/entities/session";
+import { displayName, useSession } from "@/entities/session";
 import { useUnreadCount } from "@/entities/notification";
 import { SupportMenu } from "@/features/support-menu";
 import { useTabRole } from "@/widgets/tab-bar/useTabRole";
@@ -14,7 +14,7 @@ export function HeaderActions({ glass }: { glass?: boolean }) {
   const session = useSession();
   const unread = useUnreadCount();
   const role = useTabRole();
-  const name = session?.user.name || session?.user.phone;
+  const name = displayName(session?.user) || session?.user.phone;
   return (
     <View style={s.row}>
       <DemoPill glass={glass} />

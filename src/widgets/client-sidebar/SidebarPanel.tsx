@@ -2,7 +2,7 @@ import { Image, ScrollView, StyleSheet, View } from "react-native";
 import type { SharedValue } from "react-native-reanimated";
 import { usePathname } from "expo-router";
 import { useUnreadCount } from "@/entities/notification";
-import { useSession } from "@/entities/session";
+import { displayName, useSession } from "@/entities/session";
 import { useLogout } from "@/features/auth";
 import { useBadge } from "@/shared/lib";
 import { useInsets } from "@/shared/lib/insets";
@@ -33,7 +33,7 @@ export function SidebarPanel({ p, onGo }: { p: SharedValue<number>; onGo: (route
         <Image source={require("../../../assets/logo-small.png")} style={s.logo} />
         <View style={s.fill}>
           <Text variant="h4">LexGo</Text>
-          <Text variant="caption" tone="gray" numberOfLines={1}>{user ? `${user.name || t("ntd.sbTitle")} · ${t(role === "client" ? "profile.roleClient" : user.role === "advocate" ? "profile.roleAdvocate" : user.role === "lawyer" ? "profile.roleLawyer" : "tabs.admin")}` : t("home.guest")}</Text>
+          <Text variant="caption" tone="gray" numberOfLines={1}>{user ? `${displayName(user) || t("ntd.sbTitle")} ·${t(role === "client" ? "profile.roleClient" : user.role === "advocate" ? "profile.roleAdvocate" : user.role === "lawyer" ? "profile.roleLawyer" : "tabs.admin")}` : t("home.guest")}</Text>
         </View>
       </View>
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={s.list}>

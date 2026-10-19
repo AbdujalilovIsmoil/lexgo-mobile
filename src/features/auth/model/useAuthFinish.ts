@@ -1,6 +1,6 @@
 import { useCallback } from "react";
 import { useRouter } from "expo-router";
-import { useSessionStore, type Session } from "@/entities/session";
+import { displayName, useSessionStore, type Session } from "@/entities/session";
 import { flushConsents } from "@/entities/auth-consent";
 import { useT } from "@/shared/i18n";
 import { successHaptic } from "@/shared/lib/haptics";
@@ -18,7 +18,7 @@ export function useAuthFinish() {
     async (session: Session) => {
       await signIn(session);
       successHaptic();
-      const name = session.user.firstName || session.user.name;
+      const name = displayName(session.user);
       toast(name ? t("auth.welcome", { name }) : t("au2.signedIn"), "ok");
       void flushConsents(session.user.phone);
       // Leave the auth screens first, and only then drop the pending OTP flow: the OTP screen without a flow redirects to login,

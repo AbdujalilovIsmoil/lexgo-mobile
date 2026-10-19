@@ -1,6 +1,6 @@
 import { StyleSheet, View } from "react-native";
 import { HEADER_GAP, useInsets } from "@/shared/lib/insets";
-import { useSession } from "@/entities/session";
+import { displayName, useSession } from "@/entities/session";
 import { GradientBox, Text, FocusStatusBar } from "@/shared/ui";
 import { useT } from "@/shared/i18n";
 import { HeroRobot } from "./HeroRobot";
@@ -17,7 +17,7 @@ export function HomeHero() {
     <GradientBox variant="dark" round={0} style={[s.hero, { paddingTop: insets.top + HEADER_GAP }]}>
       <FocusStatusBar style="light" />
       <View style={s.glow} pointerEvents="none" />
-      <HeroTopRow name={session?.user.name} />
+      <HeroTopRow name={displayName(session?.user)} />
       <HeroTitle />
       <Text variant="lead" style={s.sub}>
         {t("home.heroSub")}

@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 import { Image, StyleSheet, View } from "react-native";
-import { useSession } from "@/entities/session";
+import { displayName, useSession } from "@/entities/session";
 import { HEADER_GAP, HEADER_ROW, useInsets } from "@/shared/lib/insets";
 import { Text } from "@/shared/ui";
 import { useT } from "@/shared/i18n";
@@ -10,7 +10,7 @@ import { HeaderActions } from "./HeaderActions";
 export function TopBar({ right, noActions }: { right?: ReactNode; noActions?: boolean }) {
   const { t } = useT();
   const insets = useInsets();
-  const name = useSession()?.user.name;
+  const name = displayName(useSession()?.user);
   return (
     <View style={[s.bar, { paddingTop: insets.top + HEADER_GAP, minHeight: insets.top + HEADER_GAP + HEADER_ROW + 12 }]}>
       <View style={s.brand}>
