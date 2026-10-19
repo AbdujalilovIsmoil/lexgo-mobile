@@ -1,9 +1,10 @@
 import type { BottomTabBarProps } from "expo-router/build/layouts/Tabs";
 import { useRouter } from "expo-router";
 import { moduleByKey, useAccess } from "@/entities/access";
-import { useIsAuthed } from "@/entities/session";
+import { useCabinet } from "@/entities/pro-workspace";
+import { useIsAuthed, useSession } from "@/entities/session";
 import { selectHaptic } from "@/shared/lib/haptics";
-import { TABS, type TabDef } from "./tabConfig";
+import { sellerTabHidden, TABS, type TabDef } from "./tabConfig";
 import { useTabRole } from "./useTabRole";
 
 export type TabItemData = { def: TabDef; focused: boolean; onPress: () => void };
@@ -15,9 +16,13 @@ export function useTabItems({ state, navigation }: Pick<BottomTabBarProps, "stat
   const router = useRouter();
   const authed = useIsAuthed();
   const open = (k?: string) => (k ? !!moduleByKey(k)?.visible(access) : false);
+  const cabinet = useCabinet().data; // professionals only (the query is off for everyone else)
+  const pending = useSession()?.user.accountStatus === "pending";
+  const limited = role === "seller" && (cabinet ? cabinet.limited : pending);
   const current = state.routes[state.index]?.name;
   const items: TabItemData[] = TABS[role].flatMap((def) => {
     if ((def.needs && !open(def.needs)) || (def.hideWith && open(def.hideWith))) return [];
+    if (role === "seller" && sellerTabHidden(def.route, limited, cabinet?.actions)) return [];
     const route = state.routes.find((r) => r.name === def.route);
     if (!route) return [];
     const focused = current === def.route;

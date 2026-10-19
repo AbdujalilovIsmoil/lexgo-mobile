@@ -27,5 +27,13 @@ export const TABS: Record<TabRole, TabDef[]> = {
 const ALWAYS = ["profile", "services", "lawyers", "orders", "messages"];
 export const allowedRoutes = (role: TabRole): string[] => [...TABS[role].map((x) => x.route), ...ALWAYS];
 
+// A professional's bar follows the same permission rules as the drawer (the web PortalShell): an account still under
+// review keeps its workspace and the AI button only; the chats tab needs the cabinet's secure_chat action. Unknown
+// (cabinet still loading) hides nothing.
+export function sellerTabHidden(route: string, limited: boolean, actions?: { secureChat: boolean }): boolean {
+  if (limited) return route !== "workspace" && route !== "ai";
+  return route === "messages" && !!actions && !actions.secureChat;
+}
+
 // The tab a role lands on (also where a role switch / sign-out sends the user).
 export const homeRoute = (role: TabRole): string => TABS[role][0].route;
