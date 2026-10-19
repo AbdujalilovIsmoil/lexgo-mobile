@@ -4,6 +4,7 @@ import { useFonts, Inter_400Regular, Inter_500Medium, Inter_600SemiBold, Inter_7
 import { Onest_700Bold, Onest_800ExtraBold } from "@expo-google-fonts/onest";
 import { useSessionStore, bindSessionToHttp } from "@/entities/session";
 import { AnimatedSplash } from "@/widgets/splash";
+import { useSplash } from "@/shared/lib/splash";
 
 // Wire the HTTP layer to the session store once, before anything can fetch.
 bindSessionToHttp();
@@ -26,7 +27,7 @@ export function FontGate({ children }: { children: ReactNode }) {
   return (
     <>
       {ready ? children : null}
-      {intro ? <AnimatedSplash ready={ready} onDone={() => setIntro(false)} /> : null}
+      {intro ? <AnimatedSplash ready={ready} onDone={() => { setIntro(false); useSplash.getState().finish(); }} /> : null}
     </>
   );
 }
