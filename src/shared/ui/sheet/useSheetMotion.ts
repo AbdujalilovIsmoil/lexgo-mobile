@@ -7,20 +7,30 @@ const SPRING = { damping: 21, stiffness: 220, mass: 0.9 };
 // Height-driven sheet motion on the UI thread. The sheet is `h` px tall: it
 // opens to the first snap, can be dragged between snaps (resize) and closes
 // when pulled low enough or flicked down.
+// Once a close has started (the ✕, the dark area, a pull down) nothing may bring the sheet back up: `refit` — the
+// content re-measuring itself while the sheet shrinks — is ignored, otherwise it springs the sheet open again and the
+// close never finishes. Only an explicit `open` (a new opening, a refused dismissal) clears that.
 export function useSheetMotion(snaps: number[], onClosed: () => void) {
   const h = useSharedValue(0);
   const start = useSharedValue(0);
+  const closing = useSharedValue(false);
   const top = snaps[snaps.length - 1];
   const low = snaps[0];
 
   const open = () => {
+    closing.value = false;
     h.value = withSpring(low, SPRING);
   };
+  const refit = () => {
+    if (!closing.value) h.value = withSpring(low, SPRING);
+  };
   const close = () => {
+    closing.value = true;
     h.value = withTiming(0, { duration: 220 }, (done) => {
       if (done) scheduleOnRN(onClosed);
     });
   };
+  const isClosing = () => closing.value;
 
   const gesture = Gesture.Pan()
     .onBegin(() => {
@@ -32,6 +42,7 @@ export function useSheetMotion(snaps: number[], onClosed: () => void) {
     .onEnd((e) => {
       const projected = h.value - e.velocityY * 0.12;
       if (projected < low * 0.6) {
+        closing.value = true;
         h.value = withTiming(0, { duration: 200 }, (done) => {
           if (done) scheduleOnRN(onClosed);
         });
@@ -42,5 +53,5 @@ export function useSheetMotion(snaps: number[], onClosed: () => void) {
       h.value = withSpring(best, SPRING);
     });
 
-  return { h, gesture, open, close };
+  return { h, gesture, open, refit, close, isClosing };
 }

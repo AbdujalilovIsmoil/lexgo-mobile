@@ -27,10 +27,12 @@ export function BottomSheet({ visible, onClose, children, title, subtitle, snaps
   // Header + the content's own height (reported by a SheetScroll inside): short content hugs, long content scrolls.
   const [fit, setFit] = useState<number | null>(null);
   const m = useRef({ header: 0, wrap: 0, viewport: 0, content: 0 });
+  const closingNow = useRef<() => boolean>(() => false);
   const room = H - insets.top - 10;
   const px = useMemo(() => fitSnaps(snaps.map((f) => Math.round(f * H)), fit, room), [snaps, H, fit, room]);
   const fitApi = useMemo(() => {
     const recompute = () => {
+      if (closingNow.current()) return; // the sheet is shrinking away: its sizes say nothing about the content
       const { header, wrap, viewport, content } = m.current;
       if (!header || !wrap || !viewport) return;
       const next = Math.round(header + wrap - viewport + content + 2);
@@ -44,10 +46,13 @@ export function BottomSheet({ visible, onClose, children, title, subtitle, snaps
   }, []);
   const [mounted, setMounted] = useState(visible);
   const [refused, setRefused] = useState(0);
-  const { h, gesture, open, close } = useSheetMotion(px, () => {
+  const { h, gesture, open, refit, close, isClosing } = useSheetMotion(px, () => {
     if (guardClose?.()) return setRefused((n) => n + 1); // a refused drag-dismiss springs back (effect below)
     setMounted(false);
     onClose();
+  });
+  useEffect(() => {
+    closingNow.current = isClosing;
   });
   const ask = () => { if (!guardClose?.()) close(); };
 
@@ -66,9 +71,9 @@ export function BottomSheet({ visible, onClose, children, title, subtitle, snaps
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [mounted]);
 
-  // A snap that changes while the sheet is open (content measured after the first frame) re-fits it.
+  // A snap that changes while the sheet is open (content measured after the first frame) re-fits it — never while it closes.
   useEffect(() => {
-    if (mounted && visible) open();
+    if (mounted && visible) refit();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [px[0]]);
 
