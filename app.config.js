@@ -8,7 +8,7 @@ module.exports = () => {
   const { associatedDomains: _omit, ...ios } = config.ios;
   return {
     ...config,
-    ios,
+    ios: { ...ios, appleTeamId: "UWT4C7T59B" },
     plugins: ["./plugins/withPersonalTeam", ...config.plugins],
   };
 };
