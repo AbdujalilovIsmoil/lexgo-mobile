@@ -161,7 +161,8 @@
         {
           "cameraPermission": "LexGo hujjatlarni skanerlash uchun kameradan foydalanadi."
         }
-      ]
+      ],
+      "expo-asset"
     ],
     "experiments": {
       "typedRoutes": true
