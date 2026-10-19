@@ -38,7 +38,23 @@ const flat = (sections: { items: NavItem[] }[]): NavItem[] => sections.flatMap((
 // What the drawer lists for each role: the client (and the visitor) get the web portal's rows; the others get their own home and
 // tabs first, then the tools of their role, then notifications and the account/app settings.
 const row = (key: string, icon: IconName, route: string, badge?: NavItem["badge"]): NavItem => ({ key, icon, route, label: `lsb.${key}`, badge });
-export type Seller = { kind?: string; orgOwner?: boolean };
+export type Seller = { kind?: string; orgOwner?: boolean; limited?: boolean; actions?: { acceptOrders: boolean; secureChat: boolean } };
+
+// The web PortalShell's permission rules, the same for a yurist and an advokat (only the row lists differ):
+// an account still under review (cabinet `limited_access`) keeps only these rows — an advokat has no services row then —
+// plus the mobile onboarding steps; and a few rows need an action the cabinet grants (`available_actions`).
+// Unknown cabinet (still loading) hides nothing, like the web.
+const LIMITED_OK: Record<"lawyer" | "advocate", ReadonlySet<string>> = {
+  lawyer: new Set(["dashboard", "services", "subscription", "notifications", "support", "onboarding"]),
+  advocate: new Set(["dashboard", "subscription", "notifications", "support", "onboarding"]),
+};
+const NEEDS: Record<string, "acceptOrders" | "secureChat"> = { marketplace: "acceptOrders", opportunities: "acceptOrders", chat: "secureChat", messages: "secureChat" };
+
+export function sellerRowHidden(key: string, s: Seller): boolean {
+  if (s.limited && !LIMITED_OK[s.kind === "advocate" ? "advocate" : "lawyer"].has(key)) return true;
+  const need = NEEDS[key];
+  return !!s.actions && !!need && !s.actions[need];
+}
 
 // The web sidebar of a yurist (law-main PortalShell LAWYER_NAV) or an advokat (ADVOCATE_NAV) in its exact order and with its own titles, then the
 // mobile-only tools (stats, availability, onboarding, packages) and the app settings (notifications is already a web row).
@@ -48,8 +64,8 @@ function sellerNav(s: Seller): NavItem[] {
     ? [row("dashboard", "grid", "/(tabs)/workspace"), row("marketplace", "briefcase", "/pro/market"), row("marketplaceOrders", "tag", "/pro/orders"), row("cases", "file-text", "/pro/cases"), row("urgentAssigned", "zap", "/pro/urgent"), row("tasks", "check-square", "/pro/tasks"), row("calendar", "calendar", "/pro/calendar"), row("clients", "users", "/(tabs)/clients"), row("services", "target", "/pro/services"), row("documents", "file", "/pro/templates"), row("documentRequests", "file-text", "/pro/docs"), row("files", "folder-plus", "/pro/files"), row("chat", "message-circle", "/(tabs)/messages"), row("meetings", "video", "/meetings"), row("notifications", "bell", "/notifications", "notifications"), row("ai", "star", "/(tabs)/ai"), row("assistant", "eye", "/assistant"), row("referrals", "gift", "/pro/referrals"), row("promotion", "zap", "/pro/promotions"), row("subscription", "award", "/subscription"), row("support", "headphones", "/support", "support")]
     : [row("dashboard", "grid", "/(tabs)/workspace"), row("opportunities", "briefcase", "/pro/market"), row("marketplaceOrders", "tag", "/pro/orders"), row("cases", "file-text", "/pro/cases"), row("urgentAssigned", "zap", "/pro/urgent"), row("documentRequests", "file-text", "/pro/docs"), row("calendar", "calendar", "/pro/calendar"), row("clients", "users", "/(tabs)/clients"), row("services", "target", "/pro/services"), row("tasks", "check-square", "/pro/tasks"), row("messages", "message-circle", "/(tabs)/messages"), row("meetings", "video", "/meetings"), row("notifications", "bell", "/notifications", "notifications"), ...(s.orgOwner ? [row("organization", "briefcase", "/org")] : []), row("files", "folder-plus", "/pro/files"), row("assistant", "eye", "/assistant"), row("referrals", "gift", "/pro/referrals"), row("promotion", "zap", "/pro/promotions"), row("subscription", "award", "/subscription"), row("support", "headphones", "/support", "support")];
   const extra = flat(PRO_SECTIONS).filter((i) => ["stats", "availability", "onboarding", "proPackages"].includes(i.key));
-  const settings = flat([COMMON_SECTION]).filter((i) => i.key !== "notifications");
-  return [...web, ...extra, ...settings];
+  const settings = flat([COMMON_SECTION]).filter((i) => i.key !== "notifications"); // app settings: always there
+  return [...[...web, ...extra].filter((i) => !sellerRowHidden(i.key, s)), ...settings];
 }
 
 export function navFor(role: TabRole, seller: Seller = {}): NavItem[] {

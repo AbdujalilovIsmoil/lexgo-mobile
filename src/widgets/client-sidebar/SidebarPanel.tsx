@@ -13,6 +13,7 @@ import { useTabRole } from "@/widgets/tab-bar/useTabRole";
 import { EXTRA, isActive, navFor } from "./navItems";
 import { SidebarItem } from "./SidebarItem";
 import { useAccess } from "@/entities/access";
+import { useCabinet } from "@/entities/pro-workspace";
 
 // The drawer content: brand + role, the web sidebar rows in the web order, the mobile-only account rows, and sign out.
 export function SidebarPanel({ p, onGo }: { p: SharedValue<number>; onGo: (route: string) => void }) {
@@ -24,7 +25,11 @@ export function SidebarPanel({ p, onGo }: { p: SharedValue<number>; onGo: (route
   const { confirm } = useLogout();
   const role = useTabRole();
   const access = useAccess();
-  const nav = navFor(role, { kind: user?.role, orgOwner: access.orgOwner });
+  // Only fetched for professionals: "under review" and the allowed actions shape their rows. Until the cabinet is there a
+  // pending account already counts as under review (the web does the same), so no locked row flashes in.
+  const cabinet = useCabinet().data;
+  const limited = cabinet ? cabinet.limited : user?.accountStatus === "pending";
+  const nav = navFor(role, { kind: user?.role, orgOwner: access.orgOwner, limited, actions: cabinet?.actions });
   const client = role === "client" || role === "guest";
   const badges = { notifications: useUnreadCount(), support: useBadge("support") };
   return (

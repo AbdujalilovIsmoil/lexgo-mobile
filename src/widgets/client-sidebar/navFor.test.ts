@@ -56,3 +56,30 @@ describe("no profile row in any drawer (the header has the profile button)", () 
     }
   });
 });
+
+describe("seller rows follow the web's permission rules (both kinds)", () => {
+  const SETTINGS_SAMPLE = "security";
+  it("an account under review keeps only the allowed rows, the onboarding steps and the settings", () => {
+    const yurist = navFor("seller", { kind: "lawyer", limited: true }).map((i) => i.key);
+    expect(yurist).toEqual(expect.arrayContaining(["dashboard", "services", "subscription", "notifications", "support", "onboarding", SETTINGS_SAMPLE]));
+    expect(yurist).not.toEqual(expect.arrayContaining(["marketplace"]));
+    expect(yurist).not.toContain("cases");
+    expect(yurist).not.toContain("stats");
+    const advokat = navFor("seller", { kind: "advocate", limited: true }).map((i) => i.key);
+    expect(advokat).toEqual(expect.arrayContaining(["dashboard", "subscription", "notifications", "support", "onboarding", SETTINGS_SAMPLE]));
+    expect(advokat).not.toContain("services"); // the web gives an advokat under review no services row
+    expect(advokat).not.toContain("opportunities");
+  });
+  it("orders and chats need the cabinet's actions", () => {
+    const none = { acceptOrders: false, secureChat: false };
+    expect(navFor("seller", { kind: "lawyer", actions: none }).map((i) => i.key)).not.toEqual(expect.arrayContaining(["marketplace"]));
+    expect(navFor("seller", { kind: "lawyer", actions: none }).map((i) => i.key)).not.toContain("chat");
+    expect(navFor("seller", { kind: "advocate", actions: none }).map((i) => i.key)).not.toContain("opportunities");
+    expect(navFor("seller", { kind: "advocate", actions: none }).map((i) => i.key)).not.toContain("messages");
+    const all = { acceptOrders: true, secureChat: true };
+    expect(navFor("seller", { kind: "advocate", actions: all }).map((i) => i.key)).toEqual(expect.arrayContaining(["opportunities", "messages"]));
+  });
+  it("hides nothing while the cabinet is unknown", () => {
+    expect(navFor("seller", { kind: "advocate" }).map((i) => i.key)).toEqual(expect.arrayContaining(["opportunities", "messages", "cases", "stats"]));
+  });
+});
