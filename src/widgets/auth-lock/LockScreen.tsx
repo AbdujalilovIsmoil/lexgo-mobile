@@ -1,4 +1,5 @@
 import { Image, StyleSheet, View } from "react-native";
+import { StatusBar } from "expo-status-bar";
 import { useUnlock } from "@/features/auth-lock";
 import { useLogout } from "@/features/auth";
 import { GradientBox, Button, Icon, Text } from "@/shared/ui";
@@ -16,6 +17,8 @@ export function LockScreen({ unlock }: { unlock: Unlock }) {
   const why = unlock.status && unlock.status !== "ok" && unlock.status !== "cancel" ? t(`au5.result.${unlock.status}`) : null;
   return (
     <GradientBox variant="dark" round={0} style={[s.fill, { paddingTop: insets.top + 24, paddingBottom: insets.bottom + 24 }]}>
+      {/* Mounted only while the lock is up (above any page's bar): light icons on the dark lock screen. */}
+      <StatusBar style="light" />
       <View style={s.center}>
         <Image source={require("../../../assets/logo-small.png")} style={s.logo} />
         <View style={s.icon}>

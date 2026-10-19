@@ -36,7 +36,17 @@ export const RobotView = forwardRef<RobotHandle, Props>(function RobotView({ wid
     });
     return () => sub.remove();
   }, []);
-  const rebuild = () => { setShown(false); setGen((n) => n + 1); };
+  // A crashed/failed scene is rebuilt, but at most 3 times in 30 s: a WebView that fails at once would otherwise be
+  // rebuilt in a loop and keep the JS thread busy. The orb stays in its place meanwhile.
+  const crashes = useRef<number[]>([]);
+  const rebuild = () => {
+    const now = Date.now();
+    crashes.current = crashes.current.filter((t) => now - t < 30_000);
+    setShown(false);
+    if (crashes.current.length >= 3) return;
+    crashes.current.push(now);
+    setGen((n) => n + 1);
+  };
   useEffect(() => { run(`window.__robot&&window.__robot.pause(${!!paused || !active})`); });
   useEffect(() => { if (every) run(`window.__robot&&window.__robot.rhythm(${every})`); }, [every]);
   useImperativeHandle(ref, () => ({ play: (g) => run(`window.__robot&&window.__robot.play(${JSON.stringify(g)})`) }));

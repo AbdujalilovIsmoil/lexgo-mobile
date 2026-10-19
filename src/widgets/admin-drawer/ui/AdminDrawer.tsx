@@ -3,6 +3,7 @@ import { Modal, Pressable, StyleSheet, useWindowDimensions } from "react-native"
 import { GestureDetector, GestureHandlerRootView } from "react-native-gesture-handler";
 import Animated, { Extrapolation, interpolate, useAnimatedStyle } from "react-native-reanimated";
 import { useColors } from "@/shared/theme";
+import { OverlayHost } from "@/shared/ui";
 import { useDrawer } from "../model/drawerStore";
 import { useDrawerMotion } from "../model/useDrawerMotion";
 import { DrawerPanel } from "./DrawerPanel";
@@ -42,6 +43,7 @@ export function AdminDrawer() {
             <DrawerPanel onClose={close} />
           </Animated.View>
         </GestureDetector>
+        <OverlayHost />
       </GestureHandlerRootView>
     </Modal>
   );

@@ -7,7 +7,7 @@ import * as SystemUI from "expo-system-ui";
 import { ThemeProvider, useTheme } from "@/shared/theme";
 import { IncomingCallWatcher } from "@/widgets/admin-meetings";
 import { ClientSidebar } from "@/widgets/client-sidebar";
-import { ConfirmDialog, Toaster } from "@/shared/ui";
+import { RootOverlays } from "@/shared/ui";
 import { useProfileRefresh } from "@/entities/session";
 import { useHostClipboardSync } from "../dev/useHostClipboardSync";
 import { QueryProvider } from "./QueryProvider";
@@ -27,8 +27,7 @@ function Chrome({ children }: { children: ReactNode }) {
       <StatusBar style={dark ? "light" : "dark"} />
       <SystemChrome />
       {children}
-      <Toaster />
-      <ConfirmDialog />
+      <RootOverlays />
       <IncomingCallWatcher />
       <ClientSidebar />
       <SessionBoundary />

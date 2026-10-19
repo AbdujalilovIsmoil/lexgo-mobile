@@ -3,6 +3,7 @@ import { Modal, Vibration } from "react-native";
 import { usePathname } from "expo-router";
 import { useIncomingCalls, useRingtone } from "@/features/call";
 import { useKept } from "@/shared/lib/useKept";
+import { OverlayHost } from "@/shared/ui";
 import { IncomingCard } from "./IncomingCard";
 
 // Mount ONCE, inside the app providers (MsgMounts): rings with a full-screen "X invites you to a meeting — Join /
@@ -21,6 +22,7 @@ export function IncomingCallWatcher() {
   return (
     <Modal visible={!!inc} transparent animationType="fade" onRequestClose={decline} statusBarTranslucent>
       {shown ? <IncomingCard inc={shown} onAccept={accept} onDecline={decline} /> : null}
+      {inc ? <OverlayHost /> : null}
     </Modal>
   );
 }

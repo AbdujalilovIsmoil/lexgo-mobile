@@ -1,5 +1,6 @@
 import * as ImagePicker from "expo-image-picker";
 import DocumentScanner, { ScanDocumentResponseStatus } from "react-native-document-scanner-plugin";
+import { resyncStatusBarSoon } from "@/shared/lib/statusBarSync";
 import type { ScanPage } from "./types";
 
 let seq = 0;
@@ -15,10 +16,10 @@ export async function pickPages(src: "camera" | "gallery"): Promise<ScanPage[] |
   if (src === "camera") {
     const perm = await ImagePicker.requestCameraPermissionsAsync();
     if (!perm.granted) return "denied";
-    const res = await DocumentScanner.scanDocument({ croppedImageQuality: 90 });
+    const res = await DocumentScanner.scanDocument({ croppedImageQuality: 90 }).finally(() => resyncStatusBarSoon()); // the scanner's own dark UI changed the bar
     if (res.status !== ScanDocumentResponseStatus.Success || !res.scannedImages?.length) return null;
     return res.scannedImages.map((p) => newPage(asUri(p))); // already cropped and upright: no EXIF turn to apply
   }
-  const res = await ImagePicker.launchImageLibraryAsync({ mediaTypes: ["images"], quality: 0.9, exif: true, allowsMultipleSelection: true });
+  const res = await ImagePicker.launchImageLibraryAsync({ mediaTypes: ["images"], quality: 0.9, exif: true, allowsMultipleSelection: true }).finally(() => resyncStatusBarSoon());
   return res.canceled ? null : res.assets.map(toPage);
 }

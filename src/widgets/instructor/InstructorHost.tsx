@@ -2,6 +2,7 @@ import { useEffect, useSyncExternalStore } from "react";
 import { usePathname } from "expo-router";
 import { useSession } from "@/entities/session";
 import { useInstructorContract } from "@/entities/instructor";
+import { ApiError } from "@/shared/api";
 import { subscribeTargets, targetsVersion, usePathStore } from "@/shared/instructor";
 import { useInsets } from "@/shared/lib/insets";
 import { useT } from "@/shared/i18n";
@@ -43,7 +44,10 @@ export function InstructorHost() {
     closeInstructor();
   }, [authed]);
 
-  if (!authed || !contract.data) return null;
+  // The robot stays on screen while the contract loads, after a network/server failure and offline: only a clear
+  // "not for this account" answer (403 / 404) removes it. Without a contract the runner simply skips navigation.
+  const denied = contract.error instanceof ApiError && (contract.error.status === 403 || contract.error.status === 404);
+  if (!authed || denied) return null;
   const hidden = launcherHidden(pathname) || keyboard || open || guiding;
   return (
     <>

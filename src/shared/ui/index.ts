@@ -30,6 +30,7 @@ export { BottomSheet, SheetBack, SheetScroll } from "./sheet";
 export { Segmented } from "./Segmented";
 export { Steps } from "./Steps";
 export { ConfirmDialog, confirmDialog } from "./dialog";
+export { OverlayHost, RootOverlays, useOverlayHosts } from "./overlay";
 export { AiOrb } from "./AiOrb";
 export { Gauge } from "./Gauge";
 export { Toggle } from "./Toggle";

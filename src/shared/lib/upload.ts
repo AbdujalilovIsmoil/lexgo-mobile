@@ -3,6 +3,7 @@ import * as ImagePicker from "expo-image-picker";
 import { Directory, File, Paths } from "expo-file-system";
 import { safeUploadName, uploadDirName } from "./safeName";
 import { extOf } from "./download/fileKind";
+import { resyncStatusBarSoon } from "./statusBarSync";
 
 export type Picked = { uri: string; name: string; mime: string; size: number };
 export type PickError = "tooBig" | "badType";
@@ -24,7 +25,7 @@ function check(list: Picked[], o: Opts): PickOut {
 
 // System document picker → validated list (null = cancelled).
 export async function pickDocuments(o: Opts = {}): Promise<PickOut> {
-  const res = await DocumentPicker.getDocumentAsync({ type: o.types ?? "*/*", multiple: !!o.multiple, copyToCacheDirectory: true });
+  const res = await DocumentPicker.getDocumentAsync({ type: o.types ?? "*/*", multiple: !!o.multiple, copyToCacheDirectory: true }).finally(() => resyncStatusBarSoon());
   if (res.canceled) return null;
   return check(res.assets.map((a) => ({ uri: a.uri, name: a.name, size: a.size ?? 0, mime: a.mimeType ?? guessMime(a.name) })), o);
 }
@@ -32,7 +33,7 @@ export async function pickDocuments(o: Opts = {}): Promise<PickOut> {
 // Gallery (or camera) image(s), same validation.
 export async function pickImages(o: Opts & { camera?: boolean } = {}): Promise<PickOut> {
   const launch = o.camera ? ImagePicker.launchCameraAsync : ImagePicker.launchImageLibraryAsync;
-  const res = await launch({ mediaTypes: ["images"], allowsMultipleSelection: !!o.multiple && !o.camera, quality: 0.85 });
+  const res = await launch({ mediaTypes: ["images"], allowsMultipleSelection: !!o.multiple && !o.camera, quality: 0.85 }).finally(() => resyncStatusBarSoon());
   if (res.canceled) return null;
   const list = res.assets.map((a, i) => ({ uri: a.uri, name: a.fileName ?? `photo-${Date.now()}-${i}.jpg`, size: a.fileSize ?? 0, mime: a.mimeType ?? "image/jpeg" }));
   return check(list, o);

@@ -14,6 +14,8 @@ export function redirectSystemPath({ path, initial }: { path: string; initial: b
   if (DEV_LAUNCHER.test(path)) return path;
   const parsed = parseExternal(path);
   if (parsed && parsed.path === "/" && !parsed.web) return path;
-  usePendingLink.getState().set({ url: path });
+  // expo-router asks while it renders the navigator: storing the link right now would update LinkMount in the middle
+  // of that render (React: "Cannot update a component while rendering a different component"). Queue it a tick later.
+  setTimeout(() => usePendingLink.getState().set({ url: path }), 0);
   return initial ? "/" : null;
 }

@@ -13,7 +13,8 @@ function sheet(p: SharedValue<number>, deg: number) {
 }
 
 // The web's 3D folder: back cover with its tab, three sheets and the front cover with the type badge. Pressing it swings the front
-// cover down and fans the sheets out (the web does this on hover); letting go opens the folder or the file.
+// cover down and fans the sheets out (the web does this on hover); letting go opens the folder or the file. A file also carries its
+// type icon large in the middle of the cover, so a file never reads as a folder at a glance.
 export function FolderCard({ kind, icon, tag, name, meta, starred, width, onPress, onMore }: Props) {
   const tone = cardTone(kind);
   const p = useSharedValue(0);
@@ -35,6 +36,7 @@ export function FolderCard({ kind, icon, tag, name, meta, starred, width, onPres
           <Animated.View style={[s.front, front]}>
             <LinearGradient colors={[tone.front, tone.front2]} start={{ x: 0, y: 1 }} end={{ x: 0, y: 0 }} style={StyleSheet.absoluteFill} />
             <View style={[s.tab, s.frontTab, { backgroundColor: tone.front2 }]} />
+            {kind !== "folder" ? <View pointerEvents="none" style={s.glyph}><View style={s.glyphBox}><Icon name={icon} size={26} tone="white" /></View></View> : null}
             <View style={s.badge}><Icon name={icon} size={12} tone="white" />{tag ? <Text variant="caption" weight="bold" tone="white" style={s.tagTx}>{tag}</Text> : null}</View>
           </Animated.View>
         </View>
@@ -56,6 +58,8 @@ const s = StyleSheet.create({
   frontTab: { right: 0, width: "62%" },
   sheet: { position: "absolute", left: 4, right: 4, top: 4, bottom: 0, borderRadius: 13, backfaceVisibility: "hidden" },
   front: { position: "absolute", left: 0, right: 0, bottom: 0, top: 4, borderRadius: 16, borderTopRightRadius: 0, justifyContent: "flex-end", backfaceVisibility: "hidden" },
+  glyph: { position: "absolute", left: 0, right: 0, top: 0, bottom: 0, alignItems: "center", justifyContent: "center", paddingBottom: 16 },
+  glyphBox: { width: 52, height: 52, borderRadius: 16, backgroundColor: "rgba(255,255,255,0.22)", alignItems: "center", justifyContent: "center" },
   badge: { flexDirection: "row", alignItems: "center", gap: 5, alignSelf: "flex-start", margin: 9, marginTop: 0, paddingHorizontal: 9, paddingVertical: 4, borderRadius: 999, backgroundColor: "rgba(255,255,255,0.24)" },
   tagTx: { fontSize: 10, letterSpacing: 0.4 },
   star: { position: "absolute", top: 18, left: 6, width: 18, height: 18, borderRadius: 9, backgroundColor: "#F5A623", alignItems: "center", justifyContent: "center" },

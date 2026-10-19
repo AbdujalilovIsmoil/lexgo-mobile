@@ -1,11 +1,10 @@
-import { Image } from "react-native";
 import { File } from "expo-file-system";
+import { bundledText, keepOnSuccess } from "@/shared/lib/bundled";
 import HTML from "../../../../assets/doc/docx.html";
 
-let html: Promise<string> | null = null;
-
-// The page that turns a .docx into HTML (assets/doc/docx.html = mammoth + a receiver), fetched once per app run.
-export const loadDocxPage = (): Promise<string> => (html ??= fetch(Image.resolveAssetSource(HTML).uri).then((r) => r.text()));
+// The page that turns a .docx into HTML (assets/doc/docx.html = mammoth + a receiver), read once per app run from the
+// packaged file (a release build has no dev server to fetch it from).
+export const loadDocxPage = keepOnSuccess(() => bundledText(HTML));
 
 // A local file as base64, ready to hand to that page.
 export async function readBase64(uri: string): Promise<string> {

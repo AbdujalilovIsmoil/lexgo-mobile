@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import { StyleSheet, View } from "react-native";
+import { StatusBar } from "expo-status-bar";
 import Animated, { Easing, useAnimatedStyle, useSharedValue, withRepeat, withTiming } from "react-native-reanimated";
 import { Avatar, Icon, PressableScale, Text } from "@/shared/ui";
 import type { Incoming } from "@/features/call";
@@ -18,6 +19,7 @@ export function IncomingCard({ inc, onAccept, onDecline }: { inc: Incoming; onAc
   const who = inc.callerName || t("admMeet.someone");
   return (
     <View style={[s.fill, { paddingTop: insets.top + 40, paddingBottom: insets.bottom + 40 }]}>
+      <StatusBar style="light" />
       <View style={s.top}>
         <View style={s.ring}><Animated.View style={[s.halo, halo]} /><Avatar name={who} size={104} /></View>
         <Text variant="h2" tone="white" center>{who}</Text>

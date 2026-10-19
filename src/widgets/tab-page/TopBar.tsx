@@ -29,7 +29,7 @@ export function TopBar({ right, noActions }: { right?: ReactNode; noActions?: bo
 }
 
 const s = StyleSheet.create({
-  bar: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingHorizontal: 16, paddingBottom: 12 },
+  bar: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", gap: 8, paddingHorizontal: 16, paddingBottom: 12 },
   brand: { flexDirection: "row", alignItems: "center", gap: 10, flex: 1, minWidth: 0 },
   logo: { width: 40, height: 40, borderRadius: 12 },
   who: { flex: 1, minWidth: 0 },

@@ -1,4 +1,4 @@
-import { backoffMs, idempotencyKey, isPermanentStatus } from "./backoff";
+import { backoffMs, flushVerdict, idempotencyKey, isPermanentStatus } from "./backoff";
 
 describe("outbox backoff", () => {
   it("grows and caps at 5 minutes", () => {
@@ -21,5 +21,25 @@ describe("outbox retry policy", () => {
   it("idempotency key is stable per item", () => {
     expect(idempotencyKey("u1", "task.create", 7, 99)).toBe(idempotencyKey("u1", "task.create", 7, 99));
     expect(idempotencyKey("u1", "task.create", 7, 99)).not.toBe(idempotencyKey("u1", "task.create", 8, 99));
+  });
+});
+
+describe("outbox failure verdict", () => {
+  it("no answer (offline / timeout) stops the run without counting an attempt", () => {
+    expect(flushVerdict(0, 0)).toBe("stop");
+    expect(flushVerdict(0, 7)).toBe("stop");
+  });
+  it("401: waits for the account when signed out, otherwise counts one attempt and ends the run", () => {
+    expect(flushVerdict(401, 0, 8, false)).toBe("stop");
+    expect(flushVerdict(401, 0, 8, true)).toBe("retry-stop");
+    expect(flushVerdict(401, 7, 8, true)).toBe("drop");
+  });
+  it("rejected writes are dropped, transient ones retried until the attempt cap", () => {
+    expect(flushVerdict(422, 0)).toBe("drop");
+    expect(flushVerdict(404, 0)).toBe("drop");
+    expect(flushVerdict(503, 0)).toBe("retry");
+    expect(flushVerdict(429, 3)).toBe("retry");
+    expect(flushVerdict(503, 7, 8)).toBe("drop");
+    expect(flushVerdict(-1, 0)).toBe("retry");
   });
 });

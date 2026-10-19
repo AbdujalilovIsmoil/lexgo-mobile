@@ -1,10 +1,12 @@
 import { ActivityIndicator, Modal, StyleSheet, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { useColors } from "@/shared/theme";
+import { StatusBar } from "expo-status-bar";
+import { useTheme } from "@/shared/theme";
 import { useT } from "@/shared/i18n";
 import { IconButton } from "../IconButton";
 import { Button } from "../Button";
 import { Text } from "../Text";
+import { OverlayHost } from "../overlay/OverlayHost";
 import { PreviewBody } from "./PreviewBody";
 import { shareFile } from "@/shared/lib/files";
 import { BlockedView } from "./BlockedView";
@@ -17,7 +19,7 @@ type Props = { visible: boolean; onClose: () => void; file: FileRef | null };
 // Full-screen preview of an authenticated file or a local uri (TZ 29). Shows a
 // download progress bar with cancel, then the right viewer for the format.
 export function FilePreview({ visible, onClose, file }: Props) {
-  const c = useColors();
+  const { colors: c, dark } = useTheme();
   const { t } = useT();
   const insets = useSafeAreaInsets();
   const { state, uri, cls, kind, retry, cancel } = useFileSource(visible ? file : null);
@@ -48,6 +50,9 @@ export function FilePreview({ visible, onClose, file }: Props) {
           <OtherView uri={uri} name={title} mime={file?.mime} message={t("fnd1.preview.tooLarge")} />
         ) : uri ? <PreviewBody uri={uri} kind={kind} name={title} mime={file?.mime} /> : null}
       </View>
+      {/* The page behind may be a dark hero with light icons: the preview has the theme's own background. */}
+      {visible ? <StatusBar style={dark ? "light" : "dark"} /> : null}
+      {visible ? <OverlayHost /> : null}
     </Modal>
   );
 }

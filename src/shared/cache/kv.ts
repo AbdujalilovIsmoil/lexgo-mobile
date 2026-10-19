@@ -45,6 +45,26 @@ export async function cacheList<T>(prefix: string): Promise<Row<T>[]> {
   });
 }
 
+/** Key, stored size and age of every live row under `prefix`, newest first. No value is read or parsed. */
+export async function cacheKeys(prefix: string): Promise<{ key: string; bytes: number; updatedAt: number }[]> {
+  const scope = cacheScope();
+  if (!scope) return [];
+  return safely<{ key: string; bytes: number; updatedAt: number }[]>([], async (d) => {
+    const rows = await d.getAllAsync<{ key: string; n: number; updated_at: number }>("SELECT key, LENGTH(value) AS n, updated_at FROM kv WHERE scope = ? AND key LIKE ? AND expires_at >= ? ORDER BY updated_at DESC", scope, `${prefix}%`, Date.now());
+    return rows.map((r) => ({ key: r.key, bytes: r.n, updatedAt: r.updated_at }));
+  });
+}
+
+/** Raw JSON text of a few rows (the caller parses them in slices, between yields to the UI). */
+export async function cacheTexts(keys: readonly string[]): Promise<Map<string, string>> {
+  const scope = cacheScope();
+  if (!scope || !keys.length) return new Map();
+  return safely(new Map<string, string>(), async (d) => {
+    const rows = await d.getAllAsync<{ key: string; value: string }>(`SELECT key, value FROM kv WHERE scope = ? AND key IN (${keys.map(() => "?").join(", ")})`, scope, ...keys);
+    return new Map(rows.map((r) => [r.key, r.value]));
+  });
+}
+
 export async function cacheDelete(key: string): Promise<void> {
   const scope = cacheScope();
   if (scope) await safely(undefined, async (d) => void (await d.runAsync("DELETE FROM kv WHERE scope = ? AND key = ?", scope, key)));

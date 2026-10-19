@@ -25,5 +25,6 @@ export function useErrorText() {
 export function ErrorView({ error, onRetry, compact }: Props) {
   const { t } = useT();
   const text = useErrorText();
-  return <EmptyState icon={error instanceof ApiError && error.status === 403 ? "lock" : "alert-circle"} title={text(error)} actionLabel={onRetry ? t("common.retry") : undefined} onAction={onRetry} compact={compact} />;
+  const status = error instanceof ApiError ? error.status : -1;
+  return <EmptyState icon={status === 403 ? "lock" : status === 0 ? "wifi-off" : "alert-circle"} title={text(error)} actionLabel={onRetry ? t("common.retry") : undefined} onAction={onRetry} compact={compact} />;
 }

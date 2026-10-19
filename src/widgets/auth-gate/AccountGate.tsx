@@ -1,6 +1,7 @@
 import { Modal, View } from "react-native";
 import { accountGate, isSellerUser, useSession } from "@/entities/session";
 import { useColors } from "@/shared/theme";
+import { OverlayHost } from "@/shared/ui";
 import { GateCard } from "./GateCard";
 import { useGateStore } from "./gateStore";
 
@@ -18,6 +19,7 @@ export function AccountGate({ suppressed }: { suppressed?: boolean }) {
       <View style={{ flex: 1, justifyContent: "center", backgroundColor: c.bg }}>
         <GateCard gate={gate} seller={isSellerUser(user)} name={user.name} skey={key} />
       </View>
+      <OverlayHost />
     </Modal>
   );
 }

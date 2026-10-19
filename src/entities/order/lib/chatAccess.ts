@@ -3,19 +3,23 @@ import { marketStageOf } from "./stage";
 
 type O = Pick<MarketOrder, "status" | "paymentStatus" | "lawyerUserId" | "roomId" | "canStartChat">;
 
-const PAID = new Set(["paid", "success", "succeeded", "completed", "approved", "partially_paid", "advance_paid"]);
 const VOID = new Set(["refunded", "failed", "cancelled", "canceled", "expired", "rejected"]);
 
-// A purchase that still entitles the client to talk to its specialist: paid (or already given a chat room) and in work.
-// Pending payment, completed/closed and cancelled/declined/refunded orders no longer do.
+// The web's rule (marketplace trackPhaseOf → "chat"): an order gives a chat only while it is in work — paid, not finished,
+// not cancelled — AND the backend opened its chat (can_start_chat with a room; the normalizer requires both). Pending
+// payment, a finished order (completed / rated / done / closed: the service is used up, its chat turns read-only) and a
+// cancelled / declined / refunded one give none.
 export function orderGivesChat(o: O): boolean {
-  if (marketStageOf(o) !== "active") return false;
-  if (VOID.has(o.paymentStatus) || o.status === "refunded") return false;
-  return PAID.has(o.paymentStatus) || o.canStartChat || !!o.roomId;
+  return marketStageOf(o) === "active" && o.canStartChat && !VOID.has(o.paymentStatus);
 }
 
-// The rule for the "Chat" entry on a specialist's page: only while the client holds a running paid order with that specialist.
+// The rule for the "Chat" entry on a specialist's page: only while the client holds such an order with that specialist.
 export function canChatWith(specialistId: string, orders: readonly O[] | undefined): boolean {
-  if (!specialistId || !orders) return false;
-  return orders.some((o) => o.lawyerUserId === specialistId && orderGivesChat(o));
+  return chatRoomWith(specialistId, orders) !== "";
+}
+
+// The chat room of that order ("" when there is none): the page opens this room directly, like the web's order chat.
+export function chatRoomWith(specialistId: string, orders: readonly O[] | undefined): string {
+  if (!specialistId || !orders) return "";
+  return orders.find((o) => o.lawyerUserId === specialistId && orderGivesChat(o))?.roomId ?? "";
 }

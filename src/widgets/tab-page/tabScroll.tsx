@@ -7,10 +7,11 @@ export const TabHeaderProvider = TabHeaderCtx.Provider;
 
 // The page header (logo row + title + text + banner) as one element. A list that spreads it into its own
 // ListHeaderComponent makes the whole header scroll away WITH the content; a page without such a list
-// gets the header drawn above its body by TabPage. `bleed` cancels the list's horizontal padding.
-export function useTabHeader(bleed = 0): ReactNode {
+// gets the header drawn above its body by TabPage. `bleed` / `top` cancel the list's side / top padding, so the
+// header row sits at the same spot on every tab.
+export function useTabHeader(bleed = 0, top = 0): ReactNode {
   const ctx = useContext(TabHeaderCtx);
   const claim = ctx?.claim;
   useEffect(() => { claim?.(); }, [claim]);
-  return useMemo(() => (ctx ? <View style={{ marginHorizontal: -bleed }}>{ctx.header}</View> : null), [ctx, bleed]);
+  return useMemo(() => (ctx ? <View style={{ marginHorizontal: -bleed, marginTop: -top }}>{ctx.header}</View> : null), [ctx, bleed, top]);
 }
