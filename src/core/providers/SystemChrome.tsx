@@ -4,7 +4,7 @@ import * as SystemUI from "expo-system-ui";
 import { NavigationBar } from "expo-navigation-bar";
 import { useTheme } from "@/shared/theme";
 import { resyncStatusBar, resyncStatusBarSoon } from "@/shared/lib/statusBarSync";
-import { useOverlayHosts } from "@/shared/ui";
+import { useOverlayHosts } from "@/shared/ui/overlay";
 
 // Edge-to-edge like iOS: the page colour is painted behind the status bar and
 // the Android navigation bar, and screens keep clear of them with inset padding.
