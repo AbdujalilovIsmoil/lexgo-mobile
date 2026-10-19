@@ -9,6 +9,8 @@ import { DemoPill } from "@/shared/demo/DemoPill";
 
 // Global header actions of every tab page: notifications (with the unread dot) and
 // the avatar that opens Profil (the AI centre button takes the 5th tab slot).
+// A visitor has no profile yet: the person button opens the sign-in, like the bell. It is a button of its own — wrapped
+// in another pressable it took the tap itself and nothing happened.
 export function HeaderActions({ glass }: { glass?: boolean }) {
   const router = useRouter();
   const session = useSession();
@@ -20,9 +22,13 @@ export function HeaderActions({ glass }: { glass?: boolean }) {
       <DemoPill glass={glass} />
       {role === "client" || role === "seller" ? <SupportMenu glass={glass} client={role === "client"} /> : null}
       <IconButton icon="bell" size={40} tone={glass ? "glass" : "tint"} badge={unread > 0} onPress={() => router.push(session ? "/notifications" : "/auth/login")} />
-      <PressableScale onPress={() => router.push("/(tabs)/profile")} accessibilityLabel="profile">
-        {name ? <Avatar name={name} size={40} /> : <IconButton icon="user" size={40} tone={glass ? "glass" : "tint"} />}
-      </PressableScale>
+      {session && name ? (
+        <PressableScale onPress={() => router.push("/(tabs)/profile")} accessibilityLabel="profile">
+          <Avatar name={name} size={40} />
+        </PressableScale>
+      ) : (
+        <IconButton icon="user" size={40} tone={glass ? "glass" : "tint"} onPress={() => router.push(session ? "/(tabs)/profile" : "/auth/login")} />
+      )}
     </View>
   );
 }
