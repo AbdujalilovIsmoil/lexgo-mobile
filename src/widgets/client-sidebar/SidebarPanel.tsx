@@ -12,7 +12,7 @@ import { useT } from "@/shared/i18n";
 import { useTabRole } from "@/widgets/tab-bar/useTabRole";
 import { EXTRA, isActive, navFor } from "./navItems";
 import { SidebarItem } from "./SidebarItem";
-import { useAccess } from "@/entities/access";
+import { useAccess, visibleModules } from "@/entities/access";
 import { useCabinet } from "@/entities/pro-workspace";
 
 // The drawer content: brand + role, the web sidebar rows in the web order, the mobile-only account rows, and sign out.
@@ -29,7 +29,8 @@ export function SidebarPanel({ p, onGo }: { p: SharedValue<number>; onGo: (route
   // pending account already counts as under review (the web does the same), so no locked row flashes in.
   const cabinet = useCabinet().data;
   const limited = cabinet ? cabinet.limited : user?.accountStatus === "pending";
-  const nav = navFor(role, { kind: user?.role, orgOwner: access.orgOwner, limited, actions: cabinet?.actions });
+  const modules = role === "sales" ? new Set(visibleModules(access).map((m) => m.key)) : undefined;
+  const nav = navFor(role, { kind: user?.role, orgOwner: access.orgOwner, limited, actions: cabinet?.actions, modules });
   const client = role === "client" || role === "guest";
   const badges = { notifications: useUnreadCount(), support: useBadge("support") };
   return (
@@ -38,7 +39,7 @@ export function SidebarPanel({ p, onGo }: { p: SharedValue<number>; onGo: (route
         <Image source={require("../../../assets/logo-small.png")} style={s.logo} />
         <View style={s.fill}>
           <Text variant="h4">LexGo</Text>
-          <Text variant="caption" tone="gray" numberOfLines={1}>{user ? `${displayName(user) || t("ntd.sbTitle")} ·${t(role === "client" ? "profile.roleClient" : user.role === "advocate" ? "profile.roleAdvocate" : user.role === "lawyer" ? "profile.roleLawyer" : "tabs.admin")}` : t("home.guest")}</Text>
+          <Text variant="caption" tone="gray" numberOfLines={1}>{user ? `${displayName(user) || t("ntd.sbTitle")} ·${t(role === "client" ? "profile.roleClient" : role === "sales" ? "salesOp.role" : user.role === "advocate" ? "profile.roleAdvocate" : user.role === "lawyer" ? "profile.roleLawyer" : "tabs.admin")}` : t("home.guest")}</Text>
         </View>
       </View>
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={s.list}>

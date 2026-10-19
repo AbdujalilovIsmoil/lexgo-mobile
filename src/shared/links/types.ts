@@ -6,7 +6,8 @@ export type Dict = Record<string, unknown>;
 export type LinkInput = { event?: string; category?: string; entityType?: string; entityId?: string; deepLink?: string; data?: Dict };
 
 export type ViewerKind = "client" | "seller" | "callcenter" | "staff";
-export type Viewer = { signedIn: boolean; kind: ViewerKind; orgOwner: boolean; callCenterLawyer: boolean };
+// `sales`: a sales operator (staff whose funnel is a tab of its own, not an admin screen).
+export type Viewer = { signedIn: boolean; kind: ViewerKind; orgOwner: boolean; callCenterLawyer: boolean; sales?: boolean };
 
 export type SubjectKind =
   | "chat" | "call" | "doc" | "order" | "payment" | "ticket" | "urgent" | "complaint" | "subscription" | "calendar"

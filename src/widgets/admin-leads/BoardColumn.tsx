@@ -22,7 +22,7 @@ export function BoardColumn({ col, at, last, width, filtered, ops, meId, busyId,
         <View style={[s.count, { backgroundColor: c.surface }]}><Text variant="caption" weight="bold">{filtered ? col.leads.length : col.count}</Text></View>
       </View>
       {col.leads.length ? col.leads.map((lead) => (
-        <LeadCard key={lead.id} lead={lead} stageTitle={title} stageColor={col.color} ops={ops} meId={meId} canBack={at > 0} canFwd={at < last} busy={busyId === lead.id} onOpen={() => onOpen(lead)} onShift={(d) => onShift(lead, d)} onStage={() => onStage(lead)} />
+        <LeadCard key={lead.id} lead={lead} stageTitle={title} stageColor={col.color} showStage={false} ops={ops} meId={meId} canBack={at > 0} canFwd={at < last} busy={busyId === lead.id} onOpen={() => onOpen(lead)} onShift={(d) => onShift(lead, d)} onStage={() => onStage(lead)} />
       )) : <Text variant="small" tone="gray2" center style={s.empty}>{t(filtered ? "admLeads.noMatch" : "admLeadsV.none")}</Text>}
     </View>
   );

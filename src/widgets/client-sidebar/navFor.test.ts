@@ -7,7 +7,7 @@ describe("drawer rows per role", () => {
     expect(navFor("guest")).toBe(navFor("client"));
   });
   it("every role has rows, a label for each and no duplicate keys", () => {
-    for (const r of ["guest", "client", "seller", "callcenter", "staff"] as const) {
+    for (const r of ["guest", "client", "seller", "callcenter", "sales", "staff"] as const) {
       const list = navFor(r);
       expect(list.length).toBeGreaterThan(4);
       expect(new Set(list.map((x) => x.key)).size).toBe(list.length);
@@ -38,6 +38,20 @@ describe("seller drawer follows the web sidebar", () => {
   });
 });
 
+describe("sales operator drawer follows the web sidebar", () => {
+  const WEB_SALES = ["pipeline", "duty", "smeetings", "callAnalytics", "marketplace", "notifySend"];
+  it("the role's rows in the web order (funnel, duty desk and meetings are tabs), then the settings", () => {
+    expect(keys("sales").slice(0, WEB_SALES.length)).toEqual(WEB_SALES);
+    expect(navFor("sales").slice(0, 3).map((i) => i.route)).toEqual(["/(tabs)/pipeline", "/(tabs)/duty", "/(tabs)/smeetings"]);
+  });
+  it("a row needs its module", () => {
+    const rows = navFor("sales", { modules: new Set(["pipeline", "meetings"]) }).map((i) => i.key);
+    expect(rows.slice(0, 2)).toEqual(["pipeline", "smeetings"]);
+    expect(rows).not.toContain("duty");
+    expect(rows).not.toContain("callAnalytics");
+  });
+});
+
 describe("isActive", () => {
   it("tab routes match the path without the (tabs) group", () => {
     expect(isActive("/(tabs)/workspace", "/workspace")).toBe(true);
@@ -50,7 +64,7 @@ describe("isActive", () => {
 
 describe("no profile row in any drawer (the header has the profile button)", () => {
   it("has none for any role", () => {
-    for (const r of ["guest", "client", "seller", "callcenter", "staff"] as const) {
+    for (const r of ["guest", "client", "seller", "callcenter", "sales", "staff"] as const) {
       expect(navFor(r, { kind: "lawyer" }).filter((i) => i.key === "profile" || i.route === "/profile" || i.route === "/pro/profile")).toEqual([]);
       expect(navFor(r, { kind: "advocate", orgOwner: true }).filter((i) => i.key === "profile")).toEqual([]);
     }

@@ -16,6 +16,8 @@ export const tabs: Messages["tabs"] = {
   clients: "Клиенты",
   leads: "Лиды",
   support: "Поддержка",
+  pipeline: "Воронка",
+  duty: "Дежурство",
   meetings: "Встречи",
   notifications: "Уведомления",
   signIn: "Войти",

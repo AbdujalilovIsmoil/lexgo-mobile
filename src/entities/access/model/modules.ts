@@ -14,7 +14,7 @@ const CORE_MODULES: AdminModule[] = [
   { key: "callcenter", group: "sales", icon: "phone", color: "#22C55E", visible: (a) => a.admin && a.can(["leads.manage", "callcenter.access"]) },
   { key: "meetings", group: "sales", icon: "video", color: "#EC4899", visible: (a) => a.canCalls || (a.admin && a.can(["leads.manage", "callcenter.access"])) },
   { key: "callAnalytics", group: "sales", icon: "bar-chart-2", color: "#3B82F6", visible: (a) => a.admin && a.can("leads.manage") },
-  { key: "retention", group: "sales", icon: "users", color: "#F59E0B", visible: (a) => a.admin && a.can("leads.manage") },
+  { key: "retention", group: "sales", icon: "users", color: "#F59E0B", visible: (a) => a.admin && a.can("leads.manage"), web: "hidden" },
   { key: "b2b", group: "sales", icon: "briefcase", color: "#64748B", visible: (a) => a.admin && a.can("b2b.manage") },
   { key: "marketplace", group: "catalog", icon: "shopping-bag", color: "#3B82F6", visible: (a) => a.admin && a.can("orders.manage") },
   { key: "services", group: "catalog", icon: "layers", color: "#8B5CF6", visible: (a) => a.admin && a.can("services.manage") },
@@ -29,8 +29,8 @@ const CORE_MODULES: AdminModule[] = [
   { key: "support", group: "support", icon: "headphones", color: "#06B6D4", visible: (a) => a.isSuper || a.callCenter },
   { key: "legalAid", group: "support", icon: "life-buoy", color: "#EC4899", visible: (a) => a.admin && a.can("legal_aid.manage") },
   { key: "notifications", group: "support", icon: "bell", color: "#F59E0B", visible: (a) => a.admin && a.can("notifications.manage") },
-  { key: "chats", group: "support", icon: "message-circle", color: "#3B82F6", visible: (a) => true },
-  { key: "internal", group: "internal", icon: "users", color: "#6366F1", visible: (a) => a.internal },
+  { key: "chats", group: "support", icon: "message-circle", color: "#3B82F6", visible: (a) => true, web: "absent" },
+  { key: "internal", group: "internal", icon: "users", color: "#6366F1", visible: (a) => a.internal, web: "absent" },
   { key: "integrations", group: "system", icon: "zap", color: "#F59E0B", visible: (a) => a.admin && a.can() },
   { key: "testOtps", group: "system", icon: "key", color: "#64748B", visible: (a) => a.admin && a.can(), demoOnly: true },
   { key: "roles", group: "system", icon: "lock", color: "#EF4444", visible: (a) => a.admin && a.can("roles.manage") },
@@ -42,4 +42,6 @@ const CORE_MODULES: AdminModule[] = [
 
 export const MODULES: AdminModule[] = [...CORE_MODULES, ...ADM_MODULES];
 export const moduleByKey = (key: string): AdminModule | undefined => MODULES.find((m) => m.key === key);
-export const visibleModules = (a: Access): AdminModule[] => MODULES.filter((m) => m.visible(a));
+// A sales operator sees exactly the web sidebar of their role; everyone else also gets the mobile-only modules.
+export const moduleShown = (m: AdminModule, a: Access): boolean => m.visible(a) && !(a.salesOperator && m.web);
+export const visibleModules = (a: Access): AdminModule[] => MODULES.filter((m) => moduleShown(m, a));

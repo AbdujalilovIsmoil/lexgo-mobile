@@ -16,5 +16,6 @@ export function mayOpen(href: string, v: Viewer): boolean {
 // The screen a viewer lands on when a link cannot be honoured.
 export function safeHome(v: Viewer): string {
   if (!v.signedIn) return "/";
+  if (v.sales) return "/(tabs)/pipeline";
   return v.kind === "seller" ? "/(tabs)/workspace" : v.kind === "callcenter" ? "/(tabs)/leads" : v.kind === "staff" ? "/(tabs)/admin" : "/";
 }

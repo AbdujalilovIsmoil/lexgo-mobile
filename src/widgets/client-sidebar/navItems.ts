@@ -38,7 +38,18 @@ const flat = (sections: { items: NavItem[] }[]): NavItem[] => sections.flatMap((
 // What the drawer lists for each role: the client (and the visitor) get the web portal's rows; the others get their own home and
 // tabs first, then the tools of their role, then notifications and the account/app settings.
 const row = (key: string, icon: IconName, route: string, badge?: NavItem["badge"]): NavItem => ({ key, icon, route, label: `lsb.${key}`, badge });
-export type Seller = { kind?: string; orgOwner?: boolean; limited?: boolean; actions?: { acceptOrders: boolean; secureChat: boolean } };
+export type Seller = { kind?: string; orgOwner?: boolean; limited?: boolean; actions?: { acceptOrders: boolean; secureChat: boolean }; modules?: ReadonlySet<string> };
+
+// The web sidebar of a sales operator (AdminShell groups "Mijozlar va sotuv" → "Katalog va buyurtmalar" → "Yordam va huquq") in its
+// order: the funnel, duty desk and meetings are tabs, the rest open their admin screens. A row needs its module (`modules`).
+const SALES: { mod: string; row: NavItem }[] = [
+  { mod: "pipeline", row: tab("pipeline", "trending-up", "/(tabs)/pipeline", "admHub.mod.pipeline.title") },
+  { mod: "callcenter", row: tab("duty", "headphones", "/(tabs)/duty", "admHub.mod.callcenter.title") },
+  { mod: "meetings", row: tab("smeetings", "video", "/(tabs)/smeetings", "admHub.mod.meetings.title") },
+  { mod: "callAnalytics", row: tab("callAnalytics", "bar-chart-2", "/manage/callAnalytics", "admHub.mod.callAnalytics.title") },
+  { mod: "marketplace", row: tab("marketplace", "shopping-bag", "/manage/marketplace", "admHub.mod.marketplace.title") },
+  { mod: "notifications", row: tab("notifySend", "send", "/manage/notifications", "admHub.mod.notifications.title") },
+];
 
 // The web PortalShell's permission rules, the same for a yurist and an advokat (only the row lists differ):
 // an account still under review (cabinet `limited_access`) keeps only these rows — an advokat has no services row then —
@@ -72,6 +83,7 @@ export function navFor(role: TabRole, seller: Seller = {}): NavItem[] {
   if (role === "client" || role === "guest") return NAV;
   const common = flat([COMMON_SECTION]);
   if (role === "seller") return sellerNav(seller);
+  if (role === "sales") return [...SALES.filter((x) => !seller.modules || seller.modules.has(x.mod)).map((x) => x.row), ...common];
   if (role === "callcenter") {
     return [tab("leads", "trending-up", "/(tabs)/leads", "tabs.leads"), tab("csupport", "headphones", "/(tabs)/csupport", "tabs.support", "support"), tab("cclients", "users", "/(tabs)/cclients", "tabs.clients"), tab("cmeetings", "video", "/(tabs)/cmeetings", "tabs.meetings"), ...flat(CC_SECTIONS), ...common];
   }

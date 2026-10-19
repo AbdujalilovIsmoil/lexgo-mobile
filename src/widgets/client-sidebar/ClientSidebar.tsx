@@ -14,7 +14,8 @@ import { useSidebar } from "./sidebarStore";
 import { SPRING, useDrawer } from "./useDrawer";
 
 // Screens that need the whole width (rooms, calls, auth, the assistant): no sidebar there. Every role has one.
-const HIDE = new Set(["auth", "chat", "call", "lawyer", "assistant", "instructor", "specialist", "sel-dev", "cc-preview"]);
+// The admin area has its own module switcher on the same edge, so it gets no second handle.
+const HIDE = new Set(["auth", "chat", "call", "lawyer", "assistant", "instructor", "specialist", "sel-dev", "cc-preview", "manage"]);
 
 // The sidebar of every role (the client's rows are the web portal's; see navFor for the others). The handle on the left edge (or a drag from it) pulls the
 // drawer out; the page dims as it comes. Tap the dim area, drag the drawer left, or press back to close.

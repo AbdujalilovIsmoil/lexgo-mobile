@@ -66,7 +66,12 @@ describe("guard", () => {
     expect(safeHome(v("seller"))).toBe("/(tabs)/workspace");
     expect(safeHome(v("callcenter"))).toBe("/(tabs)/leads");
     expect(safeHome(v("staff"))).toBe("/(tabs)/admin");
+    expect(safeHome(v("staff", { sales: true }))).toBe("/(tabs)/pipeline");
     expect(safeHome(v("client"))).toBe("/");
+  });
+  it("a lead opens the sales operator's funnel tab, the admin funnel for other staff", () => {
+    expect(resolveLink({ event: "lead.assigned", data: { lead_id: "l1" } }, v("staff", { sales: true }))).toMatchObject({ kind: "target", target: { href: "/(tabs)/pipeline" } });
+    expect(resolveLink({ event: "lead.assigned", data: { lead_id: "l1" } }, v("staff"))).toMatchObject({ kind: "target", target: { href: "/manage/pipeline" } });
   });
 });
 

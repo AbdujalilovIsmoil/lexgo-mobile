@@ -14,6 +14,8 @@ export const tabs = {
   clients: "Mijozlar",
   leads: "Leadlar",
   support: "Support",
+  pipeline: "Voronka",
+  duty: "Navbatchi",
   meetings: "Uchrashuvlar",
   notifications: "Xabarnoma",
   signIn: "Kirish",

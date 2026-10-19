@@ -12,6 +12,14 @@ describe("tab bars", () => {
   });
 });
 
+describe("a sales operator's bar is the web's \"Sotuv operatori\" panel", () => {
+  it("lands on the funnel; the duty desk, AI, meetings and the hub follow", () => {
+    expect(TABS.sales.map((x) => x.route)).toEqual(["pipeline", "duty", "ai", "smeetings", "admin"]);
+    expect(homeRoute("sales")).toBe("pipeline");
+    expect(allowedRoutes("sales")).not.toContain("index");
+  });
+});
+
 describe("a professional's bar follows the permission rules (yurist and advokat alike)", () => {
   it("an account under review keeps the workspace and the AI button only", () => {
     expect(TABS.seller.filter((d) => !sellerTabHidden(d.route, true)).map((d) => d.route)).toEqual(["workspace", "ai"]);

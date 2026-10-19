@@ -10,7 +10,7 @@ import { LeadTicket } from "./kit/LeadTicket";
 const isLostKey = (k: string) => /lost|rejected|yoqotil|rad/i.test(k);
 
 // Compact lead board: one list with a chip per stage, filters, "move to stage" (lost asks for a reason) and operator assignment.
-export function BoardPanel() {
+export function BoardPanel({ bottomPad = 0 }: { bottomPad?: number } = {}) {
   const { t } = useT();
   const label = useCcLabel();
   const region = useRegionLabel();
@@ -37,7 +37,7 @@ export function BoardPanel() {
   return (
     <>
       <PagedList
-        data={rows} query={soft(q)} keyExtractor={(r) => r.lead.id} empty={{ icon: "layers", title: t("admCcB.boardEmpty") }} skeletonHeight={100}
+        data={rows} query={soft(q)} keyExtractor={(r) => r.lead.id} empty={{ icon: "layers", title: t("admCcB.boardEmpty") }} skeletonHeight={100} bottomPad={bottomPad}
         header={<BoardHeader q={f.q} onQ={(v) => setF({ ...f, q: v })} active={filterActive({ ...f, q: "" })} onFilters={() => setFilters(true)} shown={rows.length} stages={stages} stage={stage} onStage={setStage} />}
         renderItem={({ lead, col }) => (
           <LeadTicket lead={lead} assignee={who(lead.assignedTo)} stage={title(col)} busy={(move.isPending && move.variables?.lead.id === lead.id) || assign.isPending} canAssign={operators.length > 0} onMove={() => setMoveFor(lead)} onAssign={() => setAssignFor(lead)} />

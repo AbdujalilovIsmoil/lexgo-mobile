@@ -11,5 +11,8 @@ export type AdminModule = {
   color: string;
   visible: (a: Access) => boolean; // same rules as the web AdminShell nav
   demoOnly?: boolean; // shown only where the backend's demo routes exist (staging)
+  // Where the module stands in the web AdminShell nav: "hidden" = a route without a sidebar row, "absent" = mobile-only.
+  // A sales operator gets exactly the web sidebar, so neither is listed for them.
+  web?: "hidden" | "absent";
 };
 

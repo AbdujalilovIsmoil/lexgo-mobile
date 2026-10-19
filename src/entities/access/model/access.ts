@@ -10,6 +10,7 @@ export type Access = {
   orgOwner: boolean; // advokat_tashkiloti / organization_owner
   callCenterLawyer: boolean; // may take open document and urgent pool work
   callCenterOperator: boolean; // call_center role (not a lawyer, not an admin)
+  salesOperator: boolean; // sales_operator role (not a full admin): the web's "Sotuv operatori" panel
   admin: boolean; // may open at least one admin screen
   internal: boolean; // may open the internal (HRM) area
   callCenter: boolean;
@@ -38,6 +39,7 @@ export function buildAccess(user: User | null | undefined): Access {
   const orgOwner = user?.backendRole === "advokat_tashkiloti" || has(roles, "organization_owner");
   const callCenterLawyer = has(roles, "call_center_lawyer");
   const callCenterOperator = has(roles, "call_center") && !seller && !isFullAdmin;
+  const salesOperator = has(roles, "sales_operator") && !seller && !isFullAdmin;
   const admin = isFullAdmin || perms.some((p) => has(ADMIN_PERMISSIONS, p));
   const callCenter = has(perms, "callcenter.access") || roles.some((r) => r === "call_center" || r === "call_center_lawyer");
   const canCalls = has(perms, "meetings.manage") || roles.some((r) => r.includes("call_center"));
@@ -53,6 +55,7 @@ export function buildAccess(user: User | null | undefined): Access {
     orgOwner,
     callCenterLawyer,
     callCenterOperator,
+    salesOperator,
     admin,
     internal,
     callCenter,

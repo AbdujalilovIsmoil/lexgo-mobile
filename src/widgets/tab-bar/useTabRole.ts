@@ -12,5 +12,6 @@ export function useTabRole(): TabRole {
   if (a.isFullAdmin) return "staff";
   if (a.roles.includes("call_center") && !a.seller) return "callcenter";
   if (a.seller) return "seller";
+  if (a.salesOperator) return "sales";
   return a.staff ? "staff" : "client";
 }

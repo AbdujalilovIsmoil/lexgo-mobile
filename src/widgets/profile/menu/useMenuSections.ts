@@ -9,10 +9,11 @@ import type { MenuSection } from "./types";
 export function useMenuSections(): MenuSection[] {
   const role = useTabRole();
   const a = useAccess();
-  const base = role === "seller" ? PRO_SECTIONS : role === "callcenter" ? CC_SECTIONS : role === "staff" ? STAFF_SECTIONS : CLIENT_SECTIONS;
+  // A sales operator's sections are its tabs and drawer (the web sidebar): the menu keeps the settings only.
+  const base = role === "seller" ? PRO_SECTIONS : role === "callcenter" ? CC_SECTIONS : role === "staff" ? STAFF_SECTIONS : role === "sales" ? [] : CLIENT_SECTIONS;
   const extra: MenuSection[] = [];
   if (role === "seller" && a.orgOwner) extra.push(ORG_SECTION);
   if (role === "seller" && a.callCenterLawyer) extra.push({ key: "pool", items: [POOL_ITEM] });
-  if (role !== "seller" && role !== "staff" && a.staff) extra.push(...STAFF_SECTIONS);
+  if (role !== "seller" && role !== "staff" && role !== "sales" && a.staff) extra.push(...STAFF_SECTIONS);
   return [...base, ...extra, COMMON_SECTION];
 }

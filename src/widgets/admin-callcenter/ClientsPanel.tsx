@@ -11,7 +11,7 @@ import { ClientTicket } from "./kit/ClientTicket";
 import { RecentClients } from "./kit/RecentClients";
 
 // Client lookup by name or phone (from 2 characters, as you type); a result opens the 360 card.
-export function ClientsPanel({ canLog, initial = "" }: { canLog: boolean; initial?: string }) {
+export function ClientsPanel({ canLog, initial = "", bottomPad = 0 }: { canLog: boolean; initial?: string; bottomPad?: number }) {
   const { t } = useT();
   const [q, setQ] = useState(initial);
   const [open, setOpen] = useState<CcClient | null>(null);
@@ -29,7 +29,7 @@ export function ClientsPanel({ canLog, initial = "" }: { canLog: boolean; initia
       ) : forbidden ? (
         <EmptyState icon="lock" title={t("adm.noAccess")} text={t("admCcB.searchNoAccess")} />
       ) : (
-        <PagedList data={res.data ?? []} query={soft(res)} keyExtractor={(c) => c.id} empty={{ icon: "users", title: t("admCcB.noResults") }} renderItem={(c) => <ClientTicket client={c} onPress={() => setOpen(c)} />} />
+        <PagedList data={res.data ?? []} query={soft(res)} bottomPad={bottomPad} keyExtractor={(c) => c.id} empty={{ icon: "users", title: t("admCcB.noResults") }} renderItem={(c) => <ClientTicket client={c} onPress={() => setOpen(c)} />} />
       )}
       <ClientSheet client={open} canLog={canLog} onClose={() => setOpen(null)} />
     </View>

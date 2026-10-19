@@ -42,6 +42,7 @@ export function routesMore(s: Subject, v: Viewer): Target | null {
     case "security":
       return tg("/security", "/security", "security");
     case "lead":
+      if (v.sales) return tg("/(tabs)/pipeline", "/(tabs)/pipeline", "lead");
       return v.kind === "staff" ? tg("/manage/pipeline", "/manage/pipeline", "lead") : v.kind === "callcenter" ? tg("/(tabs)/leads", "/(tabs)/leads", "lead") : null;
     case "approval":
       return v.kind === "staff" ? tg("/manage/approvals", "/manage/approvals", "approval") : null;

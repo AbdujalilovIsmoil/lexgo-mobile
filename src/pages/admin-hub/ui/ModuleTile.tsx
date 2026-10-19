@@ -1,8 +1,8 @@
 import { StyleSheet, View } from "react-native";
-import { useRouter } from "expo-router";
 import { LinearGradient } from "expo-linear-gradient";
 import Animated, { FadeInUp } from "react-native-reanimated";
-import { useRecentModules, type AdminModule } from "@/entities/access";
+import type { AdminModule } from "@/entities/access";
+import { useOpenModule } from "@/widgets/admin-drawer";
 import { Icon, PressableScale, Text } from "@/shared/ui";
 import { lighten } from "@/shared/lib/color";
 import { useColors } from "@/shared/theme";
@@ -12,9 +12,8 @@ import { useT } from "@/shared/i18n";
 export function ModuleTile({ mod, index, width }: { mod: AdminModule; index: number; width: number }) {
   const { t } = useT();
   const c = useColors();
-  const router = useRouter();
-  const add = useRecentModules((s) => s.add);
-  const open = () => { add(mod.key); router.push(`/manage/${mod.key}` as never); };
+  const openModule = useOpenModule();
+  const open = () => openModule(mod.key);
   return (
     <Animated.View entering={FadeInUp.delay(Math.min(index, 8) * 40).duration(320)} style={{ width }}>
       <PressableScale onPress={open} scale={0.93} accessibilityRole="button" accessibilityLabel={t(`admHub.mod.${mod.key}.title`)} style={[s.tile, { backgroundColor: c.surface, borderColor: c.line }]}>

@@ -22,7 +22,7 @@ export function HubHeader({ sections }: { sections: number }) {
         </View>
       </View>
       <View style={s.pills}>
-        {a.roles.filter((r) => r !== "client").slice(0, 3).map((r) => <Pill key={r} label={humanizeSlug(r)} tone="glass" small />)}
+        {a.roles.filter((r) => r !== "client").slice(0, 3).map((r) => <Pill key={r} label={r === "sales_operator" ? t("salesOp.role") : humanizeSlug(r)} tone="glass" small />)}
         <Pill label={t("admHub.perms", { n: a.perms.length })} tone="glass" small icon="shield" />
         <Pill label={t("admHub.modulesN", { n: sections })} tone="glass" small icon="grid" />
       </View>

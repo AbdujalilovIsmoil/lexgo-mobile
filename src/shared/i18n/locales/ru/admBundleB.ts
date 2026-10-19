@@ -30,6 +30,7 @@ import { admSecB } from "./admSecB";
 import { admSecC } from "./admSecC";
 import { admSt } from "./admSt";
 import { admHub } from "./admHub";
+import { salesOp } from "./salesOp";
 
 // Admin namespaces, grouped so no file passes 70 lines.
 export const admBundleB = {
@@ -38,5 +39,5 @@ export const admBundleB = {
   admIntB, admIntC, admOtpB, admOtpC, admRolesB, admRolesC,
   admAuditB, admAuditC, admLegalB, admLegalC, admPolB, admPolC,
   admAiRegB, admAiRegC, admChatB, admChatC, admSecB, admSecC,
-  admSt, admHub,
+  admSt, admHub, salesOp,
 };

@@ -17,16 +17,25 @@ export function StageChip({ title, color, onPress }: { title: string; color: str
   );
 }
 
-// Who owns the lead: muted when nobody, accent when it is the signed-in user.
+// Who owns the lead, like the foot of the web card: the initial in a small circle ("?" when nobody) and the name — muted when
+// nobody, accent when it is the signed-in user.
 export function AssigneeChip({ label, kind }: { label: string; kind: "none" | "me" | "op" }) {
   const c = useColors();
   const fg = kind === "me" ? c.accentStrong : kind === "op" ? c.ink : c.gray2;
   return (
-    <View style={[s.chip, { backgroundColor: kind === "me" ? c.tint2 : c.surface2 }]}>
-      <Icon name="user" size={12} color={fg} />
+    <View style={s.who}>
+      <View style={[s.av, { backgroundColor: kind === "me" ? c.tint2 : c.surface2 }]}>
+        <Text variant="caption" weight="bold" style={{ color: fg }}>{kind === "none" ? "?" : label.trim().charAt(0).toUpperCase()}</Text>
+      </View>
       <Text variant="caption" weight="semibold" numberOfLines={1} style={[s.title, { color: fg }]}>{label}</Text>
     </View>
   );
+}
+
+// A grey tag of the web card (category, region, source).
+export function LeadTag({ label }: { label: string }) {
+  const c = useColors();
+  return <View style={[s.tag, { backgroundColor: c.surface2 }]}><Text variant="caption" weight="semibold" tone="gray" numberOfLines={1}>{label}</Text></View>;
 }
 
 export const ScorePill = ({ score, label }: { score: string; label: string }) => <Pill small label={label} tone={score === "hot" ? "err" : score === "warm" ? "warn" : "blue"} />;
@@ -45,5 +54,8 @@ const s = StyleSheet.create({
   chip: { flexDirection: "row", alignItems: "center", gap: 5, paddingVertical: 5, paddingHorizontal: 9, borderRadius: radius.pill, flexShrink: 1 },
   dot: { width: 7, height: 7, borderRadius: 4 },
   title: { flexShrink: 1 },
-  shift: { width: 34, height: 34, borderRadius: 17, alignItems: "center", justifyContent: "center" },
+  who: { flexDirection: "row", alignItems: "center", gap: 6, flexShrink: 1 },
+  av: { width: 22, height: 22, borderRadius: 11, alignItems: "center", justifyContent: "center" },
+  tag: { paddingVertical: 3, paddingHorizontal: 8, borderRadius: radius.pill, maxWidth: "100%" },
+  shift:{ width: 34, height: 34, borderRadius: 17, alignItems: "center", justifyContent: "center" },
 });

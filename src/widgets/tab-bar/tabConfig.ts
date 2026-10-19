@@ -1,6 +1,6 @@
 import type { IconName } from "@/shared/ui";
 
-export type TabRole = "guest" | "client" | "seller" | "callcenter" | "staff";
+export type TabRole = "guest" | "client" | "seller" | "callcenter" | "sales" | "staff";
 // `needs`: shown only when that admin module is open to the user; `hideWith`: hidden when that module's tab is shown instead.
 export type TabDef = { route: string; icon: IconName; labelKey: string; center?: boolean; badge?: string; needs?: string; hideWith?: string; auth?: boolean };
 
@@ -18,6 +18,9 @@ export const TABS: Record<TabRole, TabDef[]> = {
   guest: [t("index", "home", "tabs.home"), t("services", "grid", "tabs.services"), ai, { ...t("works", "briefcase", "tabs.works"), auth: true }, { ...messages, auth: true }],
   client: [t("index", "home", "tabs.home"), t("services", "grid", "tabs.services"), ai, t("works", "briefcase", "tabs.works"), messages],
   seller: [t("workspace", "layers", "tabs.workspace"), t("requests", "inbox", "tabs.requests", "requests"), ai, t("clients", "users", "tabs.clients"), messages],
+  // The web's "Sotuv operatori" panel: the funnel (its landing page) and the duty desk first, meetings, and the hub that lists the
+  // rest of the role's sidebar (call analytics, marketplace monitoring, notifications) grouped like the web.
+  sales: [t("pipeline", "trending-up", "tabs.pipeline"), t("duty", "headphones", "tabs.duty"), ai, t("smeetings", "video", "tabs.meetings"), t("admin", "sliders", "tabs.admin")],
   callcenter: [t("leads", "trending-up", "tabs.leads"), t("csupport", "headphones", "tabs.support", "support"), t("cclients", "users", "tabs.clients"), t("cmeetings", "video", "tabs.meetings"), profile],
   staff: [t("index", "home", "tabs.home"), t("admin", "sliders", "tabs.admin"), ai, { ...t("hrm", "users", "tabs.hrm"), needs: "internal" }, { ...t("notifs", "bell", "tabs.notifications", "notifications"), hideWith: "internal" }, profile],
 };

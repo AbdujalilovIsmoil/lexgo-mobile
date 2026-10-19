@@ -16,6 +16,8 @@ export const tabs: Messages["tabs"] = {
   clients: "Clients",
   leads: "Leads",
   support: "Support",
+  pipeline: "Pipeline",
+  duty: "Duty desk",
   meetings: "Meetings",
   notifications: "Alerts",
   signIn: "Sign in",

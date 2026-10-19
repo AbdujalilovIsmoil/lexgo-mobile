@@ -1,4 +1,5 @@
 import { buildAccess, rolesOf } from "./access";
+import { visibleModules } from "./modules";
 import type { User } from "@/entities/session";
 
 const u = (p: Partial<User>): User => ({ id: "1", name: "N", phone: "+998", role: "client", backendRole: "client", accountStatus: "active", roles: [], permissions: [], twoFactorEnabled: false, ...p }) as User;
@@ -54,5 +55,22 @@ describe("buildAccess", () => {
   it("org owner", () => {
     expect(buildAccess(u({ backendRole: "advokat_tashkiloti" })).orgOwner).toBe(true);
     expect(buildAccess(u({ roles: ["organization_owner"] })).orgOwner).toBe(true);
+  });
+});
+
+describe("sales operator (the web's \"Sotuv operatori\")", () => {
+  const SALES_PERMS = ["leads.manage", "notifications.manage", "orders.manage", "sales.access"];
+  it("is the role itself, never a seller or a full admin", () => {
+    expect(buildAccess(u({ roles: ["sales_operator"], permissions: SALES_PERMS }))).toMatchObject({ salesOperator: true, admin: true, staff: true });
+    expect(buildAccess(u({ role: "lawyer", roles: ["sales_operator"] })).salesOperator).toBe(false);
+    expect(buildAccess(u({ roles: ["admin", "sales_operator"] })).salesOperator).toBe(false);
+    expect(buildAccess(u({ permissions: SALES_PERMS })).salesOperator).toBe(false);
+  });
+  it("gets exactly the modules of the web sidebar of the role", () => {
+    const a = buildAccess(u({ roles: ["sales_operator"], permissions: SALES_PERMS }));
+    expect(visibleModules(a).map((m) => m.key)).toEqual(["pipeline", "callcenter", "meetings", "callAnalytics", "marketplace", "notifications"]);
+  });
+  it("other staff with the same permissions keep the mobile-only modules", () => {
+    expect(visibleModules(buildAccess(u({ permissions: SALES_PERMS }))).map((m) => m.key)).toEqual(expect.arrayContaining(["retention", "chats"]));
   });
 });
