@@ -15,7 +15,8 @@ export function persistQueries(prefix: readonly unknown[], opts: { ttlMs?: numbe
 // Deny list: wins over every allow rule, whatever a package registers. Anything that carries credentials, payment
 // data, security settings, chat contents or live-call state is never written to the device (TZ 38).
 const DENY_ROOT = /^(auth|admin-otp|security|sec|pay|payments?|identity|call|ai|sos|location|session|demo)(-|$)/i;
-const DENY_SEGMENT = /^(chat|chats|room|rooms-msgs|messages|msgs|otp|totp|token|secret|password|card|cards|requisites|2fa|keys?)$/i;
+// editor: a document-server session (signed config + token); sources / versions: signed download links; payouts: bank data.
+const DENY_SEGMENT = /^(chat|chats|room|rooms-msgs|messages|msgs|otp|totp|token|secret|password|card|cards|requisites|2fa|keys?|editor|sources|payouts|versions)$/i;
 const SECURE_CHAT_ALLOWED = (key: readonly unknown[]): boolean => key[0] === "secure-chat" && key[1] === "rooms";
 
 export function isDenied(key: readonly unknown[]): boolean {
@@ -58,3 +59,12 @@ persistQueries(["market-orders"], { ttlMs: 3 * DAY });
 persistQueries(["business-hours"], { ttlMs: 7 * DAY });
 persistQueries(["offered-service-ids"], { ttlMs: 7 * DAY });
 persistQueries(["client-stats"], { ttlMs: DAY });
+// The professional's home (cabinet, stats), incoming requests, the file tree, document requests (list, card, pool) and
+// the client's works: the screens a lawyer / advocate / client opens first, so they still open without a connection.
+persistQueries(["pro-workspace"], { ttlMs: 3 * DAY });
+persistQueries(["pro-requests"], { ttlMs: 3 * DAY });
+persistQueries(["pro-files"], { ttlMs: 7 * DAY });
+persistQueries(["pro-docs", "list"], { ttlMs: 3 * DAY });
+persistQueries(["pro-docs", "one"], { ttlMs: 3 * DAY });
+persistQueries(["pro-docs", "pool"], { ttlMs: DAY });
+persistQueries(["works"], { ttlMs: 7 * DAY });
