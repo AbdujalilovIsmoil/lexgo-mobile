@@ -17,7 +17,7 @@ export function LockScreen({ unlock }: { unlock: Unlock }) {
   return (
     <GradientBox variant="dark" round={0} style={[s.fill, { paddingTop: insets.top + 24, paddingBottom: insets.bottom + 24 }]}>
       <View style={s.center}>
-        <Image source={require("../../../assets/logo.png")} style={s.logo} />
+        <Image source={require("../../../assets/logo-small.png")} style={s.logo} />
         <View style={s.icon}>
           <Icon name="lock" size={30} tone="white" />
         </View>

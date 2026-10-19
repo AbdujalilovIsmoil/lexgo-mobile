@@ -4,6 +4,7 @@ import { useRouter, useSegments } from "expo-router";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import Animated, { useAnimatedStyle, withSpring } from "react-native-reanimated";
 import { scheduleOnRN } from "react-native-worklets";
+import { useSession } from "@/entities/session";
 import { useColors } from "@/shared/theme";
 import { useTabRole } from "@/widgets/tab-bar/useTabRole";
 import { GUEST_OPEN } from "./navItems";
@@ -37,7 +38,16 @@ export function ClientSidebar() {
   const drag = Gesture.Pan().activeOffsetX(-10).onUpdate((e) => { x.value = Math.min(0, e.translationX); })
     .onEnd((e, ok) => { if (!ok) return; if (e.translationX < -w * 0.3 || e.velocityX < -500) scheduleOnRN(hide); else x.value = withSpring(0, SPRING); });
   /* eslint-enable react-hooks/immutability */
-  if (HIDE.has(String(seg[0])) || (seg[0] === "(tabs)" && seg[1] === "ai")) return null;
+  const hidden = HIDE.has(String(seg[0])) || (seg[0] === "(tabs)" && seg[1] === "ai");
+  const session = useSession();
+  const who = session ? `${session.user.id}:${session.user.backendRole}` : "";
+  // The drawer must never stay half-open behind a hidden route, a sign-in/out or a role switch (it would also keep
+  // swallowing the Android back button): snap it shut without animation.
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/immutability
+    x.value = -w;
+  }, [hidden, who, w, x]);
+  if (hidden) return null;
   // A visitor may open the public pages; every other row is personal, so it leads to sign-in.
   const go = (route: string) => { hide(); router.navigate((role === "guest" && !GUEST_OPEN.includes(route.split("?")[0]) ? "/auth/login" : route) as never); };
   return (

@@ -1,11 +1,13 @@
 import { useRef } from "react";
 import { StyleSheet, View } from "react-native";
 import Swipeable, { SwipeDirection, type SwipeableMethods } from "react-native-gesture-handler/ReanimatedSwipeable";
+import { useIsPending } from "@/shared/cache";
 import { useT } from "@/shared/i18n";
 import { fmtDate } from "@/shared/lib/format";
 import { tOr } from "@/shared/lib/pro/tOr";
 import { brand, radius, useColors } from "@/shared/theme";
 import { Card, Icon, Pill, PressableScale, Text, type IconName, type PillTone } from "@/shared/ui";
+import { KIND_CREATE, KIND_STATUS, KIND_UPDATE } from "../model/offline";
 import { isBlocked, isDone, isOverdue, stageOf, stepStage } from "../lib/stage";
 import type { ProTask, TaskStage } from "../model/types";
 
@@ -28,6 +30,7 @@ export function TaskCard({ task, onOpen, onMove, onPickStage }: Props) {
   const c = useColors();
   const { t, locale } = useT();
   const ref = useRef<SwipeableMethods>(null);
+  const waiting = [useIsPending(KIND_CREATE, task.id), useIsPending(KIND_UPDATE, task.id), useIsPending(KIND_STATUS, task.id)].some(Boolean);
   const stage = stageOf(task.status);
   const next = stepStage(stage, 1);
   const prev = stepStage(stage, -1);
@@ -69,6 +72,7 @@ export function TaskCard({ task, onOpen, onMove, onPickStage }: Props) {
           <View style={s.pills}>
             {task.dueDate ? <Pill small tone={over ? "err" : "gray"} icon={over ? "alert-circle" : "calendar"} label={fmtDate(task.dueDate, locale)} /> : null}
             <Pill small tone={PRIO[task.priority as keyof typeof PRIO] ?? "gray"} label={tOr(t, `aw11.priority.${task.priority}`, task.priority)} />
+            {waiting ? <Pill small tone="warn" icon="clock" label={t("nt3.net.pending")} /> : null}
             {isBlocked(task) ? <Pill small tone="err" icon="slash" label={t("aw7.blocked")} /> : null}
           </View>
           {total ? (

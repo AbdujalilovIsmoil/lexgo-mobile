@@ -29,8 +29,14 @@ export function SessionBoundary() {
 
   useEffect(() => {
     const sub = AppState.addEventListener("change", (s) => s === "active" && kickUserSocket());
-    const off = onResync(() => void qc.invalidateQueries());
+    // One debounced, active-only refetch: a reconnect right after resume must not stack on the focus refetch storm.
+    let timer: ReturnType<typeof setTimeout> | undefined;
+    const off = onResync(() => {
+      clearTimeout(timer);
+      timer = setTimeout(() => void qc.invalidateQueries({ refetchType: "active" }), 1500);
+    });
     return () => {
+      clearTimeout(timer);
       sub.remove();
       off();
     };

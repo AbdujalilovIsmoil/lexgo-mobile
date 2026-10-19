@@ -1,17 +1,14 @@
 import { useEffect } from "react";
-import { useLocalPrefs } from "@/entities/notification";
 import { useIsAuthed } from "@/entities/session";
-import { usePermissionStore } from "@/shared/push";
 import { disablePolling, enablePolling } from "./registerTask";
 
-// The periodic check exists only while a user is signed in, the notification permission is granted
-// and "background alerts" is on; signing out removes it.
+// The periodic job exists while a user is signed in; signing out removes it. It does two things: the alert poll (which
+// itself stays silent unless the permission is granted and "background alerts" is on) and the offline sync (outbox +
+// cache refresh), which must run whatever the alert settings are.
 export function usePolling(): void {
   const authed = useIsAuthed();
-  const granted = usePermissionStore((s) => s.status === "granted");
-  const wanted = useLocalPrefs((s) => s.background);
   useEffect(() => {
-    if (authed && granted && wanted) void enablePolling();
+    if (authed) void enablePolling();
     else void disablePolling();
-  }, [authed, granted, wanted]);
+  }, [authed]);
 }

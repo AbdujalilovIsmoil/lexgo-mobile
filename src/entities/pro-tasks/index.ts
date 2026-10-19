@@ -3,3 +3,4 @@ export { useTasks, useCreateTask, useUpdateTask, useTaskStatus, useDeleteTask, t
 export { STAGES, stageOf, stepStage, isBlocked, isDone, isOverdue, sortTasks } from "./lib/stage";
 export { TaskRow } from "./ui/TaskRow";
 export { TaskCard } from "./ui/TaskCard";
+export { listTasks } from "./api/taskApi";

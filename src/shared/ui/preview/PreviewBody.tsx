@@ -1,5 +1,5 @@
 import { ScrollView } from "react-native";
-import type { FileKind } from "@/shared/lib/download";
+import type { ClassKind } from "@/shared/lib/download";
 import { extOf } from "@/shared/lib/download";
 import { AudioView } from "./AudioView";
 import { DocxView } from "./DocxView";
@@ -10,13 +10,13 @@ import { TextView } from "./TextView";
 import { VideoView } from "./VideoView";
 import { ZoomImage } from "./ZoomImage";
 
-type Props = { uri: string; kind: FileKind; name: string; mime?: string };
+type Props = { uri: string; kind: ClassKind; name: string; mime?: string };
 
 // Every format the app can show itself: images, PDF, audio, video, text and .docx; the other Office files render natively on iOS
 // and anything left (archives, unknown types) offers the system "open with".
 export function PreviewBody({ uri, kind, name, mime }: Props) {
   if (kind === "image") return <ScrollView contentContainerStyle={{ flexGrow: 1, justifyContent: "center" }}><ZoomImage uri={uri} /></ScrollView>;
-  if (kind === "pdf") return <PdfView uri={uri} />;
+  if (kind === "pdf") return <PdfView uri={uri} name={name} mime={mime} />;
   if (kind === "audio") return <AudioView uri={uri} title={name} />;
   if (kind === "video") return <VideoView uri={uri} />;
   if (kind === "text") return <TextView uri={uri} name={name} mime={mime} />;

@@ -22,3 +22,4 @@ export { MarketOrderSkeleton } from "./ui/MarketOrderSkeleton";
 export { OrderTrack } from "./ui/OrderTrack";
 export { StageBadge, STAGE_TONE } from "./ui/StageBadge";
 export { acceptOrder, declineOrder, DECLINE_REASONS, type DeclineReason } from "./api/actionApi";
+export { canChatWith, orderGivesChat } from "./lib/chatAccess";

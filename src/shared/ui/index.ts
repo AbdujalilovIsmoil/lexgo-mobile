@@ -39,3 +39,5 @@ export { SheetOption } from "./SheetOption";
 export { LevelBars } from "./LevelBars";
 export { PhoneInput } from "./PhoneInput";
 export { DatePickerField, TimePickerField } from "./pick";
+export { FocusStatusBar } from "./FocusStatusBar";
+export { singleLineText, multiLineText } from "./inputText";

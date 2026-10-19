@@ -1,5 +1,5 @@
 export { http, httpRaw, bindAuth, accessToken, type HttpInit } from "./http";
-export { onRoundTrip } from "./roundTrip";
+export { onRoundTrip, onReached } from "./roundTrip";
 export {
   ApiError,
   parseErrorBody,
@@ -11,3 +11,4 @@ export {
   isNetworkError,
   isLimitError,
 } from "./errors";
+export { isOfflineError } from "./offline";

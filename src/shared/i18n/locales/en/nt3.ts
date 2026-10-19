@@ -50,5 +50,11 @@ export const nt3: Messages["nt3"] = {
     back: "Back online",
     serverDown: "Server not responding",
     slow: "Slow connection",
+    syncing: "Syncing {n} changes",
+    pending: "Waiting to sync",
+    savedLocal: "Saved offline, will send when you are back online",
+    syncFailed: "{n} changes could not be synced",
+    cached: "Offline: saved copy",
+    updatedAt: "Updated {when}",
   },
 };

@@ -7,6 +7,7 @@ import { useInsets } from "@/shared/lib/insets";
 import { useColors } from "@/shared/theme";
 import { SheetBackdrop } from "./SheetBackdrop";
 import { SheetHeader } from "./SheetHeader";
+import { useSheetFit } from "./SheetFitContext";
 
 type Props = { h: SharedValue<number>; gesture: GestureType; low: number; onClose: () => void; title?: string; subtitle?: string; children: ReactNode };
 
@@ -21,6 +22,7 @@ export function SheetPanel({ h, gesture, low, onClose, title, subtitle, children
   const insets = useInsets();
   const { height: H } = useWindowDimensions();
   const { height: kb } = useReanimatedKeyboardAnimation(); // 0 … -keyboardHeight
+  const fit = useSheetFit();
   const room = H - insets.top - TOP_GAP;
   const sheet = useAnimatedStyle(() => ({
     height: Math.min(h.value, room + kb.value),
@@ -31,11 +33,11 @@ export function SheetPanel({ h, gesture, low, onClose, title, subtitle, children
       <SheetBackdrop height={h} low={low} onPress={onClose} />
       <Animated.View accessibilityViewIsModal accessibilityLabel={title} onAccessibilityEscape={onClose} style={[s.sheet, { backgroundColor: c.surface, borderColor: c.line }, sheet]}>
         <GestureDetector gesture={gesture}>
-          <View collapsable={false}>
+          <View collapsable={false} onLayout={(e) => fit?.setHeader(e.nativeEvent.layout.height)}>
             <SheetHeader title={title} subtitle={subtitle} onClose={onClose} />
           </View>
         </GestureDetector>
-        <View style={s.content}>{children}</View>
+        <View style={s.content} onLayout={(e) => fit?.setWrap(e.nativeEvent.layout.height)}>{children}</View>
       </Animated.View>
     </GestureHandlerRootView>
   );

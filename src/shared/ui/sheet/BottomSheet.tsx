@@ -1,6 +1,9 @@
-import { useEffect, useMemo, useState, type ReactNode } from "react";
+import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { useWindowDimensions } from "react-native";
 import { useSheetsOpen } from "@/shared/lib/sheetsOpen";
+import { useInsets } from "@/shared/lib/insets";
+import { fitSnaps } from "./fitSnaps";
+import { SheetFitContext } from "./SheetFitContext";
 import { SheetFrame } from "./SheetFrame";
 import { SheetPanel } from "./SheetPanel";
 import { useSheetMotion } from "./useSheetMotion";
@@ -20,7 +23,25 @@ type Props = {
 // down (or flick) to dismiss, or tap the dark area. Covers the tab bar.
 export function BottomSheet({ visible, onClose, children, title, subtitle, snaps = [0.56, 0.92], native = true, guardClose }: Props) {
   const { height: H } = useWindowDimensions();
-  const px = useMemo(() => snaps.map((f) => Math.round(f * H)), [snaps, H]);
+  const insets = useInsets();
+  // Header + the content's own height (reported by a SheetScroll inside): short content hugs, long content scrolls.
+  const [fit, setFit] = useState<number | null>(null);
+  const m = useRef({ header: 0, wrap: 0, viewport: 0, content: 0 });
+  const room = H - insets.top - 10;
+  const px = useMemo(() => fitSnaps(snaps.map((f) => Math.round(f * H)), fit, room), [snaps, H, fit, room]);
+  const fitApi = useMemo(() => {
+    const recompute = () => {
+      const { header, wrap, viewport, content } = m.current;
+      if (!header || !wrap || !viewport) return;
+      const next = Math.round(header + wrap - viewport + content + 2);
+      setFit((cur) => (cur !== null && Math.abs(cur - next) < 3 ? cur : next));
+    };
+    return {
+      report: (viewport: number, content: number) => { m.current.viewport = viewport; m.current.content = content; recompute(); },
+      setHeader: (v: number) => { m.current.header = v; recompute(); },
+      setWrap: (v: number) => { m.current.wrap = v; recompute(); },
+    };
+  }, []);
   const [mounted, setMounted] = useState(visible);
   const [refused, setRefused] = useState(0);
   const { h, gesture, open, close } = useSheetMotion(px, () => {
@@ -61,9 +82,11 @@ export function BottomSheet({ visible, onClose, children, title, subtitle, snaps
 
   return (
     <SheetFrame native={native} onRequestClose={ask}>
-      <SheetPanel h={h} gesture={gesture} low={px[0]} onClose={ask} title={title} subtitle={subtitle}>
-        {children}
-      </SheetPanel>
+      <SheetFitContext.Provider value={fitApi}>
+        <SheetPanel h={h} gesture={gesture} low={px[0]} onClose={ask} title={title} subtitle={subtitle}>
+          {children}
+        </SheetPanel>
+      </SheetFitContext.Provider>
     </SheetFrame>
   );
 }

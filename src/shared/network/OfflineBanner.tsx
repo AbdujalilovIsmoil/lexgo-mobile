@@ -37,6 +37,7 @@ export function OfflineBanner() {
   if (!online) look = { icon: "wifi-off", text: t("nt3.net.offline") + q, bg: "#B42318" };
   else if (down) look = { icon: "server", text: t("nt3.net.serverDown"), bg: "#B42318" };
   else if (slow) look = { icon: "activity", text: t("nt3.net.slow"), bg: "#B54708" };
+  else if (queued > 0) look = { icon: "upload-cloud", text: t("nt3.net.syncing", { n: queued }), bg: "#175CD3" };
   else if (flash) look = { icon: "check-circle", text: t("nt3.net.back") + q, bg: "#067647" };
   if (!look) return null;
   return (

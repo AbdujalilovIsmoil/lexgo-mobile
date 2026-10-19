@@ -10,6 +10,7 @@ export const spf = {
   chatFee: "One-time fee",
   chatPay: "Pay and open the chat",
   chatNote: "You pay on the provider's page. Once it is confirmed the chat opens automatically.",
+  chatLocked: "Chat opens only after you buy this specialist's service and while it is in progress.",
   chatOpening: "Opening the chat…",
   unavailable: "The payment system is unavailable right now. Please try again later.",
 };

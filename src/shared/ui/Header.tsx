@@ -1,6 +1,6 @@
 import { type ReactNode } from "react";
 import { StyleSheet, View } from "react-native";
-import { useInsets } from "@/shared/lib/insets";
+import { HEADER_GAP, useInsets } from "@/shared/lib/insets";
 import { useRouter } from "expo-router";
 import { useColors } from "@/shared/theme";
 import { IconButton } from "./IconButton";
@@ -17,7 +17,7 @@ export function Header({ title, right, onBack, transparent, light }: Props) {
   const fg = light ? "#fff" : c.ink;
   return (
     <>
-    <View style={[s.bar, { paddingTop: insets.top + 6, backgroundColor: transparent ? "transparent" : c.bg }]}>
+    <View style={[s.bar, { paddingTop: insets.top + HEADER_GAP, backgroundColor: transparent ? "transparent" : c.bg }]}>
       <IconButton icon="chevron-left" tone={light ? "glass" : "tint"} onPress={onBack ?? (() => (router.canGoBack() ? router.back() : router.replace("/")))} />
       {title ? (
         <Text variant="h4" numberOfLines={1} style={[s.title, { color: fg }]}>
@@ -34,7 +34,7 @@ export function Header({ title, right, onBack, transparent, light }: Props) {
 }
 
 const s = StyleSheet.create({
-  bar: { flexDirection: "row", alignItems: "center", gap: 12, paddingHorizontal: 16, paddingBottom: 14 },
+  bar: { flexDirection: "row", alignItems: "center", gap: 12, paddingHorizontal: 16, paddingBottom: 12 },
   title: { flex: 1, textAlign: "center" },
   right: { width: 44, alignItems: "flex-end" },
 });

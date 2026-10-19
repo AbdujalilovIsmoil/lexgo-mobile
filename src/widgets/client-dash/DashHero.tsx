@@ -1,8 +1,7 @@
-import { StatusBar } from "expo-status-bar";
 import { StyleSheet, View } from "react-native";
-import { useInsets } from "@/shared/lib/insets";
+import { HEADER_GAP, useInsets } from "@/shared/lib/insets";
 import { useSession } from "@/entities/session";
-import { GradientBox, Text } from "@/shared/ui";
+import { GradientBox, Text, FocusStatusBar } from "@/shared/ui";
 import { useT } from "@/shared/i18n";
 import { HeroTopRow } from "@/widgets/home-hero/HeroTopRow";
 import { DashAsk } from "./DashAsk";
@@ -15,8 +14,8 @@ export function DashHero() {
   const insets = useInsets();
   const name = useSession()?.user.name;
   return (
-    <GradientBox variant="dark" round={0} style={[s.hero, { paddingTop: insets.top + 12 }]}>
-      <StatusBar style="light" />
+    <GradientBox variant="dark" round={0} style={[s.hero, { paddingTop: insets.top + HEADER_GAP }]}>
+      <FocusStatusBar style="light" />
       <View style={s.glow} pointerEvents="none" />
       <HeroTopRow name={name} />
       <Text variant="small" weight="semibold" style={s.hi}>{t("cdash.hi", { name: name ?? "" })}</Text>

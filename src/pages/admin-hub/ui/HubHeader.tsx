@@ -3,7 +3,7 @@ import { useAccess } from "@/entities/access";
 import { useSession } from "@/entities/session";
 import { Avatar, GradientBox, Pill, Text } from "@/shared/ui";
 import { humanizeSlug } from "@/shared/lib/format";
-import { useInsets } from "@/shared/lib/insets";
+import { HEADER_GAP, useInsets } from "@/shared/lib/insets";
 import { useT } from "@/shared/i18n";
 
 // Top of the Boshqaruv screen: who is signed in, their roles and how much is unlocked.
@@ -13,7 +13,7 @@ export function HubHeader({ sections }: { sections: number }) {
   const a = useAccess();
   const user = useSession()?.user;
   return (
-    <GradientBox variant="dark" round={0} style={[s.box, { paddingTop: insets.top + 14 }]}>
+    <GradientBox variant="dark" round={0} style={[s.box, { paddingTop: insets.top + HEADER_GAP }]}>
       <View style={s.row}>
         <Avatar name={user?.name ?? "?"} size={52} />
         <View style={s.fill}>

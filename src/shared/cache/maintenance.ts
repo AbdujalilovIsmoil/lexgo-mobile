@@ -18,7 +18,7 @@ export async function wipeAll(): Promise<void> {
     await d.runAsync("DELETE FROM kv");
     await d.runAsync("DELETE FROM outbox");
   });
-  useOutboxStore.setState({ count: 0 });
+  useOutboxStore.setState({ count: 0, pending: [] });
 }
 
 /** Deletes cached documents only (query snapshots, drafts, file metadata); queued writes stay. */

@@ -1,6 +1,6 @@
 import { type ReactNode } from "react";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-import { SafeAreaProvider } from "react-native-safe-area-context";
+import { SafeAreaProvider, initialWindowMetrics } from "react-native-safe-area-context";
 import { StatusBar } from "expo-status-bar";
 import { KeyboardProvider } from "react-native-keyboard-controller";
 import * as SystemUI from "expo-system-ui";
@@ -44,7 +44,7 @@ export function AppProviders({ children }: { children: ReactNode }) {
   return (
     <GestureHandlerRootView style={{ flex: 1, backgroundColor: "#03102B" }}>
       <KeyboardProvider>
-        <SafeAreaProvider>
+        <SafeAreaProvider initialMetrics={initialWindowMetrics}>
           <ThemeProvider>
             <QueryProvider>
               <FontGate>

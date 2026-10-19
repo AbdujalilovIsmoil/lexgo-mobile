@@ -1,6 +1,9 @@
 import { onlineManager } from "@tanstack/react-query";
 import { addNetworkStateListener, getNetworkStateAsync, NetworkStateType, type NetworkState } from "expo-network";
+import { onReached } from "@/shared/api";
+import { API_BASE } from "@/shared/config/env";
 import { useNetStore, type NetKind } from "./netStore";
+import { verdictOf } from "./reachability";
 
 const backOnline = new Set<() => void>();
 
@@ -17,13 +20,11 @@ function kindOf(t?: NetworkStateType): NetKind {
   return "other";
 }
 
-// isConnected / isInternetReachable are undefined while the OS is still working it out: not offline.
-export function applyNetworkState(s: NetworkState): void {
-  const online = s.isConnected !== false && s.isInternetReachable !== false;
+function commit(online: boolean, type?: NetworkStateType): void {
   const was = useNetStore.getState();
   useNetStore.setState({
     online,
-    kind: online ? kindOf(s.type) : "none",
+    kind: online ? kindOf(type) : "none",
     slow: online ? was.slow : false,
     serverDown: online ? was.serverDown : false,
     offlineSince: online ? 0 : was.online ? Date.now() : was.offlineSince,
@@ -37,8 +38,67 @@ export function applyNetworkState(s: NetworkState): void {
   }
 }
 
+// Our own reachability check: any HTTP answer from the API (even a 404) proves the internet works.
+async function apiReachable(): Promise<boolean> {
+  const ctl = new AbortController();
+  const timer = setTimeout(() => ctl.abort(), 4000);
+  try {
+    await fetch(`${API_BASE}/health`, { method: "GET", signal: ctl.signal });
+    return true;
+  } catch {
+    return false;
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
+let generation = 0;
+let retry: ReturnType<typeof setTimeout> | null = null;
+
+function scheduleRecheck(): void {
+  if (retry) return;
+  retry = setTimeout(() => {
+    retry = null;
+    void recheckNetwork();
+  }, 10_000);
+}
+
+export function applyNetworkState(s: NetworkState): void {
+  const gen = (generation += 1);
+  const verdict = verdictOf(s, NetworkStateType.NONE);
+  if (verdict === "offline") return commit(false, s.type);
+  if (verdict === "online") return commit(true, s.type);
+  // "connected, internet not reachable": believe the OS only if our API cannot be reached either.
+  void apiReachable().then((ok) => {
+    if (gen !== generation) return; // a newer state arrived meanwhile
+    commit(ok, s.type);
+    if (!ok) scheduleRecheck(); // the OS will not announce a change if it stays "unreachable": look again
+  });
+}
+
+/** Re-reads the OS state (app came to the foreground, retry button). */
+export async function recheckNetwork(): Promise<void> {
+  try {
+    applyNetworkState(await getNetworkStateAsync());
+  } catch {
+    /* keep the last known state */
+  }
+}
+
 export function startNetworkMonitor(): () => void {
-  void getNetworkStateAsync().then(applyNetworkState).catch(() => {});
+  void recheckNetwork();
   const sub = addNetworkStateListener(applyNetworkState);
-  return () => sub.remove();
+  // A real answer from the API beats any OS flag: if the banner says offline but a request just succeeded, we are online.
+  onReached(() => {
+    if (!useNetStore.getState().online) {
+      generation += 1;
+      commit(true);
+    }
+  });
+  return () => {
+    sub.remove();
+    onReached(null);
+    if (retry) clearTimeout(retry);
+    retry = null;
+  };
 }

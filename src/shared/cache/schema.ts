@@ -1,6 +1,6 @@
 // Local database layout (expo-sqlite). Bump VERSION and add a branch to migrate() for a change.
 export const DB_NAME = "lexgo_cache.db";
-export const DB_VERSION = 2;
+export const DB_VERSION = 3;
 
 // kv: scoped JSON documents with a TTL (query snapshots, drafts, file metadata).
 // outbox: ordered offline writes (idempotent drafts / messages only, see outbox.ts).
@@ -21,4 +21,9 @@ CREATE TABLE IF NOT EXISTS outbox (
   created_at INTEGER NOT NULL, attempts INTEGER NOT NULL DEFAULT 0
 );
 CREATE INDEX IF NOT EXISTS outbox_scope ON outbox (scope, id);
+`;
+
+// v3: retry schedule. An item is not retried before next_at (exponential backoff, see backoff.ts).
+export const SCHEMA_V3 = `
+ALTER TABLE outbox ADD COLUMN next_at INTEGER NOT NULL DEFAULT 0;
 `;

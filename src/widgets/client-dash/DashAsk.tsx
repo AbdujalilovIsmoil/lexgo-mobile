@@ -2,7 +2,7 @@ import { useState } from "react";
 import { StyleSheet, TextInput, View } from "react-native";
 import { useRouter } from "expo-router";
 import { LinearGradient } from "expo-linear-gradient";
-import { Icon, PressableScale } from "@/shared/ui";
+import { Icon, PressableScale, singleLineText } from "@/shared/ui";
 import { gradient } from "@/shared/theme";
 import { useT } from "@/shared/i18n";
 
@@ -15,7 +15,7 @@ export function DashAsk() {
   return (
     <View style={s.box}>
       <Icon name="star" size={20} color="#00CFE8" />
-      <TextInput value={q} onChangeText={setQ} onSubmitEditing={go} returnKeyType="send" placeholder={t("cdash.askPh")} placeholderTextColor="#9FB4D4" style={s.input} accessibilityLabel={t("cdash.askPh")} />
+      <TextInput value={q} onChangeText={setQ} onSubmitEditing={go} returnKeyType="send" placeholder={t("cdash.askPh")} placeholderTextColor="#9FB4D4" style={[s.input, singleLineText]} accessibilityLabel={t("cdash.askPh")} />
       <PressableScale onPress={go} accessibilityRole="button" accessibilityLabel={t("cdash.askBtn")}>
         <LinearGradient colors={gradient.primary} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={s.send}>
           <Icon name="send" size={19} tone="white" />

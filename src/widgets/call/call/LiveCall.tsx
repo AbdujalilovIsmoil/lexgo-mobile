@@ -1,11 +1,10 @@
 import { useEffect, useState } from "react";
 import { BackHandler, StyleSheet, View } from "react-native";
-import { StatusBar } from "expo-status-bar";
 import { useKeepAwake } from "expo-keep-awake";
 import type { useCallActions, useCallChat, useCallScreen } from "@/features/call/call";
 import { useRingtone, type Recording, type useTransfer } from "@/features/call";
 import { useT } from "@/shared/i18n";
-import { toast } from "@/shared/ui";
+import { toast, FocusStatusBar } from "@/shared/ui";
 import { CallBanners } from "./CallBanners";
 import { CallControls } from "./CallControls";
 import { CallHeader } from "./CallHeader";
@@ -41,7 +40,7 @@ export function LiveCall({ s, act, chat, rec, transfer }: Props) {
   const labels = { mic: t("admMeetB.mic"), cam: t("admMeet.camera"), flip: t("admMeetB.flip"), speaker: t("admMeetB.speaker"), more: t("admMeetB.more"), end: t("admMeet.end") };
   return (
     <View style={st.fill}>
-      <StatusBar style="light" />
+      <FocusStatusBar style="light" />
       <CallHeader rec={rec.state === "recording"} title={s.call?.title ?? ""} status={s.lk.status} elapsed={s.clock.elapsed} left={s.clock.left} paused={s.clock.paused} count={tiles.filter((x) => !x.share).length} mode={mode} video={s.videoAllowed} onMode={toggleMode} onPeople={() => setSheet("people")} />
       <CallBanners denied={{ mic: s.lk.denied.mic && !mic, cam: s.lk.denied.cam && !cam }} alone={s.alone} onStay={s.stay} onLeave={() => void act.leaveCall()} paused={s.clock.paused} reconnecting={s.lk.status === "reconnecting"} failed={s.lk.status === "error"} onRetry={s.creds.retry} />
       <ExtensionBar pending={s.call?.pending ?? null} host={!!s.call?.perms.canEnd} />

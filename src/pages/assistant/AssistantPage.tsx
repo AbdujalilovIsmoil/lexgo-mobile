@@ -3,7 +3,7 @@ import { StyleSheet, View } from "react-native";
 import { KeyboardAvoidingView } from "react-native-keyboard-controller";
 import { useNavigation, useRouter } from "expo-router";
 import { AiOrb, GradientBox, IconButton, Text } from "@/shared/ui";
-import { useInsets } from "@/shared/lib/insets";
+import { HEADER_GAP, useInsets } from "@/shared/lib/insets";
 import { useColors } from "@/shared/theme";
 import { useT } from "@/shared/i18n";
 import { restoreInstructor, useOverlay } from "@/features/instructor";
@@ -22,7 +22,7 @@ export function AssistantPage() {
   useEffect(() => { if (guiding && nav.isFocused()) router.back(); }, [guiding, nav, router]);
   return (
     <View style={[s.fill, { backgroundColor: c.bg }]}>
-      <GradientBox variant="dark" round={0} style={[s.head, { paddingTop: insets.top + 10 }]}>
+      <GradientBox variant="dark" round={0} style={[s.head, { paddingTop: insets.top + HEADER_GAP }]}>
         <View style={s.orb}><AiOrb size={46} icon="compass" /></View>
         <View style={s.fill}>
           <Text variant="h4" tone="white" numberOfLines={1}>{t("ax2.title")}</Text>

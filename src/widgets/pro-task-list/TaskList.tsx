@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { ScrollView, View, type NativeScrollEvent, type NativeSyntheticEvent } from "react-native";
 import { STAGES, isBlocked, sortTasks, stageOf, useTasks, type ProTask, type TaskStage } from "@/entities/pro-tasks";
 import { useT } from "@/shared/i18n";
+import { StaleNote } from "@/shared/network";
 import { selectHaptic } from "@/shared/lib/haptics";
 import { useDebounced } from "@/shared/lib/useDebounced";
 import { useKept } from "@/shared/lib/useKept";
@@ -86,6 +87,7 @@ export function TaskList({ onOpen }: { onOpen: (t: ProTask) => void }) {
   return (
     <View style={{ flex: 1 }}>
       <View style={{ gap: 10 }}>
+        <StaleNote updatedAt={query.dataUpdatedAt} hasData={query.data !== undefined} />
         <SearchBox value={q} onChangeText={setQ} placeholder={t("aw7.search")} />
         <StageTabs value={stage} counts={counts} onChange={go} />
       </View>

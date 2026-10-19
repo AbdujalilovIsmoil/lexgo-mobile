@@ -1,10 +1,9 @@
-import { StatusBar } from "expo-status-bar";
 import { StyleSheet, View } from "react-native";
 import { useRouter } from "expo-router";
 import { HeroTopRow } from "@/widgets/home-hero/HeroTopRow";
-import { useInsets } from "@/shared/lib/insets";
+import { HEADER_GAP, useInsets } from "@/shared/lib/insets";
 import { LinearGradient } from "expo-linear-gradient";
-import { GradientBox, Icon, PressableScale, Text, type IconName } from "@/shared/ui";
+import { GradientBox, Icon, PressableScale, Text, type IconName, FocusStatusBar } from "@/shared/ui";
 import { useT } from "@/shared/i18n";
 import { Fade } from "./Fade";
 
@@ -18,8 +17,8 @@ export function SellerHero({ name, stats, tasks, meetings }: { name: string; sta
   const insets = useInsets();
   const router = useRouter();
   return (
-    <GradientBox variant="dark" round={0} style={[s.hero, { paddingTop: insets.top + 12 }]}>
-      <StatusBar style="light" />
+    <GradientBox variant="dark" round={0} style={[s.hero, { paddingTop: insets.top + HEADER_GAP }]}>
+      <FocusStatusBar style="light" />
       <View style={s.glow} pointerEvents="none" />
       <HeroTopRow name={name} />
       <Text variant="small" weight="semibold" style={s.hi}>{t("shm.dash.hi", { name })}</Text>

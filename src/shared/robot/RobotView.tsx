@@ -1,7 +1,8 @@
 import { forwardRef, useEffect, useImperativeHandle, useRef, useState } from "react";
-import { View } from "react-native";
+import { AppState, View } from "react-native";
 import WebView, { type WebViewMessageEvent } from "react-native-webview";
 import { loadRobotHtml, loadRobotModel } from "./assets";
+import { AiOrb } from "@/shared/ui/AiOrb";
 import { useSheetsOpen } from "@/shared/lib/sheetsOpen";
 import { useRobotActive } from "./useRobotActive";
 
@@ -16,8 +17,26 @@ export const RobotView = forwardRef<RobotHandle, Props>(function RobotView({ wid
   const sheets = useSheetsOpen((s) => s.n);
   const active = useRobotActive() && sheets === 0;
   const [html, setHtml] = useState<string | null>(null);
+  const [shown, setShown] = useState(false); // the model is on screen; until then (or if it never loads) a glowing orb stands in
+  const [gen, setGen] = useState(0); // bumped to build a fresh WebView (and WebGL context) after a crash or a return from background
+  const [attempt, setAttempt] = useState(0);
   const run = (js: string) => web.current?.injectJavaScript(`${js};true;`);
-  useEffect(() => { void loadRobotHtml().then(setHtml).catch(() => {}); }, []);
+  useEffect(() => {
+    let alive = true;
+    let timer: ReturnType<typeof setTimeout> | undefined;
+    loadRobotHtml().then((h) => alive && setHtml(h)).catch(() => { if (alive) timer = setTimeout(() => setAttempt((n) => n + 1), 3000); });
+    return () => { alive = false; if (timer) clearTimeout(timer); };
+  }, [attempt]);
+  // A WebGL surface is lost when the app sleeps; rebuild the scene on return instead of showing a blank view.
+  useEffect(() => {
+    let prev = AppState.currentState;
+    const sub = AppState.addEventListener("change", (st) => {
+      if (prev !== "active" && st === "active") { setShown(false); setGen((n) => n + 1); }
+      prev = st;
+    });
+    return () => sub.remove();
+  }, []);
+  const rebuild = () => { setShown(false); setGen((n) => n + 1); };
   useEffect(() => { run(`window.__robot&&window.__robot.pause(${!!paused || !active})`); });
   useEffect(() => { if (every) run(`window.__robot&&window.__robot.rhythm(${every})`); }, [every]);
   useImperativeHandle(ref, () => ({ play: (g) => run(`window.__robot&&window.__robot.play(${JSON.stringify(g)})`) }));
@@ -25,16 +44,17 @@ export const RobotView = forwardRef<RobotHandle, Props>(function RobotView({ wid
     try {
       const m = JSON.parse(e.nativeEvent.data) as { type: string };
       if (m.type === "boot") void loadRobotModel().then((b64) => run(`window.__robot.load(${JSON.stringify(b64)})`)).catch(() => {});
-      if (m.type === "ready") { if (every) run(`window.__robot.rhythm(${every})`); onReady?.(); }
+      if (m.type === "ready") { if (every) run(`window.__robot.rhythm(${every})`); setShown(true); onReady?.(); }
     } catch {
       /* not ours */
     }
   };
   return (
     <View pointerEvents="none" style={{ width, height }}>
+      {shown ? null : <View pointerEvents="none" style={{ position: "absolute", left: 0, right: 0, top: 0, bottom: 0, alignItems: "center", justifyContent: "center" }}><AiOrb size={Math.round(Math.min(width, height) * 0.4)} icon="star" /></View>}
       {html ? (
         <WebView
-          ref={web} source={{ html }} originWhitelist={["*"]} onMessage={onMessage} javaScriptEnabled scrollEnabled={false} bounces={false}
+          key={gen} ref={web} onRenderProcessGone={rebuild} onContentProcessDidTerminate={rebuild} onError={rebuild} source={{ html }} originWhitelist={["*"]} onMessage={onMessage} javaScriptEnabled scrollEnabled={false} bounces={false}
           style={{ backgroundColor: "transparent" }} containerStyle={{ backgroundColor: "transparent" }} androidLayerType="hardware"
           setSupportMultipleWindows={false} allowsInlineMediaPlayback
         />

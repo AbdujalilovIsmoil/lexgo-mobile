@@ -10,6 +10,7 @@ export const spf = {
   chatFee: "Bir martalik to'lov",
   chatPay: "To'lash va chatni ochish",
   chatNote: "To'lov provayder sahifasida amalga oshiriladi. Tasdiqlangach, chat avtomatik ochiladi.",
+  chatLocked: "Chat faqat shu mutaxassisning xizmatini sotib olganingizdan keyin, xizmat davom etayotganda ochiladi.",
   chatOpening: "Chat ochilmoqda…",
   unavailable: "To'lov tizimi hozircha ishlamayapti. Keyinroq urinib ko'ring.",
 };

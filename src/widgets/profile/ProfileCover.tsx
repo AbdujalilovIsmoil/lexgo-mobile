@@ -1,14 +1,13 @@
-import { StatusBar } from "expo-status-bar";
 import { StyleSheet, View } from "react-native";
 import { useInsets } from "@/shared/lib/insets";
-import { GradientBox } from "@/shared/ui";
+import { GradientBox, FocusStatusBar } from "@/shared/ui";
 
 // The cover band of the profile header: the brand's dark gradient with two soft glows and thin rings.
 export function ProfileCover() {
   const insets = useInsets();
   return (
     <GradientBox variant="dark" round={0} style={[s.cover, { height: insets.top + 118 }]}>
-      <StatusBar style="light" />
+      <FocusStatusBar style="light" />
       <View style={s.glowA} pointerEvents="none" />
       <View style={s.glowB} pointerEvents="none" />
       <View style={s.ringA} pointerEvents="none" />

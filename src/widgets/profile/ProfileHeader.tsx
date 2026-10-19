@@ -1,9 +1,8 @@
-import { StatusBar } from "expo-status-bar";
 import { StyleSheet, View } from "react-native";
 import { useRouter } from "expo-router";
 import { useInsets } from "@/shared/lib/insets";
 import type { User } from "@/entities/session";
-import { Button, GradientBox, Text } from "@/shared/ui";
+import { Button, GradientBox, Text, FocusStatusBar } from "@/shared/ui";
 import { useT } from "@/shared/i18n";
 import { useAccess } from "@/entities/access";
 import { ProfileCover } from "./ProfileCover";
@@ -19,7 +18,7 @@ export function ProfileHeader({ user, photo }: { user: User | null; photo?: stri
   if (user) return <View><ProfileCover /><ProfileIdentity user={user} photo={photo} role={roleKey} /></View>;
   return (
     <GradientBox variant="dark" round={0} style={[s.hero, { paddingTop: insets.top + 20 }]}>
-      <StatusBar style="light" />
+      <FocusStatusBar style="light" />
       <View style={s.guest}>
         <Text variant="h2" tone="white">
           {t("profile.guestTitle")}

@@ -24,7 +24,7 @@ export function FolderRow({ folder, onOpen, onMore }: { folder: Folder; onOpen: 
 
 export function FileRow({ file, onOpen, onMore }: { file: WFile; onOpen: () => void; onMore: () => void }) {
   const { t, locale } = useT();
-  const k = kindIcon(file.ext);
+  const k = kindIcon(file.ext, file.mime);
   const bad = file.scan === "infected" || file.scan === "blocked";
   return (
     <RowCard icon={k.icon} tint={k.tint} title={file.name} subtitle={[file.ext.toUpperCase(), fmtBytes(file.size), fmtDate(file.createdAt, locale)].filter(Boolean).join(" · ")} right={<More onPress={onMore} starred={file.starred} />} onPress={onOpen}>

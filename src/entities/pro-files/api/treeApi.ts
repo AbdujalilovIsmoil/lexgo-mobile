@@ -1,5 +1,6 @@
 import { http } from "@/shared/api";
 import { asArr, asDict, asNum, asStr } from "@/shared/lib/json";
+import { extOf } from "@/shared/lib/fileKind";
 import type { FilePatch, Folder, FolderPatch, Quota, Tree, WFile } from "../model/types";
 
 export function normFolder(v: unknown): Folder {
@@ -14,9 +15,10 @@ export function normFolder(v: unknown): Folder {
 export function normFile(v: unknown): WFile {
   const d = asDict(v);
   const scan = asDict(d.scan);
+  const name = asStr(d.file_name);
   return {
-    id: asStr(d.id), workId: asStr(d.work_id), folderId: asStr(d.folder_id), caseId: asStr(d.case_id), name: asStr(d.file_name),
-    size: asNum(d.size), mime: asStr(d.mime_type), ext: asStr(d.extension).replace(/^\./, "").toLowerCase(),
+    id: asStr(d.id), workId: asStr(d.work_id), folderId: asStr(d.folder_id), caseId: asStr(d.case_id), name,
+    size: asNum(d.size), mime: asStr(d.mime_type), ext: asStr(d.extension).replace(/^\./, "").toLowerCase() || extOf(name),
     starred: Boolean(d.starred), status: asStr(d.status, "active"), scan: asStr(scan.scan_status ?? scan.status).toLowerCase(), createdAt: asStr(d.created_at),
   };
 }

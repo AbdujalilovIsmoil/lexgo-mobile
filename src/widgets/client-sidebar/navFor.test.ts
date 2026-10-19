@@ -23,8 +23,8 @@ describe("drawer rows per role", () => {
 });
 
 describe("seller drawer follows the web sidebar", () => {
-  const WEB_LAWYER = ["dashboard", "marketplace", "marketplaceOrders", "cases", "urgentAssigned", "tasks", "calendar", "clients", "services", "documents", "documentRequests", "files", "chat", "meetings", "notifications", "ai", "assistant", "profile", "referrals", "promotion", "subscription", "support"];
-  const WEB_ADVOCATE = ["dashboard", "opportunities", "marketplaceOrders", "cases", "urgentAssigned", "documentRequests", "calendar", "clients", "services", "tasks", "messages", "meetings", "notifications", "organization", "files", "assistant", "profile", "referrals", "promotion", "subscription", "support"];
+  const WEB_LAWYER = ["dashboard", "marketplace", "marketplaceOrders", "cases", "urgentAssigned", "tasks", "calendar", "clients", "services", "documents", "documentRequests", "files", "chat", "meetings", "notifications", "ai", "assistant", "referrals", "promotion", "subscription", "support"];
+  const WEB_ADVOCATE = ["dashboard", "opportunities", "marketplaceOrders", "cases", "urgentAssigned", "documentRequests", "calendar", "clients", "services", "tasks", "messages", "meetings", "notifications", "organization", "files", "assistant", "referrals", "promotion", "subscription", "support"];
   it("a yurist sees LAWYER_NAV in its order", () => expect(navFor("seller", { kind: "lawyer" }).map((i) => i.key).slice(0, WEB_LAWYER.length)).toEqual(WEB_LAWYER));
   it("an advokat sees ADVOCATE_NAV (organization only for the owner)", () => {
     expect(navFor("seller", { kind: "advocate", orgOwner: true }).map((i) => i.key).slice(0, WEB_ADVOCATE.length)).toEqual(WEB_ADVOCATE);
@@ -45,5 +45,14 @@ describe("isActive", () => {
     expect(isActive("/", "/")).toBe(true);
     expect(isActive("/pro/cases", "/pro/cases/abc")).toBe(true);
     expect(isActive("/pro/cases", "/pro/calendar")).toBe(false);
+  });
+});
+
+describe("no profile row in any drawer (the header has the profile button)", () => {
+  it("has none for any role", () => {
+    for (const r of ["guest", "client", "seller", "callcenter", "staff"] as const) {
+      expect(navFor(r, { kind: "lawyer" }).filter((i) => i.key === "profile" || i.route === "/profile" || i.route === "/pro/profile")).toEqual([]);
+      expect(navFor(r, { kind: "advocate", orgOwner: true }).filter((i) => i.key === "profile")).toEqual([]);
+    }
   });
 });

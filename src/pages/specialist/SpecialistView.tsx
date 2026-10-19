@@ -3,6 +3,7 @@ import { StyleSheet, View } from "react-native";
 import { useRouter } from "expo-router";
 import Animated, { FadeInLeft, FadeInRight } from "react-native-reanimated";
 import { useIsAuthed } from "@/entities/session";
+import { canChatWith, useMarketOrders } from "@/entities/order";
 import { useLawyerServices, usePromoActive, type Lawyer, type LawyerService } from "@/entities/lawyer";
 import { ChatFeeSheet, useSpecialistChat } from "@/features/specialist-chat";
 import { PurchaseFlow } from "@/features/market-purchase";
@@ -33,6 +34,7 @@ export function SpecialistView({ lawyer: l, initialTab }: { lawyer: Lawyer; init
   const authed = useIsAuthed();
   const blocked = useBuyGate(l);
   const chat = useSpecialistChat(l.userId);
+  const canChat = canChatWith(l.userId, useMarketOrders(authed).data);
   const top = (usePromoActive().data ?? []).some((p) => p.sellerUserId === l.userId);
   const services = useLawyerServices(l.userId).data ?? l.services;
   const [nav, setNav] = useState<{ tab: SpecialistTab; dir: 1 | -1 }>({ tab: initialTab, dir: 1 });
@@ -67,7 +69,7 @@ export function SpecialistView({ lawyer: l, initialTab }: { lawyer: Lawyer; init
           </Animated.View>
         </View>
       </HeroScroll>
-      <BuyBar service={sel} fallback={l.basePrice} chatBusy={chat.opening} onChat={chat.start} onBuy={() => start(sel)} />
+      <BuyBar service={sel} fallback={l.basePrice} canChat={canChat} chatBusy={chat.opening} onChat={chat.start} onBuy={() => start(sel)} />
       <ChatFeeSheet visible={chat.fee} lawyerId={l.userId} opening={chat.opening} onClose={chat.closeFee} onPaid={chat.open} />
       <BottomSheet visible={!!buy} onClose={() => setBuy(null)} snaps={[0.72, 0.93]}>
         {buy ? <PurchaseFlow lawyerId={l.userId} lawyerName={l.name} service={buy} blocked={blocked} onBack={() => setBuy(null)} onOrders={() => leave(() => router.navigate("/(tabs)/orders"))} onChat={(room) => leave(() => router.push({ pathname: "/chat/[roomId]", params: { roomId: room } }))} onLogin={() => leave(() => router.push("/auth/login"))} onClose={() => setBuy(null)} /> : null}

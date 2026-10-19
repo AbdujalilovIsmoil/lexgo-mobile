@@ -48,5 +48,11 @@ export const nt3 = {
     back: "Ulanish tiklandi",
     serverDown: "Server javob bermayapti",
     slow: "Sekin ulanish",
+    syncing: "{n} ta o'zgarish yuborilmoqda",
+    pending: "Yuborilmagan",
+    savedLocal: "Oflayn saqlandi, internet qaytganda yuboriladi",
+    syncFailed: "{n} ta o'zgarish serverga o'tmadi",
+    cached: "Oflayn: saqlangan nusxa",
+    updatedAt: "Yangilangan: {when}",
   },
 };

@@ -1,8 +1,9 @@
 import { useEffect, useState, type ReactNode } from "react";
-import { QueryClient, focusManager, onlineManager } from "@tanstack/react-query";
+import { QueryClient, focusManager } from "@tanstack/react-query";
 import { PersistQueryClientProvider } from "@tanstack/react-query-persist-client";
 import { AppState, Platform } from "react-native";
 import { ApiError } from "@/shared/api";
+import { keepPersistedQueries } from "@/shared/cache/gc";
 import { DAY, keepPublicQueries, persister, shouldPersist } from "./queryPersist";
 
 const BUSTER = "2"; // bump to throw every saved cache away after a response-shape change
@@ -17,15 +18,18 @@ export function QueryProvider({ children }: { children: ReactNode }) {
           retry: (count, e) => (e instanceof ApiError && e.status > 0 && e.status < 500 ? false : count < 2),
           staleTime: 2 * 60 * 1000,
           gcTime: 30 * 60 * 1000,
-          refetchOnReconnect: false,
+          // offlineFirst: the first attempt always runs and cached data is served at once; when the request fails for lack of a
+          // connection the query keeps its data (and pauses its retries) instead of turning into an error screen.
+          networkMode: "offlineFirst",
+          refetchOnReconnect: true, // stale queries reload when the connection returns (fresh ones are left alone)
         },
       },
     });
     keepPublicQueries(c);
+    keepPersistedQueries(c);
     return c;
   });
   useEffect(() => {
-    onlineManager.setOnline(true);
     const sub = AppState.addEventListener("change", (st) => {
       if (Platform.OS !== "web") focusManager.setFocused(st === "active");
     });

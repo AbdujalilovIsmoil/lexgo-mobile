@@ -25,7 +25,12 @@ export function ConsentSheet({ item, onClose }: { item: ConsentItem | null; onCl
       title={title}
       subtitle={c ? `${t("py7.version", { v: c.version })}${c.acceptedAt ? ` · ${t("py7.acceptedAt", { d: fmtDate(c.acceptedAt, locale) })}` : ""}` : undefined}
       submitLabel={t("py7.accept")}
-      onSubmit={todo && c ? () => accept.confirm({ id: c.id, version: c.version, title }) : undefined}
+      onSubmit={todo && c ? () => {
+        // iOS cannot show the confirm dialog (a Modal) over this sheet (another Modal): close the sheet first.
+        const v = { id: c.id, version: c.version, title };
+        onClose();
+        setTimeout(() => accept.confirm(v), 350);
+      } : undefined}
       submitting={accept.pending}
       snaps={[0.7, 0.95]}
     >

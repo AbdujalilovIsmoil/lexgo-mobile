@@ -1,5 +1,5 @@
 import * as SQLite from "expo-sqlite";
-import { DB_NAME, DB_VERSION, SCHEMA_V1, SCHEMA_V2 } from "./schema";
+import { DB_NAME, DB_VERSION, SCHEMA_V1, SCHEMA_V2, SCHEMA_V3 } from "./schema";
 
 type Db = SQLite.SQLiteDatabase;
 let opening: Promise<Db | null> | null = null;
@@ -9,6 +9,7 @@ async function migrate(d: Db): Promise<void> {
   const from = row?.user_version ?? 0;
   if (from < 1) await d.execAsync(SCHEMA_V1);
   if (from < 2) await d.execAsync(SCHEMA_V2);
+  if (from < 3) await d.execAsync(SCHEMA_V3);
   if (from !== DB_VERSION) await d.execAsync(`PRAGMA user_version = ${DB_VERSION}`);
 }
 

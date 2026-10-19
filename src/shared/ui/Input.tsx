@@ -2,6 +2,7 @@ import { useState, type ReactNode } from "react";
 import { StyleSheet, TextInput, View, type TextInputProps } from "react-native";
 import { radius, useColors } from "@/shared/theme";
 import { Text } from "./Text";
+import { multiLineText, singleLineText } from "./inputText";
 
 type Props = TextInputProps & {
   label?: string;
@@ -38,7 +39,7 @@ export function Input({ label, error, hint, left, right, style, ...rest }: Props
             rest.onBlur?.(e);
           }}
           placeholderTextColor={c.gray2}
-          style={[s.input, { color: c.ink }, style]}
+          style={[s.input, rest.multiline ? multiLineText : singleLineText, { color: c.ink }, style]}
         />
         {right ? <View style={s.side}>{right}</View> : null}
       </View>

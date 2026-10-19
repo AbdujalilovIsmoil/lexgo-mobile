@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { Platform, StatusBar } from "react-native";
+import { Platform } from "react-native";
 import * as SystemUI from "expo-system-ui";
 import { NavigationBar } from "expo-navigation-bar";
 import { useTheme } from "@/shared/theme";
@@ -11,8 +11,6 @@ export function SystemChrome() {
   useEffect(() => {
     void SystemUI.setBackgroundColorAsync(colors.bg).catch(() => {});
     if (Platform.OS !== "android") return;
-    StatusBar.setTranslucent(true);
-    StatusBar.setBackgroundColor("transparent");
     NavigationBar.setStyle(dark ? "dark" : "light");
   }, [colors.bg, dark]);
   return null;

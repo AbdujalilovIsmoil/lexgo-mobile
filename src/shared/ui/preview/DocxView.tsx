@@ -33,11 +33,14 @@ export function DocxView({ uri, name, mime }: Props) {
   if (state === "fail") return <OtherView uri={uri} name={name} mime={mime} />;
   return (
     <View style={s.fill}>
-      {page ? <WebView ref={web} source={{ html: page }} originWhitelist={["*"]} onMessage={onMessage} javaScriptEnabled style={s.fill} setSupportMultipleWindows={false} /> : null}
+      {page ? <WebView ref={web} source={{ html: page }} originWhitelist={["*"]} onMessage={onMessage} javaScriptEnabled allowFileAccess={false} allowFileAccessFromFileURLs={false} allowUniversalAccessFromFileURLs={false} onShouldStartLoadWithRequest={inlineOnly} style={s.fill} setSupportMultipleWindows={false} /> : null}
       {state === "load" ? <View style={[s.cover, { backgroundColor: c.bg }]}><ActivityIndicator color={c.accent} /></View> : null}
     </View>
   );
 }
+
+// The page only ever shows its own inline content: links inside a document never navigate the WebView (no remote or file pages).
+const inlineOnly = (r: { url: string }) => r.url === "" || /^(about:|data:|blob:)/.test(r.url);
 
 const s = StyleSheet.create({
   fill: { flex: 1 },

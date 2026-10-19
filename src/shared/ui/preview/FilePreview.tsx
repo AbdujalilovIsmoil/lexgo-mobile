@@ -7,6 +7,9 @@ import { Button } from "../Button";
 import { Text } from "../Text";
 import { PreviewBody } from "./PreviewBody";
 import { shareFile } from "@/shared/lib/files";
+import { BlockedView } from "./BlockedView";
+import { OtherView } from "./OtherView";
+import { useFileCheck } from "./useFileCheck";
 import { useFileSource, type FileRef } from "./useFileSource";
 
 type Props = { visible: boolean; onClose: () => void; file: FileRef | null };
@@ -17,7 +20,8 @@ export function FilePreview({ visible, onClose, file }: Props) {
   const c = useColors();
   const { t } = useT();
   const insets = useSafeAreaInsets();
-  const { state, uri, kind, retry, cancel } = useFileSource(visible ? file : null);
+  const { state, uri, cls, kind, retry, cancel } = useFileSource(visible ? file : null);
+  const check = useFileCheck(uri, cls);
   const title = state.name ?? file?.name ?? "";
   return (
     <Modal visible={visible} animationType="slide" onRequestClose={onClose} presentationStyle="fullScreen">
@@ -25,9 +29,11 @@ export function FilePreview({ visible, onClose, file }: Props) {
         <View style={s.head}>
           <IconButton icon="x" onPress={() => { cancel(); onClose(); }} />
           <Text variant="h4" numberOfLines={1} style={{ flex: 1 }}>{title}</Text>
-          {uri ? <IconButton icon="share" onPress={() => void shareFile(uri, file?.mime)} /> : null}
+          {uri && cls.safe && check !== "blocked" ? <IconButton icon="share" onPress={() => void shareFile(uri, file?.mime)} /> : null}
         </View>
-        {state.phase === "loading" ? (
+        {!cls.safe || check === "blocked" ? (
+          <BlockedView name={title} />
+        ) : state.phase === "loading" ? (
           <View style={s.center}>
             <ActivityIndicator color={c.accent} />
             <Text tone="gray">{Math.round(state.progress * 100)}%</Text>
@@ -38,6 +44,8 @@ export function FilePreview({ visible, onClose, file }: Props) {
             <Text tone="gray" center>{t("fnd1.preview.failed")}</Text>
             <Button title={t("fnd1.preview.retry")} onPress={retry} />
           </View>
+        ) : uri && check === "large" ? (
+          <OtherView uri={uri} name={title} mime={file?.mime} message={t("fnd1.preview.tooLarge")} />
         ) : uri ? <PreviewBody uri={uri} kind={kind} name={title} mime={file?.mime} /> : null}
       </View>
     </Modal>

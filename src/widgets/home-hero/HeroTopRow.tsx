@@ -14,7 +14,7 @@ export function HeroTopRow({ name }: { name?: string }) {
   return (
     <View style={s.row}>
       <View style={s.brand}>
-        <Image source={require("../../../assets/logo.png")} style={s.logo} />
+        <Image source={require("../../../assets/logo-small.png")} style={s.logo} />
         <View>
           <Text variant="caption" style={s.hi}>
             {t("home.greeting")}
@@ -41,7 +41,7 @@ export function HeroTopRow({ name }: { name?: string }) {
 }
 
 const s = StyleSheet.create({
-  row: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", gap: 12 },
+  row: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", gap: 12, minHeight: 44 },
   brand: { flexDirection: "row", alignItems: "center", gap: 10, flex: 1 },
   logo: { width: 40, height: 40, borderRadius: 12 },
   hi: { color: "#93C6FF" },

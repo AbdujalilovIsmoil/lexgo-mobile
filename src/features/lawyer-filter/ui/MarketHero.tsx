@@ -3,7 +3,7 @@ import { ScrollView, StyleSheet, TextInput, View } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import Animated, { FadeInDown } from "react-native-reanimated";
 import { useMarketMeta } from "@/entities/lawyer";
-import { Icon, PressableScale, Text } from "@/shared/ui";
+import { Icon, PressableScale, singleLineText, Text } from "@/shared/ui";
 import { brand, gradient, radius } from "@/shared/theme";
 import { useT } from "@/shared/i18n";
 import { HeroStats, type Stats } from "./HeroStats";
@@ -27,7 +27,7 @@ export function MarketHero({ value, onChange, onFind, onClear, onExample, stats,
         <Text variant="small" style={s.lead}>{t("mk1.heroLead")}</Text>
         <View style={s.field}>
           <LinearGradient colors={["#7A5CFF", brand.b600, brand.cy]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={s.ai}><Icon name="star" size={18} color="#FFFFFF" /></LinearGradient>
-          <TextInput value={value} onChangeText={onChange} onSubmitEditing={onFind} returnKeyType="search" placeholder={t("mk1.heroPh")} placeholderTextColor="#7D8CA3" accessibilityLabel={t("mk1.aiChip")} style={s.input} />
+          <TextInput value={value} onChangeText={onChange} onSubmitEditing={onFind} returnKeyType="search" placeholder={t("mk1.heroPh")} placeholderTextColor="#7D8CA3" accessibilityLabel={t("mk1.aiChip")} style={[s.input, singleLineText]} />
           {value ? <PressableScale onPress={onClear} hitSlop={10} accessibilityLabel={t("flt.clear")}><Icon name="x-circle" size={18} color="#7D8CA3" /></PressableScale> : null}
           <PressableScale onPress={onFind} accessibilityRole="button" accessibilityLabel={t("mk1.find")}>
             <LinearGradient colors={[...gradient.primary]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={s.go}><Icon name="arrow-right" size={20} color="#FFFFFF" /></LinearGradient>

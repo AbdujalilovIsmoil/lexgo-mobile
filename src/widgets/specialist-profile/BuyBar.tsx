@@ -6,11 +6,11 @@ import { fmtMoney } from "@/shared/lib/money";
 import { useT } from "@/shared/i18n";
 import type { LawyerService } from "@/entities/lawyer";
 
-type Props = { service: LawyerService | null; fallback: number; chatBusy: boolean; onChat: () => void; onBuy: () => void };
+type Props = { service: LawyerService | null; fallback: number; canChat: boolean; chatBusy: boolean; onChat: () => void; onBuy: () => void };
 
-// The web's purchase card as a bar that stays put: the picked service, its price in so'm, a round chat button and the
+// The web's purchase card as a bar that stays put: the picked service, its price in so'm, a round chat button (only while a paid order with this specialist is running) and the
 // gradient "Sotib olish" (never dead: with nothing to buy it becomes "Xizmat tanlash", see SpecialistView).
-export function BuyBar({ service, fallback, chatBusy, onChat, onBuy }: Props) {
+export function BuyBar({ service, fallback, canChat, chatBusy, onChat, onBuy }: Props) {
   const c = useColors();
   const { t } = useT();
   const insets = useInsets();
@@ -21,7 +21,7 @@ export function BuyBar({ service, fallback, chatBusy, onChat, onBuy }: Props) {
         <Text variant="caption" tone="gray" numberOfLines={1}>{service?.title ?? t("mkd.selectService")}</Text>
         <Text variant="h4" tone="accent" numberOfLines={1}>{price ? `${fmtMoney(price)} ${t("common.currency")}` : "—"}</Text>
       </View>
-      <IconButton icon="message-circle" size={48} label={t("spf.chat")} onPress={onChat} badge={chatBusy} />
+      {canChat ? <IconButton icon="message-circle" size={48} label={t("spf.chat")} onPress={onChat} badge={chatBusy} /> : null}
       <Button title={t(service?.price ? "mkd.buy" : "spf.pick")} icon="arrow-right" iconRight variant="gradient" onPress={onBuy} />
     </View>
   );

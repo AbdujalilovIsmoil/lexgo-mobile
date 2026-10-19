@@ -30,7 +30,7 @@ export function SidebarPanel({ p, onGo }: { p: SharedValue<number>; onGo: (route
   return (
     <View style={[s.fill, { paddingTop: insets.top + 12, paddingBottom: insets.bottom + 8 }]}>
       <View style={s.brand}>
-        <Image source={require("../../../assets/logo.png")} style={s.logo} />
+        <Image source={require("../../../assets/logo-small.png")} style={s.logo} />
         <View style={s.fill}>
           <Text variant="h4">LexGo</Text>
           <Text variant="caption" tone="gray" numberOfLines={1}>{user ? `${user.name || t("ntd.sbTitle")} · ${t(role === "client" ? "profile.roleClient" : user.role === "advocate" ? "profile.roleAdvocate" : user.role === "lawyer" ? "profile.roleLawyer" : "tabs.admin")}` : t("home.guest")}</Text>

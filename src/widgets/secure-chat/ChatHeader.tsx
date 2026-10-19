@@ -2,7 +2,7 @@ import type { ReactNode } from "react";
 import { StyleSheet, View } from "react-native";
 import { useRouter } from "expo-router";
 import { Avatar, Icon, IconButton, PressableScale, Text } from "@/shared/ui";
-import { useInsets } from "@/shared/lib/insets";
+import { HEADER_GAP, useInsets } from "@/shared/lib/insets";
 import { useColors } from "@/shared/theme";
 
 type Props = { title: string; subtitle: string; group: boolean; online: boolean; onInfo: () => void; right: ReactNode };
@@ -13,7 +13,7 @@ export function ChatHeader({ title, subtitle, group, online, onInfo, right }: Pr
   const insets = useInsets();
   const router = useRouter();
   return (
-    <View style={[s.bar, { paddingTop: insets.top + 6, borderBottomColor: c.line }]}>
+    <View style={[s.bar, { paddingTop: insets.top + HEADER_GAP, borderBottomColor: c.line }]}>
       <IconButton icon="chevron-left" onPress={() => (router.canGoBack() ? router.back() : router.replace("/"))} />
       <PressableScale onPress={onInfo} haptic={false} style={s.who}>
         {group ? <View style={[s.group, { backgroundColor: c.tint2 }]}><Icon name="users" size={18} tone="accent" /></View> : <Avatar name={title} size={38} />}

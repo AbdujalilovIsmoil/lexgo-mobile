@@ -2,7 +2,7 @@ import { StyleSheet, View } from "react-native";
 import { IconButton, Text } from "@/shared/ui";
 import type { RoomStatus } from "@/features/call/call";
 import { mmss } from "@/shared/lib/format";
-import { useInsets } from "@/shared/lib/insets";
+import { HEADER_GAP, useInsets } from "@/shared/lib/insets";
 import { useT } from "@/shared/i18n";
 import type { StageMode } from "./CallStage";
 
@@ -15,7 +15,7 @@ export function CallHeader({ rec, title, status, elapsed, left, paused, count, m
   const insets = useInsets();
   const low = left != null && left <= 120 && !paused;
   return (
-    <View style={[s.bar, { paddingTop: insets.top + 6 }]}>
+    <View style={[s.bar, { paddingTop: insets.top + HEADER_GAP }]}>
       <View style={s.col}>
         <View style={s.row}><Text variant="h4" tone="white" numberOfLines={1} style={s.col}>{title || t("admMeet.meeting")}</Text>{rec ? <Text variant="caption" weight="bold" style={s.rec}>● REC</Text> : null}</View>
         <View style={s.row}>

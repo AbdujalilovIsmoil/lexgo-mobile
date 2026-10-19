@@ -1,6 +1,6 @@
+import { FocusStatusBar } from "@/shared/ui";
 import { useEffect, useRef } from "react";
 import { StyleSheet, View } from "react-native";
-import { StatusBar } from "expo-status-bar";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { KeyboardAvoidingView } from "react-native-keyboard-controller";
 import { useT } from "@/shared/i18n";
@@ -31,7 +31,7 @@ export function AiChatPage() {
   const blocked = !chat.clientId || (!!chat.limitErr && chat.limitErr.kind !== "rate");
   return (
     <View {...screen} style={s.fill}>
-      <StatusBar style="light" />
+      <FocusStatusBar style="light" />
       <AiBackdrop />
       <ChatHeader onClose={() => router.navigate("/")} onNew={chat.newChat} onHistory={() => router.push("/chats")} remaining={remaining} />
       <KeyboardAvoidingView behavior="padding" style={s.flex}>

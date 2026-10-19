@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { ScrollView, StyleSheet, TextInput, View } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
-import { Icon, PressableScale, Text } from "@/shared/ui";
+import { Icon, PressableScale, singleLineText, Text } from "@/shared/ui";
 import { useT } from "@/shared/i18n";
 import { AskAiSheet, useSupportAi } from "@/features/support";
 
@@ -26,7 +26,7 @@ export function AiAskCard({ onOperator }: { onOperator: () => void }) {
       </View>
       <Text variant="small" style={s.txt}>{t("sp1.aiText")}</Text>
       <View style={s.field}>
-        <TextInput value={text} onChangeText={setText} accessibilityLabel={t("sp1.askPh")} placeholder={t("sp1.askPh")} placeholderTextColor="rgba(255,255,255,0.6)" returnKeyType="send" onSubmitEditing={() => ask(text)} maxLength={1000} style={s.input} />
+        <TextInput value={text} onChangeText={setText} accessibilityLabel={t("sp1.askPh")} placeholder={t("sp1.askPh")} placeholderTextColor="rgba(255,255,255,0.6)" returnKeyType="send" onSubmitEditing={() => ask(text)} maxLength={1000} style={[s.input, singleLineText]} />
         <PressableScale onPress={() => ask(text)} disabled={!text.trim()} style={[s.send, !text.trim() && s.off]} accessibilityLabel={t("sp1.ask")}>
           <Icon name="send" size={18} color="#1668F0" />
         </PressableScale>

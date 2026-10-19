@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { StyleSheet, TextInput, View } from "react-native";
 import { radius, useColors } from "@/shared/theme";
-import { Icon, PressableScale, Text } from "@/shared/ui";
+import { Icon, PressableScale, singleLineText, Text } from "@/shared/ui";
 import { useT } from "@/shared/i18n";
 
 type Props = { value: string; onChange: (v: string) => void; found: number; total: number };
@@ -30,7 +30,7 @@ export function TemplateSearch({ value, onChange, found, total }: Props) {
           returnKeyType="search"
           clearButtonMode="never"
           selectionColor={c.accent}
-          style={[s.input, { color: c.ink }]}
+          style={[s.input, singleLineText, { color: c.ink }]}
         />
         {typing ? (
           <PressableScale onPress={() => onChange("")} hitSlop={10} accessibilityRole="button" accessibilityLabel={t("tpl.clear")} style={s.clear}>
