@@ -14,6 +14,7 @@ export { ListRowSkeleton } from "./ListRowSkeleton";
 export { EmptyState } from "./EmptyState";
 export { SectionHeader } from "./SectionHeader";
 export { Chip } from "./Chip";
+export { StageChip, ShiftButton } from "./StageChip";
 export { ListRow } from "./ListRow";
 export { Divider } from "./Divider";
 export { GradientBox } from "./GradientBox";

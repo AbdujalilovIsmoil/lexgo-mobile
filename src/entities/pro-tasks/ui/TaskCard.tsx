@@ -6,14 +6,12 @@ import { useT } from "@/shared/i18n";
 import { fmtDate } from "@/shared/lib/format";
 import { tOr } from "@/shared/lib/pro/tOr";
 import { brand, radius, useColors } from "@/shared/theme";
-import { Card, Icon, Pill, PressableScale, Text, type IconName, type PillTone } from "@/shared/ui";
+import { Card, Icon, Pill, PressableScale, ShiftButton, StageChip, Text, type IconName } from "@/shared/ui";
 import { KIND_CREATE, KIND_STATUS, KIND_UPDATE } from "../model/offline";
 import { isBlocked, isDone, isOverdue, stageOf, stepStage } from "../lib/stage";
 import type { ProTask, TaskStage } from "../model/types";
 
 const PRIO = { high: "err", medium: "warn", low: "gray" } as const;
-const STAGE_TONE: Record<TaskStage, PillTone> = { todo: "gray", doing: "blue", review: "warn", done: "ok" };
-const HIT = { top: 9, bottom: 9, left: 8, right: 8 };
 
 type Props = {
   task: ProTask;
@@ -24,8 +22,9 @@ type Props = {
   onPickStage: () => void;
 };
 
-// Board card. Tap the body to edit; the footer has the stage pill (menu) and the one-tap "next stage" button;
-// swiping sideways does the same as the button for next / previous (never the only way).
+// Board card, laid out like the sales operator's lead card: title and priority, the stage chip (menu) among the tags,
+// then a foot with the due date and the round arrows to the previous / next stage. Swiping sideways does the same as
+// the arrows (never the only way).
 export function TaskCard({ task, onOpen, onMove, onPickStage }: Props) {
   const c = useColors();
   const { t, locale } = useT();
@@ -39,6 +38,7 @@ export function TaskCard({ task, onOpen, onMove, onPickStage }: Props) {
   const left = task.checklist.filter((x) => x.done).length;
   const meta = [task.caseTitle, total ? t("aw7.checkCount", { done: left, total }) : ""].filter(Boolean).join(" · ");
   const stageName = t(`aw7.tab.${stage}`);
+  const stageColor = { todo: c.gray, doing: c.accent, review: c.warn, done: c.ok }[stage];
   const forward = next ? t(`aw7.next.${next}`) : t("aw7.reopen");
 
   // Swiping left reveals the right-hand panel and advances; swiping right goes back.
@@ -67,33 +67,32 @@ export function TaskCard({ task, onOpen, onMove, onPickStage }: Props) {
     >
       <Card padded={false}>
         <PressableScale onPress={onOpen} scale={0.99} accessibilityLabel={t("aw7.openTask", { title: task.title })} style={s.body}>
-          <Text variant="body" weight="bold" numberOfLines={3} tone={isDone(task) ? "gray" : "ink"} style={isDone(task) ? s.strike : undefined}>{task.title}</Text>
-          {meta ? <Text variant="caption" tone="gray" numberOfLines={1}>{meta}</Text> : null}
-          <View style={s.pills}>
-            {task.dueDate ? <Pill small tone={over ? "err" : "gray"} icon={over ? "alert-circle" : "calendar"} label={fmtDate(task.dueDate, locale)} /> : null}
+          <View style={s.row}>
+            <Text variant="body" weight="bold" numberOfLines={3} tone={isDone(task) ? "gray" : "ink"} style={[s.fill, isDone(task) && s.strike]}>{task.title}</Text>
             <Pill small tone={PRIO[task.priority as keyof typeof PRIO] ?? "gray"} label={tOr(t, `aw11.priority.${task.priority}`, task.priority)} />
-            {waiting ? <Pill small tone="warn" icon="clock" label={t("nt3.net.pending")} /> : null}
-            {isBlocked(task) ? <Pill small tone="err" icon="slash" label={t("aw7.blocked")} /> : null}
           </View>
+          <View style={s.tags}>
+            <StageChip title={stageName} color={stageColor} onPress={onPickStage} />
+            {isBlocked(task) ? <Pill small tone="err" icon="slash" label={t("aw7.blocked")} /> : null}
+            {waiting ? <Pill small tone="warn" icon="clock" label={t("nt3.net.pending")} /> : null}
+          </View>
+          {meta ? <Text variant="caption" tone="gray2" numberOfLines={2}>{meta}</Text> : null}
           {total ? (
             <View accessible accessibilityRole="progressbar" accessibilityLabel={t("aw7.checkCount", { done: left, total })} accessibilityValue={{ min: 0, max: total, now: left }} style={[s.track, { backgroundColor: c.surface2 }]}>
-              <View style={[s.fill, { width: `${(left / total) * 100}%`, backgroundColor: left === total ? c.ok : c.accent }]} />
+              <View style={[s.bar, { width: `${(left / total) * 100}%`, backgroundColor: left === total ? c.ok : c.accent }]} />
             </View>
           ) : null}
         </PressableScale>
-        <View style={[s.footer, { borderTopColor: c.line }]}>
-          <PressableScale onPress={onPickStage} hitSlop={HIT} accessibilityLabel={t("aw7.changeStage", { stage: stageName })} style={s.stage}>
-            <Pill small tone={STAGE_TONE[stage]} label={stageName} />
-            <Icon name="chevron-down" size={16} tone="gray" />
-          </PressableScale>
-          <PressableScale
-            onPress={() => onMove(forwardTo)}
-            accessibilityLabel={forward}
-            style={[s.next, { backgroundColor: next ? brand.b600 : c.surface2 }]}
-          >
-            <Text variant="small" weight="bold" style={{ color: next ? "#FFFFFF" : c.ink }}>{forward}</Text>
-            <Icon name={next ? "arrow-right" : "rotate-ccw"} size={15} color={next ? "#FFFFFF" : c.ink} />
-          </PressableScale>
+        <View style={[s.row, s.foot, { borderTopColor: c.line }]}>
+          {task.dueDate ? (
+            <View style={s.due}>
+              <Icon name={over ? "alert-circle" : "calendar"} size={13} color={over ? c.err : c.gray2} />
+              <Text variant="caption" weight="semibold" numberOfLines={1} style={{ color: over ? c.err : c.gray2 }}>{fmtDate(task.dueDate, locale)}</Text>
+            </View>
+          ) : null}
+          <View style={s.fill} />
+          <ShiftButton icon="chevron-left" label={prev ? t(`aw7.next.${prev}`) : undefined} disabled={!prev} onPress={() => prev && onMove(prev)} />
+          <ShiftButton icon={next ? "chevron-right" : "rotate-ccw"} label={forward} disabled={false} onPress={() => onMove(forwardTo)} />
         </View>
       </Card>
     </Swipeable>
@@ -116,12 +115,13 @@ const s = StyleSheet.create({
   swipe: { borderRadius: 20, overflow: "hidden" },
   action: { justifyContent: "center", width: 150, paddingHorizontal: 18 },
   actionIn: { alignItems: "center", gap: 3, maxWidth: 114 },
-  body: { padding: 14, gap: 6 },
+  body: { padding: 14, gap: 8 },
+  row: { flexDirection: "row", alignItems: "center", gap: 8 },
+  fill: { flex: 1 },
   strike: { textDecorationLine: "line-through" },
-  pills: { flexDirection: "row", flexWrap: "wrap", gap: 6, marginTop: 2 },
-  track: { height: 5, borderRadius: radius.pill, overflow: "hidden", marginTop: 4 },
-  fill: { height: "100%", borderRadius: radius.pill },
-  footer: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingHorizontal: 14, paddingVertical: 8, borderTopWidth: StyleSheet.hairlineWidth },
-  stage: { flexDirection: "row", alignItems: "center", gap: 2 },
-  next: { flexDirection: "row", alignItems: "center", gap: 6, minHeight: 44, paddingHorizontal: 16, borderRadius: radius.pill },
+  tags: { flexDirection: "row", flexWrap: "wrap", alignItems: "center", gap: 6 },
+  track: { height: 5, borderRadius: radius.pill, overflow: "hidden" },
+  bar: { height: "100%", borderRadius: radius.pill },
+  foot: { paddingHorizontal: 14, paddingVertical: 8, borderTopWidth: StyleSheet.hairlineWidth },
+  due: { flexDirection: "row", alignItems: "center", gap: 6, flexShrink: 1 },
 });
