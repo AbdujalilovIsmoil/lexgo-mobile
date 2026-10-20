@@ -16,12 +16,13 @@ type Props = {
   subtitle?: string;
   snaps?: number[]; // fractions of the screen height, ascending
   native?: boolean; // false → render inline (inside a transparent route)
+  expandable?: boolean; // forms: the top snap stays reachable even when the content is shorter
   guardClose?: () => boolean; // true → the close is held back (the caller asks first) and the sheet stays open
 };
 
 // Draggable bottom drawer. Drag the handle to resize between snaps, pull it
 // down (or flick) to dismiss, or tap the dark area. Covers the tab bar.
-export function BottomSheet({ visible, onClose, children, title, subtitle, snaps = [0.56, 0.92], native = true, guardClose }: Props) {
+export function BottomSheet({ visible, onClose, children, title, subtitle, snaps = [0.56, 0.92], native = true, expandable, guardClose }: Props) {
   const { height: H } = useWindowDimensions();
   const insets = useInsets();
   // Header + the content's own height (reported by a SheetScroll inside): short content hugs, long content scrolls.
@@ -29,7 +30,7 @@ export function BottomSheet({ visible, onClose, children, title, subtitle, snaps
   const m = useRef({ header: 0, wrap: 0, viewport: 0, content: 0 });
   const closingNow = useRef<() => boolean>(() => false);
   const room = H - insets.top - 10;
-  const px = useMemo(() => fitSnaps(snaps.map((f) => Math.round(f * H)), fit, room), [snaps, H, fit, room]);
+  const px = useMemo(() => fitSnaps(snaps.map((f) => Math.round(f * H)), fit, room, expandable), [snaps, H, fit, room, expandable]);
   const fitApi = useMemo(() => {
     const recompute = () => {
       if (closingNow.current()) return; // the sheet is shrinking away: its sizes say nothing about the content

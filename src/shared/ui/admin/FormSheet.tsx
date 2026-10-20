@@ -30,7 +30,7 @@ export function FormSheet({ visible, onClose, title, subtitle, onSubmit, submitL
   const c = useColors();
   const insets = useInsets();
   return (
-    <BottomSheet visible={visible} onClose={onClose} title={title} subtitle={subtitle} snaps={snaps} guardClose={guardClose}>
+    <BottomSheet visible={visible} onClose={onClose} title={title} subtitle={subtitle} snaps={snaps} expandable guardClose={guardClose}>
       <SheetScroll ref={scrollRef} contentContainerStyle={[s.body, onSubmit && s.withBar]}>{children}</SheetScroll>
       {onSubmit ? (
         <View style={[s.bar, { borderTopColor: c.line, backgroundColor: c.surface, paddingBottom: insets.bottom + 10 }]}>
