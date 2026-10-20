@@ -1,8 +1,8 @@
 import { useEffect } from "react";
-import { AppState, Platform } from "react-native";
+import { Appearance, AppState, Platform } from "react-native";
 import * as SystemUI from "expo-system-ui";
 import { NavigationBar } from "expo-navigation-bar";
-import { useTheme } from "@/shared/theme";
+import { useTheme, useThemeStore } from "@/shared/theme";
 import { resyncStatusBar, resyncStatusBarSoon } from "@/shared/lib/statusBarSync";
 import { useOverlayHosts } from "@/shared/ui/overlay";
 
@@ -10,6 +10,12 @@ import { useOverlayHosts } from "@/shared/ui/overlay";
 // the Android navigation bar, and screens keep clear of them with inset padding.
 export function SystemChrome() {
   const { colors, dark } = useTheme();
+  const mode = useThemeStore((s) => s.mode);
+  // The system tab bar (Liquid Glass) and the other system materials follow the window's appearance, not the app's theme: when the
+  // two differ they come out in the wrong tone (a light bar over a dark app). The app's choice is handed to iOS; "system" releases it.
+  useEffect(() => {
+    if (Platform.OS === "ios") Appearance.setColorScheme(mode === "system" ? "unspecified" : mode);
+  }, [mode]);
   useEffect(() => {
     void SystemUI.setBackgroundColorAsync(colors.bg).catch(() => {});
     if (Platform.OS !== "android") return;

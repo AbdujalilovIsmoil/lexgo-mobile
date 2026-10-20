@@ -1,6 +1,8 @@
 import { useEffect } from "react";
+import { Platform } from "react-native";
 import { Tabs, useRouter, useSegments } from "expo-router";
 import { TabBar } from "@/widgets/tab-bar";
+import { NativeTabsBar } from "@/widgets/tab-bar/NativeTabsBar";
 import { allowedRoutes, homeRoute } from "@/widgets/tab-bar/tabConfig";
 import { useTabRole } from "@/widgets/tab-bar/useTabRole";
 
@@ -23,6 +25,8 @@ export default function TabsLayout() {
     if (outside || clientHome) router.replace(first === "index" ? "/" : (`/(tabs)/${first}` as never));
   }, [role, current, first, router]);
 
+  // iOS: the system tab bar (Liquid Glass on iOS 26). Android keeps the flat bar below.
+  if (Platform.OS === "ios") return <NativeTabsBar bar={current !== "ai"} />;
   return (
     <Tabs tabBar={(props) => <TabBar {...props} />} screenOptions={{ headerShown: false, lazy: true }}>
       {ROUTES.slice(0, 1).map((n) => <Tabs.Screen key={n} name={n} />)}
