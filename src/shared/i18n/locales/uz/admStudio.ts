@@ -1,5 +1,5 @@
 export const admStudio = {
-  actions: { archive: "Arxivlash", exportAll: "Studio'ni Excelga yuklab olish", publish: "E'lon qilish" }, tabs: { approvals: "Tasdiqlash", monitoring: "Monitoring", settings: "Sozlamalar" },
+  actions: { archive: "Arxivlash", exportAll: "Studio'ni Excelga yuklab olish", publish: "E'lon qilish" }, tabs: { home: "Bosh sahifa", approvals: "Tasdiqlash", monitoring: "Kuzatuv", settings: "Sozlamalar" },
   status: { draft: "Qoralama", submitted: "Yuborildi", in_review: "Tekshiruvda", changes_requested: "Qayta ishlashda", approved: "Tasdiqlandi", published: "E'lon qilindi", archived: "Arxivda",
     rejected: "Rad etildi" },
   stepStatus: { pending: "Kutilmoqda", approved: "Tasdiqladi", approve: "Tasdiqladi", changes_requested: "Qaytardi", rejected: "Rad etdi", reject: "Rad etdi", skipped: "O'tkazib yuborildi" },

@@ -1,7 +1,7 @@
 import type { Messages } from "../uz";
 
 export const admStudio: Messages["admStudio"] = {
-  actions: { archive: "В архив", exportAll: "Выгрузить Studio в Excel", publish: "Опубликовать" }, tabs: { approvals: "Согласование", monitoring: "Мониторинг", settings: "Настройки" },
+  actions: { archive: "В архив", exportAll: "Выгрузить Studio в Excel", publish: "Опубликовать" }, tabs: { home: "Главная", approvals: "Согласование", monitoring: "Мониторинг", settings: "Настройки" },
   status: { draft: "Черновик", submitted: "Отправлено", in_review: "На проверке", changes_requested: "На доработке", approved: "Одобрено", published: "Опубликовано", archived: "В архиве", rejected: "Отклонено" },
   stepStatus: { pending: "Ожидает", approved: "Одобрил", approve: "Одобрил", changes_requested: "Вернул на доработку", rejected: "Отклонил", reject: "Отклонил", skipped: "Пропущен" },
   flow: { archived: "Объект в архиве. Его можно только просматривать.", back: "Проверяющий вернул на доработку. Исправьте и отправьте снова.",

@@ -4,7 +4,7 @@ import { useRouter } from "expo-router";
 import { Button, IconButton, confirmDialog, toast } from "@/shared/ui";
 import { AdminPage, PagedList } from "@/shared/ui/admin";
 import { ConstructorRow, StudioGate, dashRows, exportAll, studioKeys, syncConstructors, useDashCounts, useMyObjects, useRegistry, useStudioAccess, useStudioErrorText, useStudioText } from "@/entities/admin-studio";
-import { DashFilters, DashMine, EntityCards, DashNav, DashTiles, GroupHeader } from "@/widgets/admin-studio";
+import { DashFilters, DashMine, EntityCards, DashNav, DashTiles, GroupHeader, StudioNav } from "@/widgets/admin-studio";
 import { useAdminMutation } from "@/shared/lib/useAdminMutation";
 import { useT } from "@/shared/i18n";
 
@@ -30,6 +30,7 @@ function Dash() {
   const doExport = () => (setExporting(true), exportAll().catch((e) => toast(errText(e), "err")).finally(() => setExporting(false)));
   return (
     <AdminPage title={t("admHub.mod.studio.title")} right={a.isAdmin ? <IconButton icon={exporting ? "loader" : "download"} label={t("admStudio.actions.exportAll")} onPress={doExport} /> : undefined}>
+      <StudioNav current="home" />
       <PagedList
         data={rows}
         query={query}

@@ -1,7 +1,7 @@
 import type { Messages } from "../uz";
 
 export const admStudio: Messages["admStudio"] = {
-  actions: { archive: "Archive", exportAll: "Export Studio to Excel", publish: "Publish" }, tabs: { approvals: "Approvals", monitoring: "Monitoring", settings: "Settings" },
+  actions: { archive: "Archive", exportAll: "Export Studio to Excel", publish: "Publish" }, tabs: { home: "Home", approvals: "Approvals", monitoring: "Monitoring", settings: "Settings" },
   status: { draft: "Draft", submitted: "Submitted", in_review: "In review", changes_requested: "Changes requested", approved: "Approved", published: "Published", archived: "Archived", rejected: "Rejected" },
   stepStatus: { pending: "Pending", approved: "Approved", approve: "Approved", changes_requested: "Sent back", rejected: "Rejected", reject: "Rejected", skipped: "Skipped" },
   flow: { archived: "This item is archived. It is read-only.", back: "The reviewer asked for changes. Fix them and submit again.", rejected: "The reviewer rejected it. You can fix it and submit again.",

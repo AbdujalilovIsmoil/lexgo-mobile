@@ -1,21 +1,15 @@
 import { ScrollView } from "react-native";
 import { useRouter } from "expo-router";
 import { Chip } from "@/shared/ui";
-import { useStudioAccess } from "@/entities/admin-studio";
 import { useT } from "@/shared/i18n";
 
-// Jump to the other studio screens the user's role may open (approvals, monitoring, settings).
+// Shortcut from the studio home to the creation journeys (the sections themselves are in StudioNav).
 export function DashNav() {
   const { t } = useT();
-  const a = useStudioAccess();
   const router = useRouter();
-  const go = (p: string) => () => router.push(`/manage/studio/${p}` as never);
   return (
     <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: 8, paddingVertical: 4 }}>
-      <Chip icon="git-merge" label={t("admStudioD.journeys.title")} onPress={go("journeys")} />
-      {a.canReview ? <Chip icon="check-square" label={t("admStudio.tabs.approvals")} onPress={go("approvals")} /> : null}
-      {a.isAdmin ? <Chip icon="activity" label={t("admStudio.tabs.monitoring")} onPress={go("monitoring")} /> : null}
-      {a.isAdmin ? <Chip icon="sliders" label={t("admStudio.tabs.settings")} onPress={go("settings")} /> : null}
+      <Chip icon="git-merge" label={t("admStudioD.journeys.title")} onPress={() => router.push("/manage/studio/journeys" as never)} />
     </ScrollView>
   );
 }

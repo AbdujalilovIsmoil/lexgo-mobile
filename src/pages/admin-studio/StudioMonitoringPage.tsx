@@ -3,7 +3,7 @@ import { View } from "react-native";
 import { useRouter } from "expo-router";
 import { AdminPage, PagedList, useDateRange } from "@/shared/ui/admin";
 import { StudioGate, byOrder, useMonitoring, useStudioText } from "@/entities/admin-studio";
-import { MonitorFilters, MonitorKpis, SessionRow } from "@/widgets/admin-studio";
+import { MonitorFilters, MonitorKpis, SessionRow, StudioNav } from "@/widgets/admin-studio";
 import { useT } from "@/shared/i18n";
 
 function Monitor() {
@@ -25,6 +25,7 @@ function Monitor() {
   const users = (query.data?.users ?? []).map((u) => ({ value: u.id, label: `${u.name || t("admStudioC.mon.unknown")} (${u.sessions})` }));
   return (
     <AdminPage title={t("admStudioC.mon.title")} subtitle={t("admStudioC.mon.lead")}>
+      <StudioNav current="monitoring" />
       <PagedList
         skeletonHeight={110}
         data={shown}

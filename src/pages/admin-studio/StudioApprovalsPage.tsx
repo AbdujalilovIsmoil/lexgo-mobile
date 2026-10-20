@@ -3,7 +3,7 @@ import { View } from "react-native";
 import { Button, Chip, IconButton, confirmDialog } from "@/shared/ui";
 import { AdminPage, PagedList } from "@/shared/ui/admin";
 import { StudioGate, byOrder, processOverdue, studioKeys, useApprovals, useStudioAccess, useStudioText, type StudioDetail } from "@/entities/admin-studio";
-import { ApprovalCard, ApprovalFilters, ApprovalSheet, BulkPublishSheet, canPublishItem, isMine, submittedOf, versionLabel, waitingSince } from "@/widgets/admin-studio";
+import { ApprovalCard, ApprovalFilters, ApprovalSheet, BulkPublishSheet, canPublishItem, isMine, submittedOf, versionLabel, waitingSince, StudioNav } from "@/widgets/admin-studio";
 import { useAdminMutation } from "@/shared/lib/useAdminMutation";
 import { useColors } from "@/shared/theme";
 import { useT } from "@/shared/i18n";
@@ -54,6 +54,7 @@ function Queue() {
         </View>
       ) : undefined}
     >
+      <StudioNav current="approvals" />
       <PagedList
         skeletonHeight={110}
         data={shown}
