@@ -11,7 +11,7 @@ const ios = (color: string, y: number, blur: number, opacity: number): ViewStyle
 export const shadows = {
   s1: Platform.select<ViewStyle>({
     ios: ios("#0B1F45", 1, 3, 0.06),
-    android: { elevation: 1 },
+    android: { elevation: 0 },
     default: {},
   })!,
   s2: Platform.select<ViewStyle>({
@@ -21,7 +21,7 @@ export const shadows = {
   })!,
   blue: Platform.select<ViewStyle>({
     ios: ios("#1668F0", 10, 18, 0.4),
-    android: { elevation: 6, shadowColor: "#1668F0" },
+    android: { elevation: 0 },
     default: {},
   })!,
 } as const;

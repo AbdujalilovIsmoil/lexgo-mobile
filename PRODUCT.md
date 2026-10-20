@@ -4,7 +4,9 @@
 
 ## Platform
 
-ios
+adaptive
+
+One product with two design languages: iOS = Liquid Glass over a vivid aurora; Android = Material 3 Expressive (tonal surfaces, large rounded shapes, Material navigation bar and dialogs) in the LexGo brand colours (no Dynamic Color; choice delegated to the recommended default). Content and section order are identical on both.
 
 ## Users
 Primary: advocates (advokat) and yurists who use the app as a daily working tool — incoming orders and requests, court dates and deadlines, clients, cases, documents, tasks, payouts. They open it many times a day, often between meetings or in court corridors, and need it fast, exact and trustworthy.
@@ -19,7 +21,7 @@ Roles: client, advokat, yurist, advokat tashkiloti, call-center, sales, admin/st
 ## Capabilities and Constraints
 - Expo SDK 57, expo-router, React Native 0.86; iOS 26 Liquid Glass available via expo-glass-effect and the system NativeTabs bar; before iOS 26, on Android and with Reduce Transparency a solid fallback must remain.
 - The order and grouping of sections on every screen (and the tab order per role) must not change in the redesign — only how things look.
-- Android keeps its present design for now.
+- Android follows Material 3 Expressive; nothing may disappear: every block, label and the order of sections and tabs stay as on iOS.
 
 ## Brand Commitments
 The LexGo logo and name stay. Every other visual decision (palette, type, surfaces, motion) is open for redesign.

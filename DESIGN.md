@@ -46,6 +46,21 @@ iOS is a glass-on-colour system. Android keeps the solid tokens above.
 - The tab bar is the system `NativeTabs` bar; the app's theme is handed to iOS (`Appearance.setColorScheme`) so it matches. The AI tab
   is a glass-pearl icon (`assets/tabs/ai-glass*.png`: a light-bar variant with a blue spark, a lit selected state) and has no caption.
 
+## Materials (Android — Material 3 Expressive)
+
+Android is the second design language: tonal, not glass. Same content and section order as iOS; brand colours, no Dynamic Color.
+
+- **Tonal surfaces.** `bg` is a pale blue-tinted surface (deep navy in dark); a card is a *filled tonal container* (`surface` = `glassFill`
+  = a primary-tinted tone), 24dp corners, no outline, no drop shadow (`shadows.s1` / `blue` are elevation 0). `line` is only for dividers
+  and input outlines. Wells inside a card (`surface2`) are a deeper tone of the same hue.
+- **Navigation bar** (`FlatBar`): a tonal container (`tint`), 64×32 pill indicator (`tint2`) behind the active icon, label always shown.
+  The AI destination keeps the middle slot and carries the brand gradient in its pill. Set `collapsable={false}` on a view that changes
+  its background and has a radius — Android otherwise drops the corner radius when the colour changes.
+- **Chip** = Material filter chip: 8dp corners, outlined idle, secondary container plus a check when selected.
+- **Snackbar** (`Toaster`): an inverse surface, 8dp corners, full width, text from the left. **Dialog** (`ConfirmDialog`): 28dp corners,
+  left-aligned title and text, two text buttons at the end (confirm in the brand or error colour).
+- Not yet restyled for Material: the segmented control, the dark hero bands and the gradient tiles (they are shared with iOS).
+
 ## Motion
 
 Reanimated 4. Motion conveys state: press, reveal, list arrival, sheet, toast. 150–260 ms, ease-out or a damped

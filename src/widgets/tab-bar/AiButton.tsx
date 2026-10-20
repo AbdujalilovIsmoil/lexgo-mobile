@@ -1,23 +1,20 @@
-import { StyleSheet, View } from "react-native";
-import { shadows, useColors } from "@/shared/theme";
+import { StyleSheet } from "react-native";
+import { useColors } from "@/shared/theme";
 import { GradientBox, Icon, PressableScale, Text } from "@/shared/ui";
 import { useT } from "@/shared/i18n";
 
-type Props = { focused: boolean; onPress: () => void; labelKey: string; shape?: "circle" | "squircle" };
+type Props = { focused: boolean; onPress: () => void; labelKey: string };
 
-// The raised centre action (AI). Circle on iOS, rounded square on Android.
-export function AiButton({ focused, onPress, labelKey, shape = "circle" }: Props) {
+// The AI destination: same place and size as its neighbours, but its indicator pill is always filled with the brand gradient.
+export function AiButton({ focused, onPress, labelKey }: Props) {
   const c = useColors();
   const { t } = useT();
-  const round = shape === "circle" ? 27 : 19;
   return (
-    <PressableScale onPress={onPress} scale={0.9} style={s.wrap} accessibilityRole="button" accessibilityState={{ selected: focused }}>
-      <View style={[s.ring, { backgroundColor: c.bg, borderRadius: round + 5 }]}>
-        <GradientBox round={round} style={[s.btn, shadows.blue]}>
-          <Icon name="zap" size={24} tone="white" />
-        </GradientBox>
-      </View>
-      <Text variant="caption" weight={focused ? "bold" : "medium"} style={[s.label, { color: focused ? c.accent : c.gray2 }]}>
+    <PressableScale onPress={onPress} scale={0.94} style={s.item} accessibilityRole="button" accessibilityState={{ selected: focused }}>
+      <GradientBox round={16} style={s.pill}>
+        <Icon name="zap" size={22} tone="white" />
+      </GradientBox>
+      <Text variant="caption" weight={focused ? "bold" : "medium"} style={{ color: focused ? c.ink : c.gray, fontSize: 12 }}>
         {t(labelKey)}
       </Text>
     </PressableScale>
@@ -25,8 +22,6 @@ export function AiButton({ focused, onPress, labelKey, shape = "circle" }: Props
 }
 
 const s = StyleSheet.create({
-  wrap: { flex: 1, alignItems: "center", marginTop: -30, gap: 1, paddingBottom: 4 },
-  ring: { padding: 5 },
-  btn: { width: 54, height: 54, alignItems: "center", justifyContent: "center" },
-  label: { fontSize: 10.5 },
+  item: { flex: 1, alignItems: "center", gap: 4, minHeight: 56 },
+  pill: { width: 64, height: 32, alignItems: "center", justifyContent: "center" },
 });

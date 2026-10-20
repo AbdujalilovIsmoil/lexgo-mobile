@@ -1,4 +1,4 @@
-import { StyleSheet, View } from "react-native";
+import { Platform, StyleSheet, View } from "react-native";
 import { brand, radius, useColors } from "@/shared/theme";
 import { PressableScale } from "./PressableScale";
 import { Text } from "./Text";
@@ -10,6 +10,7 @@ type Props = { label: string; active?: boolean; onPress?: () => void; icon?: Ico
 // Filter chip: soft tint when idle, solid brand blue when active; `color` adds a small dot (a category colour).
 export function Chip({ label, active, onPress, icon, color }: Props) {
   const c = useColors();
+  const m3 = Platform.OS === "android"; // Material 3 filter chip: 8dp corners, outlined idle, secondary-container + a check when selected
   return (
     <PressableScale
       haptic={false}
@@ -21,11 +22,12 @@ export function Chip({ label, active, onPress, icon, color }: Props) {
         selectHaptic();
         onPress?.();
       }}
-      style={[s.chip, { backgroundColor: active ? brand.b600 : c.surface2, borderColor: active ? brand.b600 : c.line }]}
+      style={[s.chip, m3 ? { borderRadius: 8, backgroundColor: active ? c.tint2 : "transparent", borderColor: active ? c.tint2 : c.line } : { backgroundColor: active ? brand.b600 : c.surface2, borderColor: active ? brand.b600 : c.line }]}
     >
+      {m3 && active ? <Icon name="check" size={16} color={c.accentStrong} /> : null}
       {color ? <View style={{ width: 9, height: 9, borderRadius: 5, backgroundColor: color, borderWidth: active ? 1.5 : 0, borderColor: "#fff" }} /> : null}
-      {icon ? <Icon name={icon} size={14} color={active ? "#fff" : c.gray} /> : null}
-      <Text variant="small" weight="semibold" style={{ color: active ? "#fff" : c.ink }}>
+      {icon ? <Icon name={icon} size={14} color={m3 ? (active ? c.accentStrong : c.gray) : active ? "#fff" : c.gray} /> : null}
+      <Text variant="small" weight="semibold" style={{ color: m3 ? (active ? c.accentStrong : c.ink) : active ? "#fff" : c.ink }}>
         {label}
       </Text>
     </PressableScale>

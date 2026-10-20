@@ -23,6 +23,7 @@ export function Card({ children, onPress, padded = true, elevated, tinted, style
     backgroundColor: tinted ? c.tint : glass ? c.glassFill : c.surface,
     borderColor: glass ? c.glassLine : c.line,
     ...(glass ? null : elevated ? shadows.s2 : shadows.s1),
+    ...(Platform.OS === "android" ? { borderWidth: 0, borderRadius: 24 } : null), // Material 3 filled card: a tonal container, no outline
   };
   const styles = [s.card, base, padded && s.padded, style];
   if (onPress) {
