@@ -5,7 +5,7 @@ import { SafeAreaProvider, initialWindowMetrics } from "react-native-safe-area-c
 import { StatusBar } from "expo-status-bar";
 import { KeyboardProvider } from "react-native-keyboard-controller";
 import * as SystemUI from "expo-system-ui";
-import { ThemeProvider, useTheme } from "@/shared/theme";
+import { AURORA, ThemeProvider, useTheme } from "@/shared/theme";
 import { IncomingCallWatcher } from "@/widgets/admin-meetings";
 import { ClientSidebar } from "@/widgets/client-sidebar";
 import { AuroraBackdrop, RootOverlays } from "@/shared/ui";
@@ -28,7 +28,7 @@ function Chrome({ children }: { children: ReactNode }) {
     <NavigationTheme>
       <StatusBar style={dark ? "light" : "dark"} />
       <SystemChrome />
-      {Platform.OS === "ios" ? <AuroraBackdrop /> : null}
+      {Platform.OS === "ios" && AURORA ? <AuroraBackdrop /> : null}
       {children}
       <RootOverlays />
       <IncomingCallWatcher />

@@ -4,7 +4,7 @@ import { useRouter } from "expo-router";
 import { useIsAuthed } from "@/entities/session";
 import { useBadgeStore } from "@/shared/lib/badgeStore";
 import { useT } from "@/shared/i18n";
-import { useColors, useTheme } from "@/shared/theme";
+import { AURORA, useColors, useTheme } from "@/shared/theme";
 import { useAuroraStyle } from "@/shared/ui";
 import { installTabReach, setBarRoutes } from "./tabReach";
 import { TABS } from "./tabConfig";
@@ -50,7 +50,7 @@ export function NativeTabsBar({ bar }: { bar: boolean }) {
           <NativeTabs.Trigger
             key={`${role}-${def.route}`}
             name={def.route}
-            contentStyle={aurora}
+            contentStyle={AURORA ? aurora : undefined}
             disableAutomaticContentInsets
             disabled={guard} // a visitor's tap on a personal tab never switches it: the (still emitted) press sends them to sign in
             listeners={guard ? { tabPress: () => router.push("/auth/login") } : undefined}
@@ -61,7 +61,7 @@ export function NativeTabsBar({ bar }: { bar: boolean }) {
           </NativeTabs.Trigger>
         );
       })}
-      {rest.map((name) => <NativeTabs.Trigger key={`hidden-${name}`} name={name} contentStyle={aurora} hidden />)}
+      {rest.map((name) => <NativeTabs.Trigger key={`hidden-${name}`} name={name} contentStyle={AURORA ? aurora : undefined} hidden />)}
     </NativeTabs>
   );
 }

@@ -57,7 +57,7 @@ export function SellerHero({ name, stats, tasks, meetings, advocate, license }: 
   );
 }
 
-const TONES: readonly (readonly [string, string])[] = [["#1458D6", "#079DC4"], ["#6A4BEE", "#9477F2"], ["#007A55", "#1FA878"], ["#C42C69", "#E8628F"], ["#B05A08", "#D9962F"], ["#0B6CB8", "#4BA6E0"], ["#C02A5F", "#E86C6C"], ["#0E8040", "#2FAE68"]];
+const TONES: readonly (readonly [string, string])[] = [["#1668F0", "#00CFE8"], ["#7A5CFF", "#B197FC"], ["#00A870", "#5EDDB0"], ["#E0457F", "#FF9AB8"], ["#C2680A", "#F5B455"], ["#0E7FD0", "#7CC7FF"], ["#D6336C", "#FF8787"], ["#12A150", "#7EE0A3"]];
 
 const s = StyleSheet.create({
   hero: { paddingHorizontal: 16, paddingBottom: 22, borderBottomLeftRadius: 28, borderBottomRightRadius: 28, gap: 10 },

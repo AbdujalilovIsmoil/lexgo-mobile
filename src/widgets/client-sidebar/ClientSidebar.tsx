@@ -25,7 +25,7 @@ const HIDE = new Set(["auth", "chat", "call", "lawyer", "assistant", "instructor
 export function ClientSidebar() {
   const c = useColors();
   const { dark } = useTheme();
-  const lens = !!useGlass();
+  const lens = !!useGlass(true); // the drawer stays glass
   const router = useRouter();
   const seg = useSegments();
   const role = useTabRole();
@@ -64,7 +64,7 @@ export function ClientSidebar() {
       <Animated.View pointerEvents={open ? "auto" : "none"} style={[StyleSheet.absoluteFill, s.scrim, scrim]}><View style={s.fill} onTouchEnd={hide} /></Animated.View>
       <GestureDetector gesture={drag}>
         <Animated.View pointerEvents={open ? "auto" : "none"} style={[s.panel, { width: w, backgroundColor: lens ? "transparent" : c.surface, borderColor: c.line }, panel]}>
-          {lens ? <GlassBackdrop radius={0} tint={dark ? "rgba(10,17,32,0.6)" : "rgba(255,255,255,0.68)"} /> : null}
+          {lens ? <GlassBackdrop always radius={0} tint={dark ? "rgba(10,17,32,0.6)" : "rgba(255,255,255,0.68)"} /> : null}
           <SidebarPanel p={p} onGo={go} />
         </Animated.View>
       </GestureDetector>

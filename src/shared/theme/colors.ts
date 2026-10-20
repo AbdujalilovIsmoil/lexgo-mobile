@@ -1,5 +1,6 @@
 import { Platform } from "react-native";
 import { brand } from "./palette";
+import { AURORA } from "./flags";
 import type { ThemeColors } from "./types";
 
 export type { ThemeColors } from "./types";
@@ -8,18 +9,20 @@ export type { ThemeColors } from "./types";
 // Light values are the :root tokens; dark values the html[data-theme="dark"] ones. On iOS the canvas is the app-wide aurora and cards,
 // wells and the page base turn into translucent glass tones; Android keeps the solid tokens.
 const IOS = Platform.OS === "ios";
+// v(aurora, material, plain): iOS with the aurora on / Android (Material 3) / iOS as it was before the aurora.
+const v = (aurora: string, material: string, plain: string) => (IOS ? (AURORA ? aurora : plain) : material);
 // Android is Material 3 Expressive: tonal surfaces (a card is a tinted container, not a white sheet with a border), LexGo blue roles.
 export const lightColors: ThemeColors = {
-  bg: IOS ? "#EEF4FF" : "#F4F7FF",
-  canvas: IOS ? "transparent" : "#F4F7FF",
-  glassFill: IOS ? "rgba(255,255,255,0.68)" : "#E8EEFC",
-  glassLine: IOS ? "rgba(255,255,255,0.95)" : "#E8EEFC",
+  bg: v("#EEF4FF", "#F4F7FF", brand.white),
+  canvas: v("transparent", "#F4F7FF", brand.white),
+  glassFill: v("rgba(255,255,255,0.68)", "#E8EEFC", brand.white),
+  glassLine: v("rgba(255,255,255,0.95)", "#E8EEFC", "#E4EBF5"),
   surface: IOS ? brand.white : "#E8EEFC",
-  surface2: IOS ? "rgba(231,240,255,0.78)" : "#D9E4FA",
+  surface2: v("rgba(231,240,255,0.78)", "#D9E4FA", "#F1F4F9"),
   glass: "rgba(255,255,255,0.9)",
   ink: "#0A1526",
-  gray: IOS ? "#4F6178" : "#3F4E69",
-  gray2: IOS ? "#66768C" : "#566681",
+  gray: v("#4F6178", "#3F4E69", "#5C6E85"),
+  gray2: v("#66768C", "#566681", "#8A99AC"),
   line: IOS ? "#E4EBF5" : "#C5D1EA",
   tint: IOS ? brand.b50 : "#E1EAFF",
   tint2: IOS ? brand.b100 : "#CDDDFF",
@@ -36,12 +39,12 @@ export const lightColors: ThemeColors = {
 };
 
 export const darkColors: ThemeColors = {
-  bg: IOS ? "#060C1B" : "#0B1120",
-  canvas: IOS ? "transparent" : "#0B1120",
-  glassFill: IOS ? "rgba(255,255,255,0.075)" : "#152036",
-  glassLine: IOS ? "rgba(255,255,255,0.15)" : "#152036",
+  bg: v("#060C1B", "#0B1120", "#0A1120"),
+  canvas: v("transparent", "#0B1120", "#0A1120"),
+  glassFill: v("rgba(255,255,255,0.075)", "#152036", "#121C31"),
+  glassLine: v("rgba(255,255,255,0.15)", "#152036", "#2C3D60"),
   surface: IOS ? "#121C31" : "#152036",
-  surface2: IOS ? "rgba(255,255,255,0.09)" : "#1E2B49",
+  surface2: v("rgba(255,255,255,0.09)", "#1E2B49", "#18253E"),
   glass: "rgba(14,22,40,0.86)",
   ink: "#E7EEF8",
   gray: "#A5B4C8",

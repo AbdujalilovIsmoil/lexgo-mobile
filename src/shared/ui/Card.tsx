@@ -1,6 +1,6 @@
 import { Platform, StyleSheet, View, type StyleProp, type ViewProps, type ViewStyle } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
-import { radius, shadows, useColors, useTheme } from "@/shared/theme";
+import { AURORA, radius, shadows, useColors, useTheme } from "@/shared/theme";
 import { PressableScale } from "./PressableScale";
 
 type Props = ViewProps & {
@@ -16,7 +16,7 @@ type Props = ViewProps & {
 export function Card({ children, onPress, padded = true, elevated, tinted, style, ...rest }: Props) {
   const c = useColors();
   const { dark } = useTheme();
-  const glass = Platform.OS === "ios";
+  const glass = Platform.OS === "ios" && AURORA;
   // the light a glass edge catches: a short bright fade along the top
   const sheen = glass && !tinted ? <LinearGradient pointerEvents="none" colors={dark ? ["rgba(255,255,255,0.10)", "rgba(255,255,255,0)"] : ["rgba(255,255,255,0.85)", "rgba(255,255,255,0)"]} style={s.sheen} /> : null;
   const base: ViewStyle = {

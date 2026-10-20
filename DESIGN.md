@@ -31,7 +31,9 @@ Anything tappable gets `PressableScale` feedback (spring + slight dim + light ha
 
 ## Materials (iOS 26 Liquid Glass + aurora)
 
-iOS is a glass-on-colour system. Android keeps the solid tokens above.
+**Currently OFF** (`src/shared/theme/flags.ts`: `AURORA = false`, `FLOATING_GLASS = false`): the vivid aurora, transparent pages and frosted cards read too bright / childish, so iOS shows the plain solid canvas and cards again. What stays glass: the system tab bar and the drawer (`useGlass(true)` / `<GlassBackdrop always>`). Flip the flags to bring the rest back; the notes below describe the flags-on state. Android keeps the solid tokens above.
+
+iOS (flags on) is a glass-on-colour system.
 
 - **Aurora canvas.** Every page sits on a static, vivid colour field: three soft fields (cyan, brand blue, violet) plus one role
   glow in the bottom-right corner — gold for advocates, magenta for yurists. `AuroraBackdrop` (Skia) sits behind stack screens;
