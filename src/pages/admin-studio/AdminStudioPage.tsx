@@ -1,10 +1,10 @@
 import { useState } from "react";
 import { View } from "react-native";
 import { useRouter } from "expo-router";
-import { Button, IconButton, confirmDialog, toast } from "@/shared/ui";
+import { Button, confirmDialog, toast } from "@/shared/ui";
 import { AdminPage, PagedList } from "@/shared/ui/admin";
 import { ConstructorRow, StudioGate, dashRows, exportAll, studioKeys, syncConstructors, useDashCounts, useMyObjects, useRegistry, useStudioAccess, useStudioErrorText, useStudioText } from "@/entities/admin-studio";
-import { DashFilters, DashMine, EntityCards, DashNav, DashTiles, GroupHeader, StudioNav } from "@/widgets/admin-studio";
+import { DashFilters, DashMine, EntityCards, StudioHero, DashNav, DashTiles, GroupHeader, StudioNav } from "@/widgets/admin-studio";
 import { useAdminMutation } from "@/shared/lib/useAdminMutation";
 import { useT } from "@/shared/i18n";
 
@@ -29,7 +29,7 @@ function Dash() {
   const askSync = () => confirmDialog({ title: t("admStudio.dash.syncTitle"), message: t("admStudio.dash.syncText"), confirmLabel: t("admStudio.dash.syncConfirm"), cancelLabel: t("adm.cancel"), icon: "refresh-cw", onConfirm: async () => void (await sync.mutateAsync()) });
   const doExport = () => (setExporting(true), exportAll().catch((e) => toast(errText(e), "err")).finally(() => setExporting(false)));
   return (
-    <AdminPage title={t("admHub.mod.studio.title")} right={a.isAdmin ? <IconButton icon={exporting ? "loader" : "download"} label={t("admStudio.actions.exportAll")} onPress={doExport} /> : undefined}>
+    <AdminPage title={t("admHub.mod.studio.title")}>
       <StudioNav current="home" />
       <PagedList
         data={rows}
@@ -39,6 +39,7 @@ function Dash() {
         empty={{ icon: "layers", title: t("admStudio.dash.emptyTitle"), text: t(a.isAdmin ? "admStudio.dash.emptyAdmin" : "admStudio.dash.emptyText") }}
         header={
           <View style={{ gap: 14, paddingBottom: 12 }}>
+            <StudioHero onExport={doExport} exporting={exporting} />
             <DashNav />
             <DashTiles />
             <EntityCards />

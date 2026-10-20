@@ -1,4 +1,4 @@
-export type JourneyStep = { key: string; title: string; code: string; formCode: string; sourceCode: string; order: number; required: boolean };
+export type JourneyStep = { key: string; title: string; code: string; formCode: string; sourceCode: string; order: number; required: boolean; fields: string[] };
 export type JourneyActions = { update: boolean; abandon: boolean; archive: boolean; restore: boolean };
 export type Journey = {
   id: string;

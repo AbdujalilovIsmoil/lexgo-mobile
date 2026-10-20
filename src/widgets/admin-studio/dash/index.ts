@@ -1,3 +1,4 @@
+export { StudioHero } from "./StudioHero";
 export { EntityCards } from "./EntityCards";
 export { DashFilters } from "./DashFilters";
 export { DashMine } from "./DashMine";

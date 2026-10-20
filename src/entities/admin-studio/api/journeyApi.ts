@@ -8,7 +8,7 @@ const bool = (v: unknown): boolean => v === true;
 const step = (raw: unknown, i: number): JourneyStep => {
   const d = asDict(raw);
   const code = asStr(d.constructor_code);
-  return { key: asStr(d.key), title: asStr(d.title), code, formCode: asStr(d.form_constructor_code) || code, sourceCode: asStr(d.source_constructor_code) || code, order: asNum(d.order, i + 1), required: d.required !== false };
+  return { key: asStr(d.key), title: asStr(d.title), code, formCode: asStr(d.form_constructor_code) || code, sourceCode: asStr(d.source_constructor_code) || code, order: asNum(d.order, i + 1), required: d.required !== false, fields: asArr(d.fields).map((x) => asStr(x)).filter(Boolean) };
 };
 const stepsOf = (v: unknown): JourneyStep[] => asArr(v).map(step).filter((s) => s.key).sort((a, b) => a.order - b.order);
 

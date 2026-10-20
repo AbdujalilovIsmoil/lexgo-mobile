@@ -35,4 +35,16 @@ export const admStudioD: Messages["admStudioD"] = {
     suggestions: "Suggestions", addSelected: "Add the selected", needTitle: "Fill in the title and the description first.", noneNew: "No new suggestions.",
     errors: { service_context_required: "The title or description is missing.", ai_provider_unavailable: "The AI service is not configured.", ai_generation_failed: "The AI request failed, try again.", ai_response_invalid: "The AI answer has a wrong format.", ai_response_empty: "The AI found nothing useful." },
   },
+  create: {
+    title: "New service or package", lead: "A service or package is created step by step and saved after every step.", kind: "What are we creating?", service: "Service", package: "Package",
+    serviceWhat: "One service: price, time, requirements for the performer and a template.", packageWhat: "A package of several services and its tiers.",
+    name: "Name", namePhService: "For example: drafting a marriage contract", namePhPackage: "For example: family law package", start: "Start", startTitle: "Start a new one",
+    drafts: "Work in progress", resume: "Resume", empty: "Nothing unfinished.", needEdit: "Creating a service or package needs the Studio editor role.",
+    steps: "Steps", saveNext: "Save and continue", later: "I'll continue later", send: "Send for approval", reviewLead: "If everything is right, send it for approval. Once approved it goes live on the site.",
+    reviewErrors: "These steps have errors: {list}.", doneTitle: "Process completed", doneText: "The record was sent for approval. Follow its status on the record's page.", openRecord: "Open the record", backList: "All processes",
+    stepOtherText: "The system added this step, there is nothing to fill in here. Press \"Save and continue\".", closedText: "This process is closed now. Restore it to continue: the saved steps stay.",
+    notCompleted: "The record was sent, but these required steps are left: {list}.", missing: "Process not found", missingText: "This creation process was deleted or is not visible to you.",
+    step: { duration: "Time", rules: "Rules", guarantees: "Guarantees", services: "Package contents", price_factors: "Price factors", priceFactors: "Price factors", checklist: "Completion checklist", category: "Category and description", pricing: "Price", requirements: "Requirements for the performer", template: "Document template", tiers: "Tiers", eligibility: "Who sees it", review: "Review and send" },
+  },
+  home: { lead: "Set the sections up in order, send them for approval and publish them to the site.", excel: "Excel", newBtn: "New service or package" },
 };

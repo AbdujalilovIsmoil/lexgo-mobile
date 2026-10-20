@@ -13,6 +13,8 @@ export * from "./model/typesSummary";
 export * from "./model/typesJourney";
 export * from "./model/journeyQueries";
 export { getSummary } from "./api/summaryApi";
+export { patchJourney, listJourneys } from "./api/journeyApi";
+export { checkPayload } from "./api/checkApi";
 export * from "./model/ctorMeta";
 export { statusTint } from "./model/statusTint";
 export { useStudioAccess, studioAllowed, type StudioAccess, type StudioNeed } from "./model/useStudioAccess";
