@@ -15,7 +15,7 @@ export default function AdminCallsPage() {
   const [drill, setDrill] = useState<Drill | null>(null);
   return (
     <AdminPage title={t("admHub.mod.callAnalytics.title")}>
-      <DashFrame f={f} view={view}>
+      <DashFrame f={f} view={view} sheetFilters>
         <CallsHero x={x} onOpen={setDrill} />
         <DayBars title={t("admCalls.byDay")} points={x.byDay} empty={t("admCalls.noData")} />
         <Podium x={x} />

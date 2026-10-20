@@ -10,12 +10,12 @@ type DashViewState = { demo: boolean; isLoading: boolean; isError: boolean; erro
 
 // Body of every dashboard screen: pull-to-refresh, the filter header, the demo banner and
 // skeleton → error (or `errorSlot`) → content.
-export function DashFrame({ f, view, errorSlot, inline, tabPad, children }: { f: DashFilterState; view: DashViewState; errorSlot?: ReactNode; inline?: boolean; tabPad?: boolean; children: ReactNode }) {
+export function DashFrame({ f, view, errorSlot, inline, tabPad, sheetFilters, children }: { f: DashFilterState; view: DashViewState; errorSlot?: ReactNode; inline?: boolean; tabPad?: boolean; sheetFilters?: boolean; children: ReactNode }) {
   const insets = useInsets();
   const retry = () => void view.refetch();
   const body = (
     <>
-      <DashFilters f={f} />
+      <DashFilters f={f} sheet={sheetFilters} />
       <DemoBanner demo={view.demo && !view.isLoading} />
       {view.isError && errorSlot ? errorSlot : (
         <QueryBoundary query={view}>
