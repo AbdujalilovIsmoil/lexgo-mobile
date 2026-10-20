@@ -117,6 +117,10 @@ export const EXTRA: NavItem[] = [
   { key: "consents", icon: "check-square", route: "/profile/consents" },
 ];
 
+// The team's task section (the web's "Jamoa vazifalari"): a row for anyone who holds `tasks.view`, whatever their role — the people who use
+// it (the team's developers, managers) are clients, yurists or admins by role. First in the drawer, so it is there right after signing in.
+export const TEAM_TASKS: NavItem = { key: "teamTasks", icon: "check-square", route: "/team-tasks", label: "ttm.title" };
+
 // What a visitor may open from the drawer; the rest asks to sign in.
 export const GUEST_OPEN = ["/", "/services", "/lawyers", "/ai", "/academy", "/packages", "/subscription"];
 

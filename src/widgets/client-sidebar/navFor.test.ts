@@ -1,4 +1,4 @@
-import { isActive, navFor } from "./navItems";
+import { TEAM_TASKS, isActive, navFor } from "./navItems";
 
 const keys = (r: Parameters<typeof navFor>[0]) => navFor(r).map((x) => x.key);
 
@@ -123,5 +123,11 @@ describe("a professional's profile links live in the sidebar", () => {
   it("the document pool is for a call-center lawyer", () => {
     expect(navFor("seller", { kind: "lawyer", callCenterLawyer: true }).map((i) => i.key)).toContain("docPool");
     expect(navFor("seller", { kind: "lawyer" }).map((i) => i.key)).not.toContain("docPool");
+  });
+});
+
+describe("the team's tasks row", () => {
+  it("is one fixed row with the web's title, and a route inside the app", () => {
+    expect(TEAM_TASKS).toMatchObject({ key: "teamTasks", route: "/team-tasks", label: "ttm.title" });
   });
 });

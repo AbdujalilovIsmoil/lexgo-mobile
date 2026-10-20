@@ -1,547 +1,564 @@
-# Studio Service Builder Frontend Integration
+# LexGo Task Management Frontend Contract
 
 Date: 2026-10-20
 
-## Scope
+API base URL: `https://lexgo.api.cognilabs.org`
 
-This contract covers the Studio service/package summary cards and the K02 service creation flow.
+Task API namespace: `/task-management`
 
-The K02 service form now owns the service-specific configuration that previously required separate workflow/checklist constructors:
+This is a new internal task domain. Do not use the legacy `/tasks`, `/internal/me/tasks`, or `/internal/execution/tasks` endpoints for this UI.
 
-- service-specific price factor values
-- completion checklist
-- existing and inline service rules
-- existing and inline client guarantees
-- explicit business-day deadline behavior
-- OpenAI-generated discovery terms
+## 1. Products to build
 
-K08 and K09 remain available for legacy records and consultation flows. Do not show them as required steps in the new marketplace service journey.
+Build two independent frontends:
 
-## Authentication
+1. A Task Management section inside the existing LexGo web application.
+2. A Telegram Mini App as a separate frontend project with a separate Vercel deployment.
 
-All `/studio/*` endpoints require a bearer token and Studio access.
+Both products use the same `/task-management` APIs and the same four statuses.
 
-```http
-Authorization: Bearer <access_token>
+## 2. Users and authorization
+
+The backend returns effective permissions in `POST /auth/login -> user.permissions`.
+
+Relevant permissions:
+
+| Permission              | Meaning                                                                                       |
+| ----------------------- | --------------------------------------------------------------------------------------------- |
+| `tasks.view`            | View all active tasks and task details                                                        |
+| `tasks.manage`          | Create and edit tasks                                                                         |
+| `tasks.assign`          | Add or remove assignees                                                                       |
+| `tasks.status.work`     | Move assigned work from New to In Progress and from In Progress to Testing                    |
+| `tasks.status.ready`    | Return a task from Testing or approve it as Ready                                             |
+| `tasks.delete`          | Base delete permission; final delete availability is still controlled by `actions.can_delete` |
+| `tasks.telegram.manage` | Manage the task Telegram integration                                                          |
+
+Never infer an action from the user's primary role. Use `actions` returned for each task.
+
+Configured access:
+
+| User               | Access                                                                 |
+| ------------------ | ---------------------------------------------------------------------- |
+| Ulugbek Omonov     | Full system superadmin, full task access, the only task deletion grant |
+| Saidbek Abduvaliev | View, create, edit, assign, return, approve Ready; cannot delete       |
+| Akhmad             | View, create, edit, assign, return, approve Ready; cannot delete       |
+| Kamron             | View all tasks; can move an assigned task to In Progress and Testing   |
+| Ismoil             | View all tasks; can move an assigned task to In Progress and Testing   |
+
+All five users can view all tasks, including unassigned tasks and tasks assigned to another user.
+
+## 3. Status model
+
+Use these exact backend values:
+
+| Value         | UI label     |
+| ------------- | ------------ |
+| `new`         | Yangi        |
+| `in_progress` | Bajarilmoqda |
+| `testing`     | Testlanmoqda |
+| `ready`       | Tayyor       |
+
+Allowed transitions:
+
+```text
+new -> in_progress -> testing -> ready
+                       |
+                       -> in_progress with a required return comment
 ```
 
-## 1. Studio Dashboard Cards
+Only a user with `tasks.status.ready` can perform `testing -> ready` or `testing -> in_progress`.
 
-Request:
+The return comment is mandatory. Display it prominently in task history and to the assigned users.
 
-```http
-GET /studio/objects/summary
-```
+## 4. Main page
 
-Use `entity_cards` to render the Services and Packages cards. Do not calculate these counts from paginated record lists.
+The requested presentation is a list, not a Kanban board.
+
+Recommended desktop structure:
+
+- Main content: paginated task list.
+- Right side: the four status filters and counts.
+- Header: search, assignee filter, deadline date range, create button when permitted.
+- Each row: task code, title, assignees, deadline, overdue indicator, status, updated time and available status action.
+- Do not show a delete action unless `actions.can_delete === true`.
+
+Recommended mobile structure:
+
+- Statuses as a horizontal segmented control.
+- Filters in a sheet.
+- Tasks as compact list rows.
+- Task action in a bottom sheet.
+
+## 5. Metadata
+
+### `GET /task-management/meta`
+
+Returns status order, user capabilities and realtime event names.
+
+Example:
 
 ```json
 {
-  "entity_cards": [
-    {
-      "key": "services",
-      "title": "Xizmatlar",
-      "constructor_code": "K02",
-      "total": 120,
-      "active_count": 110,
-      "inactive_count": 10,
-      "incomplete_count": 4,
-      "studio_object_count": 124,
-      "list_url": "/studio/constructors/K02/records",
-      "incomplete_url": "/studio/constructors/K02/records?source=studio&status=draft",
-      "create_url": "/studio/constructors/K02/form-context?mode=create"
-    }
-  ]
+  "statuses": [
+    { "value": "new", "label": "Yangi", "order": 1 },
+    { "value": "in_progress", "label": "Bajarilmoqda", "order": 2 },
+    { "value": "testing", "label": "Testlanmoqda", "order": 3 },
+    { "value": "ready", "label": "Tayyor", "order": 4 }
+  ],
+  "capabilities": {
+    "create": true,
+    "assign": true,
+    "approve_ready": true,
+    "delete_ready": false
+  },
+  "realtime": {
+    "ws_url": "/ws/users/me",
+    "events": [
+      "tasks.created",
+      "tasks.updated",
+      "tasks.assigned",
+      "tasks.status_changed",
+      "tasks.returned",
+      "tasks.deleted"
+    ]
+  },
+  "mini_app_configured": false
 }
 ```
 
-Card behavior:
+## 6. Assignment user select
 
-- Primary count: `total`.
-- Secondary values: `active_count`, `inactive_count`, and `incomplete_count`.
-- Clicking the card opens `list_url`.
-- Clicking the incomplete count opens `incomplete_url`.
-- Create action opens `create_url`.
-- `incomplete_count` includes `draft`, `changes_requested`, and `rejected` Studio objects.
-- `total` is the runtime entity count. `studio_object_count` is the Studio authoring record count; these values are intentionally separate.
+### `GET /task-management/users`
 
-## 2. Load the K02 Form Contract
+Query parameters:
 
-Always load the backend schema instead of maintaining a hardcoded K02 form:
+| Name     | Type    | Description                       |
+| -------- | ------- | --------------------------------- |
+| `q`      | string  | Search by name, LexGo ID or phone |
+| `limit`  | integer | `1..100`, default `50`            |
+| `offset` | integer | Pagination offset                 |
 
-```http
-GET /studio/constructors/K02
-```
-
-For create/edit context use the existing form-context endpoint supplied by the constructor response.
-
-The relevant K02 fields are:
-
-- `title`
-- `category_id`
-- `description`
-- `client_value`
-- `usage_steps`
-- `base_price`
-- `max_price`
-- `seller_requirements`
-- `duration_value`
-- `duration_unit`
-- `duration_calendar`
-- `template_mode`
-- `template_source`
-- `document_template_id`
-- `price_factor_ids`
-- `price_factor_overrides`
-- `checklist_template_id`
-- `completion_checklist`
-- `rule_ids`
-- `inline_rules`
-- `guarantee_ids`
-- `inline_guarantees`
-- `negotiation_allowed`
-- `discovery_terms`
-- `executor_type`
-- `is_active`
-
-Backend-generated nested IDs must not be shown as editable inputs. Preserve returned IDs during edit.
-
-## 3. Reference Select Endpoints
-
-All reference endpoints support `q`, `limit`, and `offset`.
-
-```http
-GET /studio/reference/service-categories?q=&limit=50&offset=0
-GET /studio/reference/price-factors?q=&limit=50&offset=0
-GET /studio/reference/service-rules?q=&limit=50&offset=0
-GET /studio/reference/client-guarantees?q=&limit=50&offset=0
-GET /studio/reference/checklists?q=&limit=50&offset=0
-GET /studio/reference/document-templates?q=&limit=50&offset=0
-```
-
-The common response contract is:
+Response:
 
 ```json
 {
-  "key": "price-factors",
   "items": [
     {
-      "id": "factor-id",
-      "value": "factor-id",
-      "label": "Shoshilinch bajarish"
+      "id": "user-uuid",
+      "name": "Kamron",
+      "lexgo_id": "LGC-12345678",
+      "role": "client"
     }
   ],
-  "total": 1,
-  "count": 1,
+  "total": 5,
   "limit": 50,
   "offset": 0,
   "has_more": false
 }
 ```
 
-Use `value` as the submitted identifier and `label` as visible text.
+The displayed primary role is not the task authorization source. Task authorization comes from effective permissions and per-task actions.
 
-## 4. Price Factors and Per-Service Overrides
+Use a searchable multi-select. Send user UUID values in `assignee_user_ids` or `user_ids`.
 
-`price_factor_ids` selects existing Studio price factors.
+## 7. List tasks
 
-`price_factor_overrides` changes a selected factor only for the current service. It does not modify the shared factor.
+### `GET /task-management`
+
+Query parameters:
+
+| Name               | Type         | Values                                         |
+| ------------------ | ------------ | ---------------------------------------------- |
+| `status`           | string       | `new`, `in_progress`, `testing`, `ready`       |
+| `assignee_user_id` | string       | User UUID, `me`, or `unassigned`               |
+| `q`                | string       | Searches task code, title and description      |
+| `deadline_from`    | ISO datetime | Inclusive lower boundary                       |
+| `deadline_to`      | ISO datetime | Inclusive upper boundary                       |
+| `include_deleted`  | boolean      | Only available to the authorized deletion user |
+| `limit`            | integer      | `1..100`, default `30`                         |
+| `offset`           | integer      | Pagination offset                              |
+
+Response:
+
+```json
+{
+  "items": [],
+  "total": 0,
+  "limit": 30,
+  "offset": 0,
+  "has_more": false,
+  "status_counts": {
+    "new": 0,
+    "in_progress": 0,
+    "testing": 0,
+    "ready": 0
+  }
+}
+```
+
+Newest updates are returned first.
+
+## 8. Task object
+
+```json
+{
+  "id": "task-uuid",
+  "task_code": "TSK-210740",
+  "title": "Production deploy",
+  "description": "Deploy and test the release",
+  "status": "in_progress",
+  "status_label": "Bajarilmoqda",
+  "deadline_at": "2026-10-21T12:00:00+00:00",
+  "is_overdue": false,
+  "creator": {
+    "id": "user-uuid",
+    "name": "Akhmad",
+    "lexgo_id": "LGC-12345678"
+  },
+  "assignees": [
+    {
+      "id": "user-uuid",
+      "name": "Kamron",
+      "lexgo_id": "LGC-23456789",
+      "role": "client",
+      "assigned_at": "2026-10-20T10:00:00+00:00"
+    }
+  ],
+  "ready_by": null,
+  "ready_at": null,
+  "lock_version": 2,
+  "created_at": "2026-10-20T10:00:00+00:00",
+  "updated_at": "2026-10-20T10:05:00+00:00",
+  "deleted_at": null,
+  "delete_reason": "",
+  "actions": {
+    "can_edit": false,
+    "can_assign": false,
+    "can_delete": false,
+    "can_change_status": true,
+    "next_statuses": ["testing"],
+    "is_assigned": true
+  }
+}
+```
+
+The UI must render action buttons from `actions.next_statuses`. Do not reconstruct transition rules on the frontend.
+
+## 9. Create task
+
+### `POST /task-management`
+
+```json
+{
+  "title": "Release testing",
+  "description": "Test API and client flows",
+  "deadline_at": "2026-10-21T18:00:00+05:00",
+  "assignee_user_ids": ["user-uuid-1", "user-uuid-2"]
+}
+```
+
+`deadline_at` is required and must be in the future. Multiple assignees are supported. An empty list creates an unassigned task.
+
+When an unassigned task is created, Akhmad receives a Telegram notification requesting assignment. All task users still see the task in the web list and through realtime invalidation.
+
+Success status: `201 Created`.
+
+## 10. Detail and audit history
+
+### `GET /task-management/{task_id}`
+
+Returns the full task object with a `history` array.
+
+### `GET /task-management/{task_id}/history`
+
+```json
+{
+  "items": [
+    {
+      "id": "history-uuid",
+      "event_type": "returned",
+      "from_status": "testing",
+      "to_status": "in_progress",
+      "comment": "The mobile flow must be retested",
+      "payload": {},
+      "actor": {
+        "id": "user-uuid",
+        "name": "Akhmad",
+        "lexgo_id": "LGC-12345678"
+      },
+      "created_at": "2026-10-20T10:15:00+00:00"
+    }
+  ],
+  "total": 1
+}
+```
+
+Important event types:
+
+- `created`
+- `updated`
+- `assignees_changed`
+- `status_changed`
+- `returned`
+- `deleted`
+
+## 11. Edit task
+
+### `PATCH /task-management/{task_id}`
+
+```json
+{
+  "title": "Updated title",
+  "description": "Updated description",
+  "deadline_at": "2026-10-22T18:00:00+05:00",
+  "expected_lock_version": 2
+}
+```
+
+Only include fields being changed, but always include `expected_lock_version` from the latest task response.
+
+## 12. Replace assignees
+
+### `PUT /task-management/{task_id}/assignees`
+
+```json
+{
+  "user_ids": ["user-uuid-1", "user-uuid-2"],
+  "expected_lock_version": 3
+}
+```
+
+This replaces the active assignee list. Sending an empty list makes the task unassigned and notifies Akhmad.
+
+## 13. Change status
+
+### `POST /task-management/{task_id}/status`
+
+Forward transition:
+
+```json
+{
+  "status": "testing",
+  "comment": "",
+  "expected_lock_version": 4
+}
+```
+
+Return from Testing:
+
+```json
+{
+  "status": "in_progress",
+  "comment": "Login regression must be fixed and retested",
+  "expected_lock_version": 5
+}
+```
+
+The return modal must require a non-empty comment. Assigned users receive the comment through Telegram and see it in history.
+
+When a task enters `testing`, Akhmad receives a Telegram notification.
+
+Only Ulugbek, Saidbek and Akhmad can approve `testing -> ready`.
+
+## 14. Delete task
+
+### `DELETE /task-management/{task_id}`
+
+Send a JSON body:
+
+```json
+{
+  "reason": "Duplicate completed task",
+  "expected_lock_version": 8
+}
+```
+
+Rules:
+
+- Only a `ready` task can be deleted.
+- Only Ulugbek has the final deletion grant.
+- Deletion is soft-delete.
+- Audit history remains available to Ulugbek.
+- The frontend must use `actions.can_delete`, not only `tasks.delete`.
+
+## 15. Optimistic concurrency
+
+Every mutable task response includes `lock_version`.
+
+All edit, assignment, status and delete requests must send the latest value as `expected_lock_version`.
+
+Conflict response:
+
+```json
+{
+  "detail": {
+    "code": "task_version_conflict",
+    "message": "Task boshqa qurilmada yangilangan",
+    "current_lock_version": 6
+  }
+}
+```
+
+On HTTP `409`:
+
+1. Do not retry the mutation automatically.
+2. Refetch `GET /task-management/{task_id}`.
+3. Show that the task changed elsewhere.
+4. Let the user review and repeat the action.
+
+## 16. Realtime behavior
+
+Connect to:
+
+```text
+wss://lexgo.api.cognilabs.org/ws/users/me?token=<access_token>
+```
+
+Task events:
+
+- `tasks.created`
+- `tasks.updated`
+- `tasks.assigned`
+- `tasks.status_changed`
+- `tasks.returned`
+- `tasks.deleted`
 
 Example:
 
 ```json
 {
-  "price_factor_ids": ["urgent-factor", "complexity-factor"],
-  "price_factor_overrides": {
-    "urgent-factor": {
-      "adjustment_type": "fixed",
-      "value": 75000
-    },
-    "complexity-factor": {
-      "adjustment_type": "percent",
-      "value": 20
-    }
-  }
+  "event": "tasks.status_changed",
+  "task_id": "task-uuid",
+  "task_code": "TSK-210740",
+  "status": "testing",
+  "lock_version": 4,
+  "updated_at": "2026-10-20T10:20:00+00:00",
+  "resources": ["/task-management", "/task-management/task-uuid"]
 }
 ```
 
-Frontend rules:
+On any task event:
 
-- Show override controls only for factors in `price_factor_ids`.
-- `adjustment_type` is `fixed` or `percent`.
-- `value` must be nonnegative.
-- Percent must not exceed 100.
-- Removing a factor must also remove its entry from `price_factor_overrides` before submit.
-- An override is optional. Without it, the shared factor value is used.
+1. Invalidate/refetch the list query.
+2. Refetch the open task detail when `task_id` matches.
+3. Preserve current filters and scroll position.
+4. Do not append a guessed local object from the event; the event is an invalidation signal.
 
-Backend validation codes:
+Use reconnect with exponential backoff. Refetch after every reconnect.
 
-- `reference_not_found`
-- `factor_not_selected`
-- `invalid_type`
-- `invalid_option`
-- `invalid_value`
-- `maximum`
+## 17. Telegram bot behavior
 
-## 5. Completion Checklist
+The task bot is separate from the existing OTP bot.
 
-Use `completion_checklist` for the new service flow. `checklist_template_id` is retained only as a legacy/template shortcut.
+Backend behavior already implemented:
 
-Each checklist row supports:
+- Sends a task to newly assigned users.
+- Sends unassigned task alerts only to Akhmad.
+- Provides inline buttons for the recipient's currently allowed forward transition.
+- Notifies Akhmad when a task enters Testing.
+- Sends the mandatory return reason to assignees.
+- Edits the existing Telegram task message when status changes.
+- Sends the Ready-task daily group report at `23:00 Asia/Tashkent`.
+- The daily report includes task code, title, assignees, approving user and completion time.
 
-```json
-{
-  "id": "check_generated_id",
-  "title": "Hujjatlarni tekshirish",
-  "description": "Barcha ilovalarni tekshiring",
-  "required": true,
-  "verification_methods": ["checkbox", "comment", "image", "file"],
-  "comment_required": true,
-  "image_required": false,
-  "file_required": true
-}
-```
+No Telegram bot token or webhook secret belongs in frontend code.
 
-Editor behavior:
+## 18. Telegram Mini App project
 
-- Add/remove/reorder checklist rows locally.
-- `checkbox` is mandatory for every row and cannot be disabled.
-- Other proof methods are `comment`, `image`, and `file`.
-- Each selected proof method has its own required/optional switch.
-- A required switch cannot be enabled when its method is not selected.
-- Do not ask the user to type `id`; backend generates it on create.
-- Preserve `id` on edit.
+Create a separate frontend repository/project for the Mini App. Deploy it independently to Vercel.
 
-Validation codes:
-
-- `checkbox_required`
-- `verification_method_missing`
-
-## 6. Rules
-
-`rule_ids` contains existing shared rules selected from:
-
-```http
-GET /studio/reference/service-rules
-```
-
-`inline_rules` creates rules scoped only to this service:
-
-```json
-{
-  "rule_ids": ["existing-rule-id"],
-  "inline_rules": [
-    {
-      "id": "rule_generated_id",
-      "title": "Maxfiylik",
-      "body": "Mijoz ma'lumotlari maxfiy saqlanadi."
-    }
-  ]
-}
-```
-
-Inline rules must not be shown in the shared rule selector. Backend excludes them from `/studio/reference/service-rules`.
-
-When published rule assignments change, enabled seller capabilities can move to `rules_pending`. Sellers must accept the current applicable rules before the service can be enabled again.
-
-## 7. Guarantees
-
-`guarantee_ids` selects guarantees from:
-
-```http
-GET /studio/reference/client-guarantees
-```
-
-`inline_guarantees` creates guarantees visible only on this service:
-
-```json
-{
-  "guarantee_ids": ["shared-guarantee-id"],
-  "inline_guarantees": [
-    {
-      "id": "guarantee_generated_id",
-      "title": "Bepul qayta ko'rib chiqish",
-      "description": "Natija bir marta bepul qayta ko'rib chiqiladi."
-    }
-  ]
-}
-```
-
-Do not add inline guarantees to the global guarantee library UI.
-
-## 8. Duration and Business Days
-
-Fields:
-
-```json
-{
-  "duration_value": 2,
-  "duration_unit": "day",
-  "duration_calendar": "business_days"
-}
-```
-
-`duration_calendar` values:
-
-- `calendar`: normal calendar time.
-- `business_days`: Monday through Friday only.
-
-For `business_days`, Saturday and Sunday are skipped by the backend. The deadline starts when the seller accepts/starts the order, not when the service is viewed or purchased.
-
-Runtime response includes:
-
-```json
-{
-  "duration": {
-    "value": 2,
-    "unit": "day",
-    "calendar": "business_days",
-    "starts_on": "seller_acceptance",
-    "business_weekdays": [1, 2, 3, 4, 5],
-    "business_days_label": "Monday-Friday"
-  }
-}
-```
-
-## 9. OpenAI Discovery Term Suggestions
-
-Request:
-
-```http
-POST /studio/services/discovery-terms/suggest
-Content-Type: application/json
-```
-
-```json
-{
-  "title": "Shartnoma tahlili",
-  "description": "Shartnomani huquqiy xavflar bo'yicha tekshirish",
-  "client_value": "Xavflar va tavsiyalar hisoboti",
-  "category_id": "category-id",
-  "usage_steps": ["Hujjatni yuboring", "Natijani oling"],
-  "inline_rules": [],
-  "inline_guarantees": [],
-  "discovery_terms": []
-}
-```
-
-Success:
-
-```json
-{
-  "suggestions": ["shartnoma tahlili", "шартнома таҳлили", "анализ договора"],
-  "by_language": {
-    "uz_latn": ["shartnoma tahlili"],
-    "uz_cyrl": ["шартнома таҳлили"],
-    "ru": ["анализ договора"]
-  },
-  "auto_saved": false,
-  "requires_user_confirmation": true,
-  "provider": "openai",
-  "model": "configured-model"
-}
-```
-
-Frontend behavior:
-
-- Enable the suggestion action after `title` and `description` are present.
-- Show loading and retry states.
-- Render suggestions as selectable items.
-- Never save suggestions automatically.
-- Add only user-confirmed values to `discovery_terms`.
-- Keep manual entry available.
-- Do not generate local hardcoded suggestions when this request fails.
-
-Error handling:
-
-- `422 service_context_required`: title or description is missing.
-- `503 ai_provider_unavailable`: OpenAI is not configured.
-- `502 ai_generation_failed`: provider request failed.
-- `502 ai_response_invalid`: provider returned invalid JSON.
-- `502 ai_response_empty`: provider returned no usable terms.
-
-## 10. Validation and Save Flow
-
-Before create/update, validate with:
-
-```http
-POST /studio/constructors/K02/validate
-```
-
-Send the same payload that will be saved.
-
-```json
-{
-  "title": "Shartnoma tahlili",
-  "category_id": "category-id",
-  "description": "Shartnomani huquqiy tekshirish",
-  "duration_value": 2,
-  "duration_unit": "day",
-  "duration_calendar": "business_days",
-  "price_factor_ids": ["complexity-factor"],
-  "price_factor_overrides": {
-    "complexity-factor": {"adjustment_type": "percent", "value": 20}
-  },
-  "completion_checklist": [
-    {
-      "title": "Huquqiy xavflarni tekshirish",
-      "required": true,
-      "verification_methods": ["checkbox", "comment"],
-      "comment_required": true,
-      "image_required": false,
-      "file_required": false
-    }
-  ],
-  "rule_ids": [],
-  "inline_rules": [],
-  "guarantee_ids": [],
-  "inline_guarantees": [],
-  "discovery_terms": ["shartnoma tahlili"]
-}
-```
-
-Validation response:
-
-```json
-{
-  "ok": false,
-  "errors": [
-    {
-      "field": "completion_checklist[0].verification_methods",
-      "code": "checkbox_required",
-      "message": "Har bir bandda checkbox tasdiqlash usuli bo'lishi shart"
-    }
-  ]
-}
-```
-
-Map each `field` path to the exact nested control and show the backend `message` beside it. Do not replace precise backend errors with one generic toast.
-
-Create:
-
-```http
-POST /studio/objects
-```
-
-```json
-{
-  "constructor_code": "K02",
-  "payload": {"...": "validated K02 payload"}
-}
-```
-
-Use the existing Studio version, submit, approval, and publish endpoints for subsequent lifecycle actions.
-
-## 11. Marketplace Runtime Preview
-
-After publication, the effective configuration is available at:
-
-```http
-GET /marketplace/services/{service_id}/runtime-configuration?placement=service_detail
-```
-
-Use this endpoint for client-facing service details and seller configuration previews. It returns the effective values after shared definitions and service overrides are combined:
-
-- duration policy
-- template requirements
-- pricing factors
-- usage steps
-- negotiation availability
-- seller minimum requirements
-- rules
-- guarantees
-- checklist preview
-
-Do not rebuild effective factor values on the frontend.
-
-## 12. Order Checklist Runtime
-
-When the seller starts a paid order:
-
-```http
-POST /marketplace/orders/{order_id}/start
-```
-
-Backend snapshots the current service checklist into the order. Later Studio edits do not alter an already-started order.
-
-Read checklist:
-
-```http
-GET /marketplace/orders/{order_id}/checklist
-```
-
-Update one row:
-
-```http
-PATCH /marketplace/orders/{order_id}/checklist/{item_id}
-```
-
-```json
-{
-  "status": "done",
-  "comment": "Tekshirildi",
-  "images": [{"id": "image-file-id", "name": "proof.jpg"}],
-  "files": [{"id": "document-file-id", "name": "result.docx"}]
-}
-```
-
-Allowed statuses:
-
-- `pending`
-- `done`
-- `skipped_with_reason`
-
-Rules:
-
-- `skipped_with_reason` requires `comment`.
-- `comment_required` requires `comment` for `done`.
-- `image_required` requires at least one item in `images`.
-- `file_required` requires at least one item in `files`.
-- A skipped row remains visible to the client with its reason.
-- Required checklist rows must be done or skipped with a reason before completion.
-
-Upload attachments through the `file_upload.url` returned by the checklist endpoint, then place returned file metadata in `images` or `files`.
-
-Realtime channel:
+Suggested environment variables:
 
 ```text
-order:{order_id}
+NEXT_PUBLIC_LEXGO_API_URL=https://lexgo.api.cognilabs.org
 ```
 
-Handle event:
+Do not add a bot token to Vercel.
+
+### Authentication
+
+Read raw init data from Telegram:
+
+```ts
+const initData = window.Telegram.WebApp.initData;
+```
+
+Send it without parsing or changing it:
+
+### `POST /task-management/mini-app/auth`
 
 ```json
 {
-  "event": "marketplace.checklist_updated",
-  "order_id": "order-id",
-  "item": {},
-  "items": []
+  "init_data": "query_id=...&user=...&auth_date=...&hash=..."
 }
 ```
 
-Replace local checklist state with the event `items` array so seller and client progress remains synchronized.
+Response:
 
-## 13. Compatibility Rules
+```json
+{
+  "access_token": "jwt",
+  "token_type": "bearer",
+  "expires_in": 2592000,
+  "user": {
+    "id": "user-uuid",
+    "name": "Kamron",
+    "lexgo_id": "LGC-12345678",
+    "role": "client"
+  },
+  "capabilities": ["tasks.view", "tasks.status.work"]
+}
+```
 
-- Existing services that use `checklist_template_id` continue to work.
-- New service forms should write `completion_checklist` directly.
-- If an edit payload omits both checklist fields, backend preserves the existing checklist.
-- Sending `completion_checklist: []` intentionally clears the service checklist.
-- Existing K08/K09 records remain readable; do not require them in the new service creation UI.
-- Preserve all backend-generated nested IDs during edit and resubmission.
+Backend validates the Telegram signature and rejects initData older than ten minutes.
 
-## 14. Required Frontend Acceptance Tests
+Use the returned JWT as:
 
-1. Summary renders service/package total, active, inactive, and incomplete counts from `entity_cards`.
-2. Clicking incomplete count opens the backend-provided incomplete URL.
-3. Selecting a factor allows a local override; removing it removes the override payload.
-4. Percent above 100 is blocked and the backend field error is rendered.
-5. Checklist cannot remove checkbox.
-6. Comment, image, and file can each be selected and independently marked required.
-7. Existing shared rules and guarantees are searchable with paginated reference endpoints.
-8. Inline rule/guarantee creation does not add items to shared selectors.
-9. Business-day UI explicitly says Monday-Friday.
-10. AI suggestions require user confirmation and are not auto-saved.
-11. A started order receives a frozen checklist snapshot.
-12. Required image/file/comment evidence blocks row completion until supplied.
-13. Realtime checklist updates replace stale local state for both client and seller.
+```text
+Authorization: Bearer <access_token>
+```
+
+### Mini App screens
+
+The Mini App should contain:
+
+1. All tasks.
+2. My tasks.
+3. Unassigned tasks.
+4. Four status filters.
+5. Task detail with deadline, assignees and history.
+6. Available status action from `actions.next_statuses`.
+7. Return comment modal for authorized managers.
+8. Create/edit/assign controls only when backend capabilities allow them.
+
+Use Telegram theme values and BackButton/MainButton APIs, but keep all authorization server-driven.
+
+After Vercel deployment, provide the HTTPS Mini App URL to backend. Backend will set `TASKS_MINI_APP_URL` and update the Telegram bot menu/button.
+
+## 19. Error handling
+
+| HTTP  | Frontend behavior                                                         |
+| ----- | ------------------------------------------------------------------------- |
+| `401` | Clear session and open login; in Mini App rerun initData auth             |
+| `403` | Hide denied action after refetch and show the backend message             |
+| `404` | Remove missing task from the active list or show archived/not found state |
+| `409` | Refetch due to transition/version conflict                                |
+| `422` | Show field-level or business validation message                           |
+| `503` | Show retry state; do not lose entered form data                           |
+
+## 20. Acceptance checklist
+
+- Task UI is list-based, not Kanban.
+- Status controls appear on the right on desktop.
+- All five configured users can view all tasks.
+- Only task managers can create/edit/assign.
+- Kamron and Ismoil can only advance tasks assigned to them through work statuses.
+- Only Ulugbek, Saidbek and Akhmad can approve Ready.
+- Returning from Testing requires a comment.
+- Only Ulugbek sees and can execute delete.
+- Ready is required before delete.
+- Every mutation sends `expected_lock_version`.
+- Realtime events invalidate both list and matching detail.
+- Telegram Mini App is a separate Vercel project.
+- Mini App auth sends untouched Telegram `initData` to backend.
+- No bot secret is present in either frontend bundle.

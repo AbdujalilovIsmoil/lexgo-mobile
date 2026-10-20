@@ -10,7 +10,7 @@ import { useColors } from "@/shared/theme";
 import { Icon, PressableScale, Text, BrandLogo } from "@/shared/ui";
 import { useT } from "@/shared/i18n";
 import { useTabRole } from "@/widgets/tab-bar/useTabRole";
-import { EXTRA, isActive, navFor } from "./navItems";
+import { EXTRA, TEAM_TASKS, isActive, navFor } from "./navItems";
 import { SidebarItem } from "./SidebarItem";
 import { useAccess, visibleModules } from "@/entities/access";
 import { useCabinet } from "@/entities/pro-workspace";
@@ -30,7 +30,8 @@ export function SidebarPanel({ p, onGo }: { p: SharedValue<number>; onGo: (route
   const cabinet = useCabinet().data;
   const limited = cabinet ? cabinet.limited : user?.accountStatus === "pending";
   const modules = role === "sales" ? new Set(visibleModules(access).map((m) => m.key)) : undefined;
-  const nav = navFor(role, { kind: user?.role, orgOwner: access.orgOwner, callCenterLawyer: access.callCenterLawyer, limited, actions: cabinet?.actions, modules });
+  const base = navFor(role, { kind: user?.role, orgOwner: access.orgOwner, callCenterLawyer: access.callCenterLawyer, limited, actions: cabinet?.actions, modules });
+  const nav = access.can("tasks.view") && role !== "guest" ? [TEAM_TASKS, ...base] : base;
   const client = role === "client" || role === "guest";
   const badges = { notifications: useUnreadCount(), support: useBadge("support") };
   return (
