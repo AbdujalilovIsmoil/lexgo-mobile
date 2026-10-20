@@ -1,28 +1,43 @@
 import { useEffect } from "react";
 import { StyleSheet } from "react-native";
-import Animated, { useAnimatedStyle, useSharedValue, withSpring } from "react-native-reanimated";
+import Animated, { useAnimatedStyle, useSharedValue, withSpring, type SharedValue } from "react-native-reanimated";
 import { useTheme } from "@/shared/theme";
+import { loadGlass } from "./glass";
 
-type Props = { index: number; slot: number; hidden: boolean; left: number };
+type Props = { index: number; slot: number; hidden: boolean; left: number; lift: SharedValue<number> };
 
-// The lens under the active tab: a soft tinted pill that slides to the tab
-// you press — or follows your finger while you drag along the bar — and settles without any wobble.
-export function LiquidIndicator({ index, slot, hidden, left }: Props) {
+const GLASS = loadGlass();
+
+// The lens of the selected tab, like iOS 26's: a piece of glass that lives in the same glass container as the bar (so the two blend into
+// one liquid surface), slides to the tab you pick with a soft spring, swells while a finger is on the bar and, while it travels,
+// stretches a little along the way it goes and flattens, then settles. Without iOS 26 glass it is a soft tinted pill.
+export function LiquidIndicator({ index, slot, hidden, left, lift }: Props) {
   const { dark } = useTheme();
   const x = useSharedValue(index * slot);
+  const goal = useSharedValue(index * slot);
   const show = useSharedValue(hidden ? 0 : 1);
   useEffect(() => {
-    x.value = withSpring(index * slot, { damping: 20, stiffness: 260, mass: 0.8 });
+    goal.value = index * slot;
+    x.value = withSpring(index * slot, { damping: 17, stiffness: 210, mass: 0.85 });
     show.value = withSpring(hidden ? 0 : 1, { damping: 18, stiffness: 240 });
-  }, [index, slot, hidden, x, show]);
-  const style = useAnimatedStyle(() => ({ opacity: show.value, transform: [{ translateX: x.value }, { scale: 0.9 + 0.1 * show.value }] }));
+  }, [index, slot, hidden, x, goal, show]);
+  const style = useAnimatedStyle(() => {
+    const travel = Math.min(Math.abs(goal.value - x.value) / Math.max(slot, 1), 1);
+    const grow = 1 + 0.1 * lift.value;
+    return { opacity: show.value, transform: [{ translateX: x.value }, { scaleX: (1 + travel * 0.32) * grow * (0.9 + 0.1 * show.value) }, { scaleY: (1 - travel * 0.1) * grow }] };
+  });
   const width = Math.max(slot - 4, 0);
-  // Flat, not a second glass layer: glass over glass samples the bar under it and turns muddy.
-  const fill = dark ? "rgba(255,255,255,0.16)" : "rgba(22,104,240,0.12)";
-  const edge = dark ? "rgba(255,255,255,0.22)" : "rgba(22,104,240,0.18)";
-  return <Animated.View pointerEvents="none" style={[s.drop, { width, left, backgroundColor: fill, borderColor: edge }, style]} />;
+  if (GLASS) {
+    return (
+      <Animated.View pointerEvents="none" style={[s.drop, { width, left }, style]}>
+        <GLASS.View glassEffectStyle="regular" isInteractive colorScheme={dark ? "dark" : "light"} tintColor={dark ? "rgba(255,255,255,0.10)" : "rgba(22,104,240,0.10)"} style={StyleSheet.absoluteFill} />
+      </Animated.View>
+    );
+  }
+  return <Animated.View pointerEvents="none" style={[s.drop, s.flat, { width, left, backgroundColor: dark ? "rgba(255,255,255,0.16)" : "rgba(22,104,240,0.12)", borderColor: dark ? "rgba(255,255,255,0.22)" : "rgba(22,104,240,0.18)" }, style]} />;
 }
 
 const s = StyleSheet.create({
-  drop: { position: "absolute", top: 8, height: 54, borderRadius: 27, borderWidth: 1 },
+  drop: { position: "absolute", top: 8, height: 54, borderRadius: 27, overflow: "hidden" },
+  flat: { borderWidth: 1 },
 });
