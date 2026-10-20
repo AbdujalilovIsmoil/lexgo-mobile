@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { NativeTabs } from "expo-router/unstable-native-tabs";
 import { useRouter } from "expo-router";
 import { useIsAuthed } from "@/entities/session";
@@ -5,6 +6,7 @@ import { useBadgeStore } from "@/shared/lib/badgeStore";
 import { useT } from "@/shared/i18n";
 import { useColors, useTheme } from "@/shared/theme";
 import { useAuroraStyle } from "@/shared/ui";
+import { installTabReach, setBarRoutes } from "./tabReach";
 import { TABS } from "./tabConfig";
 import { useTabRole } from "./useTabRole";
 import { useVisibleTabs } from "./useTabItems";
@@ -17,6 +19,8 @@ const SF: Record<string, string> = {
 };
 
 // The AI tab: a glass pearl (clear bead, prismatic rim) that lights up with the brand gradient while the tab is open.
+installTabReach();
+
 const AI_PEARL = { default: require("../../../assets/tabs/ai-glass.png"), selected: require("../../../assets/tabs/ai-glass-on.png") };
 // On the light bar the bead takes a blue spark and a deeper rim so it reads (the lit state is the same).
 const AI_PEARL_LIGHT = { default: require("../../../assets/tabs/ai-glass-light.png"), selected: require("../../../assets/tabs/ai-glass-on.png") };
@@ -32,6 +36,8 @@ export function NativeTabsBar({ bar }: { bar: boolean }) {
   const role = useTabRole();
   const badges = useBadgeStore((s) => s.badges);
   const shown = useVisibleTabs();
+  const barKey = shown.map((d) => d.route).join(",");
+  useEffect(() => { setBarRoutes(barKey ? barKey.split(",") : []); }, [barKey]); // links to any other tab page open it as a stack screen
   const aurora = useAuroraStyle(); // every tab page sits on the aurora (the pages themselves are transparent)
   const rest = [...new Set(Object.values(TABS).flat().map((d) => d.route))].filter((r) => !shown.some((d) => d.route === r));
   return (

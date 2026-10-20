@@ -14,7 +14,7 @@ export type HeroStat = { key: string; icon: IconName; tint: string; value: strin
 // as gradient tiles of one size in a 2×2 grid; each opens its list.
 // The accent follows the role: an advocate gets gold and a licence badge (shield, with the licence number when known), a lawyer
 // (yurist) gets violet and a briefcase badge. It colours the glow, the greeting, the plan icon and the badge.
-const ACCENT = { advocate: { main: "#F5C451", glow: "rgba(245,196,81,0.2)", chip: "rgba(245,196,81,0.14)" }, lawyer: { main: "#A99BFF", glow: "rgba(169,155,255,0.22)", chip: "rgba(169,155,255,0.16)" } } as const;
+const ACCENT = { advocate: { main: "#F5C451", glow: "rgba(0,207,232,0.18)", chip: "rgba(245,196,81,0.14)" }, lawyer: { main: "#A99BFF", glow: "rgba(169,155,255,0.22)", chip: "rgba(169,155,255,0.16)" } } as const;
 
 export function SellerHero({ name, stats, tasks, meetings, advocate, license }: { name: string; stats: HeroStat[]; tasks: number; meetings: number; advocate: boolean; license?: string }) {
   const { t } = useT();
