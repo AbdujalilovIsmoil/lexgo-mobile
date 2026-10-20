@@ -3,6 +3,7 @@ import { checkFields } from "../form/nested";
 import type { Dict } from "@/shared/lib/json";
 import type { EditorEntry, Errors } from "../form/types";
 import { GENERIC } from "./GenericEditor";
+import { K02 } from "./k02/K02Editor";
 import { K03M } from "./K03MEditor";
 import { K05 } from "./K05Editor";
 import { K06 } from "./K06Editor";
@@ -12,7 +13,7 @@ import { K16 } from "./K16Editor";
 import { K20 } from "./K20Editor";
 import { K29 } from "./K29Editor";
 
-const CUSTOM: Record<string, EditorEntry> = { "K03-M": K03M, K29, K05, K06, "K12-PROMO": K12_PROMO, K14, K16, K20 };
+const CUSTOM: Record<string, EditorEntry> = { K02, "K03-M": K03M, K29, K05, K06, "K12-PROMO": K12_PROMO, K14, K16, K20 };
 
 export const editorFor = (code: string): EditorEntry => CUSTOM[code] ?? GENERIC;
 

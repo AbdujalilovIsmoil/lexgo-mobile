@@ -1,6 +1,6 @@
 import { File } from "expo-file-system";
 import { http } from "@/shared/api";
-import { asDict } from "@/shared/lib/json";
+import { asArr, asDict, asStr } from "@/shared/lib/json";
 import { downloadAndShare } from "@/shared/lib/files";
 import { first, listOf } from "../lib/norm";
 import { normComment } from "../lib/normObject";
@@ -45,4 +45,14 @@ export async function endActivity(sessionId: string): Promise<void> {
 export async function listReference(key: string, q = "", limit = 50): Promise<StudioRef[]> {
   const raw = listOf(await http(`/studio/reference/${enc(key)}${qs({ q, limit })}`), ["items", "options"]);
   return raw.map((v) => ({ value: first(asDict(v).value, asDict(v).id, asDict(v).code), label: first(asDict(v).label, asDict(v).title, asDict(v).name, asDict(v).value) })).filter((r) => r.value);
+}
+
+export type TermSuggestion = { suggestions: string[]; provider: string };
+
+// POST /studio/services/discovery-terms/suggest — AI search terms for a service. Nothing is saved; the form adds what the user picks.
+export async function suggestDiscoveryTerms(body: Record<string, unknown>): Promise<TermSuggestion> {
+  const d = asDict(await http("/studio/services/discovery-terms/suggest", { method: "POST", body }));
+  const seen = new Set<string>();
+  const suggestions = asArr(d.suggestions).map((x) => asStr(x).trim()).filter((x) => x && !seen.has(x.toLowerCase()) && seen.add(x.toLowerCase()));
+  return { suggestions, provider: asStr(d.provider) };
 }

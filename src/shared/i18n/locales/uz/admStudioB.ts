@@ -33,7 +33,7 @@ export const admStudioB = {
     rolledBack: "v{v} versiyasiga qaytarildi", uploaded: "Fayl yuklandi" },
   err: { required: "Bu maydon majburiy", json: "JSON formati xato", object: "JSON obyekt bo'lishi kerak: { … }", list: "Ro'yxat bo'lishi kerak", duplicate: "Takrorlanmasligi kerak",
     lang: "Uchala tilda ham to'ldiring", file: "Fayl yuklang", number: "Son kiriting", rule: "Shart mavjud maydonga bog'lanmagan", snake: "Faqat kichik lotin harflari, raqam va _ (masalan: court_name)",
-    options: "Tanlov uchun kamida bitta variant kiriting", fileMode: "Fayl rejimida fayl majburiy", minOne: "Kamida bittasini qo'shing" },
+    options: "Tanlov uchun kamida bitta variant kiriting", fileMode: "Fayl rejimida fayl majburiy", minOne: "Kamida bittasini qo'shing", nonneg: "Manfiy bo'lmagan son kiriting", max100: "Foiz 100 dan oshmasligi kerak", checkbox: "Belgi tasdiqlash usuli bo'lishi shart", methodOff: "Avval shu usulni tanlang" },
   opt: { "uz-latn": "O'zbekcha (lotin)", "uz-cyrl": "Ўзбекча (kirill)", ru: "Ruscha", en: "Inglizcha", in_app: "Ilova ichida", telegram: "Telegram", sms: "SMS", email: "Email", push: "Push", active: "Faol",
     inactive: "O'chirilgan", archived: "Arxivda" },
   fieldType: { text: "Matn", textarea: "Uzun matn", number: "Son", date: "Sana", select: "Tanlov", checkbox: "Belgi (ha/yo'q)", file: "Fayl" },

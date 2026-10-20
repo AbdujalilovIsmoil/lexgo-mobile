@@ -35,7 +35,7 @@ export const admStudioB: Messages["admStudioB"] = {
     rolledBack: "Rolled back to v{v}", uploaded: "File uploaded" },
   err: { required: "This field is required", json: "Invalid JSON", object: "Must be a JSON object: { … }", list: "Must be a list", duplicate: "Must be unique", lang: "Fill in all three languages",
     file: "Upload a file", number: "Enter a number", rule: "The rule points to a field that doesn't exist", snake: "Lowercase latin letters, digits and _ only (e.g. court_name)",
-    options: "Add at least one option", fileMode: "A file is required in upload mode", minOne: "Add at least one" },
+    options: "Add at least one option", fileMode: "A file is required in upload mode", minOne: "Add at least one", nonneg: "Enter a non-negative number", max100: "Percent must not exceed 100", checkbox: "The tick method is required in every row", methodOff: "Choose this method first" },
   opt: { "uz-latn": "Uzbek (Latin)", "uz-cyrl": "Uzbek (Cyrillic)", ru: "Russian", en: "English", in_app: "In app", telegram: "Telegram", sms: "SMS", email: "Email", push: "Push", active: "Active",
     inactive: "Inactive", archived: "Archived" },
   fieldType: { text: "Text", textarea: "Long text", number: "Number", date: "Date", select: "Select", checkbox: "Checkbox (yes/no)", file: "File" },
