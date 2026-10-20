@@ -22,3 +22,6 @@ export function sortTasks(list: ProTask[]): ProTask[] {
 
 // Neighbouring stage in board order; null at either end.
 export const stepStage = (stage: TaskStage, dir: 1 | -1): TaskStage | null => STAGES[STAGES.indexOf(stage) + dir] ?? null;
+
+// Theme colour of each stage: the dot of a board column and the stage chip of a card.
+export const STAGE_TINT = { todo: "gray", doing: "accent", review: "warn", done: "ok" } as const satisfies Record<TaskStage, string>;

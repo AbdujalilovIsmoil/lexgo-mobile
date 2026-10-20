@@ -8,7 +8,7 @@ import { tOr } from "@/shared/lib/pro/tOr";
 import { brand, radius, useColors } from "@/shared/theme";
 import { Card, Icon, Pill, PressableScale, ShiftButton, StageChip, Text, type IconName } from "@/shared/ui";
 import { KIND_CREATE, KIND_STATUS, KIND_UPDATE } from "../model/offline";
-import { isBlocked, isDone, isOverdue, stageOf, stepStage } from "../lib/stage";
+import { STAGE_TINT, isBlocked, isDone, isOverdue, stageOf, stepStage } from "../lib/stage";
 import type { ProTask, TaskStage } from "../model/types";
 
 const PRIO = { high: "err", medium: "warn", low: "gray" } as const;
@@ -38,7 +38,7 @@ export function TaskCard({ task, onOpen, onMove, onPickStage }: Props) {
   const left = task.checklist.filter((x) => x.done).length;
   const meta = [task.caseTitle, total ? t("aw7.checkCount", { done: left, total }) : ""].filter(Boolean).join(" · ");
   const stageName = t(`aw7.tab.${stage}`);
-  const stageColor = { todo: c.gray, doing: c.accent, review: c.warn, done: c.ok }[stage];
+  const stageColor = c[STAGE_TINT[stage]];
   const forward = next ? t(`aw7.next.${next}`) : t("aw7.reopen");
 
   // Swiping left reveals the right-hand panel and advances; swiping right goes back.
