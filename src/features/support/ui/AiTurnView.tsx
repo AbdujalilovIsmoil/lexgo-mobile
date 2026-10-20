@@ -13,7 +13,7 @@ export function AiTurnView({ turn, onRetry, onOpen }: Props) {
   return (
     <View style={s.wrap}>
       <View style={[s.q, { backgroundColor: brand.b600 }]}><Text variant="body" tone="white">{turn.q}</Text></View>
-      <View style={[s.a, { backgroundColor: c.surface, borderColor: c.line }]}>
+      <View style={[s.a, { backgroundColor: c.glassFill, borderColor: c.glassLine }]}>
         <View style={s.kick}><Icon name="zap" size={13} color={c.accent} /><Text variant="caption" weight="bold" tone="accent">{t("sp5.kicker")}</Text></View>
         {turn.state === "pending" ? <View style={{ gap: 8 }}><Skeleton height={14} /><Skeleton height={14} width="70%" /></View> : null}
         {turn.state === "failed" ? <Button title={t("sp5.retry")} variant="soft" size="sm" icon="refresh-cw" onPress={onRetry} /> : null}

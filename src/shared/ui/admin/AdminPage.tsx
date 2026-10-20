@@ -17,7 +17,7 @@ export function AdminPage({ hideBack, title, subtitle, onBack, right, footer, ch
   const router = useRouter();
   const back = onBack ?? (() => (router.canGoBack() ? router.back() : router.replace("/")));
   return (
-    <View style={[s.fill, { backgroundColor: c.bg }]}>
+    <View style={[s.fill, { backgroundColor: c.canvas }]}>
       <View style={[s.bar, { paddingTop: insets.top + HEADER_GAP }]}>
         {hideBack ? null : <IconButton icon="chevron-left" onPress={back} />}
         <View style={s.titles}>

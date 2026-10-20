@@ -8,7 +8,7 @@ import { Icon, Skeleton, Text, type IconName } from "@/shared/ui";
 function Tile({ icon, label, value, unit, tint }: { icon: IconName; label: string; value: string; unit?: string; tint: string }) {
   const c = useColors();
   return (
-    <View accessible accessibilityLabel={`${label}: ${value}${unit ? ` ${unit}` : ""}`} style={[s.tile, shadows.s1, { backgroundColor: c.surface, borderColor: c.line }]}>
+    <View accessible accessibilityLabel={`${label}: ${value}${unit ? ` ${unit}` : ""}`} style={[s.tile, shadows.s1, { backgroundColor: c.glassFill, borderColor: c.glassLine }]}>
       <Icon name={icon} size={18} color={tint} />
       <Text variant="h3" numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.6}>{value}</Text>
       <Text variant="caption" tone="gray" numberOfLines={2}>{unit ? `${label} · ${unit}` : label}</Text>

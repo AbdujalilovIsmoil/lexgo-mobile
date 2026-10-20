@@ -31,7 +31,7 @@ export default function ChatRoomPage() {
     </>
   );
   return (
-    <View style={{ flex: 1, backgroundColor: c.bg }}>
+    <View style={{ flex: 1, backgroundColor: c.canvas }}>
       <ChatHeader title={r.title} subtitle={sub} group={group} online={online} onInfo={() => r.sh.setSheet("members")} right={right} />
       {r.error && !r.room ? <ErrorView error={r.error} /> : <ChatRoomView roomId={id} room={r.room} myId={r.myId} staff={a.staff} closed={r.closed} thread={r.thread} send={r.send} reveal={r.reveal} sh={r.sh} onCall={r.call.open} />}
       <ChatSheets sh={r.sh} room={r.room} myId={r.myId} actions={r.actions} reveal={r.reveal} settings={r.settings} complete={r.complete} onRetry={r.send.retry} onDiscard={r.send.discard} />

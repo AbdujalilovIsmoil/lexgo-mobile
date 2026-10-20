@@ -21,7 +21,7 @@ export function OrderSummary({ f }: { f: OrderFormState }) {
     { icon: "message-circle", color: "#00A870", text: t("ug2.filesInChat") },
   ];
   return (
-    <View style={[st.card, { backgroundColor: c.surface, borderColor: c.line }]}>
+    <View style={[st.card, { backgroundColor: c.glassFill, borderColor: c.glassLine }]}>
       <View style={[st.rail, { backgroundColor: c.line }]} />
       {rows.map((r) => (
         <View key={r.text} style={st.row}>

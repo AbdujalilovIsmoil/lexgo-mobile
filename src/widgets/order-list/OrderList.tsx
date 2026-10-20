@@ -26,7 +26,7 @@ export function OrderList({ title, lead, query, emptyIcon, emptyTitle, emptyText
   const { data, isLoading, error, refetch, isRefetching } = query;
   const [open, setOpen] = useState<Order | null>(null);
   return (
-    <View style={[s.fill, { backgroundColor: c.bg, paddingTop: insets.top + HEADER_GAP }]}>
+    <View style={[s.fill, { backgroundColor: c.canvas, paddingTop: insets.top + HEADER_GAP }]}>
       <View style={s.head}>
         <Text variant="h2">{title}</Text>
         <Text variant="small" tone="gray">{lead}</Text>

@@ -19,7 +19,7 @@ export function ChecklistEditor({ items, onChange, text, onText, onFocus }: Prop
   return (
     <View style={s.col}>
       {items.map((x, i) => (
-        <View key={`${i}-${x.text}`} style={[s.row, { borderColor: c.line, backgroundColor: c.surface }]}>
+        <View key={`${i}-${x.text}`} style={[s.row, { borderColor: c.glassLine, backgroundColor: c.glassFill }]}>
           <PressableScale onPress={() => patch(i, { done: !x.done })} hitSlop={8} accessibilityRole="checkbox" accessibilityState={{ checked: x.done }} accessibilityLabel={x.text}>
             <Icon name={x.done ? "check-circle" : "circle"} size={22} color={x.done ? c.ok : c.gray} />
           </PressableScale>

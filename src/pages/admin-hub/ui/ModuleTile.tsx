@@ -16,7 +16,7 @@ export function ModuleTile({ mod, index, width }: { mod: AdminModule; index: num
   const open = () => openModule(mod.key);
   return (
     <Animated.View entering={FadeInUp.delay(Math.min(index, 8) * 40).duration(320)} style={{ width }}>
-      <PressableScale onPress={open} scale={0.93} accessibilityRole="button" accessibilityLabel={t(`admHub.mod.${mod.key}.title`)} style={[s.tile, { backgroundColor: c.surface, borderColor: c.line }]}>
+      <PressableScale onPress={open} scale={0.93} accessibilityRole="button" accessibilityLabel={t(`admHub.mod.${mod.key}.title`)} style={[s.tile, { backgroundColor: c.glassFill, borderColor: c.glassLine }]}>
         <LinearGradient colors={[mod.color, lighten(mod.color)]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={s.icon}>
           <View style={s.shine} pointerEvents="none" />
           <Icon name={mod.icon} size={24} tone="white" />

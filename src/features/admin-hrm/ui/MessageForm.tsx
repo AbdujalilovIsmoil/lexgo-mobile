@@ -18,7 +18,7 @@ export function MessageForm({ visible, onClose, to, onPick }: { visible: boolean
   return (
     <FormSheet visible={visible} onClose={onClose} title={t("admHrm.newMessage")} onSubmit={() => void submit()} submitLabel={t("admHrm.send")} submitting={send.isPending} disabled={!to}>
       <Field label={t("admHrm.recipient")}>
-        <PressableScale onPress={onPick} style={{ flexDirection: "row", alignItems: "center", gap: 10, minHeight: 52, paddingHorizontal: 14, borderRadius: 14, borderWidth: 1.5, borderColor: c.line, backgroundColor: c.surface }}>
+        <PressableScale onPress={onPick} style={{ flexDirection: "row", alignItems: "center", gap: 10, minHeight: 52, paddingHorizontal: 14, borderRadius: 14, borderWidth: 1.5, borderColor: c.glassLine, backgroundColor: c.glassFill }}>
           <Icon name="user" size={18} tone="gray" />
           <Text variant="body" tone={to ? "ink" : "gray2"} style={{ flex: 1 }} numberOfLines={1}>{to?.name || t("admHrm.pickRecipient")}</Text>
           <Icon name="chevron-right" size={18} tone="gray" />

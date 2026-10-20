@@ -10,7 +10,7 @@ export function PendingSteps() {
   return (
     <View style={s.col}>
       {[1, 2, 3].map((n) => (
-        <View key={n} style={[s.row, { backgroundColor: c.surface, borderColor: c.line }]}>
+        <View key={n} style={[s.row, { backgroundColor: c.glassFill, borderColor: c.glassLine }]}>
           <View style={[s.badge, { backgroundColor: c.tint2 }]}>
             <Text variant="small" weight="bold" tone="accent">{n}</Text>
           </View>

@@ -25,7 +25,7 @@ export function Pill({ label, tone = "blue", icon, small, live }: Props) {
   const lens = useGlass() && tone === "glass";
   return (
     <View style={[s.pill, { backgroundColor: lens ? "transparent" : bg }, small && s.small]}>
-      {lens ? <GlassBackdrop radius={radius.pill} tint="rgba(255,255,255,0.16)" /> : null}
+      {lens ? <GlassBackdrop radius={radius.pill} tint="rgba(255,255,255,0.16)" scheme="dark" /> : null}
       {live ? <LiveDot color={fg} size={small ? 6 : 7} /> : icon ? <Icon name={icon} size={small ? 11 : 13} color={fg} /> : null}
       <Text variant="caption" weight="semibold" style={{ color: fg, fontSize: small ? 11 : 12 }}>
         {label}

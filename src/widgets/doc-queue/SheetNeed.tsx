@@ -18,7 +18,7 @@ export function SheetNeed({ doc }: { doc: DocReq }) {
   const answers = open ? doc.answers : doc.answers.slice(0, ROWS);
   return (
     <View style={s.col}>
-      <View style={[s.quote, { backgroundColor: c.surface, borderColor: c.line }]}>
+      <View style={[s.quote, { backgroundColor: c.glassFill, borderColor: c.glassLine }]}>
         <Icon name="message-square" size={16} color={c.accent} />
         <Text variant="small" tone={doc.need ? "ink" : "gray"} selectable style={s.flex}>{doc.need ? (open ? doc.need : need.text) : t("proDocSheet.noNeed")}</Text>
       </View>

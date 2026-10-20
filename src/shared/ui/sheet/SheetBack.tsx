@@ -11,7 +11,7 @@ export function SheetBack({ onPress, label }: { onPress: () => void; label?: str
   const { t } = useT();
   return (
     <PressableScale onPress={onPress} accessibilityRole="button" accessibilityLabel={label ?? t("common.back")} hitSlop={8} style={[s.pill, { backgroundColor: c.tint2 }]}>
-      <View style={[s.chip, { backgroundColor: c.surface, borderColor: c.line }]}>
+      <View style={[s.chip, { backgroundColor: c.glassFill, borderColor: c.glassLine }]}>
         <Icon name="chevron-left" size={17} color={c.accent} />
       </View>
       <Text variant="small" weight="bold" style={{ color: c.accentStrong }}>{label ?? t("common.back")}</Text>

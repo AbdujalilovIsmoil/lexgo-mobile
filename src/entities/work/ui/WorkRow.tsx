@@ -18,7 +18,7 @@ export function WorkRow({ work, onPress }: { work: Work; onPress?: () => void })
   const tint = KIND_TINT[work.kind];
   return (
     <Animated.View entering={FadeInDown.duration(240)}>
-      <PressableScale onPress={onPress} accessibilityRole="button" style={[s.card, { backgroundColor: c.surface, borderColor: c.line }]}>
+      <PressableScale onPress={onPress} accessibilityRole="button" style={[s.card, { backgroundColor: c.glassFill, borderColor: c.glassLine }]}>
         <View style={s.top}>
           <View style={[s.icon, { backgroundColor: `${tint}22` }]}><Icon name={KIND_ICON[work.kind]} size={22} color={tint} /></View>
           <View style={s.col}>

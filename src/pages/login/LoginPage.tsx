@@ -13,7 +13,7 @@ export function LoginPage() {
   const { notice, clearNotice } = useSessionStore();
   useEffect(() => () => clearNotice(), [clearNotice]);
   return (
-    <View style={[s.fill, { backgroundColor: c.bg }]}>
+    <View style={[s.fill, { backgroundColor: c.canvas }]}>
       <HeroScroll keyboardShouldPersistTaps="handled" contentContainerStyle={s.content} showsVerticalScrollIndicator={false}>
         <AuthHero title={t("auth.loginTitle")} subtitle={t("auth.loginSub")} />
         <View style={s.body}>

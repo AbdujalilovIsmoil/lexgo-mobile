@@ -22,7 +22,7 @@ export function CaseActions({ item, phone, roomId, onManage }: Props) {
   return (
     <View style={s.row}>
       {all.filter((x): x is Exclude<typeof x, false> => !!x).map((x) => (
-        <PressableScale key={x.key} onPress={x.on} accessibilityLabel={x.label} style={[s.btn, { backgroundColor: c.surface, borderColor: c.line }]}>
+        <PressableScale key={x.key} onPress={x.on} accessibilityLabel={x.label} style={[s.btn, { backgroundColor: c.glassFill, borderColor: c.glassLine }]}>
           <View style={[s.ico, { backgroundColor: c.tint2 }]}><Icon name={x.icon} size={19} tone="accent" /></View>
           <Text variant="caption" weight="bold" numberOfLines={1}>{x.label}</Text>
         </PressableScale>

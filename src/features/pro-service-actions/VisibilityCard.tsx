@@ -11,7 +11,7 @@ export function VisibilityCard({ item, verified }: { item: ProService; verified:
   const checks = visibilityChecks(item, verified);
   const shown = item.visible;
   return (
-    <View style={[s.card, { backgroundColor: c.surface, borderColor: c.line }]}>
+    <View style={[s.card, { backgroundColor: c.glassFill, borderColor: c.glassLine }]}>
       <View style={s.head}>
         <View style={[s.ic, { backgroundColor: shown ? c.okBg : c.warnBg }]}><Icon name={shown ? "eye" : "eye-off"} size={18} color={shown ? c.ok : c.warn} /></View>
         <View style={s.flex}>

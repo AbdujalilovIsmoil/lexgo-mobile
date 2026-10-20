@@ -18,7 +18,7 @@ export function DocAnalysisPage() {
   const d = useDocAnalysis();
   const h = useHandoff(d.file, d.result);
   return (
-    <View style={[s.fill, { backgroundColor: c.bg }]}>
+    <View style={[s.fill, { backgroundColor: c.canvas }]}>
       <Header title={t("docs.title")} />
       <Screen topInset={false} contentContainerStyle={s.content}>
         <Text variant="small" tone="gray">{t("docs.sub")}</Text>

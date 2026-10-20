@@ -21,7 +21,7 @@ export function GroupHeader({ group }: { group: StudioGroup }) {
   const next = group.items.find((i) => i.code === group.next);
   const done = group.total > 0 && group.completed >= group.total;
   return (
-    <View style={[s.card, { backgroundColor: c.surface, borderColor: c.line }]}>
+    <View style={[s.card, { backgroundColor: c.glassFill, borderColor: c.glassLine }]}>
       <View style={[s.wash, { backgroundColor: `${m.color}1F` }]} />
       <View style={s.row}>
         {art ? <Image source={art} resizeMode="contain" style={s.art} accessible={false} /> : <View style={[s.icon, { backgroundColor: `${m.color}26` }]}><Icon name={m.icon} size={20} color={m.color} /></View>}

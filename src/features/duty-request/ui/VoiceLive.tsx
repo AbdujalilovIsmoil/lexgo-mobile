@@ -24,7 +24,7 @@ export function VoiceLive({ r }: { r: ReturnType<typeof useVoiceRecorder> }) {
       </View>
       <View style={[s.track, { backgroundColor: c.line }]}><View style={[s.fill, { width: `${Math.min(100, (r.seconds / MAX_VOICE_SEC) * 100)}%`, backgroundColor: c.err }]} /></View>
       <View style={s.actions}>
-        <PressableScale onPress={() => void r.cancel()} accessibilityRole="button" accessibilityLabel={t("vcx.cancel")} style={[s.cancel, { borderColor: c.line, backgroundColor: c.surface }]}>
+        <PressableScale onPress={() => void r.cancel()} accessibilityRole="button" accessibilityLabel={t("vcx.cancel")} style={[s.cancel, { borderColor: c.glassLine, backgroundColor: c.glassFill }]}>
           <Icon name="trash-2" size={18} color={c.gray} /><Text variant="small" weight="bold" tone="gray">{t("vcx.cancel")}</Text>
         </PressableScale>
         <PressableScale onPress={() => void r.stop()} disabled={!r.recording} accessibilityRole="button" accessibilityLabel={t("vcx.stop")} style={[s.stop, { backgroundColor: c.err, opacity: r.recording ? 1 : 0.6 }]}>

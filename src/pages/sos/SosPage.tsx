@@ -12,7 +12,7 @@ export function SosPage() {
   const { t } = useT();
   const sos = useSos();
   return (
-    <View style={[s.fill, { backgroundColor: c.bg }]}>
+    <View style={[s.fill, { backgroundColor: c.canvas }]}>
       <Header title={t("cxSos.title")} />
       <Screen topInset={false} contentContainerStyle={s.content} keyboardShouldPersistTaps="handled">
         <SosHero />

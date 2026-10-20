@@ -24,7 +24,7 @@ export function Input({ label, error, hint, left, right, style, ...rest }: Props
           {label}
         </Text>
       ) : null}
-      <View style={[s.field, { backgroundColor: c.surface, borderColor: border, borderWidth: focused || error ? 2 : 1.5 }]}>
+      <View style={[s.field, { backgroundColor: c.glassFill, borderColor: border, borderWidth: focused || error ? 2 : 1.5 }]}>
         {left ? <View style={s.side}>{left}</View> : null}
         <TextInput
           accessibilityLabel={label ?? rest.placeholder}

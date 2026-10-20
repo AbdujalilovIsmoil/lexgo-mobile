@@ -79,7 +79,7 @@ export function ServiceSheet({ item: current, verified, waiting = false, scope, 
             </View>
             <PriceGauge item={item} />
             <VisibilityCard item={item} verified={verified} />
-            <PressableScale onPress={() => canEdit(item) && onEdit(item)} disabled={!canEdit(item)} accessibilityRole="button" accessibilityLabel={t("proSvc.form.note")} style={[s.note, { backgroundColor: c.surface, borderColor: c.line }]}>
+            <PressableScale onPress={() => canEdit(item) && onEdit(item)} disabled={!canEdit(item)} accessibilityRole="button" accessibilityLabel={t("proSvc.form.note")} style={[s.note, { backgroundColor: c.glassFill, borderColor: c.glassLine }]}>
               <View style={s.noteHead}>
                 <Text variant="caption" tone="gray" weight="bold">{t("proSvc.form.note")}</Text>
                 {canEdit(item) ? <Icon name="edit-2" size={14} tone="gray" /> : null}

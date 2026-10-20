@@ -12,7 +12,7 @@ export function DashGuest() {
   const c = useColors();
   const router = useRouter();
   return (
-    <View style={[s.card, { backgroundColor: c.surface, borderColor: c.line }]}>
+    <View style={[s.card, { backgroundColor: c.glassFill, borderColor: c.glassLine }]}>
       <View style={[s.ico, { backgroundColor: c.tint2 }]}><Icon name="user" size={24} color={c.accent} /></View>
       <Text variant="h4" center>{t("au1.guestTitle")}</Text>
       <Text variant="small" tone="gray" center>{t("au1.guestSub")}</Text>

@@ -11,7 +11,7 @@ const IS_BLANK = /^\[[^\]\n]+\]$/;
 export function PreviewText({ text }: { text: string }) {
   const c = useColors();
   return (
-    <View style={[s.box, { backgroundColor: c.surface, borderColor: c.line }]}>
+    <View style={[s.box, { backgroundColor: c.glassFill, borderColor: c.glassLine }]}>
       <Text variant="small" selectable>
         {text.split(SPLIT).map((part, i) =>
           IS_BLANK.test(part) ? <Text key={i} variant="small" weight="semibold" style={{ color: c.warn, backgroundColor: c.warnBg }}>{part}</Text> : <Fragment key={i}>{part}</Fragment>,

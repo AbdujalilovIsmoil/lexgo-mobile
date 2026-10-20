@@ -27,7 +27,7 @@ export function ReviewSummary({ sections, answers, problems, onFix }: Props) {
         </View>
       ) : null}
       {sections.map((sec) => (
-        <View key={sec.id} style={[s.box, { backgroundColor: c.surface, borderColor: c.line, borderWidth: 1 }]}>
+        <View key={sec.id} style={[s.box, { backgroundColor: c.glassFill, borderColor: c.glassLine, borderWidth: 1 }]}>
           <Text variant="h4">{sec.title}</Text>
           {sec.fields.map((f) => {
             const v = wireValue(f, answers[f.key]);

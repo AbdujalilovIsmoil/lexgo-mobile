@@ -15,7 +15,7 @@ export function SubcatCard({ name, count, index, family, samples = [], art, onPr
   const { t } = useT();
   const img = art === undefined ? subcatImage(name) : art;
   return (
-    <PressableScale onPress={onPress} scale={0.97} accessibilityRole="button" style={[s.card, { backgroundColor: c.surface, borderColor: c.line }]}>
+    <PressableScale onPress={onPress} scale={0.97} accessibilityRole="button" style={[s.card, { backgroundColor: c.glassFill, borderColor: c.glassLine }]}>
       <LinearGradient colors={[c.tint, c.tint2]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={s.stage}>
         {img ? <Image source={img} style={s.art} resizeMode="contain" /> : <Icon name={subcatIcon(name, index)} size={44} color={c.accent} />}
         <View style={[s.go, { backgroundColor: c.surface }]}><Icon name="arrow-up-right" size={14} color={c.accent} /></View>

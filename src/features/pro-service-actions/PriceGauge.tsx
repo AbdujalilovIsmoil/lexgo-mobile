@@ -15,7 +15,7 @@ export function PriceGauge({ item }: { item: ProService }) {
   const g = priceGauge(item);
   const tone = g?.over ? c.warn : c.accent;
   return (
-    <View style={[s.card, { backgroundColor: c.surface, borderColor: c.line }]}>
+    <View style={[s.card, { backgroundColor: c.glassFill, borderColor: c.glassLine }]}>
       <Text variant="caption" tone="gray" weight="bold">{item.selectedPrice ? t("proSvc.sheet.yourPrice") : t("proSvc.card.catalogPrice")}</Text>
       <Text variant="h2">{item.effectivePrice ? som(item.effectivePrice) : t("proSvc.form.noPriceTag")}</Text>
       {g ? (

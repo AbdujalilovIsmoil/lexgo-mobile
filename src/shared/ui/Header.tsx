@@ -17,7 +17,7 @@ export function Header({ title, right, onBack, transparent, light }: Props) {
   const fg = light ? "#fff" : c.ink;
   return (
     <>
-    <View style={[s.bar, { paddingTop: insets.top + HEADER_GAP, backgroundColor: transparent ? "transparent" : c.bg }]}>
+    <View style={[s.bar, { paddingTop: insets.top + HEADER_GAP, backgroundColor: transparent ? "transparent" : c.canvas }]}>
       <IconButton icon="chevron-left" tone={light ? "glass" : "tint"} onPress={onBack ?? (() => (router.canGoBack() ? router.back() : router.replace("/")))} />
       {title ? (
         <Text variant="h4" numberOfLines={1} style={[s.title, { color: fg }]}>

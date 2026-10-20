@@ -17,7 +17,7 @@ export function SpecialistPage() {
   if (q.isPending) return <SpecialistSkeleton />;
   if (q.error || !q.data) {
     return (
-      <View style={[s.fill, { backgroundColor: c.bg }]}>
+      <View style={[s.fill, { backgroundColor: c.canvas }]}>
         <Header />
         {q.error ? <ErrorView error={q.error} onRetry={() => void q.refetch()} /> : <EmptyState icon="user-x" title={t("mkd.notFound")} text={t("mkd.notFoundText")} />}
       </View>

@@ -21,7 +21,7 @@ export function AssistantPage() {
   useEffect(() => { void restoreInstructor(); }, []);
   useEffect(() => { if (guiding && nav.isFocused()) router.back(); }, [guiding, nav, router]);
   return (
-    <View style={[s.fill, { backgroundColor: c.bg }]}>
+    <View style={[s.fill, { backgroundColor: c.canvas }]}>
       <GradientBox variant="dark" round={0} style={[s.head, { paddingTop: insets.top + HEADER_GAP }]}>
         <View style={s.orb}><AiOrb size={46} icon="compass" /></View>
         <View style={s.fill}>

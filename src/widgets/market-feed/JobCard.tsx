@@ -27,7 +27,7 @@ export function JobCard({ job, blocked, onGone }: { job: Job; blocked: boolean; 
   const left = job.deadlineAt ? Date.parse(job.deadlineAt) - now : Infinity;
   const edge = left < 5 * 60_000 ? c.err : left < 30 * 60_000 ? c.warn : c.accent;
   return (
-    <Animated.View entering={FadeIn.duration(260)} style={[s.card, { backgroundColor: c.surface, borderColor: c.line }]}>
+    <Animated.View entering={FadeIn.duration(260)} style={[s.card, { backgroundColor: c.glassFill, borderColor: c.glassLine }]}>
       <View style={[s.edge, { backgroundColor: edge }]} />
       <View style={s.body}>
         <View style={s.head}>

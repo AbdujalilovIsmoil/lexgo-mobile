@@ -9,7 +9,7 @@ export function NotFoundPage() {
   const { t } = useT();
   const router = useRouter();
   return (
-    <View style={{ flex: 1, backgroundColor: c.bg }}>
+    <View style={{ flex: 1, backgroundColor: c.canvas }}>
       <Header />
       <EmptyState icon="compass" title={t("common.pageNotFound")} text={t("common.pageNotFoundText")} actionLabel={t("common.toHome")} onAction={() => router.replace("/")} />
     </View>

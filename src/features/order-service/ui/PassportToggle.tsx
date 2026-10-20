@@ -20,7 +20,7 @@ export function PassportToggle({ serviceId }: { serviceId: string }) {
   const [open, setOpen] = useState(false);
   return (
     <View style={s.col}>
-      <PressableScale onPress={() => setOpen((v) => !v)} style={[s.head, { borderColor: c.line, backgroundColor: c.surface }]}>
+      <PressableScale onPress={() => setOpen((v) => !v)} style={[s.head, { borderColor: c.glassLine, backgroundColor: c.glassFill }]}>
         <Text variant="small" weight="bold" style={s.flex}>{t("csv.pp.title")}</Text>
         <Icon name={open ? "chevron-up" : "chevron-down"} size={18} tone="gray" />
       </PressableScale>

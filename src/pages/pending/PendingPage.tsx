@@ -15,7 +15,7 @@ export function PendingPage() {
   const { role, message } = useLocalSearchParams<{ role?: string; message?: string }>();
   const kind = role && ["yurist", "advokat", "advokat_tashkiloti"].includes(role) ? role : "advokat";
   return (
-    <View style={[s.fill, { backgroundColor: c.bg }]}>
+    <View style={[s.fill, { backgroundColor: c.canvas }]}>
       <HeroScroll contentContainerStyle={s.content} showsVerticalScrollIndicator={false}>
         <AuthHero title={t("auth.pendingTitle")} subtitle={t(`au1.role.${kind}`)} back={false} />
         <View style={s.body}>

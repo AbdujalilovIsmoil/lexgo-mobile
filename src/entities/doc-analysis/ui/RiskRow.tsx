@@ -11,7 +11,7 @@ export function RiskRow({ risk }: { risk: Risk }) {
   const c = useColors();
   const { t } = useT();
   return (
-    <View style={[s.row, { borderColor: c.line, backgroundColor: c.surface }]}>
+    <View style={[s.row, { borderColor: c.glassLine, backgroundColor: c.glassFill }]}>
       <Pill label={t(`docs.level.${risk.level}`)} tone={TONE[risk.level]} small />
       <Text variant="small" style={s.text}>{risk.text}</Text>
     </View>

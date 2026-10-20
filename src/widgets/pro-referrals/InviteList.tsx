@@ -52,7 +52,7 @@ export function InviteList({ r }: { r: Referral }) {
       {total === 0 ? (
         <EmptyState compact icon="user-plus" title={t("refUx.emptyTitle")} text={t("refUx.emptyText")} actionLabel={r.code || r.link ? t("refUx.emptyCta") : undefined} onAction={share} />
       ) : (
-        <View style={[s.list, { backgroundColor: c.surface, borderColor: c.line }]}>
+        <View style={[s.list, { backgroundColor: c.glassFill, borderColor: c.glassLine }]}>
           {visible.map((x, i) => <Row key={`${x.phone}-${x.joinedAt}-${i}`} x={x} last={i === visible.length - 1} />)}
         </View>
       )}

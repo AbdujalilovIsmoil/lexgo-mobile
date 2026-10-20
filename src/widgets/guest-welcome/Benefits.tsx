@@ -24,7 +24,7 @@ export function Benefits() {
     <View style={s.wrap}>
       <ScrollView horizontal pagingEnabled={false} snapToInterval={w + 12} decelerationRate="fast" showsHorizontalScrollIndicator={false} contentContainerStyle={s.row} onScroll={(e) => setPage(Math.round(e.nativeEvent.contentOffset.x / (w + 12)))} scrollEventThrottle={32}>
         {tList<Benefit>("guest.benefits").map((b, i) => (
-          <View key={i} style={[s.card, { width: w, backgroundColor: c.surface, borderColor: c.line }]}>
+          <View key={i} style={[s.card, { width: w, backgroundColor: c.glassFill, borderColor: c.glassLine }]}>
             <LinearGradient colors={STYLE[i % 3].colors} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={s.icon}><Icon name={STYLE[i % 3].icon} size={22} tone="white" /></LinearGradient>
             <View style={s.copy}><Text variant="h4">{b.title}</Text><Text variant="small" tone="gray">{b.text}</Text></View>
           </View>

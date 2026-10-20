@@ -65,7 +65,7 @@ export function PackagesPanel({ refreshing, onRefresh, scroll = true, header }: 
   } else if (q.isError && !q.data) {
     const locked = isForbidden(q.error);
     body = (
-      <View style={[s.state, { backgroundColor: c.surface, borderColor: c.line }]} accessibilityRole="alert">
+      <View style={[s.state, { backgroundColor: c.glassFill, borderColor: c.glassLine }]} accessibilityRole="alert">
         <View style={[s.stIc, { backgroundColor: locked ? c.tint2 : c.errBg }]}>
           <Icon name={locked ? "lock" : "alert-circle"} size={24} color={locked ? c.accent : c.err} />
         </View>
@@ -116,7 +116,7 @@ export function PackagesPanel({ refreshing, onRefresh, scroll = true, header }: 
             )}
           </>
         ) : (
-          <View style={[s.state, { backgroundColor: c.surface, borderColor: c.line }]}>
+          <View style={[s.state, { backgroundColor: c.glassFill, borderColor: c.glassLine }]}>
             <EmptyState icon="package" title={t("pkgSeller.empty")} text={t("pkgSeller.emptyText")} />
           </View>
         )}

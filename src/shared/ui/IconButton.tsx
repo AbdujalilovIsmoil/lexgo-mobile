@@ -30,7 +30,7 @@ export function IconButton({ icon, onPress, size = 44, tone = "tint", badge, lab
       hitSlop={6}
       style={[s.btn, { width: size, height: size, borderRadius: size / 2, backgroundColor: lens ? "transparent" : glass ? "rgba(255,255,255,0.14)" : c.tint2 }]}
     >
-      {lens ? <GlassBackdrop radius={size / 2} tint="rgba(255,255,255,0.20)" interactive /> : null}
+      {lens ? <GlassBackdrop radius={size / 2} tint="rgba(255,255,255,0.20)" interactive scheme="dark" /> : null}
       <Icon name={icon} size={Math.round(size * 0.46)} color={glass ? "#FFFFFF" : c.accent} />
       {badge ? <View style={[s.dot, { right: size * 0.24, top: size * 0.22 }]} /> : null}
     </PressableScale>

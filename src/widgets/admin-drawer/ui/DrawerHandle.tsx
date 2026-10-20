@@ -24,7 +24,7 @@ export function DrawerHandle() {
   return (
     <GestureDetector gesture={gesture}>
       <View collapsable={false} accessible accessibilityRole="button" accessibilityLabel={t("ag1.drawer.open")} style={[s.hit, { top: H * 0.42 }]}>
-        <View style={[s.tab, { backgroundColor: c.surface, borderColor: c.line }]}><Icon name="chevron-right" size={14} tone="accent" /></View>
+        <View style={[s.tab, { backgroundColor: c.glassFill, borderColor: c.glassLine }]}><Icon name="chevron-right" size={14} tone="accent" /></View>
       </View>
     </GestureDetector>
   );

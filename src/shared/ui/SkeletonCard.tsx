@@ -6,7 +6,7 @@ import { Skeleton } from "./Skeleton";
 export function SkeletonCard({ lines = 3 }: { lines?: number }) {
   const c = useColors();
   return (
-    <View style={[s.card, { backgroundColor: c.surface, borderColor: c.line }]}>
+    <View style={[s.card, { backgroundColor: c.glassFill, borderColor: c.glassLine }]}>
       <Skeleton width={56} height={56} round={18} />
       {Array.from({ length: lines }).map((_, i) => (
         <Skeleton key={i} width={i === 0 ? "70%" : "92%"} height={i === 0 ? 18 : 12} />

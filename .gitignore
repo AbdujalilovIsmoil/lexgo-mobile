@@ -23,3 +23,7 @@ yarn-error.*
 /modules/*/android/.cxx/
 /modules/*/android/.gradle/
 /modules/*/ios/build/
+
+# impeccable design review captures
+.impeccable/review/
+.impeccable/mocks/

@@ -18,7 +18,7 @@ export function OrderCard({ order: o, onPress }: { order: ProOrder; onPress: () 
   const who = [o.buyerName, o.workId].filter(Boolean).join(" · ");
   return (
     <Animated.View entering={FadeIn.duration(260)}>
-      <PressableScale scale={0.99} onPress={onPress} accessibilityRole="button" accessibilityLabel={o.serviceTitle || o.workId} style={[s.card, { backgroundColor: c.surface, borderColor: c.line }]}>
+      <PressableScale scale={0.99} onPress={onPress} accessibilityRole="button" accessibilityLabel={o.serviceTitle || o.workId} style={[s.card, { backgroundColor: c.glassFill, borderColor: c.glassLine }]}>
         <View style={[s.edge, { backgroundColor: edge }]} />
         <View style={s.body}>
           <View style={s.head}>

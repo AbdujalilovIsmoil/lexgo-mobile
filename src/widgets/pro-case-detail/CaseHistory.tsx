@@ -26,7 +26,7 @@ export function CaseHistory({ caseId }: { caseId: string }) {
               <View style={[s.dot, { backgroundColor: tint, borderColor: `${tint}55` }]} />
               {i < rows.length - 1 ? <View style={[s.line, { backgroundColor: c.line }]} /> : null}
             </View>
-            <View style={[s.card, { backgroundColor: c.surface, borderColor: c.line }]}>
+            <View style={[s.card, { backgroundColor: c.glassFill, borderColor: c.glassLine }]}>
               <Text variant="small" weight="bold">{tOr(t, `aw5.kind.${x.kind}`, x.kind)}</Text>
               {sub ? <Text variant="caption" tone="accent" weight="semibold">{sub}</Text> : null}
               {x.nextAction ? <Text variant="small" tone="gray">{x.nextAction}</Text> : null}

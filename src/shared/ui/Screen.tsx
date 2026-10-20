@@ -40,9 +40,9 @@ export function Screen({ children, scroll = true, padded = true, refreshing, onR
     <View style={[s.fill, padded && s.padded, padding]}>{children}</View>
   );
   return (
-    <View style={[s.fill, { backgroundColor: c.bg }]}>
+    <View style={[s.fill, { backgroundColor: c.canvas }]}>
       {body}
-      {top > 0 ? <View pointerEvents="none" style={[s.mask, { height: top, backgroundColor: c.bg }]} /> : null}
+      {top > 0 ? <View pointerEvents="none" style={[s.mask, { height: top, backgroundColor: c.canvas }]} /> : null}
     </View>
   );
 }

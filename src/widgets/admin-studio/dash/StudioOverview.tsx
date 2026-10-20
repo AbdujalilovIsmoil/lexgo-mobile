@@ -42,7 +42,7 @@ export function StudioOverview() {
   const track = Skia.PathBuilder.Make().addArc(rect, 0, 359.9).build();
   const arc = Skia.PathBuilder.Make().addArc(rect, -90, Math.max((pct / 100) * 360, pct ? 5 : 0)).build();
   return (
-    <View style={[s.card, { backgroundColor: c.surface, borderColor: c.line }]}>
+    <View style={[s.card, { backgroundColor: c.glassFill, borderColor: c.glassLine }]}>
       <View style={[s.glow, { backgroundColor: `${c.accent}1A` }]} />
       <View style={s.head}>
         <View style={s.ring} accessible accessibilityLabel={t("admStudioD.ov.ringLabel", { pct })}>

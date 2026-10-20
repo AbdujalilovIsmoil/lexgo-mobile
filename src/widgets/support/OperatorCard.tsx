@@ -8,7 +8,7 @@ export function OperatorCard({ onStart }: { onStart: () => void }) {
   const { t } = useT();
   const c = useColors();
   return (
-    <View style={[s.card, { backgroundColor: c.surface, borderColor: c.line }]}>
+    <View style={[s.card, { backgroundColor: c.glassFill, borderColor: c.glassLine }]}>
       <View style={s.head}>
         <View style={s.icon}><Icon name="headphones" size={22} tone="white" /><View style={[s.live, { backgroundColor: c.ok, borderColor: c.surface }]} /></View>
         <View style={s.fill}>

@@ -13,7 +13,7 @@ export function WorkHead({ work }: { work: Work }) {
   const text = useWorkText();
   const tint = KIND_TINT[work.kind];
   return (
-    <View style={[s.card, { backgroundColor: c.surface, borderColor: c.line }]}>
+    <View style={[s.card, { backgroundColor: c.glassFill, borderColor: c.glassLine }]}>
       <View style={{ height: 4, backgroundColor: tint }} />
       <View style={s.body}>
         <View style={s.top}>

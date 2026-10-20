@@ -18,7 +18,7 @@ export function DocSheetFiles({ files, busy, onPick }: { files: FileEntry[]; bus
       {files.map(({ file, role }) => {
         const size = sizeText(file.size);
         return (
-          <PressableScale key={`${role}-${file.id}`} onPress={() => onPick(file)} disabled={!!busy} accessibilityRole="button" accessibilityLabel={`${t("proDocSheet.download")}: ${file.name}`} style={[s.row, { backgroundColor: c.surface, borderColor: c.line, opacity: busy && busy !== file.id ? 0.55 : 1 }]}>
+          <PressableScale key={`${role}-${file.id}`} onPress={() => onPick(file)} disabled={!!busy} accessibilityRole="button" accessibilityLabel={`${t("proDocSheet.download")}: ${file.name}`} style={[s.row, { backgroundColor: c.glassFill, borderColor: c.glassLine, opacity: busy && busy !== file.id ? 0.55 : 1 }]}>
             <View style={[s.tile, { backgroundColor: c.tint2 }]}><Icon name={ICON[kindOf(file.name, file.mime)]} size={19} color={c.accent} /></View>
             <View style={s.flex}>
               <Text variant="small" weight="semibold" numberOfLines={1}>{file.name}</Text>

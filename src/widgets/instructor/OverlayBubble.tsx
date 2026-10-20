@@ -13,7 +13,7 @@ export function OverlayBubble({ step, above, offset }: Props) {
   const { t } = useT();
   const last = step.index >= step.total;
   return (
-    <Animated.View entering={above ? FadeInDown.duration(220) : FadeInUp.duration(220)} style={[s.card, { backgroundColor: c.surface, borderColor: c.line }, above ? { bottom: offset } : { top: offset }]}>
+    <Animated.View entering={above ? FadeInDown.duration(220) : FadeInUp.duration(220)} style={[s.card, { backgroundColor: c.glassFill, borderColor: c.glassLine }, above ? { bottom: offset } : { top: offset }]}>
       <Text variant="small">{step.caption}</Text>
       <View style={s.row}>
         {step.total > 1 ? <Text variant="caption" tone="gray2">{t("ax3.step", { i: step.index, n: step.total })}</Text> : null}

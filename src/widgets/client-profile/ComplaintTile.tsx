@@ -16,7 +16,7 @@ export function ComplaintTile({ item, onPress }: { item: ComplaintItem; onPress:
   const col = tone[stage];
   const live = stage === "new" || stage === "review" || stage === "rework";
   return (
-    <PressableScale onPress={onPress} scale={0.985} accessibilityRole="button" accessibilityLabel={p.title} style={[s.card, { backgroundColor: c.surface, borderColor: c.line }]}>
+    <PressableScale onPress={onPress} scale={0.985} accessibilityRole="button" accessibilityLabel={p.title} style={[s.card, { backgroundColor: c.glassFill, borderColor: c.glassLine }]}>
       <View style={[s.spine, { backgroundColor: col }]} />
       <View style={[s.ico, { backgroundColor: `${col}26` }]}><Icon name={p.quality ? "star" : CATEGORY_ICON[item.category] ?? "message-circle"} size={19} color={col} /></View>
       <View style={s.col}>

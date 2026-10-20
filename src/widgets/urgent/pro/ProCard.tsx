@@ -27,7 +27,7 @@ export function ProCard({ req }: { req: UrgentRequest }) {
   const tint = kindTint(req.serviceKind);
   const open = () => router.push(detailHref("pro", req.id));
   return (
-    <View style={[s.card, { backgroundColor: c.surface, borderColor: c.line }]}>
+    <View style={[s.card, { backgroundColor: c.glassFill, borderColor: c.glassLine }]}>
       <View style={[s.edge, { backgroundColor: edge }]} />
       <View style={s.body}>
         <View style={s.head}>

@@ -19,7 +19,7 @@ export function EventRow({ event, withDate, onPress, index = 0 }: { event: CalEv
   const deadline = event.type.endsWith("deadline");
   return (
     <Animated.View entering={FadeInDown.delay(Math.min(index, 6) * 40).duration(240)}>
-      <PressableScale onPress={onPress} scale={0.985} accessibilityRole="button" accessibilityLabel={`${event.title}. ${hhmm(event.startsAt)}`} style={[s.card, { backgroundColor: c.surface, borderColor: c.line, opacity: off ? 0.6 : 1 }]}>
+      <PressableScale onPress={onPress} scale={0.985} accessibilityRole="button" accessibilityLabel={`${event.title}. ${hhmm(event.startsAt)}`} style={[s.card, { backgroundColor: c.glassFill, borderColor: c.glassLine, opacity: off ? 0.6 : 1 }]}>
         <View style={s.time}>
           <Text variant="body" weight="bold">{hhmm(event.startsAt) || "—"}</Text>
           {event.endsAt ? <Text variant="caption" tone="gray2">{hhmm(event.endsAt)}</Text> : null}

@@ -18,7 +18,7 @@ export function DocSheetFacts({ facts }: { facts: Fact[] }) {
   return (
     <View style={s.grid}>
       {facts.map((f) => (
-        <View key={f.key} style={[s.tile, { borderColor: c.line, backgroundColor: c.surface }]} accessible accessibilityLabel={`${t(`proDocSheet.fact.${f.key}`)}: ${value(f)}`}>
+        <View key={f.key} style={[s.tile, { borderColor: c.glassLine, backgroundColor: c.glassFill }]} accessible accessibilityLabel={`${t(`proDocSheet.fact.${f.key}`)}: ${value(f)}`}>
           <Text variant="caption" tone="gray" numberOfLines={1}>{t(`proDocSheet.fact.${f.key}`)}</Text>
           <Text variant="small" weight="semibold" numberOfLines={2} style={f.late ? { color: c.warn } : undefined}>{value(f)}</Text>
         </View>

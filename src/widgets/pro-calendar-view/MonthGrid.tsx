@@ -15,7 +15,7 @@ export function MonthGrid({ year, month, selected, byDay, onSelect }: Props) {
   const cells = useMemo(() => monthCells(year, month), [year, month]);
   const today = todayKey();
   return (
-    <View style={[s.card, { backgroundColor: c.surface, borderColor: c.line }]}>
+    <View style={[s.card, { backgroundColor: c.glassFill, borderColor: c.glassLine }]}>
     <View style={s.grid}>
       {tList("aw11.weekdays").map((w, i) => (
         <Text key={w} variant="caption" tone={i >= 5 ? "err" : "gray"} center weight="semibold" style={s.cell}>{w}</Text>

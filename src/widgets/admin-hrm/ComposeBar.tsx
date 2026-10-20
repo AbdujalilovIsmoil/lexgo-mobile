@@ -9,7 +9,7 @@ export function ComposeBar({ onPress }: { onPress: () => void }) {
   const { t } = useT();
   const c = useColors();
   return (
-    <PressableScale onPress={() => { tapHaptic(); onPress(); }} accessibilityRole="button" accessibilityLabel={t("admHrm.newMessage")} style={[s.bar, { backgroundColor: c.surface, borderColor: c.line }]}>
+    <PressableScale onPress={() => { tapHaptic(); onPress(); }} accessibilityRole="button" accessibilityLabel={t("admHrm.newMessage")} style={[s.bar, { backgroundColor: c.glassFill, borderColor: c.glassLine }]}>
       <Icon name="edit-3" size={18} color={c.accent} />
       <Text variant="body" tone="gray" style={{ flex: 1 }} numberOfLines={1}>{t("admHrmW.composeHint")}</Text>
       <Icon name="send" size={18} color={c.accent} />

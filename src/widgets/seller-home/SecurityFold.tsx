@@ -16,7 +16,7 @@ export function SecurityFold({ i }: { i: number }) {
   return (
     <Fade i={i}>
       <View style={s.col}>
-        <PressableScale onPress={() => setOpen((v) => !v)} scale={0.99} accessibilityRole="button" accessibilityState={{ expanded: open }} accessibilityLabel={t("shm.sec.title")} style={[s.head, { backgroundColor: c.surface, borderColor: c.line }]}>
+        <PressableScale onPress={() => setOpen((v) => !v)} scale={0.99} accessibilityRole="button" accessibilityState={{ expanded: open }} accessibilityLabel={t("shm.sec.title")} style={[s.head, { backgroundColor: c.glassFill, borderColor: c.glassLine }]}>
           <View style={[s.ico, { backgroundColor: "#8B5CF622" }]}><Icon name="shield" size={18} color="#8B5CF6" /></View>
           <View style={s.txt}>
             <Text variant="h4" numberOfLines={1}>{t("shm.sec.title")}</Text>

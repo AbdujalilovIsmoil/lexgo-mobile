@@ -17,7 +17,7 @@ export function StatTile({ item, index, onPress }: { item: StatItem; index: numb
   const [from, to] = item.colors;
   return (
     <Animated.View entering={FadeInUp.delay(index * 90).duration(420)} style={s.cell}>
-    <PressableScale onPress={onPress} disabled={!onPress} scale={0.97} style={[s.tile, { backgroundColor: c.surface, borderColor: c.line }, shadows.s1]}>
+    <PressableScale onPress={onPress} disabled={!onPress} scale={0.97} style={[s.tile, { backgroundColor: c.glassFill, borderColor: c.glassLine }, shadows.s1]}>
       <LinearGradient colors={[`${from}2E`, `${from}00`]} start={{ x: 0, y: 0 }} end={{ x: 0.9, y: 0.9 }} style={StyleSheet.absoluteFill} />
       <View style={s.mark}>
         <Icon name={item.icon} size={84} color={`${from}1A`} />

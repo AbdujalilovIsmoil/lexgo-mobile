@@ -16,7 +16,7 @@ export function ServiceCard({ service: sv, index, onPress }: { service: Service;
   const art = subcatImage(sv.subcategory ?? "");
   return (
     <Animated.View entering={FadeInDown.delay(Math.min(index, 8) * 45).duration(300)} style={s.cell}>
-      <PressableScale onPress={onPress} scale={0.97} accessibilityRole="button" accessibilityLabel={`${sv.name}. ${price(sv)}`} style={[s.card, { backgroundColor: c.surface, borderColor: c.line }]}>
+      <PressableScale onPress={onPress} scale={0.97} accessibilityRole="button" accessibilityLabel={`${sv.name}. ${price(sv)}`} style={[s.card, { backgroundColor: c.glassFill, borderColor: c.glassLine }]}>
         <LinearGradient colors={[...serviceTone(sv.categoryId ?? sv.id)]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={s.art}>
           <View style={s.ring} pointerEvents="none" />
           {art ? <Image source={art} style={s.img} resizeMode="contain" /> : <Icon name={doc ? "file-text" : "briefcase"} size={38} tone="white" />}

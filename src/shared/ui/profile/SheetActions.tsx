@@ -15,7 +15,7 @@ export function SheetActions({ cancel, submit }: Props) {
   const off = submit.disabled || submit.loading;
   return (
     <View style={s.row}>
-      <PressableScale onPress={cancel.onPress} style={[s.pill, s.half, { backgroundColor: c.surface, borderColor: c.line }]} accessibilityRole="button">
+      <PressableScale onPress={cancel.onPress} style={[s.pill, s.half, { backgroundColor: c.glassFill, borderColor: c.glassLine }]} accessibilityRole="button">
         <Text variant="body" weight="semibold">{cancel.label}</Text>
       </PressableScale>
       <PressableScale onPress={submit.onPress} disabled={off} style={[s.pill, s.half, s.save, off && s.off]} accessibilityRole="button">

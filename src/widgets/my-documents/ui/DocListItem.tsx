@@ -22,7 +22,7 @@ export function DocListItem({ row, index = 0, onOpen, onSend }: Props) {
   const status = t(key) !== key ? t(key) : row.statusLabel || humanizeSlug(row.status);
   const title = row.title || t("dm1.untitled");
   return (
-    <Animated.View entering={FadeInDown.duration(220).delay(Math.min(index, 5) * 35)} style={[s.card, { backgroundColor: c.surface, borderColor: c.line }]}>
+    <Animated.View entering={FadeInDown.duration(220).delay(Math.min(index, 5) * 35)} style={[s.card, { backgroundColor: c.glassFill, borderColor: c.glassLine }]}>
       <PressableScale onPress={() => onOpen(row.id)} accessibilityRole="button" accessibilityLabel={t("docSheet.openCard", { title, status })} style={s.body}>
         <View style={[s.tile, { backgroundColor: `${tone}22` }]}><Icon name={MODE_ICON[row.mode]} size={20} color={tone} /></View>
         <View style={s.col}>

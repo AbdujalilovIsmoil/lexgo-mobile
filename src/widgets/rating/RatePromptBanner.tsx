@@ -32,7 +32,7 @@ export function RatePromptBanner() {
     <>
       {hidden ? null : (
         <Animated.View entering={FadeInDown.duration(260)} exiting={FadeOutUp.duration(200)} style={[s.wrap, { top: insets.top + 8 }]} pointerEvents="box-none">
-          <PressableScale onPress={() => setPick(item.target)} style={[s.card, { backgroundColor: c.surface, borderColor: c.line }]}>
+          <PressableScale onPress={() => setPick(item.target)} style={[s.card, { backgroundColor: c.glassFill, borderColor: c.glassLine }]}>
             <Avatar name={item.target.lawyerName || "?"} size={40} />
             <View style={s.col}>
               <Text variant="small" weight="bold" numberOfLines={1}>{t("rtx.ask")}</Text>

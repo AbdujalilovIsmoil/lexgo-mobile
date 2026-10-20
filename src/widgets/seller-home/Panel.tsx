@@ -26,7 +26,7 @@ export function Panel({ icon, tint, title, sub, right, i = 0, fold, children }: 
   );
   return (
     <Fade i={i}>
-      <View style={[s.panel, { backgroundColor: c.surface, borderColor: c.line }]}>
+      <View style={[s.panel, { backgroundColor: c.glassFill, borderColor: c.glassLine }]}>
         {title ? fold ? <PressableScale onPress={() => setOpen((v) => !v)} scale={0.99} accessibilityRole="button" accessibilityState={{ expanded: open }} accessibilityLabel={title}>{head}</PressableScale> : head : null}
         {open ? <Animated.View entering={FadeIn.duration(180)} style={s.body}>{children}</Animated.View> : null}
       </View>

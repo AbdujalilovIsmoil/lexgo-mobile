@@ -20,7 +20,7 @@ export function ContactCard({ d }: { d: ClientDetail }) {
   const rows = all.filter((x): x is Row => !!x);
   if (!rows.length) return null;
   return (
-    <View style={[s.card, { backgroundColor: c.surface, borderColor: c.line }]}>
+    <View style={[s.card, { backgroundColor: c.glassFill, borderColor: c.glassLine }]}>
       {rows.map((r, i) => {
         const body = (
           <>

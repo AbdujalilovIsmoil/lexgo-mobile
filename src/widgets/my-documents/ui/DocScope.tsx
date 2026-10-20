@@ -36,7 +36,7 @@ export function DocScope({ counts, value, onChange, loading }: Props) {
         );
         return (
           <PressableScale key={key || "all"} haptic={false} onPress={() => { selectHaptic(); onChange(on ? "" : key); }} accessibilityRole="button" accessibilityState={{ selected: on }}>
-            {on ? <LinearGradient colors={[...gradient.primary]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={s.pill}>{body}</LinearGradient> : <View style={[s.pill, { backgroundColor: c.surface, borderColor: c.line, borderWidth: 1 }]}>{body}</View>}
+            {on ? <LinearGradient colors={[...gradient.primary]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={s.pill}>{body}</LinearGradient> : <View style={[s.pill, { backgroundColor: c.glassFill, borderColor: c.glassLine, borderWidth: 1 }]}>{body}</View>}
           </PressableScale>
         );
       })}

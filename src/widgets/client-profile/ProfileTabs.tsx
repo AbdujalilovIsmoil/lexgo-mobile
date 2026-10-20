@@ -37,7 +37,7 @@ export function ProfileTabs<K extends string = ProfileTab>({ value, onChange, ta
   }, [idx, pos]);
   const thumb = useAnimatedStyle(() => ({ transform: [{ translateX: pos.value * (tabW + GAP) }] }));
   return (
-    <View onLayout={(e) => setW(e.nativeEvent.layout.width)} style={[s.bar, { backgroundColor: c.surface, borderColor: c.line }]} accessibilityRole="tablist">
+    <View onLayout={(e) => setW(e.nativeEvent.layout.width)} style={[s.bar, { backgroundColor: c.glassFill, borderColor: c.glassLine }]} accessibilityRole="tablist">
       {tabW > 0 ? (
         <Animated.View pointerEvents="none" style={[s.thumb, { width: tabW }, thumb]}>
           <LinearGradient colors={[...gradient.primary]} locations={[...gradient.primaryStops]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={StyleSheet.absoluteFill} />

@@ -20,7 +20,7 @@ export function CaseRow({ item, client, onPress, index = 0 }: { item: ProCase; c
   const head = client || item.title || item.number;
   return (
     <Animated.View entering={FadeInDown.delay(Math.min(index, 8) * 40).duration(260)}>
-      <PressableScale onPress={onPress} scale={0.985} accessibilityRole="button" accessibilityLabel={`${head}. ${item.title}`} style={[s.card, { backgroundColor: c.surface, borderColor: c.line }]}>
+      <PressableScale onPress={onPress} scale={0.985} accessibilityRole="button" accessibilityLabel={`${head}. ${item.title}`} style={[s.card, { backgroundColor: c.glassFill, borderColor: c.glassLine }]}>
         <View style={[s.edge, { backgroundColor: tint }]} />
         <View style={s.body}>
           <View style={s.top}>

@@ -30,7 +30,7 @@ export function EntityCards() {
     </PressableScale>
   );
   return (
-    <View style={[s.card, { backgroundColor: c.surface, borderColor: c.line }]}>
+    <View style={[s.card, { backgroundColor: c.glassFill, borderColor: c.glassLine }]}>
       <View style={[s.wash, { backgroundColor: `${tint}1F` }]} />
       <Text variant="h4">{t("admStudioD.entity.title")}</Text>
       <Segmented options={cards.map((k) => ({ value: k.key, label: `${t(`admStudioD.cards.${k.key}`)} · ${k.total}` }))} value={x.key} onChange={setPick} />

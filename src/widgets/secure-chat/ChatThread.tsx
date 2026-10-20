@@ -32,7 +32,7 @@ export function ChatThread(p: Props) {
       inverted
       data={items}
       keyExtractor={itemKey}
-      renderItem={({ item }) => item.kind === "day" ? <View style={[s.day, { backgroundColor: c.surface, borderColor: c.line }]}><Text variant="caption" weight="semibold" tone="gray">{item.label}</Text></View>
+      renderItem={({ item }) => item.kind === "day" ? <View style={[s.day, { backgroundColor: c.glassFill, borderColor: c.glassLine }]}><Text variant="caption" weight="semibold" tone="gray">{item.label}</Text></View>
         : item.kind === "new" ? <View style={[s.new, { backgroundColor: c.tint2 }]}><Text variant="caption" weight="bold" tone="accent" center>{t("ms4.newMessages", { n: item.n })}</Text></View>
         : <MessageBubble msg={item.msg} mine={item.msg.senderId === p.myId} group={p.group} flash={flash === item.msg.id} canReply={!item.msg.pending && !item.msg.failed && !item.msg.id.startsWith("tmp-")} live={p.liveCalls} onMenu={p.onMenu} onReply={p.onReply} onCall={p.onCall} onJump={jump} onOpen={p.onOpen} />}
       onEndReached={() => p.hasOlder && p.onOlder()}

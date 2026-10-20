@@ -9,7 +9,7 @@ import { useT } from "@/shared/i18n";
 function Tile({ icon, label, value, i }: { icon: IconName; label: string; value: string; i: number }) {
   const c = useColors();
   return (
-    <Animated.View entering={FadeInDown.delay(i * 70).duration(300)} style={[s.tile, { backgroundColor: c.surface, borderColor: c.line }]}>
+    <Animated.View entering={FadeInDown.delay(i * 70).duration(300)} style={[s.tile, { backgroundColor: c.glassFill, borderColor: c.glassLine }]}>
       <View style={[s.ico, { backgroundColor: c.tint2 }]}><Icon name={icon} size={16} color={c.accent} /></View>
       <Text variant="caption" tone="gray" numberOfLines={1}>{label}</Text>
       <Text variant="small" weight="bold" numberOfLines={2}>{value}</Text>

@@ -16,7 +16,7 @@ export function AccountGate({ suppressed }: { suppressed?: boolean }) {
   if (!user || gate === "ok" || suppressed || (gate === "pending" && dismissed === key)) return null;
   return (
     <Modal visible animationType="fade" statusBarTranslucent navigationBarTranslucent onRequestClose={() => {}}>
-      <View style={{ flex: 1, justifyContent: "center", backgroundColor: c.bg }}>
+      <View style={{ flex: 1, justifyContent: "center", backgroundColor: c.canvas }}>
         <GateCard gate={gate} seller={isSellerUser(user)} name={user.name} skey={key} />
       </View>
       <OverlayHost />

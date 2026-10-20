@@ -6,7 +6,7 @@ import { radius, useColors } from "@/shared/theme";
 export function DocRowSkeleton() {
   const c = useColors();
   return (
-    <View style={[s.card, { backgroundColor: c.surface, borderColor: c.line }]}>
+    <View style={[s.card, { backgroundColor: c.glassFill, borderColor: c.glassLine }]}>
       <View style={s.row}><Skeleton width={44} height={44} round={radius.r} /><View style={s.col}><Skeleton height={14} /><Skeleton height={14} width="60%" /></View></View>
       <View style={s.row}><Skeleton width={24} height={24} round={12} /><Skeleton height={12} width="45%" /></View>
       <View style={s.row}><Skeleton width={84} height={22} round={11} /><View style={s.col} /><Skeleton width={110} height={36} round={18} /></View>

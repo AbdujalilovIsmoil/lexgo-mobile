@@ -20,7 +20,7 @@ export function OtpPage() {
   const phone = maskPhone(flow.phone);
   const subtitle = flow.totp ? t("auth.otpTotp") : t(flow.purpose === "reset" ? "au3.resetSub" : "auth.otpSub", { phone });
   return (
-    <View style={[s.fill, { backgroundColor: c.bg }]}>
+    <View style={[s.fill, { backgroundColor: c.canvas }]}>
       <HeroScroll keyboardShouldPersistTaps="handled" contentContainerStyle={s.content} showsVerticalScrollIndicator={false}>
         <AuthHero title={title} subtitle={subtitle} />
         <View style={s.body}>

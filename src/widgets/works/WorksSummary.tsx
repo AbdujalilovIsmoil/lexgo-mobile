@@ -21,7 +21,7 @@ export function WorksSummary({ works }: { works: Work[] }) {
       <View style={s.col}>
         <View style={s.row}>
           {cells.map((x) => (
-            <View key={x.k} style={[s.cell, { backgroundColor: c.surface, borderColor: c.line }]}>
+            <View key={x.k} style={[s.cell, { backgroundColor: c.glassFill, borderColor: c.glassLine }]}>
               <Icon name={x.icon} size={16} color={x.tint} />
               <Text variant="h3">{x.n}</Text>
               <Text variant="caption" tone="gray" numberOfLines={1}>{x.k}</Text>

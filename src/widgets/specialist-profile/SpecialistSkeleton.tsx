@@ -9,7 +9,7 @@ export function SpecialistSkeleton() {
   const c = useColors();
   const insets = useInsets();
   return (
-    <View style={[s.fill, { backgroundColor: c.bg }]}>
+    <View style={[s.fill, { backgroundColor: c.canvas }]}>
       <GradientBox variant="dark" round={0} style={[s.cover, { height: insets.top + 118 }]}><Header transparent light /></GradientBox>
       <View style={s.id}>
         <View style={[s.ring, { backgroundColor: c.bg }]}><Skeleton width={92} height={92} round={46} /></View>

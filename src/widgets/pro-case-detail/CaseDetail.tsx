@@ -44,7 +44,7 @@ export function CaseDetail({ id, inSheet }: { id: string; inSheet?: boolean }) {
       <CaseHero item={item} client={owner?.name} />
       <CaseActions item={item} phone={owner?.phone} roomId={room.data ?? ""} onManage={() => setManage(true)} />
       {item.description ? (
-        <View style={[s.about, { backgroundColor: c.surface, borderColor: c.line }]}>
+        <View style={[s.about, { backgroundColor: c.glassFill, borderColor: c.glassLine }]}>
           <Text variant="small" weight="bold" tone="gray">{t("csd.about")}</Text>
           <Text variant="body">{item.description}</Text>
         </View>

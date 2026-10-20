@@ -28,7 +28,7 @@ export function SubscriptionPage() {
   const active = (data ?? []).filter((p) => !!cur && p.name === cur).map((p) => p.id);
   const refresh = () => void Promise.all([refetch(), ent.refetch()]);
   return (
-    <View style={[s.fill, { backgroundColor: c.bg }]}>
+    <View style={[s.fill, { backgroundColor: c.canvas }]}>
       <Header title={t("profile.subscription")} />
       <Screen topInset={false} refreshing={isRefetching} onRefresh={refresh} contentContainerStyle={s.content}>
         {signedIn ? <TopCards /> : null}

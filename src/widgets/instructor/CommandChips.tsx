@@ -19,7 +19,7 @@ export function CommandChips({ commands }: { commands: Command[] }) {
       {rows.map((x) => {
         const st = map[x.id].status;
         return (
-          <View key={x.id} style={[s.chip, { backgroundColor: c.surface, borderColor: c.line }]}>
+          <View key={x.id} style={[s.chip, { backgroundColor: c.glassFill, borderColor: c.glassLine }]}>
             <Icon name={ICON[st]} size={13} color={tone[st]} />
             <Text variant="caption" style={{ color: tone[st] }}>{t(`ax2.cmd.${x.type}`)} · {t(`ax2.st.${st}`)}</Text>
           </View>

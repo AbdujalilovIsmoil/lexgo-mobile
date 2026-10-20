@@ -58,7 +58,7 @@ export function WorkSheet({ work, onClose }: { work: Work | null; onClose: () =>
             ) : null}
             {q.isLoading ? <Skeleton height={64} round={16} /> : null}
             {d?.complaints.length ? d.complaints.map((x, i) => (
-              <View key={x.id || i} style={[s.complaint, { borderColor: c.line, backgroundColor: c.surface }]}>
+              <View key={x.id || i} style={[s.complaint, { borderColor: c.glassLine, backgroundColor: c.glassFill }]}>
                 <View style={s.top}><Icon name="alert-triangle" size={15} color={c.warn} /><Text variant="small" weight="bold" style={s.flex}>{t("wks.complaint")}</Text></View>
                 {x.text ? <Text variant="small">{x.text}</Text> : null}
                 {x.operatorNote ? <Text variant="small" tone="gray">{t("cl5.complaint.operator")}: {x.operatorNote}</Text> : null}

@@ -19,7 +19,7 @@ export function HubTile({ item, badge, index, width }: Props) {
   const go = () => { tapHaptic(); router.push(`/manage/internal/${item.key}` as never); };
   return (
     <Animated.View entering={FadeInUp.delay(Math.min(index, 8) * 35).duration(240)} style={{ width }}>
-      <PressableScale onPress={go} scale={0.93} accessibilityRole="button" accessibilityLabel={t(`admHrm.nav.${item.key}`)} style={[s.tile, { backgroundColor: c.surface, borderColor: c.line }]}>
+      <PressableScale onPress={go} scale={0.93} accessibilityRole="button" accessibilityLabel={t(`admHrm.nav.${item.key}`)} style={[s.tile, { backgroundColor: c.glassFill, borderColor: c.glassLine }]}>
         <View>
           <LinearGradient colors={[item.color, lighten(item.color)]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={s.icon}><Icon name={item.icon} size={24} tone="white" /></LinearGradient>
           {badge ? <View style={s.badge}><Text variant="caption" weight="bold" style={s.badgeText}>{badge > 99 ? "99+" : badge}</Text></View> : null}

@@ -17,13 +17,13 @@ export function useGlass() {
   return Platform.OS === "ios" && !reduce ? loadGlass() : null;
 }
 
-type Props = { radius: number; tint?: string; interactive?: boolean; clear?: boolean };
+type Props = { radius: number; tint?: string; interactive?: boolean; clear?: boolean; scheme?: "light" | "dark" }; // scheme: force a tone (over a dark hero)
 
 // A glass layer that fills its parent (render it first inside a View whose own background is transparent). Only for the layer that
 // floats over content — controls, sheets, dialogs, toasts — never for cards in a list.
-export function GlassBackdrop({ radius, tint, interactive, clear }: Props) {
+export function GlassBackdrop({ radius, tint, interactive, clear, scheme }: Props) {
   const G = useGlass();
   const { dark } = useTheme();
   if (!G) return null;
-  return <G.View pointerEvents="none" glassEffectStyle={clear ? "clear" : "regular"} isInteractive={interactive} colorScheme={dark ? "dark" : "light"} tintColor={tint} style={[StyleSheet.absoluteFill, { borderRadius: radius }]} />;
+  return <G.View pointerEvents="none" glassEffectStyle={clear ? "clear" : "regular"} isInteractive={interactive} colorScheme={scheme ?? (dark ? "dark" : "light")} tintColor={tint} style={[StyleSheet.absoluteFill, { borderRadius: radius }]} />;
 }

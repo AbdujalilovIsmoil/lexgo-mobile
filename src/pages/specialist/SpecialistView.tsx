@@ -52,7 +52,7 @@ export function SpecialistView({ lawyer: l, initialTab }: { lawyer: Lawyer; init
   };
   const leave = (fn: () => void) => { setBuy(null); setTimeout(fn, 380); };
   return (
-    <View style={[s.fill, { backgroundColor: c.bg }]}>
+    <View style={[s.fill, { backgroundColor: c.canvas }]}>
       <HeroScroll contentContainerStyle={{ paddingBottom: insets.bottom + 120 }}>
         <View>
           <ProfileCover />

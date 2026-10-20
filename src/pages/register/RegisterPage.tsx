@@ -13,7 +13,7 @@ export function RegisterPage() {
   const { t } = useT();
   const { ref, role } = useLocalSearchParams<{ ref?: string; role?: string }>();
   return (
-    <View style={[s.fill, { backgroundColor: c.bg }]}>
+    <View style={[s.fill, { backgroundColor: c.canvas }]}>
       <HeroScroll keyboardShouldPersistTaps="handled" contentContainerStyle={s.content} showsVerticalScrollIndicator={false}>
         <AuthHero title={t("auth.registerTitle")} subtitle={t("auth.registerSub")} />
         <View style={s.body}>

@@ -1,4 +1,5 @@
 import { type ReactNode } from "react";
+import { Platform } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { SafeAreaProvider, initialWindowMetrics } from "react-native-safe-area-context";
 import { StatusBar } from "expo-status-bar";
@@ -7,7 +8,7 @@ import * as SystemUI from "expo-system-ui";
 import { ThemeProvider, useTheme } from "@/shared/theme";
 import { IncomingCallWatcher } from "@/widgets/admin-meetings";
 import { ClientSidebar } from "@/widgets/client-sidebar";
-import { RootOverlays } from "@/shared/ui";
+import { AuroraBackdrop, RootOverlays } from "@/shared/ui";
 import { useProfileRefresh } from "@/entities/session";
 import { useHostClipboardSync } from "../dev/useHostClipboardSync";
 import { QueryProvider } from "./QueryProvider";
@@ -27,6 +28,7 @@ function Chrome({ children }: { children: ReactNode }) {
     <NavigationTheme>
       <StatusBar style={dark ? "light" : "dark"} />
       <SystemChrome />
+      {Platform.OS === "ios" ? <AuroraBackdrop /> : null}
       {children}
       <RootOverlays />
       <IncomingCallWatcher />

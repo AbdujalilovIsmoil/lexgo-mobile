@@ -28,7 +28,7 @@ export function TabPage({ title, subtitle, right, noActions, children }: Props) 
   ), [title, subtitle, right, noActions]);
   const ctx = useMemo(() => ({ header, claim: () => setClaimed(true) }), [header]);
   return (
-    <View style={[st.fill, { backgroundColor: c.bg }]}>
+    <View style={[st.fill, { backgroundColor: c.canvas }]}>
       <TabHeaderProvider value={ctx}>
         {claimed ? null : header}
         <View style={st.fill}>{children}</View>

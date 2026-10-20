@@ -1,4 +1,5 @@
 import { type ReactNode } from "react";
+import { Platform } from "react-native";
 import { DarkTheme, DefaultTheme, ThemeProvider as NavThemeProvider } from "expo-router";
 import { useTheme } from "@/shared/theme";
 
@@ -8,7 +9,7 @@ export function NavigationTheme({ children }: { children: ReactNode }) {
   const base = dark ? DarkTheme : DefaultTheme;
   const theme = {
     ...base,
-    colors: { ...base.colors, background: colors.bg, card: colors.surface, text: colors.ink, border: colors.line, primary: colors.accent },
+    colors: { ...base.colors, background: Platform.OS === "ios" ? "transparent" : colors.bg, card: colors.surface, text: colors.ink, border: colors.line, primary: colors.accent },
   };
   return <NavThemeProvider value={theme}>{children}</NavThemeProvider>;
 }

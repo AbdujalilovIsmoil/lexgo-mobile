@@ -24,7 +24,7 @@ export function ChatsHistoryPage() {
     router.navigate("/ai");
   };
   return (
-    <View style={[s.fill, { backgroundColor: c.bg }]}>
+    <View style={[s.fill, { backgroundColor: c.canvas }]}>
       <Header title={t("ai.history")} right={<IconButton icon="edit-3" size={40} onPress={fresh} label={t("ai.newChat")} />} />
       <HistoryList
         groups={h.groups}

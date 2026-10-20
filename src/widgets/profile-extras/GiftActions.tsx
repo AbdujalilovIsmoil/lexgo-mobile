@@ -18,7 +18,7 @@ function Tile({ icon, title, hint, onPress, primary }: { icon: IconName; title: 
   );
   return (
     <PressableScale onPress={onPress} accessibilityRole="button" style={s.flex}>
-      {primary ? <LinearGradient colors={[brand.b700, brand.b600, "#0E9FD0"]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={[s.tile, shadows.blue]}>{body}</LinearGradient> : <View style={[s.tile, { backgroundColor: c.surface, borderWidth: 1, borderColor: c.line }]}>{body}</View>}
+      {primary ? <LinearGradient colors={[brand.b700, brand.b600, "#0E9FD0"]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={[s.tile, shadows.blue]}>{body}</LinearGradient> : <View style={[s.tile, { backgroundColor: c.glassFill, borderWidth: 1, borderColor: c.glassLine }]}>{body}</View>}
     </PressableScale>
   );
 }

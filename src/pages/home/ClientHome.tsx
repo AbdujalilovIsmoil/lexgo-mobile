@@ -14,7 +14,7 @@ export function ClientHome() {
   const insets = useInsets();
   const authed = useIsAuthed();
   return (
-    <HeroScroll style={{ backgroundColor: c.bg }} contentContainerStyle={{ paddingBottom: insets.bottom + 130 }} showsVerticalScrollIndicator={false}>
+    <HeroScroll style={{ backgroundColor: c.canvas }} contentContainerStyle={{ paddingBottom: insets.bottom + 130 }} showsVerticalScrollIndicator={false}>
       <DashHero />
       <View style={{ height: 16 }} />
       <HeaderExtra />

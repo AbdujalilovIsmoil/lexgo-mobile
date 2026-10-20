@@ -30,7 +30,7 @@ export function NotificationsPage() {
   ) : undefined;
   if (inTabs) return <TabPage title={t("profile.notifications")} right={markAllBtn}><NotificationFeed feed={feed} bottomPad={tabPad} /></TabPage>;
   return (
-    <View style={[s.fill, { backgroundColor: c.bg }]}>
+    <View style={[s.fill, { backgroundColor: c.canvas }]}>
       <Header title={t("profile.notifications")} right={markAllBtn} />
       <NotificationFeed feed={feed} />
     </View>

@@ -30,7 +30,7 @@ export function SosInfo() {
       <Text variant="h4" style={s.why}>{t("cxSos.whyTitle")}</Text>
       <View style={s.tiles}>
         {BADGES.map((b) => (
-          <View key={b.key} style={[s.tile, { backgroundColor: c.surface, borderColor: c.line }]}>
+          <View key={b.key} style={[s.tile, { backgroundColor: c.glassFill, borderColor: c.glassLine }]}>
             <View style={[s.ico, { backgroundColor: c.tint2 }]}><Icon name={b.icon} size={18} color={c.accent} /></View>
             <Text variant="caption" weight="semibold" center>{t(`cxSos.${b.key}`)}</Text>
           </View>

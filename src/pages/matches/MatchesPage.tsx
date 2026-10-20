@@ -17,7 +17,7 @@ export function MatchesPage() {
   const open = (m: MyMatch) => router.push({ pathname: "/specialist/[id]", params: { id: m.userId || m.id } });
   const [best, ...rest] = q.data ?? [];
   return (
-    <View style={[s.fill, { backgroundColor: c.bg }]}>
+    <View style={[s.fill, { backgroundColor: c.canvas }]}>
       <Header title={t("cxMt.title")} />
       <Screen topInset={false} contentContainerStyle={s.content} refreshing={q.isRefetching} onRefresh={() => void q.refetch()}>
         <Text variant="small" tone="gray">{q.data?.length ? t("mpx.found", { n: q.data.length }) : t("cxMt.subtitle")}</Text>

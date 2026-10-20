@@ -11,7 +11,7 @@ export function SellerCard({ seller: x, onPress }: Props) {
   const c = useColors();
   const { t } = useT();
   return (
-    <PressableScale onPress={onPress} disabled={!x.eligible} scale={0.98} accessibilityRole="button" style={[s.card, { backgroundColor: c.surface, borderColor: c.line, opacity: x.eligible ? 1 : 0.6 }]}>
+    <PressableScale onPress={onPress} disabled={!x.eligible} scale={0.98} accessibilityRole="button" style={[s.card, { backgroundColor: c.glassFill, borderColor: c.glassLine, opacity: x.eligible ? 1 : 0.6 }]}>
       <Avatar name={x.name || "A"} size={46} />
       <View style={s.col}>
         <Text variant="body" weight="bold" numberOfLines={2}>{x.name}</Text>

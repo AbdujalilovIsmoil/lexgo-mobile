@@ -47,7 +47,7 @@ export function NotificationBanner() {
   return (
     <GestureDetector gesture={swipe}>
       <Animated.View key={item.id} accessibilityRole="alert" accessibilityLiveRegion="assertive" entering={SlideInUp.duration(260)} exiting={SlideOutUp.duration(200)} style={[s.host, { top: insets.top + 6 }]}>
-        <PressableScale onPress={go} scale={0.99} haptic={false} accessibilityLabel={text.title} style={[s.card, { backgroundColor: c.surface, borderColor: c.line }, shadows.s2]}>
+        <PressableScale onPress={go} scale={0.99} haptic={false} accessibilityLabel={text.title} style={[s.card, { backgroundColor: c.glassFill, borderColor: c.glassLine }, shadows.s2]}>
           <View style={[s.icon, { backgroundColor: `${tone}24` }]}><Icon name={CATEGORY_ICON[item.category] as IconName} size={18} color={tone} /></View>
           <View style={s.col}>
             <Text variant="small" weight="bold" numberOfLines={1}>{text.title}</Text>

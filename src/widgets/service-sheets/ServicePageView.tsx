@@ -28,7 +28,7 @@ export function ServicePageView({ data: { service: sv, passport }, packageId, pr
       <ServiceFacts service={sv} passport={passport} />
       {sv.description && sv.description !== sv.name ? <Animated.View entering={FadeInDown.delay(180).duration(300)}><Text variant="body" tone="gray">{sv.description}</Text></Animated.View> : null}
       {docs.length ? (
-        <Animated.View entering={FadeInDown.delay(240).duration(300)} style={[s.docs, { backgroundColor: c.surface, borderColor: c.line }]}>
+        <Animated.View entering={FadeInDown.delay(240).duration(300)} style={[s.docs, { backgroundColor: c.glassFill, borderColor: c.glassLine }]}>
           <Text variant="small" weight="bold">{t("svh.docs")}</Text>
           {docs.map((d, i) => <View key={i} style={s.doc}><Icon name="check-circle" size={16} color={c.ok} /><Text variant="small" style={s.flex}>{d}</Text></View>)}
         </Animated.View>

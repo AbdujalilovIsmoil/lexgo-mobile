@@ -10,7 +10,7 @@ export function StubPage({ icon, title }: { icon: IconName; title: string }) {
   const insets = useInsets();
   const { t } = useT();
   return (
-    <View style={{ flex: 1, backgroundColor: c.bg, paddingTop: insets.top + 24, justifyContent: "center" }}>
+    <View style={{ flex: 1, backgroundColor: c.canvas, paddingTop: insets.top + 24, justifyContent: "center" }}>
       <EmptyState icon={icon} title={title} text={t("fnd1.common.soon")} />
     </View>
   );

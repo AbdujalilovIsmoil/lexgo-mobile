@@ -17,7 +17,7 @@ export function SosHotline() {
   const call = useInstructorTarget("sos:call", { label: t("cxSos.callNow"), type: "button" });
   return (
     <View {...call}>
-      <PressableScale onPress={() => openTel(HOTLINE)} style={[s.bar, { backgroundColor: c.surface, borderColor: c.line }]} accessibilityRole="button">
+      <PressableScale onPress={() => openTel(HOTLINE)} style={[s.bar, { backgroundColor: c.glassFill, borderColor: c.glassLine }]} accessibilityRole="button">
         <Animated.View style={[s.phone, ico]}><Icon name="phone" size={20} tone="white" /></Animated.View>
         <View style={s.fill}>
           <Text variant="caption" tone="gray">{t("cxSos.callNow")}</Text>

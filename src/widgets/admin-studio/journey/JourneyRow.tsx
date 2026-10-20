@@ -38,7 +38,7 @@ export function JourneyRow({ item, onPress, onAct }: Props) {
   ];
   const mark = item.status === "draft" || item.status === "in_progress" ? "" : tOr(t, `admStudioD.journeys.status.${item.status}`, item.status);
   return (
-    <PressableScale onPress={onPress} accessibilityLabel={`${item.title || type}, ${item.percent}%`} style={[s.row, { backgroundColor: c.surface, borderColor: c.line }]}>
+    <PressableScale onPress={onPress} accessibilityLabel={`${item.title || type}, ${item.percent}%`} style={[s.row, { backgroundColor: c.glassFill, borderColor: c.glassLine }]}>
       <View style={s.ring}>
         <Canvas style={{ width: RING, height: RING }}>
           <Path path={full} style="stroke" strokeWidth={STROKE} color={c.surface2} />

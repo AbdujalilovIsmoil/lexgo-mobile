@@ -26,7 +26,7 @@ export function DocRow({ doc, onPress, index = 0, action }: { doc: DocReq; onPre
   const files = filesOf(doc).length;
   const late = isLate(doc);
   return (
-    <Animated.View entering={FadeInDown.duration(220).delay(Math.min(index, 5) * 35)} style={[s.card, { backgroundColor: c.surface, borderColor: c.line }]}>
+    <Animated.View entering={FadeInDown.duration(220).delay(Math.min(index, 5) * 35)} style={[s.card, { backgroundColor: c.glassFill, borderColor: c.glassLine }]}>
       <PressableScale onPress={onPress} accessibilityRole="button" accessibilityLabel={t("proDocSheet.openCard", { title, status })} style={s.press}>
         <View style={s.row}>
           <View style={[s.tile, { backgroundColor: `${tone}22` }]}><Icon name={FLOW_ICON[doc.flow] ?? "file-text"} size={20} color={tone} /></View>

@@ -22,7 +22,7 @@ export function AdminHubPage() {
   const visible = new Set(all.flatMap((g) => g.mods.map((m) => m.key)));
   let offset = 0;
   return (
-    <ScrollView style={{ backgroundColor: c.bg }} contentContainerStyle={[s.body, { paddingBottom: insets.bottom + 130 }]} showsVerticalScrollIndicator={false} keyboardShouldPersistTaps="handled">
+    <ScrollView style={{ backgroundColor: c.canvas }} contentContainerStyle={[s.body, { paddingBottom: insets.bottom + 130 }]} showsVerticalScrollIndicator={false} keyboardShouldPersistTaps="handled">
       <HubHeader sections={total} />
       <View style={s.search}><SearchBox value={q} onChangeText={setQ} placeholder={t("admHub.search")} /></View>
       {q.trim() ? null : <RecentRail visible={visible} />}

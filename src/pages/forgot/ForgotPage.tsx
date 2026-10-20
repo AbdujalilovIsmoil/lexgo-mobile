@@ -9,7 +9,7 @@ export function ForgotPage() {
   const c = useColors();
   const { t } = useT();
   return (
-    <View style={[s.fill, { backgroundColor: c.bg }]}>
+    <View style={[s.fill, { backgroundColor: c.canvas }]}>
       <HeroScroll keyboardShouldPersistTaps="handled" contentContainerStyle={s.content} showsVerticalScrollIndicator={false}>
         <AuthHero title={t("auth.forgotTitle")} subtitle={t("auth.forgotSub")} />
         <View style={s.body}>

@@ -19,7 +19,7 @@ export const ChatBubble = memo(function ChatBubble({ item, mine }: { item: Messa
   return (
     <View style={[s.row, mine ? s.right : s.left]}>
       {mine ? <LinearGradient colors={["#1668F0", "#00A6E6"]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={[s.bubble, s.mine]}>{body}</LinearGradient>
-        : <View style={[s.bubble, s.theirs, { backgroundColor: c.surface, borderColor: c.line }]}>{body}</View>}
+        : <View style={[s.bubble, s.theirs, { backgroundColor: c.glassFill, borderColor: c.glassLine }]}>{body}</View>}
     </View>
   );
 });

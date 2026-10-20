@@ -19,7 +19,7 @@ export function IntakePage() {
   const corpus = corpusQ.data ?? [];
   const res = useInstructorTarget("intake:result", { label: t("cxIn.resultTitle"), type: "section" });
   return (
-    <View style={[s.fill, { backgroundColor: c.bg }]}>
+    <View style={[s.fill, { backgroundColor: c.canvas }]}>
       <Header title={t("cxIn.title")} />
       <Screen topInset={false} contentContainerStyle={s.content} keyboardShouldPersistTaps="handled">
         <Text variant="small" tone="gray">{t("cxIn.subtitle")}</Text>

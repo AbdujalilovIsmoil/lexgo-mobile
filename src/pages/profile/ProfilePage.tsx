@@ -25,7 +25,7 @@ export function ProfilePage() {
   const seller = role === "seller"; // a professional's links live in the sidebar
   if (!session) return <GuestWelcome />;
   return (
-    <HeroScroll style={{ backgroundColor: c.bg }} contentContainerStyle={{ paddingBottom: insets.bottom + 130 }}>
+    <HeroScroll style={{ backgroundColor: c.canvas }} contentContainerStyle={{ paddingBottom: insets.bottom + 130 }}>
       {client ? <ClientHeader user={session.user} /> : <ProfileHeader user={session.user} />}
       {client ? <ClientSections /> : (
         <>

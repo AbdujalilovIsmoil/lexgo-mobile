@@ -7,7 +7,9 @@ familiar platform patterns, brand shows in details.
 ## Tokens (`@/shared/theme`)
 
 - **Colors** — always via `useColors()` / `useTheme()`, never raw hex for neutrals, so both themes work:
-  `bg` (page canvas, cool off-white in light), `surface` (cards, sheets), `surface2` (wells, tracks, idle fills),
+  `bg` (opaque base: footers, composers; a pale blue in light, deep navy in dark on iOS), `canvas` (page background — transparent on
+  iOS so the aurora shows, the solid bg elsewhere), `glassFill` / `glassLine` (a card's translucent fill and bright hairline on iOS,
+  the solid surface and line elsewhere), `surface` (opaque panels, thumbs), `surface2` (wells, tracks, idle fills — translucent on iOS),
   `line` (borders, dividers), `ink` / `gray` / `gray2` (text tiers), `tint` / `tint2` (soft brand fills),
   `accent` / `accentStrong` (interactive + selected), status pairs `ok/okBg`, `err/errBg`, `warn/warnBg`, `cyBg/cyText`.
 - **Brand** — `brand.*`, `gradient.primary` / `gradient.dark` for hero bands and primary CTAs only.
@@ -27,6 +29,23 @@ Use the shared primitive whenever a screen hand-rolls the same thing: `Button`, 
 `Input`, `Segmented`, `Toggle`, `EmptyState`, `Skeleton*`, `SectionHeader`, `IconButton`, `Header`, `Screen`.
 Anything tappable gets `PressableScale` feedback (spring + slight dim + light haptic).
 
+## Materials (iOS 26 Liquid Glass + aurora)
+
+iOS is a glass-on-colour system. Android keeps the solid tokens above.
+
+- **Aurora canvas.** Every page sits on a static, vivid colour field: three soft fields (cyan, brand blue, violet) plus one role
+  glow in the bottom-right corner — gold for advocates, magenta for yurists. `AuroraBackdrop` (Skia) sits behind stack screens;
+  tab pages get the same fields as `contentStyle.experimental_backgroundImage` (`useAuroraStyle`), because the system tab host sits
+  above the RN root. Pages are transparent (`c.canvas`); never give a page an opaque background on iOS.
+- **Glass layer** (`GlassBackdrop` / `useGlass`): only the floating layer is real system glass — the tab bar (NativeTabs), header icon
+  buttons and glass pills (always `scheme="dark"`, they sit on the dark hero), toasts, bottom sheets, confirm dialogs, the drawer.
+  It falls back to the solid style before iOS 26, without the native part, and with Reduce Transparency.
+- **Cards** are frosted panes, not real glass (a native glass view per list row is too heavy): `glassFill` + `glassLine`, a short bright
+  top sheen, no shadow (a shadow would show through the translucent fill). Card-shaped surfaces that are not `<Card>` (rows, panels,
+  inputs) use the same two tokens; `surface` stays for opaque things (thumbs, sheets' content). Do not nest cards.
+- The tab bar is the system `NativeTabs` bar; the app's theme is handed to iOS (`Appearance.setColorScheme`) so it matches. The AI tab
+  is a glass-pearl icon (`assets/tabs/ai-glass*.png`: a light-bar variant with a blue spark, a lit selected state) and has no caption.
+
 ## Motion
 
 Reanimated 4. Motion conveys state: press, reveal, list arrival, sheet, toast. 150–260 ms, ease-out or a damped
@@ -37,6 +56,7 @@ No orchestrated page-load choreography, no looping decoration. Reduce Motion is 
 
 - Touch targets ≥ 44pt; adjacent targets have breathing room.
 - Contrast: body text ≥ 4.5:1, large text ≥ 3:1. Secondary text on colored fills takes that fill's hue, not gray.
-- No new eyebrow/kicker labels, no gradient text, no glass/blur as decoration, no colored side borders > 1px,
+- No new eyebrow/kicker labels, no gradient text, no glass on cards in lists or on opaque backgrounds (glass belongs to the floating
+  layer over colour), no colored side borders > 1px,
   no nested cards, no emoji as icons.
 - Every list has loading (skeleton), empty (`EmptyState`) and error (`ErrorView`) states.

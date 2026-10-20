@@ -7,7 +7,7 @@ import { Icon, Text, type IconName } from "@/shared/ui";
 export function Card({ icon, title, children }: { icon: IconName; title: string; children: ReactNode }) {
   const c = useColors();
   return (
-    <View style={[s.card, { backgroundColor: c.surface, borderColor: c.line }]}>
+    <View style={[s.card, { backgroundColor: c.glassFill, borderColor: c.glassLine }]}>
       <View style={s.title}><View style={[s.ico, { backgroundColor: c.tint2 }]}><Icon name={icon} size={15} tone="accent" /></View><Text variant="body" weight="bold">{title}</Text></View>
       {children}
     </View>

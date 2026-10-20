@@ -9,7 +9,7 @@ export function FeedbackChoice({ icon, label, tone, busy, disabled, onPress }: P
   const c = useColors();
   const fg = tone === "ok" ? c.ok : c.err;
   return (
-    <PressableScale onPress={onPress} disabled={disabled} accessibilityRole="button" accessibilityLabel={label} style={[s.tile, { backgroundColor: c.surface, borderColor: c.line, opacity: disabled && !busy ? 0.55 : 1 }]}>
+    <PressableScale onPress={onPress} disabled={disabled} accessibilityRole="button" accessibilityLabel={label} style={[s.tile, { backgroundColor: c.glassFill, borderColor: c.glassLine, opacity: disabled && !busy ? 0.55 : 1 }]}>
       {busy ? <ActivityIndicator size="small" color={fg} /> : <Icon name={icon} size={18} color={fg} />}
       <Text variant="small" weight="semibold">{label}</Text>
     </PressableScale>

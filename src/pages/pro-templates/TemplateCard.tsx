@@ -14,7 +14,7 @@ export function TemplateCard({ item, busy, onOpen, onDownload }: Props) {
   const key = categoryKey(item.category);
   const meta = [key ? t(key) : "", item.fields ? t("tpl.fieldsN", { n: item.fields }) : ""].filter(Boolean).join(" · ");
   return (
-    <PressableScale onPress={onOpen} accessibilityRole="button" accessibilityLabel={`${item.name}. ${meta}`} style={[s.card, { backgroundColor: c.surface, borderColor: c.line }, shadows.s1]}>
+    <PressableScale onPress={onOpen} accessibilityRole="button" accessibilityLabel={`${item.name}. ${meta}`} style={[s.card, { backgroundColor: c.glassFill, borderColor: c.glassLine }, shadows.s1]}>
       <View style={[s.tile, { backgroundColor: c.errBg }]}>
         <Icon name="file-text" size={22} color={c.err} />
         <Text variant="caption" weight="bold" style={{ color: c.err }}>PDF</Text>

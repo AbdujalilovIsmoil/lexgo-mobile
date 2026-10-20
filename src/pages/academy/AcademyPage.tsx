@@ -23,7 +23,7 @@ export function AcademyPage() {
   const list = found.filter((x) => !cat || x.category === cat);
   const opts = [{ value: "", label: `${t("cpd.academy.all")} (${found.length})` }, ...cats.map((k) => ({ value: k, label: `${catLabel(k)} (${found.filter((x) => x.category === k).length})` }))];
   return (
-    <View style={[s.fill, { backgroundColor: c.bg }]}>
+    <View style={[s.fill, { backgroundColor: c.canvas }]}>
       <Header title={t("cpd.menu.academy")} />
       <Screen topInset={false} refreshing={isRefetching} onRefresh={() => void refetch()} contentContainerStyle={s.content}>
         <Text variant="h2">{t("cpd.academy.title")}</Text>

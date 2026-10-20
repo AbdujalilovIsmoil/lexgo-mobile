@@ -14,7 +14,7 @@ const real = (v?: string): string => (v && !/^(none|null|undefined|-|—|0)$/i.t
 function Section({ i, icon, title, children }: { i: number; icon: IconName; title: string; children: React.ReactNode }) {
   const c = useColors();
   return (
-    <Animated.View entering={FadeInDown.delay(i * 70).duration(280)} style={[s.section, { backgroundColor: c.surface, borderColor: c.line }]}>
+    <Animated.View entering={FadeInDown.delay(i * 70).duration(280)} style={[s.section, { backgroundColor: c.glassFill, borderColor: c.glassLine }]}>
       <View style={s.head}>
         <View style={[s.ico, { backgroundColor: c.tint2 }]}><Icon name={icon} size={16} color={c.accent} /></View>
         <Text variant="small" weight="bold">{title}</Text>

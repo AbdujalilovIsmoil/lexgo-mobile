@@ -10,7 +10,7 @@ export function WorkspacePage() {
   const c = useColors();
   const pad = useTabPad();
   return (
-    <View style={{ flex: 1, backgroundColor: c.bg }}>
+    <View style={{ flex: 1, backgroundColor: c.canvas }}>
       <SellerHome bottomPad={pad} orgEntry={<OrgEntryCard />} />
     </View>
   );

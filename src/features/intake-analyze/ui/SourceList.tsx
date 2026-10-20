@@ -15,7 +15,7 @@ export function SourceList({ sources, title, lead }: { sources: LegalSource[]; t
       <Text variant="h4">{title}</Text>
       {lead ? <Text variant="caption" tone="gray">{lead}</Text> : null}
       {sources.map((x) => (
-        <PressableScale key={x.key || x.url || x.title} disabled={!x.url} onPress={() => openUrl(x.url)} style={[s.row, { borderColor: c.line, backgroundColor: c.surface }]}>
+        <PressableScale key={x.key || x.url || x.title} disabled={!x.url} onPress={() => openUrl(x.url)} style={[s.row, { borderColor: c.glassLine, backgroundColor: c.glassFill }]}>
           <Text variant="small" style={s.flex}>{x.title}</Text>
           {x.trustLevel === "official" ? <Pill label={t("cxIn.official")} tone="ok" small /> : null}
           {x.url ? <Icon name="external-link" size={15} color={c.accent} /> : null}
