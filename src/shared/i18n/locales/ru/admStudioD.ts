@@ -55,5 +55,5 @@ export const admStudioD: Messages["admStudioD"] = {
     archiveTitle: "Архивировать процесс «{name}»?", archiveText: "Процесс уйдёт из списков и сохранится в «Архиве». При необходимости его можно восстановить.", listTitle: "Процессы",
   },
   ov: { title: "Общее состояние", ctors: "Настроено конструкторов: {done} / {total}", groups: "{n} разделов · полностью готово: {done}", ringLabel: "Готовность Studio: {pct}%", total: "Записи", totalActive: "активно: {n}", published: "На сайте", publishedHint: "Опубликовано", draft: "Черновик", draftHint: "Ещё не отправлено", submitted: "На проверке", submittedHint: "Ждёт решения", approved: "Ждёт публикации", approvedHint: "Утверждено" },
-  entity: { title: "Услуги и пакеты", total: "Всего в системе", studio: "В Studio записей: {n}", open: "Открыть список", newService: "Новая услуга", newPackage: "Новый пакет", aria: "{name}. Всего в системе {total}, активно {active}, неактивно {inactive}, не завершено {incomplete}" },
+  entity: { title: "Услуги и пакеты", total: "Всего в системе", studio: "В Studio записей: {n}", open: "Список", newService: "Новая услуга", newPackage: "Новый пакет", aria: "{name}. Всего в системе {total}, активно {active}, неактивно {inactive}, не завершено {incomplete}" },
 };

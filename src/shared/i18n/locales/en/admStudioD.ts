@@ -55,5 +55,5 @@ export const admStudioD: Messages["admStudioD"] = {
     archiveTitle: "Archive the process \"{name}\"?", archiveText: "The process leaves the lists and is kept in \"Archive\". You can restore it if needed.", listTitle: "Processes",
   },
   ov: { title: "Overall status", ctors: "{done} / {total} constructors set up", groups: "{n} sections · {done} fully ready", ringLabel: "Studio readiness: {pct}%", total: "Records", totalActive: "{n} active", published: "On the site", publishedHint: "Published", draft: "Draft", draftHint: "Not sent yet", submitted: "In review", submittedHint: "Awaiting a decision", approved: "Awaiting publication", approvedHint: "Approved" },
-  entity: { title: "Services and packages", total: "In the system", studio: "{n} records in Studio", open: "Open the list", newService: "New service", newPackage: "New package", aria: "{name}. In the system {total}, active {active}, inactive {inactive}, incomplete {incomplete}" },
+  entity: { title: "Services and packages", total: "In the system", studio: "{n} records in Studio", open: "List", newService: "New service", newPackage: "New package", aria: "{name}. In the system {total}, active {active}, inactive {inactive}, incomplete {incomplete}" },
 };
