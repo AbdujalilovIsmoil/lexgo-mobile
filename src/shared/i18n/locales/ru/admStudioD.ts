@@ -56,4 +56,17 @@ export const admStudioD: Messages["admStudioD"] = {
   },
   ov: { title: "Общее состояние", ctors: "Настроено конструкторов: {done} / {total}", groups: "{n} разделов · полностью готово: {done}", ringLabel: "Готовность Studio: {pct}%", total: "Записи", totalActive: "активно: {n}", published: "На сайте", publishedHint: "Опубликовано", draft: "Черновик", draftHint: "Ещё не отправлено", submitted: "На проверке", submittedHint: "Ждёт решения", approved: "Ждёт публикации", approvedHint: "Утверждено" },
   entity: { title: "Услуги и пакеты", total: "Всего в системе", studio: "В Studio записей: {n}", open: "Список", newService: "Новая услуга", newPackage: "Новый пакет", aria: "{name}. Всего в системе {total}, активно {active}, неактивно {inactive}, не завершено {incomplete}" },
+  appr: {
+    lead: "Сначала то, что ждёт вас.", leadNewest: "Сначала самые давно ждущие. То, что ждёт вас, отмечено отдельно.",
+    yours: "Ждёт вас: {n}", others: "У других", done: "Завершено", doneHint: "Последние записей опубликовано: {n}", show: "Показать", hide: "Скрыть",
+    grp: { mine: { review: "Нужно проверить", publish: "Нужно опубликовать", returned: "Возвращено вам" }, others: { review: "На проверке", publish: "Ждут публикации", returned: "Автор исправляет" } },
+    emptyOthers: "У других нет ожидающих работ.", emptyAllTitle: "Очередь пуста", emptyAllText: "Записи, отправленные на согласование, появятся здесь.", emptyFiltered: "Измените или сбросьте фильтр.",
+    search: "Название, конструктор или автор", group: "Раздел", ctor: "Конструктор", status: "Статус", need: "Задача", all: "Все",
+    needs: { review: "Проверка", publish: "Публикация", returned: "Возвращённые" }, count: "Записей: {n}",
+    next: { review: "Проверяете вы", publish: "Публикуете вы", returned: "Исправляете вы", author: "Автор: {name}", authorAny: "Автор" }, comments: "Комментариев: {n}", file: "Есть вложение",
+    sent: "{name} отправил(а), {ago}", sentAt: "Отправлено: {ago}", turnYou: "Очередь за вами", turnWho: "Очередь: {who}", turnDone: "Все шаги пройдены", approvedBy: "Утвердили: {names}",
+    note: "Комментарий автора", changes: "Что изменилось", vsLive: "Относительно версии на сайте", vsPrev: "Относительно предыдущей версии", changesNew: "Новая запись: на сайте её ещё нет.", changesFirst: "Первая версия: все значения новые.", changesNone: "Совпадает с версией на сайте.",
+    before: "Было", after: "Стало", added: "Добавлено", removed: "Удалено", more: "Ещё изменений: {n}", showAll: "Показать все", collapse: "Свернуть", items: "Элементов: {n}", empty: "пусто",
+    filters: "Фильтры", apply: "Применить", reset: "Сбросить",
+  },
 };

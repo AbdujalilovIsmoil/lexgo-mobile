@@ -54,4 +54,17 @@ export const admStudioD = {
   },
   ov: { title: "Umumiy holat", ctors: "{done} / {total} konstruktor sozlangan", groups: "{n} bo'lim · {done} tasi to'liq tayyor", ringLabel: "Studio tayyorligi: {pct}%", total: "Yozuvlar", totalActive: "{n} tasi faol", published: "Saytda", publishedHint: "E'lon qilingan", draft: "Qoralama", draftHint: "Hali yuborilmagan", submitted: "Tekshiruvda", submittedHint: "Qaror kutmoqda", approved: "E'lon kutmoqda", approvedHint: "Tasdiqlangan" },
   entity: { title: "Xizmatlar va paketlar", total: "Tizimda jami", studio: "Studioda {n} ta yozuv", open: "Ro'yxat", newService: "Yangi xizmat", newPackage: "Yangi paket", aria: "{name}. Tizimda jami {total}, faol {active}, nofaol {inactive}, tugallanmagan {incomplete}" },
+  appr: {
+    lead: "Sizdan kutilayotgan ishlar birinchi turadi.", leadNewest: "Eng eski kutayotganlar birinchi turadi. Sizdan kutilayotganlari alohida belgilangan.",
+    yours: "Sizdan kutilmoqda: {n}", others: "Boshqalarda", done: "Yakunlangan", doneHint: "So'nggi {n} ta e'lon qilingan yozuv", show: "Ko'rsatish", hide: "Yashirish",
+    grp: { mine: { review: "Tekshirish kerak", publish: "E'lon qilish kerak", returned: "Sizga qaytarilgan" }, others: { review: "Tekshiruvda", publish: "E'lon kutmoqda", returned: "Muallif tuzatmoqda" } },
+    emptyOthers: "Boshqalarda kutayotgan ish yo'q.", emptyAllTitle: "Navbat bo'sh", emptyAllText: "Tasdiqlashga yuborilgan yozuvlar shu yerda ko'rinadi.", emptyFiltered: "Filtrni o'zgartiring yoki tozalang.",
+    search: "Nomi, konstruktor yoki muallif", group: "Bo'lim", ctor: "Konstruktor", status: "Holat", need: "Vazifa", all: "Hammasi",
+    needs: { review: "Tekshirish", publish: "E'lon qilish", returned: "Qaytarilgan" }, count: "{n} ta yozuv",
+    next: { review: "Siz tekshirasiz", publish: "Siz e'lon qilasiz", returned: "Siz tuzatasiz", author: "Muallif: {name}", authorAny: "Muallif" }, comments: "{n} ta izoh", file: "Fayl ilova qilingan",
+    sent: "{name} yubordi, {ago}", sentAt: "Yuborilgan: {ago}", turnYou: "Navbat sizda", turnWho: "Navbat: {who}", turnDone: "Barcha bosqichlar yakunlangan", approvedBy: "Tasdiqladi: {names}",
+    note: "Muallif izohi", changes: "Nima o'zgardi", vsLive: "Saytdagi versiyaga nisbatan", vsPrev: "Oldingi versiyaga nisbatan", changesNew: "Yangi yozuv: saytda hali yo'q.", changesFirst: "Birinchi versiya: hamma qiymatlar yangi.", changesNone: "Saytdagi versiya bilan bir xil.",
+    before: "Avval", after: "Endi", added: "Qo'shildi", removed: "Olib tashlandi", more: "Yana {n} ta o'zgarish", showAll: "Hammasini ko'rsatish", collapse: "Qisqartirish", items: "{n} ta element", empty: "bo'sh",
+    filters: "Filtrlar", apply: "Qo'llash", reset: "Tiklash",
+  },
 };

@@ -8,10 +8,19 @@ import { enc, qs } from "../lib/qs";
 import type { StudioDetail } from "../model/types";
 import type { StudioGrant, StudioGrantInput, StudioMonitoring, StudioRoute, StudioRouteInput } from "../model/typesAdmin";
 
-// GET /admin/studio/approvals — submitted work (with steps), oldest first is up to the caller.
+// GET /admin/studio/approvals — submitted work (with steps), oldest first is up to the caller. The server answers 50 at a time by
+// default, so pages of 200 are read until it says there is no more (a queue of 58 used to show 50).
 export async function listApprovals(q: { code?: string; status?: string } = {}): Promise<StudioDetail[]> {
-  const res = await http(`/admin/studio/approvals${qs({ constructor_code: q.code, status: q.status })}`);
-  return listOf(res, ["items", "approvals"]).map(normDetail).filter((o) => o.id);
+  const out: StudioDetail[] = [];
+  for (let offset = 0; offset < 2000; ) {
+    const res = await http(`/admin/studio/approvals${qs({ constructor_code: q.code, status: q.status, limit: 200, offset })}`);
+    const page = listOf(res, ["items", "approvals"]).map(normDetail).filter((o) => o.id);
+    out.push(...page);
+    const more = asDict(res).has_more === true;
+    if (!more || !page.length) break;
+    offset += page.length;
+  }
+  return out;
 }
 
 type MonitorQuery = { code?: string; userId?: string; from?: string; to?: string };

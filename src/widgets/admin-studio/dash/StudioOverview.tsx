@@ -1,7 +1,8 @@
 import { Image, StyleSheet, View } from "react-native";
+import { useRouter } from "expo-router";
 import { Canvas, Path, Skia } from "@shopify/react-native-skia";
-import { Text } from "@/shared/ui";
-import { KPI_ART, useRegistry, useSummary } from "@/entities/admin-studio";
+import { Icon, PressableScale, Text } from "@/shared/ui";
+import { KPI_ART, useRegistry, useStudioAccess, useSummary } from "@/entities/admin-studio";
 import { useColors } from "@/shared/theme";
 import { useT } from "@/shared/i18n";
 
@@ -16,6 +17,11 @@ export function StudioOverview() {
   const { t } = useT();
   const c = useColors();
   const reg = useRegistry().data;
+  const router = useRouter();
+  const canReview = useStudioAccess().canReview;
+  // As on the web: "in review" opens the queue on what you check, "awaiting publication" on what you publish.
+  const go = (need: string) => router.push({ pathname: "/manage/studio/approvals", params: { need } } as never);
+  const link: Partial<Record<keyof typeof KPI_ART, () => void>> = canReview ? { submitted: () => go("review"), approved: () => go("publish") } : {};
   const sum = useSummary().data;
   const groups = reg?.groups ?? [];
   const total = groups.reduce((n, g) => n + g.total, 0) || reg?.items.length || 0;
@@ -66,7 +72,7 @@ export function StudioOverview() {
       </View>
       <View style={s.list}>
         {stages.map((x) => (
-          <View key={x.key} style={[s.row, { backgroundColor: c.surface2 }]}>
+          <PressableScale key={x.key} onPress={link[x.key]} disabled={!link[x.key]} accessibilityRole={link[x.key] ? "link" : undefined} style={[s.row, { backgroundColor: c.surface2 }]}>
             <View style={[s.edge, { backgroundColor: x.color }]} />
             <Image source={KPI_ART[x.key]} resizeMode="contain" style={s.art} accessible={false} />
             <View style={s.fill}>
@@ -74,7 +80,8 @@ export function StudioOverview() {
               <Text variant="caption" tone="gray" numberOfLines={1}>{x.hint}</Text>
             </View>
             <Text variant="h4" style={{ color: x.value ? x.color : c.gray2 }}>{x.value ?? "—"}</Text>
-          </View>
+            {link[x.key] ? <Icon name="chevron-right" size={16} color={c.gray2} /> : null}
+          </PressableScale>
         ))}
       </View>
     </View>

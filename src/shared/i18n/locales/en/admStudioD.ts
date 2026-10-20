@@ -56,4 +56,17 @@ export const admStudioD: Messages["admStudioD"] = {
   },
   ov: { title: "Overall status", ctors: "{done} / {total} constructors set up", groups: "{n} sections · {done} fully ready", ringLabel: "Studio readiness: {pct}%", total: "Records", totalActive: "{n} active", published: "On the site", publishedHint: "Published", draft: "Draft", draftHint: "Not sent yet", submitted: "In review", submittedHint: "Awaiting a decision", approved: "Awaiting publication", approvedHint: "Approved" },
   entity: { title: "Services and packages", total: "In the system", studio: "{n} records in Studio", open: "List", newService: "New service", newPackage: "New package", aria: "{name}. In the system {total}, active {active}, inactive {inactive}, incomplete {incomplete}" },
+  appr: {
+    lead: "What waits for you comes first.", leadNewest: "The longest-waiting come first. What waits for you is marked.",
+    yours: "Waiting for you: {n}", others: "With others", done: "Completed", doneHint: "The last {n} published records", show: "Show", hide: "Hide",
+    grp: { mine: { review: "To check", publish: "To publish", returned: "Returned to you" }, others: { review: "In review", publish: "Awaiting publication", returned: "Author is fixing" } },
+    emptyOthers: "Nothing is waiting with others.", emptyAllTitle: "The queue is empty", emptyAllText: "Records sent for approval appear here.", emptyFiltered: "Change or clear the filter.",
+    search: "Name, constructor or author", group: "Section", ctor: "Constructor", status: "Status", need: "Task", all: "All",
+    needs: { review: "Review", publish: "Publish", returned: "Returned" }, count: "{n} records",
+    next: { review: "You review", publish: "You publish", returned: "You fix", author: "Author: {name}", authorAny: "Author" }, comments: "{n} comments", file: "Has an attachment",
+    sent: "{name} sent it, {ago}", sentAt: "Sent: {ago}", turnYou: "It is your turn", turnWho: "Turn: {who}", turnDone: "All steps are done", approvedBy: "Approved by: {names}",
+    note: "Author's note", changes: "What changed", vsLive: "Against the version on the site", vsPrev: "Against the previous version", changesNew: "A new record: it is not on the site yet.", changesFirst: "The first version: all values are new.", changesNone: "Same as the version on the site.",
+    before: "Before", after: "Now", added: "Added", removed: "Removed", more: "{n} more changes", showAll: "Show all", collapse: "Collapse", items: "{n} items", empty: "empty",
+    filters: "Filters", apply: "Apply", reset: "Reset",
+  },
 };

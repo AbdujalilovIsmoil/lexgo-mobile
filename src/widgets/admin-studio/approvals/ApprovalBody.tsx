@@ -6,6 +6,7 @@ import { FactRows, SectionCard } from "@/shared/ui/admin";
 import { PayloadView, StudioFlow, StudioStatusPill, downloadVersionFile, exportVersions, isApprovalFree, useStudioAccess, useStudioErrorText, useStudioText, type StudioDetail, type StudioStep } from "@/entities/admin-studio";
 import { fmtDateTime } from "@/shared/lib/format";
 import { CommentsPane } from "../object/CommentsPane";
+import { ChangesPane } from "./ChangesPane";
 import { ReassignSheet } from "./ReassignSheet";
 import { StepsPane } from "../object/StepsPane";
 import { currentStepOf, submittedOf, versionLabel, versionOf } from "./helpers";
@@ -34,6 +35,8 @@ export function ApprovalBody({ d }: { d: StudioDetail }) {
         { label: t("admStudioC.drawer.step"), value: at ? t("admStudioC.card.step", { n: at.index + 1, total: at.total, name: at.step.title || role(at.step.role) }) : d.status === "approved" ? t("admStudioC.drawer.allApproved") : "" },
         { label: t("admStudioC.drawer.summary"), value: cur?.summary },
       ]} />
+      {cur?.summary ? <SectionCard title={t("admStudioD.appr.note")}><Text variant="small">{cur.summary}</Text></SectionCard> : null}
+      <SectionCard title={t("admStudioD.appr.changes")}><ChangesPane d={d} /></SectionCard>
       <SectionCard title={t("admStudioC.drawer.content")}>{Object.keys(d.payload).length ? <PayloadView value={d.payload} /> : <Text variant="small" tone="gray">{t("admStudioC.drawer.noPayload")}</Text>}</SectionCard>
       {d.hasFile && cur ? <Button title={cur.fileName || t("admStudioC.drawer.file")} icon="paperclip" variant="line" size="sm" loading={busy === "file"} onPress={() => act("file", () => downloadVersionFile(cur.id || d.currentVersionId, cur.fileName))} /> : null}
       <SectionCard title={t("admStudioC.drawer.steps")}><StepsPane steps={d.steps} approvalFree={free} submitted={false} onReassign={a.canReassign && (d.status === "submitted" || d.status === "in_review") ? setReassign : undefined} /></SectionCard>
