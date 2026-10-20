@@ -30,7 +30,7 @@ export function LiquidIndicator({ index, slot, hidden, left, lift }: Props) {
   if (GLASS) {
     return (
       <Animated.View pointerEvents="none" style={[s.drop, { width, left }, style]}>
-        <GLASS.View glassEffectStyle="regular" isInteractive colorScheme={dark ? "dark" : "light"} tintColor={dark ? "rgba(255,255,255,0.10)" : "rgba(22,104,240,0.10)"} style={StyleSheet.absoluteFill} />
+        <GLASS.View glassEffectStyle="regular" isInteractive colorScheme={dark ? "dark" : "light"} tintColor={dark ? "rgba(255,255,255,0.12)" : "rgba(22,104,240,0.12)"} style={[StyleSheet.absoluteFill, s.round]} />
       </Animated.View>
     );
   }
@@ -40,4 +40,5 @@ export function LiquidIndicator({ index, slot, hidden, left, lift }: Props) {
 const s = StyleSheet.create({
   drop: { position: "absolute", top: 8, height: 54, borderRadius: 27, overflow: "hidden" },
   flat: { borderWidth: 1 },
+  round: { borderRadius: 27 },
 });

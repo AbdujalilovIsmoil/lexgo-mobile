@@ -18,10 +18,10 @@ export function LiquidItem({ def, focused, onPress }: { def: TabDef; focused: bo
     if (focused) pop.value = withSequence(withSpring(1.28, { damping: 6, stiffness: 320 }), withSpring(1, { damping: 8 }));
   }, [focused, lift, pop]);
   const icon = useAnimatedStyle(() => ({ transform: [{ scale: pop.value }, { translateY: -1 * lift.value }] }));
-  const tone = focused ? c.accent : c.gray;
+  const tone = focused ? c.accent : c.ink; // the bar is glass over moving content: the quiet grey disappeared, so idle tabs use the ink colour
   return (
     <PressableScale onPress={onPress} haptic={false} scale={0.9} style={s.item} accessibilityRole="button" accessibilityState={{ selected: focused }}>
-      <Animated.View style={icon}>
+      <Animated.View style={[icon, !focused && { opacity: 0.78 }]}>
         <Icon name={def.icon} size={22} color={tone} />
         <TabBadge id={def.badge} />
       </Animated.View>

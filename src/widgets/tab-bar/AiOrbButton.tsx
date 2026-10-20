@@ -34,7 +34,7 @@ export function AiOrbButton({ focused, onPress, labelKey }: Props) {
           </LinearGradient>
         </View>
       </View>
-      <Text variant="caption" weight={focused ? "bold" : "medium"} style={[s.label, { color: focused ? c.accent : c.gray2 }]}>{t(labelKey)}</Text>
+      <Text variant="caption" weight={focused ? "bold" : "medium"} style={[s.label, { color: focused ? c.accent : c.ink, opacity: focused ? 1 : 0.78 }]}>{t(labelKey)}</Text>
     </PressableScale>
   );
 }

@@ -56,7 +56,7 @@ export function LiquidBar(props: BottomTabBarProps) {
         {GLASS ? (
           // One glass container: the bar and the lens are neighbouring pieces of the same liquid surface, so they blend as the lens moves.
           <GLASS.Container spacing={16} style={[s.glass, s.bare]}>
-            <GLASS.View glassEffectStyle="regular" colorScheme={dark ? "dark" : "light"} tintColor={dark ? "rgba(11,22,44,0.34)" : "rgba(255,255,255,0.30)"} style={[StyleSheet.absoluteFill, s.round]} />
+            <GLASS.View glassEffectStyle="regular" colorScheme={dark ? "dark" : "light"} tintColor={dark ? "rgba(5,12,30,0.66)" : "rgba(255,255,255,0.50)"} style={[StyleSheet.absoluteFill, s.round]} />
             {width > 0 ? <LiquidIndicator left={PAD + 2} index={Math.max(shown, 0)} slot={slot} hidden={shown < 0 || centerActive} lift={lift} /> : null}
           </GLASS.Container>
         ) : (
