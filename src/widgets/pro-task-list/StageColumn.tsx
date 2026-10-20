@@ -7,7 +7,8 @@ import { EmptyState, ErrorView, Skeleton } from "@/shared/ui";
 type Q = { isLoading: boolean; isError: boolean; error: unknown; refetch: () => unknown; isRefetching: boolean };
 type Props = {
   width: number;
-  stage: TaskStage;
+  /** The stage this page shows; "all" is the list view across stages. */
+  stage: TaskStage | "all";
   tasks: ProTask[];
   query: Q;
   /** True when the board has tasks but this column (or the search) shows none. */
@@ -17,7 +18,7 @@ type Props = {
   onPick: (t: ProTask) => void;
 };
 
-// One board page: the stage's tasks, a skeleton / error while loading, and an empty state of its own.
+// One board page (or the whole list): the stage's tasks, a skeleton / error while loading, and an empty state of its own.
 export function StageColumn({ width, stage, tasks, query, filtered, onOpen, onMove, onPick }: Props) {
   const { t } = useT();
   const insets = useInsets();
@@ -41,7 +42,7 @@ export function StageColumn({ width, stage, tasks, query, filtered, onOpen, onMo
       onRefresh={() => void query.refetch()}
       keyboardShouldPersistTaps="handled"
       showsVerticalScrollIndicator={false}
-      accessibilityLabel={t(`aw7.tab.${stage}`)}
+      accessibilityLabel={stage === "all" ? t("adm.all") : t(`aw7.tab.${stage}`)}
     />
   );
 }

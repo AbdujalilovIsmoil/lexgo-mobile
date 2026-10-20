@@ -6,8 +6,8 @@ import { StaleNote } from "@/shared/network";
 import { selectHaptic } from "@/shared/lib/haptics";
 import { useDebounced } from "@/shared/lib/useDebounced";
 import { useKept } from "@/shared/lib/useKept";
-import type { IconName } from "@/shared/ui";
-import { ActionList, SearchBox } from "@/shared/ui/admin";
+import { Segmented, type IconName } from "@/shared/ui";
+import { ActionList, ChipBar, SearchBox } from "@/shared/ui/admin";
 import { StageColumn } from "./StageColumn";
 import { StageTabs } from "./StageTabs";
 import { UndoBar } from "./UndoBar";
@@ -15,13 +15,17 @@ import { useTaskMoves } from "./useTaskMoves";
 
 const ICON: Record<TaskStage, IconName> = { todo: "circle", doing: "play-circle", review: "eye", done: "check-circle" };
 
-// Mobile kanban: stage tabs on top, one swipeable page per stage. Status changes need no drag & drop:
+type Mode = "board" | "list";
+
+// Mobile kanban (or, like the sales funnel, a plain list with stage chips): stage tabs on top, one swipeable page per stage. Status changes need no drag & drop:
 // card button, card swipe, or the "Move to…" menu — all through useTaskMoves (optimistic + undo).
 export function TaskList({ onOpen }: { onOpen: (t: ProTask) => void }) {
   const { t } = useT();
   const query = useTasks();
   const { move, toggleBlocked, undo, revert } = useTaskMoves();
   const [stage, setStage] = useState<TaskStage>("todo");
+  const [mode, setMode] = useState<Mode>("board");
+  const [filter, setFilter] = useState<TaskStage | "">("");
   const [width, setWidth] = useState(0);
   const [picked, setPicked] = useState<ProTask | null>(null);
   const kept = useKept(picked);
@@ -38,13 +42,14 @@ export function TaskList({ onOpen }: { onOpen: (t: ProTask) => void }) {
     for (const x of sortTasks(list)) by[stageOf(x.status)].push(x);
     return by;
   }, [all, needle]);
+  const listed = useMemo(() => (filter ? columns[filter] : sortTasks(Object.values(columns).flat())), [columns, filter]);
   const counts = { todo: columns.todo.length, doing: columns.doing.length, review: columns.review.length, done: columns.done.length };
 
-  // Keep the pager on the current stage when its width is known or changes (the first layout, rotation): no animation, no events.
+  // Keep the pager on the current stage when its width is known or changes (the first layout, rotation, coming back from the list): no animation, no events.
   useEffect(() => {
-    if (width > 0) pager.current?.scrollTo({ x: STAGES.indexOf(stage) * width, animated: false });
+    if (width > 0 && mode === "board") pager.current?.scrollTo({ x: STAGES.indexOf(stage) * width, animated: false });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [width]);
+  }, [width, mode]);
   useEffect(() => () => { if (release.current) clearTimeout(release.current); }, []);
 
   const go = (next: TaskStage) => {
@@ -89,10 +94,23 @@ export function TaskList({ onOpen }: { onOpen: (t: ProTask) => void }) {
       <View style={{ gap: 10 }}>
         <StaleNote updatedAt={query.dataUpdatedAt} hasData={query.data !== undefined} />
         <SearchBox value={q} onChangeText={setQ} placeholder={t("aw7.search")} />
-        <StageTabs value={stage} counts={counts} onChange={go} />
+        <View style={{ paddingHorizontal: 16 }}>
+          <Segmented options={[{ value: "board", label: t("admLeadsV.board"), icon: "layers" }, { value: "list", label: t("admLeadsV.list"), icon: "list" }]} value={mode} onChange={setMode} />
+        </View>
+        {mode === "board" ? (
+          <StageTabs value={stage} counts={counts} onChange={go} />
+        ) : (
+          <ChipBar
+            options={[{ value: "" as const, label: t("adm.all"), count: all.length }, ...STAGES.map((st) => ({ value: st, label: t(`aw7.tab.${st}`), count: counts[st] }))]}
+            value={filter}
+            onChange={setFilter}
+          />
+        )}
       </View>
       <View style={{ flex: 1 }} onLayout={(e) => setWidth(Math.round(e.nativeEvent.layout.width))}>
-        {width > 0 ? (
+        {width > 0 && mode === "list" ? (
+          <StageColumn width={width} stage={filter || "all"} tasks={listed} query={query} filtered={all.length > 0} onOpen={onOpen} onMove={move} onPick={setPicked} />
+        ) : width > 0 ? (
           <ScrollView
             ref={pager}
             horizontal
