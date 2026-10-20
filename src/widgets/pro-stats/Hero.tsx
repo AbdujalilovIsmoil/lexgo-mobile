@@ -1,21 +1,27 @@
 import { StyleSheet, View } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
+import { useReducedMotion } from "react-native-reanimated";
 import { deltaPct, fmtCount, sparkHeights, trendOf } from "@/entities/pro-stats";
 import { useT } from "@/shared/i18n";
+import { useCountUp } from "@/shared/lib/useCountUp";
 import { fmtMoney } from "@/shared/lib/money";
 import { gradient, radius } from "@/shared/theme";
 import { Icon, Skeleton, Text } from "@/shared/ui";
+import { SparkBar } from "./SparkBar";
 
 type Props = { label: string; amount: number | undefined; series: number[]; loading: boolean };
 
 const W = "rgba(255,255,255,";
 
 // Headline earnings on the brand gradient: big number, a tiny bar sparkline of the latest payouts (oldest to newest)
-// and the change of the newest payout against the one before it.
+// and the change of the newest payout against the one before it. The amount counts up from 0 and the bars rise one by one
+// (both are skipped when the system asks for reduced motion).
 export function Hero({ label, amount, series, loading }: Props) {
   const { t } = useT();
   const cur = t("adm.currency");
-  const value = amount == null ? "—" : fmtMoney(amount);
+  const calm = useReducedMotion();
+  const counted = useCountUp(amount ?? 0, 1300, 150);
+  const value = amount == null ? "—" : fmtMoney(calm ? amount : counted);
   const d = series.length >= 2 ? deltaPct(series[series.length - 1], series[series.length - 2]) : null;
   const trend = trendOf(d);
   const heights = sparkHeights(series);
@@ -35,7 +41,7 @@ export function Hero({ label, amount, series, loading }: Props) {
       <View style={s.bottom}>
         <View style={s.spark} accessibilityElementsHidden importantForAccessibility="no-hide-descendants">
           {loading ? <Skeleton onDark width="100%" height={40} /> : heights.length ? heights.map((h, i) => (
-            <View key={i} style={[s.bar, { height: 6 + h * 34, backgroundColor: `${W}${i === heights.length - 1 ? 1 : 0.4})` }]} />
+            <SparkBar key={i} index={i} height={6 + h * 34} color={`${W}${i === heights.length - 1 ? 1 : 0.4})`} />
           )) : <Text variant="caption" tone="white" style={{ opacity: 0.8 }}>{t("statUx.sparkNone")}</Text>}
         </View>
         {d != null && trend ? (
@@ -57,6 +63,5 @@ const s = StyleSheet.create({
   amount: { flexShrink: 1 },
   bottom: { flexDirection: "row", alignItems: "flex-end", gap: 12, minHeight: 40 },
   spark: { flex: 1, flexDirection: "row", alignItems: "flex-end", gap: 5, height: 40 },
-  bar: { flex: 1, maxWidth: 28, borderRadius: 4 },
   delta: { flexDirection: "row", alignItems: "center", gap: 4, paddingVertical: 5, paddingHorizontal: 9, borderRadius: radius.pill, backgroundColor: `${W}0.2)` },
 });
