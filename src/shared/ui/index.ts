@@ -7,6 +7,7 @@ export { Pill, type PillTone } from "./Pill";
 export { Kicker } from "./Kicker";
 export { Input } from "./Input";
 export { Avatar } from "./Avatar";
+export { BrandLogo } from "./BrandLogo";
 export { Screen } from "./Screen";
 export { Skeleton } from "./Skeleton";
 export { SkeletonCard } from "./SkeletonCard";

@@ -1,8 +1,8 @@
-import { Image, StyleSheet, View } from "react-native";
+import { StyleSheet, View } from "react-native";
 import { StatusBar } from "expo-status-bar";
 import { useUnlock } from "@/features/auth-lock";
 import { useLogout } from "@/features/auth";
-import { GradientBox, Button, Icon, Text } from "@/shared/ui";
+import { GradientBox, Button, Icon, Text, BrandLogo } from "@/shared/ui";
 import { useInsets } from "@/shared/lib/insets";
 import { useT } from "@/shared/i18n";
 
@@ -20,7 +20,7 @@ export function LockScreen({ unlock }: { unlock: Unlock }) {
       {/* Mounted only while the lock is up (above any page's bar): light icons on the dark lock screen. */}
       <StatusBar style="light" />
       <View style={s.center}>
-        <Image source={require("../../../assets/logo-small.png")} style={s.logo} />
+        <BrandLogo size={64} />
         <View style={s.icon}>
           <Icon name="lock" size={30} tone="white" />
         </View>
@@ -39,7 +39,6 @@ export function LockScreen({ unlock }: { unlock: Unlock }) {
 const s = StyleSheet.create({
   fill: { flex: 1, paddingHorizontal: 24 },
   center: { flex: 1, alignItems: "center", justifyContent: "center", gap: 12 },
-  logo: { width: 64, height: 64, borderRadius: 18, marginBottom: 8 },
   icon: { width: 64, height: 64, borderRadius: 32, alignItems: "center", justifyContent: "center", backgroundColor: "rgba(255,255,255,0.14)" },
   sub: { color: "#C4DEFF", maxWidth: 300 },
   actions: { gap: 10 },

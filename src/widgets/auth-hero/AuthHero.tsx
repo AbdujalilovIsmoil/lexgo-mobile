@@ -1,7 +1,7 @@
-import { Image, StyleSheet, View } from "react-native";
+import { StyleSheet, View } from "react-native";
 import { HEADER_GAP, useInsets } from "@/shared/lib/insets";
 import { useRouter } from "expo-router";
-import { GradientBox, IconButton, Text, FocusStatusBar } from "@/shared/ui";
+import { GradientBox, IconButton, Text, FocusStatusBar, BrandLogo } from "@/shared/ui";
 
 type Props = { title: string; subtitle: string; back?: boolean };
 
@@ -18,7 +18,7 @@ export function AuthHero({ title, subtitle, back = true }: Props) {
         ) : (
           <View style={s.spacer} />
         )}
-        <Image source={require("../../../assets/logo-small.png")} style={s.logo} />
+        <BrandLogo size={48} />
         <View style={s.spacer} />
       </View>
       <Text variant="h2" tone="white" center>
@@ -35,6 +35,5 @@ const s = StyleSheet.create({
   hero: { paddingHorizontal: 16, paddingBottom: 28, borderBottomLeftRadius: 28, borderBottomRightRadius: 28, gap: 8 },
   top: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginBottom: 12 },
   spacer: { width: 44, height: 44 },
-  logo: { width: 48, height: 48, borderRadius: 14 },
   sub: { color: "#C4DEFF", maxWidth: 320, alignSelf: "center" },
 });

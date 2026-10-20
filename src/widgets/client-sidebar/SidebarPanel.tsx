@@ -1,4 +1,4 @@
-import { Image, ScrollView, StyleSheet, View } from "react-native";
+import { ScrollView, StyleSheet, View } from "react-native";
 import type { SharedValue } from "react-native-reanimated";
 import { usePathname } from "expo-router";
 import { useUnreadCount } from "@/entities/notification";
@@ -7,7 +7,7 @@ import { useLogout } from "@/features/auth";
 import { useBadge } from "@/shared/lib";
 import { useInsets } from "@/shared/lib/insets";
 import { useColors } from "@/shared/theme";
-import { Icon, PressableScale, Text } from "@/shared/ui";
+import { Icon, PressableScale, Text, BrandLogo } from "@/shared/ui";
 import { useT } from "@/shared/i18n";
 import { useTabRole } from "@/widgets/tab-bar/useTabRole";
 import { EXTRA, isActive, navFor } from "./navItems";
@@ -36,7 +36,7 @@ export function SidebarPanel({ p, onGo }: { p: SharedValue<number>; onGo: (route
   return (
     <View style={[s.fill, { paddingTop: insets.top + 12, paddingBottom: insets.bottom + 8 }]}>
       <View style={s.brand}>
-        <Image source={require("../../../assets/logo-small.png")} style={s.logo} />
+        <BrandLogo size={40} />
         <View style={s.fill}>
           <Text variant="h4">LexGo</Text>
           <Text variant="caption" tone="gray" numberOfLines={1}>{user ? `${displayName(user) || t("ntd.sbTitle")} ·${t(role === "client" ? "profile.roleClient" : role === "sales" ? "salesOp.role" : user.role === "advocate" ? "profile.roleAdvocate" : user.role === "lawyer" ? "profile.roleLawyer" : "tabs.admin")}` : t("home.guest")}</Text>
@@ -63,7 +63,6 @@ export function SidebarPanel({ p, onGo }: { p: SharedValue<number>; onGo: (route
 const s = StyleSheet.create({
   fill: { flex: 1 },
   brand: { flexDirection: "row", alignItems: "center", gap: 10, paddingHorizontal: 16, paddingBottom: 12 },
-  logo: { width: 40, height: 40, borderRadius: 12 },
   list: { paddingHorizontal: 10, gap: 2, paddingBottom: 8 },
   kick: { marginTop: 12, marginLeft: 8, marginBottom: 4 },
   out: { flexDirection: "row", alignItems: "center", justifyContent: "center", gap: 8, marginHorizontal: 14, minHeight: 46, borderRadius: 23, borderWidth: 1 },

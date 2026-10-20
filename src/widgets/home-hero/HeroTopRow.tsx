@@ -1,5 +1,5 @@
-import { Image, StyleSheet, View } from "react-native";
-import { Text } from "@/shared/ui";
+import { StyleSheet, View } from "react-native";
+import { Text, BrandLogo } from "@/shared/ui";
 import { useT } from "@/shared/i18n";
 import { HeaderActions } from "@/widgets/tab-page";
 
@@ -10,7 +10,7 @@ export function HeroTopRow({ name }: { name?: string }) {
   return (
     <View style={s.row}>
       <View style={s.brand}>
-        <Image source={require("../../../assets/logo-small.png")} style={s.logo} />
+        <BrandLogo size={40} />
         <View style={s.who}>
           <Text variant="caption" style={s.hi} numberOfLines={1}>
             {t("home.greeting")}
@@ -29,6 +29,5 @@ const s = StyleSheet.create({
   row: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", gap: 8, minHeight: 44 },
   brand: { flexDirection: "row", alignItems: "center", gap: 10, flex: 1, minWidth: 0 },
   who: { flex: 1, minWidth: 0 },
-  logo: { width: 40, height: 40, borderRadius: 12 },
   hi: { color: "#93C6FF" },
 });
