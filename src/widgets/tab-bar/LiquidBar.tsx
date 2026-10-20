@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { StyleSheet, View } from "react-native";
 import { BlurView } from "expo-blur";
-import { GlassView, isLiquidGlassAvailable } from "expo-glass-effect";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import { useSharedValue } from "react-native-reanimated";
 import { scheduleOnRN } from "react-native-worklets";
@@ -11,6 +10,7 @@ import { selectHaptic } from "@/shared/lib/haptics";
 import { useInsets } from "@/shared/lib/insets";
 import { shadows, useTheme } from "@/shared/theme";
 import { AiOrbButton } from "./AiOrbButton";
+import { loadGlass } from "./glass";
 import { LiquidIndicator } from "./LiquidIndicator";
 import { LiquidItem } from "./LiquidItem";
 import { useTabItems } from "./useTabItems";
@@ -48,9 +48,9 @@ export function LiquidBar(props: BottomTabBarProps) {
   return (
     <View pointerEvents="box-none" style={[s.wrap, { paddingBottom: Math.max(insets.bottom - 8, 12) }]}>
       <View style={[s.shadow, !GLASS && shadows.s2]}>
-        <View style={[s.glass, GLASS && s.bare]}>
+        <View style={[s.glass, !!GLASS && s.bare]}>
           {GLASS ? (
-            <GlassView
+            <GLASS.View
               glassEffectStyle="regular"
               isInteractive
               colorScheme={dark ? "dark" : "light"}
@@ -76,7 +76,7 @@ export function LiquidBar(props: BottomTabBarProps) {
 }
 
 const PAD = 4;
-const GLASS = isLiquidGlassAvailable();
+const GLASS = loadGlass();
 
 const s = StyleSheet.create({
   wrap: { position: "absolute", left: 0, right: 0, bottom: 0, paddingHorizontal: 14 },
