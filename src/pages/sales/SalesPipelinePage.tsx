@@ -1,4 +1,3 @@
-import { StyleSheet, View } from "react-native";
 import { LeadsScreen } from "@/widgets/admin-leads";
 import { TabPage, useTabPad } from "@/widgets/tab-page";
 import { useT } from "@/shared/i18n";
@@ -11,9 +10,9 @@ export function SalesPipelinePage() {
   return (
     <LeadsScreen
       bottomPad={pad}
-      frame={({ actions, children }) => (
+      scrollHeader
+      frame={({ children }) => (
         <TabPage title={t("admHub.mod.pipeline.title")} subtitle={t("admHub.mod.pipeline.desc")}>
-          <View style={s.bar}>{actions}</View>
           {children}
         </TabPage>
       )}
@@ -21,4 +20,3 @@ export function SalesPipelinePage() {
   );
 }
 
-const s = StyleSheet.create({ bar: { flexDirection: "row", justifyContent: "flex-end", gap: 6, paddingHorizontal: 16, paddingBottom: 10 } });

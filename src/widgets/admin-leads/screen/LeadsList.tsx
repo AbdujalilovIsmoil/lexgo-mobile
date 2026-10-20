@@ -1,14 +1,16 @@
+import type { ReactNode } from "react";
 import { TabList } from "@/shared/ui/cc";
 import { useT } from "@/shared/i18n";
 import { LeadCard, columnTitle } from "@/entities/admin-leads";
 import { LeadsHeader } from "../LeadsHeader";
 import { LeadsBoard } from "./LeadsBoard";
+import { ScrollTop } from "./ScrollTop";
 import type { LeadsPage } from "./useLeadsPage";
 
 // Kanban board, or (list mode) KPIs, search, stage chips and the leads of the chosen stage.
-export function LeadsList({ p, bottomPad }: { p: LeadsPage; bottomPad?: number }) {
+export function LeadsList({ p, bottomPad, scrollActions }: { p: LeadsPage; bottomPad?: number; scrollActions?: ReactNode }) {
   const { t } = useT();
-  if (p.mode === "board") return <LeadsBoard p={p} bottomPad={bottomPad} />;
+  if (p.mode === "board") return <LeadsBoard p={p} bottomPad={bottomPad} scrollActions={scrollActions} />;
   return (
     <TabList
       bottomPad={bottomPad}
@@ -35,7 +37,7 @@ export function LeadsList({ p, bottomPad }: { p: LeadsPage; bottomPad?: number }
         );
       }}
       empty={{ icon: "trending-up", title: t(p.view.filtered ? "admLeads.noMatch" : "admLeads.empty"), text: p.view.filtered ? undefined : t("admLeads.emptyText") }}
-      header={p.cols.length ? <LeadsHeader stats={p.stats} filter={p.filter} onFilter={p.setFilter} stage={p.stage} onStage={p.setStage} options={p.stageOptions} filtered={p.view.filtered} matched={p.view.matched} mode={p.mode} onMode={p.setMode} /> : null}
+      header={p.cols.length || scrollActions ? <>{scrollActions ? <ScrollTop actions={scrollActions} bleed={16} /> : null}{p.cols.length ? <LeadsHeader stats={p.stats} filter={p.filter} onFilter={p.setFilter} stage={p.stage} onStage={p.setStage} options={p.stageOptions} filtered={p.view.filtered} matched={p.view.matched} mode={p.mode} onMode={p.setMode} /> : null}</> : null}
     />
   );
 }

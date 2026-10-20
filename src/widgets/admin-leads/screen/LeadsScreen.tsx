@@ -8,7 +8,9 @@ export type LeadsFrame = (parts: { actions: ReactNode; children: ReactNode }) =>
 
 // The sales pipeline (list + every sheet) without a frame: the admin page and the call-center tab each supply theirs,
 // receiving the header actions (filters / add / more) and the body.
-export function LeadsScreen({ frame, bottomPad }: { frame: LeadsFrame; bottomPad?: number }) {
+// `scrollHeader`: the tab page's header and the action buttons live inside the list and scroll with it (the frame then gets no actions).
+export function LeadsScreen({ frame, bottomPad, scrollHeader }: { frame: LeadsFrame; bottomPad?: number; scrollHeader?: boolean }) {
   const p = useLeadsPage();
-  return frame({ actions: <PageActions p={p} />, children: <><LeadsList p={p} bottomPad={bottomPad} /><LeadsSheets p={p} /></> });
+  const actions = <PageActions p={p} />;
+  return frame({ actions: scrollHeader ? null : actions, children: <><LeadsList p={p} bottomPad={bottomPad} scrollActions={scrollHeader ? actions : undefined} /><LeadsSheets p={p} /></> });
 }
