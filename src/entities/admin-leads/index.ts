@@ -13,7 +13,7 @@ export { useExportBoard } from "./model/exportBoard";
 export { LeadScopeProvider, useLeadScope } from "./model/scope";
 export type { LeadScope } from "./api/scope";
 export { leadsOf, stageOf, patchLead, boardStats, isLostKey } from "./model/board";
-export { EMPTY_FILTER, filterActive, sheetFilterCount, distinct } from "./model/filter";
+export { EMPTY_FILTER, filterActive, sheetFilterCount, distinct, leadMatches } from "./model/filter";
 export { assignPatch, withAssignment, plainDetails } from "./model/assign";
 export { autoAssign } from "./model/autoAssign";
 export { timelineLabel } from "./model/timeline";

@@ -20,7 +20,7 @@ export function LeadsSheets({ p }: { p: LeadsPage }) {
   return (
     <>
       <LeadDrawer lead={p.selected} cols={p.cols} ops={p.ops} opsStatus={p.opsStatus} meId={p.meId} onMove={fromDrawer} onClose={() => p.setSelId("")} />
-      <LeadFilterSheet visible={p.sheet === "filter"} onClose={close} value={p.filter} onApply={p.setFilter} leads={p.all} ops={p.ops} />
+      <LeadFilterSheet visible={p.sheet === "filter"} onClose={close} value={p.filter} onApply={p.setFilter} leads={p.all} ops={p.ops} meId={p.meId} />
       <CreateLeadSheet visible={p.sheet === "create"} onClose={close} ops={p.ops} />
       <AutoAssignSheet visible={p.sheet === "auto"} onClose={close} leads={p.all} ops={p.ops} status={p.opsStatus} meId={p.meId} />
       <ColumnManagerSheet visible={p.sheet === "cols"} onClose={close} cols={p.cols} />
