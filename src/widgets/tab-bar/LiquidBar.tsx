@@ -10,6 +10,7 @@ import { selectHaptic } from "@/shared/lib/haptics";
 import { useInsets } from "@/shared/lib/insets";
 import { shadows, useTheme } from "@/shared/theme";
 import { AiOrbButton } from "./AiOrbButton";
+import { BlurGuard, loadCommunityBlur } from "./communityBlur";
 import { loadGlass } from "./glass";
 import { LiquidIndicator } from "./LiquidIndicator";
 import { LiquidItem } from "./LiquidItem";
@@ -49,13 +50,18 @@ export function LiquidBar(props: BottomTabBarProps) {
       if (!ok) { last.value = -1; scheduleOnRN(drop, -1); }
     });
   const shown = hover >= 0 ? hover : activeIndex;
+  const systemBlur = <BlurView intensity={dark ? 70 : 80} tint={dark ? "systemChromeMaterialDark" : "systemChromeMaterialLight"} style={StyleSheet.absoluteFill} />;
   const centerActive = shown >= 0 && !!items[shown]?.def.center;
   return (
     <View pointerEvents="box-none" style={[s.wrap, { paddingBottom: Math.max(insets.bottom - 8, 12) }]}>
       <View style={[s.shadow, (!GLASS || !dark) && shadows.s2]}>
         {GLASS ? (
           <View style={s.under} pointerEvents="none">
-            <BlurView intensity={dark ? 70 : 80} tint={dark ? "systemChromeMaterialDark" : "systemChromeMaterialLight"} style={StyleSheet.absoluteFill} />
+            {CBLUR ? (
+              <BlurGuard fallback={systemBlur}>
+                <CBLUR blurType={dark ? "chromeMaterialDark" : "chromeMaterialLight"} blurAmount={dark ? 70 : 80} reducedTransparencyFallbackColor={dark ? "#0B1F45" : "#FFFFFF"} style={StyleSheet.absoluteFill} />
+              </BlurGuard>
+            ) : systemBlur}
           </View>
         ) : null}
         {GLASS ? (
@@ -83,6 +89,7 @@ export function LiquidBar(props: BottomTabBarProps) {
 
 const PAD = 4;
 const GLASS = loadGlass();
+const CBLUR = loadCommunityBlur();
 
 const s = StyleSheet.create({
   wrap: { position: "absolute", left: 0, right: 0, bottom: 0, paddingHorizontal: 14 },
