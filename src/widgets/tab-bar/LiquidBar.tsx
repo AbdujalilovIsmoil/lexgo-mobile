@@ -54,9 +54,14 @@ export function LiquidBar(props: BottomTabBarProps) {
     <View pointerEvents="box-none" style={[s.wrap, { paddingBottom: Math.max(insets.bottom - 8, 12) }]}>
       <View style={[s.shadow, !GLASS && shadows.s2]}>
         {GLASS ? (
+          <View style={s.under} pointerEvents="none">
+            <BlurView intensity={dark ? 70 : 80} tint={dark ? "systemChromeMaterialDark" : "systemChromeMaterialLight"} style={StyleSheet.absoluteFill} />
+          </View>
+        ) : null}
+        {GLASS ? (
           // One glass container: the bar and the lens are neighbouring pieces of the same liquid surface, so they blend as the lens moves.
           <GLASS.Container spacing={16} style={[s.glass, s.bare]}>
-            <GLASS.View glassEffectStyle="regular" colorScheme={dark ? "dark" : "light"} tintColor={dark ? "rgba(5,12,30,0.66)" : "rgba(255,255,255,0.50)"} style={[StyleSheet.absoluteFill, s.round]} />
+            <GLASS.View glassEffectStyle="regular" colorScheme={dark ? "dark" : "light"} tintColor={dark ? "rgba(5,12,30,0.46)" : "rgba(255,255,255,0.18)"} style={[StyleSheet.absoluteFill, s.round]} />
             {width > 0 ? <LiquidIndicator left={PAD + 2} index={Math.max(shown, 0)} slot={slot} hidden={shown < 0 || centerActive} lift={lift} /> : null}
           </GLASS.Container>
         ) : (
@@ -84,6 +89,7 @@ const s = StyleSheet.create({
   shadow: { borderRadius: 35 },
   glass: { ...StyleSheet.absoluteFill, borderRadius: 35, overflow: "hidden", borderWidth: StyleSheet.hairlineWidth * 2, borderColor: "rgba(255,255,255,0.35)" },
   round: { borderRadius: 35 },
+  under: { ...StyleSheet.absoluteFill, borderRadius: 35, overflow: "hidden" },
   bare: { borderWidth: 0, overflow: "visible" },
   sheen: { position: "absolute", left: 0, right: 0, top: 0, height: 34 },
   row: { flexDirection: "row", alignItems: "center", paddingHorizontal: PAD, height: 70 },
