@@ -14,6 +14,7 @@ const asUri = (path: string) => (/^[a-z]+:\/\//i.test(path) ? path : `file://${p
 type Scanner = typeof import("react-native-document-scanner-plugin");
 function loadScanner(): Scanner | null {
   try {
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
     return require("react-native-document-scanner-plugin") as Scanner;
   } catch {
     return null;
