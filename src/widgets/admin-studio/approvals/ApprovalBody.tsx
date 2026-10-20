@@ -3,9 +3,10 @@ import { View } from "react-native";
 import { useRouter } from "expo-router";
 import { Button, Text, toast } from "@/shared/ui";
 import { FactRows, SectionCard } from "@/shared/ui/admin";
-import { PayloadView, StudioFlow, StudioStatusPill, downloadVersionFile, exportVersions, isApprovalFree, useStudioAccess, useStudioErrorText, useStudioText, type StudioDetail } from "@/entities/admin-studio";
+import { PayloadView, StudioFlow, StudioStatusPill, downloadVersionFile, exportVersions, isApprovalFree, useStudioAccess, useStudioErrorText, useStudioText, type StudioDetail, type StudioStep } from "@/entities/admin-studio";
 import { fmtDateTime } from "@/shared/lib/format";
 import { CommentsPane } from "../object/CommentsPane";
+import { ReassignSheet } from "./ReassignSheet";
 import { StepsPane } from "../object/StepsPane";
 import { currentStepOf, submittedOf, versionLabel, versionOf } from "./helpers";
 
@@ -16,6 +17,7 @@ export function ApprovalBody({ d }: { d: StudioDetail }) {
   const errText = useStudioErrorText();
   const router = useRouter();
   const [busy, setBusy] = useState("");
+  const [reassign, setReassign] = useState<StudioStep | null>(null);
   const cur = versionOf(d);
   const sub = submittedOf(d);
   const at = currentStepOf(d);
@@ -34,12 +36,13 @@ export function ApprovalBody({ d }: { d: StudioDetail }) {
       ]} />
       <SectionCard title={t("admStudioC.drawer.content")}>{Object.keys(d.payload).length ? <PayloadView value={d.payload} /> : <Text variant="small" tone="gray">{t("admStudioC.drawer.noPayload")}</Text>}</SectionCard>
       {d.hasFile && cur ? <Button title={cur.fileName || t("admStudioC.drawer.file")} icon="paperclip" variant="line" size="sm" loading={busy === "file"} onPress={() => act("file", () => downloadVersionFile(cur.id || d.currentVersionId, cur.fileName))} /> : null}
-      <SectionCard title={t("admStudioC.drawer.steps")}><StepsPane steps={d.steps} approvalFree={free} submitted={false} /></SectionCard>
+      <SectionCard title={t("admStudioC.drawer.steps")}><StepsPane steps={d.steps} approvalFree={free} submitted={false} onReassign={a.canReassign && (d.status === "submitted" || d.status === "in_review") ? setReassign : undefined} /></SectionCard>
       <SectionCard title={t("admStudioC.drawer.comments")}><CommentsPane id={d.id} canWrite={a.any} /></SectionCard>
       <View style={{ flexDirection: "row", gap: 8, flexWrap: "wrap" }}>
         <Button title={t(a.canEdit ? "admStudioC.drawer.openEditor" : "admStudioC.drawer.view")} icon="edit-3" variant="soft" size="sm" onPress={() => router.push({ pathname: "/manage/studio/object", params: { id: d.id } } as never)} />
         {a.isAdmin || a.canPublish ? <Button title={t("admStudioB.versions.excel")} icon="download" variant="line" size="sm" loading={busy === "xls"} onPress={() => act("xls", () => exportVersions(d.id, d.title))} /> : null}
       </View>
+      <ReassignSheet step={reassign} code={d.code} onClose={() => setReassign(null)} />
     </>
   );
 }

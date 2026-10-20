@@ -40,6 +40,7 @@ export type StudioObject = {
   raw: Dict;
 };
 export type StudioVersion = { id: string; version: string; status: StudioStatus; statusRaw: string; payload: StudioPayload; summary: string; fileName: string; hasFile: boolean; createdAt: string; createdBy: string };
-export type StudioStep = { id: string; order: number; role: string; title: string; status: string; decidedBy: string; decidedAt: string; comment: string; canDecide: boolean | null };
+export type StudioStep = { id: string; order: number; role: string; title: string; status: string; decidedBy: string; decidedAt: string; comment: string; canDecide: boolean | null; approvers: StudioPerson[]; deadlineAt: string; overdue: boolean };
+export type StudioPerson = { id: string; name: string };
 export type StudioDetail = StudioObject & { payload: StudioPayload; versions: StudioVersion[]; steps: StudioStep[] };
 export type StudioComment = { id: string; text: string; author: string; authorRole: string; versionId: string; createdAt: string };

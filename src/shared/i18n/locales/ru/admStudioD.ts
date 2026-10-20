@@ -11,4 +11,11 @@ export const admStudioD: Messages["admStudioD"] = {
     types: { service: "Простая услуга", marketplace_service: "Услуга и пакет", document_service: "Услуга по документам", subscription: "Тариф", consultation: "Консультация", promotion: "Реклама", integration: "Интеграция" },
     created: "Маршрут создан", updated: "Обновлено", all: "Все", active: "Активные",
   },
+  approvals: {
+    select: "Выбрать", selected: "Выбрано: {n}", selectAll: "Все", clear: "Сброс", publishN: "Опубликовать ({n})", publishTitle: "Опубликовать выбранное", publishText: "Будет опубликовано объектов: {n}.",
+    notePh: "Комментарий (необязательно)", publish: "Опубликовать", publishedN: "Опубликовано: {n}", failedN: "Не удалось: {n}", resultTitle: "Результат", ok: "Опубликовано", close: "Закрыть",
+    more: "Ещё", overdue: "Обработать просроченные", overdueQ: "Эскалировать просроченные шаги?", overdueOk: "Просроченные обработаны", overdueBadge: "просрочено", deadline: "Срок",
+    reassign: "Заменить", reassignTitle: "Замена согласующего", from: "Кого", to: "Кем", message: "Сообщение", messagePh: "Причина замены (необязательно)", pick: "Выберите", search: "Имя или код",
+    reassigned: "Согласующий заменён", noUsers: "Пользователи не найдены", approvers: "Согласующие",
+  },
 };

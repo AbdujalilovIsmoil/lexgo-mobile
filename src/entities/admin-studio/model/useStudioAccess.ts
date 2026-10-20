@@ -9,7 +9,8 @@ const FULL = ["admin", "superadmin", "studio_admin"];
 // Studio roles come from GET /studio/constructors (userRoles) plus the session roles —
 // admin, superadmin and studio_admin may do everything (lib/services/studio.ts useStudioAccess).
 export function useStudioAccess() {
-  const sess = useAccess().roles;
+  const access = useAccess();
+  const sess = access.roles;
   const q = useRegistry();
   const set = new Set([...(q.data?.userRoles ?? []), ...sess]);
   const has = (list: string[]) => list.some((r) => set.has(r));
@@ -24,6 +25,7 @@ export function useStudioAccess() {
     canReview: has([...FULL, "studio_reviewer", "studio_publisher"]),
     canPublish,
     canArchive: canPublish,
+    canReassign: access.can("studio.approval.reassign"),
     roles: [...set],
     error: q.error,
     reload: () => void q.refetch(),

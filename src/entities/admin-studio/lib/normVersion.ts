@@ -1,4 +1,4 @@
-import { asDict, asNum, asStr } from "@/shared/lib/json";
+import { asArr, asDict, asNum, asStr } from "@/shared/lib/json";
 import type { StudioStatus, StudioStep, StudioVersion } from "../model/types";
 import { boolOf, first, lower, personOf, timeOf } from "./norm";
 
@@ -43,6 +43,9 @@ export function normStep(raw: unknown, i = 0): StudioStep {
     decidedAt: timeOf(r.decided_at, r.reviewed_at, r.completed_at),
     comment: first(r.comment, r.note),
     canDecide: boolOf(r.can_decide),
+    approvers: asArr(r.approvers).map((x) => ({ id: first(asDict(x).id, asDict(x).user_id), name: first(asDict(x).full_name, asDict(x).name, asDict(x).label) })).filter((x) => x.id),
+    deadlineAt: timeOf(r.deadline_at),
+    overdue: r.is_overdue === true,
   };
 }
 

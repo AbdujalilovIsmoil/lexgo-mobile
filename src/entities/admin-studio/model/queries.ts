@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { useFallbackInterval } from "@/shared/lib/adm/useFallbackInterval";
-import { getMonitoring, listApprovals, listGrants, listRoutes } from "../api/adminApi";
+import { getMonitoring, listApprovalUsers, listApprovals, listGrants, listRoutes } from "../api/adminApi";
 import { listComments, listReference } from "../api/extraApi";
 import { checkPayload } from "../api/checkApi";
 import { getObject } from "../api/objectApi";
@@ -37,3 +37,5 @@ export const useServerCheck = (code: string, payload: StudioPayload, enabled: bo
 // Seed of a new draft from a published record (edit/clone) — only when `record` is set.
 export const useFormContext = (code: string, mode: string, record: string, source: string) =>
   useQuery({ queryKey: [...K, "form-ctx", code, mode, record, source], queryFn: () => getFormContext(code, mode, record, source), enabled: !!code && !!record, staleTime: 0, gcTime: 0 });
+
+export const useApprovalUsers = (q: string, code: string, enabled: boolean) => useQuery({ queryKey: [...K, "approval-users", q, code], queryFn: () => listApprovalUsers(q, code), enabled, staleTime: 60_000 });

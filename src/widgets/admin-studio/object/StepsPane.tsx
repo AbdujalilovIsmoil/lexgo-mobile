@@ -1,5 +1,5 @@
 import { View } from "react-native";
-import { Icon, Text } from "@/shared/ui";
+import { Button, Icon, Pill, Text } from "@/shared/ui";
 import { RowCard } from "@/shared/ui/admin";
 import { useStudioText, type StudioStep } from "@/entities/admin-studio";
 import { fmtDateTime } from "@/shared/lib/format";
@@ -9,7 +9,7 @@ const tone = (s: string) => (/approv|done|complete|pass/.test(s) ? "ok" : /rejec
 const ICON = { ok: "check-circle", err: "x-circle", warn: "rotate-ccw", wait: "clock" } as const;
 
 // Approval steps of the object: who decides, the decision, the reviewer's comment.
-export function StepsPane({ steps, approvalFree, submitted }: { steps: StudioStep[]; approvalFree: boolean; submitted: boolean }) {
+export function StepsPane({ steps, approvalFree, submitted, onReassign }: { steps: StudioStep[]; approvalFree: boolean; submitted: boolean; onReassign?: (s: StudioStep) => void }) {
   const { t, role, stepStatus, locale } = useStudioText();
   const c = useColors();
   const hue = { ok: c.ok, err: c.err, warn: c.warn, wait: c.gray };
@@ -28,6 +28,13 @@ export function StepsPane({ steps, approvalFree, submitted }: { steps: StudioSte
             right={<Icon name={ICON[k]} size={22} color={hue[k]} />}
           >
             {s.comment ? <Text variant="small" tone="gray">“{s.comment}”</Text> : null}
+            {k === "wait" && (s.approvers.length || s.deadlineAt) ? (
+              <View style={{ gap: 6 }}>
+                {s.approvers.length ? <Text variant="caption" tone="gray">{t("admStudioD.approvals.approvers")}: {s.approvers.map((x) => x.name || x.id).join(", ")}</Text> : null}
+                {s.deadlineAt ? <Pill small tone={s.overdue ? "err" : "gray"} icon={s.overdue ? "alert-circle" : "clock"} label={s.overdue ? t("admStudioD.approvals.overdueBadge") : `${t("admStudioD.approvals.deadline")}: ${fmtDateTime(s.deadlineAt, locale)}`} /> : null}
+                {onReassign && s.approvers.length ? <Button title={t("admStudioD.approvals.reassign")} icon="user-plus" size="sm" variant="soft" onPress={() => onReassign(s)} style={{ alignSelf: "flex-start" }} /> : null}
+              </View>
+            ) : null}
           </RowCard>
         );
       })}
