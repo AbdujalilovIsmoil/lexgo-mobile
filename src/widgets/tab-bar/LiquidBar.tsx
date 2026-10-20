@@ -1,8 +1,13 @@
 import { useState } from "react";
 import { StyleSheet, View } from "react-native";
 import { BlurView } from "expo-blur";
+import { GlassView, isLiquidGlassAvailable } from "expo-glass-effect";
+import { Gesture, GestureDetector } from "react-native-gesture-handler";
+import { useSharedValue } from "react-native-reanimated";
+import { scheduleOnRN } from "react-native-worklets";
 import { LinearGradient } from "expo-linear-gradient";
 import type { BottomTabBarProps } from "expo-router/build/layouts/Tabs";
+import { selectHaptic } from "@/shared/lib/haptics";
 import { useInsets } from "@/shared/lib/insets";
 import { shadows, useTheme } from "@/shared/theme";
 import { AiOrbButton } from "./AiOrbButton";
@@ -10,32 +15,62 @@ import { LiquidIndicator } from "./LiquidIndicator";
 import { LiquidItem } from "./LiquidItem";
 import { useTabItems } from "./useTabItems";
 
-// iOS: a floating pill of frosted glass (live blur of the content behind it)
-// with a liquid droplet that glides to the tab you press.
+// iOS: a floating pill of liquid glass (the system material on iOS 26, a live blur before it) with a glass lens under the active
+// tab. Tap a tab, or press anywhere on the bar and slide: the lens follows the finger and the tab under it opens on release.
 export function LiquidBar(props: BottomTabBarProps) {
   const { dark } = useTheme();
   const insets = useInsets();
   const { items, activeIndex } = useTabItems(props);
   const [width, setWidth] = useState(0);
   const slot = Math.max(width - PAD * 2, 0) / Math.max(items.length, 1);
-  const centerActive = activeIndex >= 0 && !!items[activeIndex].def.center;
+  const [hover, setHover] = useState(-1); // the tab under the finger while dragging along the bar
+  const count = items.length;
+  const last = useSharedValue(-1);
+  const track = (i: number) => { selectHaptic(); setHover(i); };
+  const drop = (i: number) => {
+    setHover(-1);
+    const hit = items[i];
+    if (hit && !hit.focused) hit.onPress();
+  };
+  const at = (x: number) => { "worklet"; return Math.max(0, Math.min(count - 1, Math.floor((x - PAD) / Math.max(slot, 1)))); };
+  const slide = Gesture.Pan()
+    .minDistance(8)
+    .activeOffsetX([-8, 8])
+    .failOffsetY([-24, 24])
+    .onUpdate((e) => {
+      const i = at(e.x);
+      if (i !== last.value) { last.value = i; scheduleOnRN(track, i); }
+    })
+    .onEnd((e, ok) => { last.value = -1; if (ok) scheduleOnRN(drop, at(e.x)); })
+    .onFinalize((_, ok) => { if (!ok) { last.value = -1; scheduleOnRN(drop, -1); } });
+  const shown = hover >= 0 ? hover : activeIndex;
+  const centerActive = shown >= 0 && !!items[shown]?.def.center;
   return (
     <View pointerEvents="box-none" style={[s.wrap, { paddingBottom: Math.max(insets.bottom - 8, 12) }]}>
       <View style={[s.shadow, shadows.s2]}>
         <View style={s.glass}>
-          <BlurView intensity={dark ? 60 : 75} tint={dark ? "systemChromeMaterialDark" : "systemChromeMaterialLight"} style={StyleSheet.absoluteFill} />
-          <LinearGradient colors={[dark ? "rgba(255,255,255,0.12)" : "rgba(255,255,255,0.55)", "rgba(255,255,255,0)"]} style={s.sheen} pointerEvents="none" />
+          {GLASS ? (
+            <GlassView glassEffectStyle="regular" isInteractive style={StyleSheet.absoluteFill} />
+          ) : (
+            <>
+              <BlurView intensity={dark ? 60 : 75} tint={dark ? "systemChromeMaterialDark" : "systemChromeMaterialLight"} style={StyleSheet.absoluteFill} />
+              <LinearGradient colors={[dark ? "rgba(255,255,255,0.12)" : "rgba(255,255,255,0.55)", "rgba(255,255,255,0)"]} style={s.sheen} pointerEvents="none" />
+            </>
+          )}
         </View>
+        <GestureDetector gesture={slide}>
         <View style={s.row} onLayout={(e) => setWidth(e.nativeEvent.layout.width)}>
-          {width > 0 ? <LiquidIndicator left={PAD + 2} index={Math.max(activeIndex, 0)} slot={slot} hidden={activeIndex < 0 || centerActive} /> : null}
+          {width > 0 ? <LiquidIndicator left={PAD + 2} index={Math.max(shown, 0)} slot={slot} hidden={shown < 0 || centerActive} /> : null}
           {items.map((it) => (it.def.center ? <AiOrbButton key={it.def.route} focused={it.focused} onPress={it.onPress} labelKey={it.def.labelKey} /> : <LiquidItem key={it.def.route} def={it.def} focused={it.focused} onPress={it.onPress} />))}
         </View>
+        </GestureDetector>
       </View>
     </View>
   );
 }
 
 const PAD = 4;
+const GLASS = isLiquidGlassAvailable();
 
 const s = StyleSheet.create({
   wrap: { position: "absolute", left: 0, right: 0, bottom: 0, paddingHorizontal: 14 },
