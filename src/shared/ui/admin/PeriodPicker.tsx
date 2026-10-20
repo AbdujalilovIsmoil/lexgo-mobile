@@ -21,4 +21,4 @@ export function PeriodPicker({ bar, label }: { bar: DateRange; label: string }) 
   );
 }
 
-const s = StyleSheet.create({ group: { gap: 2, marginBottom: 14 }, cal: { marginTop: 10 } });
+const s = StyleSheet.create({ group: { gap: 8, marginBottom: 20 }, cal: { marginTop: 10 } });

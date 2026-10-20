@@ -71,7 +71,7 @@ export function LeadFilterSheet({ visible, onClose, value, onApply, leads, ops, 
 
 const s = StyleSheet.create({
   flex: { flex: 1 },
-  group: { gap: 6, marginBottom: 16 },
+  group: { gap: 8, marginBottom: 20 },
   chips: { flexDirection: "row", flexWrap: "wrap", gap: 8 },
   bar: { flexDirection: "row", alignItems: "center", gap: 12, paddingTop: 14, paddingHorizontal: 20, borderTopWidth: 1 },
 });

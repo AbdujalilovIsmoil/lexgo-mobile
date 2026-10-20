@@ -56,6 +56,6 @@ export function MeetingsFilterSheet({ visible, onClose, status, onStatus, bar }:
 
 const s = StyleSheet.create({
   flex: { flex: 1 },
-  group: { gap: 2, marginBottom: 14 },
+  group: { gap: 8, marginBottom: 20 },
   bar: { flexDirection: "row", alignItems: "center", gap: 12, paddingTop: 14, paddingHorizontal: 20, borderTopWidth: 1 },
 });
