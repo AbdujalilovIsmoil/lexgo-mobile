@@ -10,9 +10,9 @@ export function DashNav() {
   const a = useStudioAccess();
   const router = useRouter();
   const go = (p: string) => () => router.push(`/manage/studio/${p}` as never);
-  if (!a.canReview && !a.isAdmin) return null;
   return (
     <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: 8, paddingVertical: 4 }}>
+      <Chip icon="git-merge" label={t("admStudioD.journeys.title")} onPress={go("journeys")} />
       {a.canReview ? <Chip icon="check-square" label={t("admStudio.tabs.approvals")} onPress={go("approvals")} /> : null}
       {a.isAdmin ? <Chip icon="activity" label={t("admStudio.tabs.monitoring")} onPress={go("monitoring")} /> : null}
       {a.isAdmin ? <Chip icon="sliders" label={t("admStudio.tabs.settings")} onPress={go("settings")} /> : null}

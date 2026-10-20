@@ -4,7 +4,7 @@ import { useRouter } from "expo-router";
 import { Button, IconButton, confirmDialog, toast } from "@/shared/ui";
 import { AdminPage, PagedList } from "@/shared/ui/admin";
 import { ConstructorRow, StudioGate, dashRows, exportAll, studioKeys, syncConstructors, useDashCounts, useMyObjects, useRegistry, useStudioAccess, useStudioErrorText, useStudioText } from "@/entities/admin-studio";
-import { DashFilters, DashMine, DashNav, DashTiles, GroupHeader } from "@/widgets/admin-studio";
+import { DashFilters, DashMine, EntityCards, DashNav, DashTiles, GroupHeader } from "@/widgets/admin-studio";
 import { useAdminMutation } from "@/shared/lib/useAdminMutation";
 import { useT } from "@/shared/i18n";
 
@@ -40,6 +40,7 @@ function Dash() {
           <View style={{ gap: 14, paddingBottom: 12 }}>
             <DashNav />
             <DashTiles />
+            <EntityCards />
             <DashMine />
             {a.isAdmin ? <Button title={t("admStudio.dash.sync")} icon="refresh-cw" variant="soft" size="sm" loading={sync.isPending} onPress={askSync} /> : null}
             <DashFilters q={q} onQ={setQ} groups={tiles} group={group} onGroup={setGroup} total={rows.filter((r) => r.type === "ctor").length} />

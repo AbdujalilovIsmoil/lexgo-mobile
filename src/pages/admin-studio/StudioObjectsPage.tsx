@@ -9,13 +9,13 @@ import { useAdminMutation } from "@/shared/lib/useAdminMutation";
 import { usePaged } from "@/shared/lib/usePaged";
 import { useT } from "@/shared/i18n";
 
-function Objects({ code }: { code: string }) {
+function Objects({ code, initialStatus }: { code: string; initialStatus: string }) {
   const { t } = useT();
   const { ctorName } = useStudioText();
   const a = useStudioAccess();
   const router = useRouter();
   const ctor = a.constructors.find((c) => c.code === code) ?? null;
-  const [status, setStatus] = useState("");
+  const [status, setStatus] = useState(initialStatus);
   const [mine, setMine] = useState(false);
   const [q, setQ] = useState("");
   const [view, setView] = useState<ListView>("objects");
@@ -54,6 +54,6 @@ function Objects({ code }: { code: string }) {
 // Objects of one constructor: status filter, "assigned to me", search, paging, create and archive.
 export default function StudioObjectsPage() {
   const { t } = useT();
-  const { code = "" } = useLocalSearchParams<{ code?: string }>();
-  return <StudioGate need="any" title={t("admHub.mod.studio.title")}><Objects code={code} /></StudioGate>;
+  const { code = "", status = "" } = useLocalSearchParams<{ code?: string; status?: string }>();
+  return <StudioGate need="any" title={t("admHub.mod.studio.title")}><Objects code={code} initialStatus={status} /></StudioGate>;
 }

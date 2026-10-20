@@ -33,6 +33,7 @@ import { admAdsB } from "./admAdsB";
 import { admAdsC } from "./admAdsC";
 import { admStudioB } from "./admStudioB";
 import { admStudioC } from "./admStudioC";
+import { admStudioD } from "./admStudioD";
 import { admRegB } from "./admRegB";
 import { admRegC } from "./admRegC";
 import { admRevB } from "./admRevB";
@@ -50,7 +51,7 @@ export const admBundleA = {
   admCcB, admCcC, admCcH, admMeetB, admMeetC, admCallsB, admCallsC,
   admRetB, admRetC, admB2bB, admB2bC, admMktB, admMktC,
   admSvcB, admSvcC, admPlansB, admPlansC, admTplB, admTplC,
-  admAdsB, admAdsC, admStudioB, admStudioC, admRegB, admRegC,
+  admAdsB, admAdsC, admStudioB, admStudioC, admStudioD, admRegB, admRegC,
   admRevB, admRevC, admPayV, admRevV,
   admPolD, admAiRegD, admHrmS, admHrmQ, admHrmU, admHrmW, admHrmV,
 };

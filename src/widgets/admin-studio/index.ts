@@ -4,3 +4,4 @@ export * from "./list";
 export * from "./approvals";
 export * from "./monitor";
 export * from "./settings";
+export * from "./journey";

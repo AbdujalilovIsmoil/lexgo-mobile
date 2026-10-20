@@ -1,3 +1,4 @@
+export { EntityCards } from "./EntityCards";
 export { DashFilters } from "./DashFilters";
 export { DashMine } from "./DashMine";
 export { DashNav } from "./DashNav";
