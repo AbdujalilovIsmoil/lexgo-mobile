@@ -10,8 +10,8 @@ const STROKE = 9;
 type Tile = { key: keyof typeof KPI_ART; value: number | null; hint: string };
 
 // "Umumiy holat", as on the web home: a ring with how much of the studio is set up (constructors done / total), the two lines under the
-// title, and the records as five picture tiles — all the records (with the active ones), on the site, drafts, in review, awaiting
-// publication. The numbers are the server's summary and the constructor registry, never counted from a page.
+// title; then the records as a pipeline — the total with its active count, one bar showing how the records are spread over the stages, and a
+// row per stage (draft, in review, awaiting publication, on the site) with its picture and count. The numbers are the server's summary and the constructor registry, never counted from a page.
 export function StudioOverview() {
   const { t } = useT();
   const c = useColors();
@@ -31,6 +31,7 @@ export function StudioOverview() {
     { key: "submitted", value: val((by.submitted ?? 0) + (by.in_review ?? 0)), hint: t("admStudioD.ov.submittedHint") },
     { key: "approved", value: val(by.approved ?? 0), hint: t("admStudioD.ov.approvedHint") },
   ];
+  const stages = (["draft", "submitted", "approved", "published"] as const).map((k) => tiles.find((x) => x.key === k) as Tile).map((x) => ({ ...x, color: { published: c.ok, draft: c.gray, submitted: c.warn, approved: c.accent }[x.key as "published" | "draft" | "submitted" | "approved"] }));
   const rect = Skia.XYWHRect(STROKE / 2, STROKE / 2, RING - STROKE, RING - STROKE);
   const track = Skia.PathBuilder.Make().addArc(rect, 0, 359.9).build();
   const arc = Skia.PathBuilder.Make().addArc(rect, -90, Math.max((pct / 100) * 360, pct ? 5 : 0)).build();
@@ -51,13 +52,28 @@ export function StudioOverview() {
           <Text variant="small" tone="gray">{reg ? t("admStudioD.ov.groups", { n: groups.length, done: full }) : " "}</Text>
         </View>
       </View>
-      <View style={s.grid}>
-        {tiles.map((x, i) => (
-          <View key={x.key} style={[s.tile, i === 0 && s.wide, { backgroundColor: c.surface, borderColor: c.line }]}>
+      <View style={[s.rule, { backgroundColor: c.line }]} />
+      <View style={s.total}>
+        <Image source={KPI_ART.total} resizeMode="contain" style={s.artBig} accessible={false} />
+        <View style={s.fill}>
+          <Text variant="caption" tone="gray">{t("admStudioD.ov.total")}</Text>
+          <Text variant="h2" style={s.num}>{tiles[0].value ?? "—"}</Text>
+        </View>
+        <Text variant="small" weight="semibold" tone="gray">{tiles[0].hint}</Text>
+      </View>
+      <View style={[s.bar, { backgroundColor: c.surface2 }]} accessibilityElementsHidden>
+        {stages.filter((x) => x.value).map((x) => <View key={x.key} style={{ flex: x.value ?? 0, backgroundColor: x.color }} />)}
+      </View>
+      <View style={s.list}>
+        {stages.map((x) => (
+          <View key={x.key} style={[s.row, { backgroundColor: c.surface2 }]}>
+            <View style={[s.edge, { backgroundColor: x.color }]} />
             <Image source={KPI_ART[x.key]} resizeMode="contain" style={s.art} accessible={false} />
-            <Text variant="h2" style={s.num}>{x.value ?? "—"}</Text>
-            <Text variant="small" weight="semibold" numberOfLines={1}>{t(`admStudioD.ov.${x.key}`)}</Text>
-            <Text variant="caption" tone="gray" numberOfLines={1}>{x.hint || " "}</Text>
+            <View style={s.fill}>
+              <Text variant="small" weight="semibold" numberOfLines={1}>{t(`admStudioD.ov.${x.key}`)}</Text>
+              <Text variant="caption" tone="gray" numberOfLines={1}>{x.hint}</Text>
+            </View>
+            <Text variant="h4" style={{ color: x.value ? x.color : c.gray2 }}>{x.value ?? "—"}</Text>
           </View>
         ))}
       </View>
@@ -72,9 +88,14 @@ const s = StyleSheet.create({
   ring: { width: RING, height: RING },
   mid: { ...StyleSheet.absoluteFill, alignItems: "center", justifyContent: "center" },
   text: { flex: 1, gap: 4 },
-  grid: { flexDirection: "row", flexWrap: "wrap", gap: 10 },
-  tile: { width: "48.4%", flexGrow: 1, borderRadius: 14, borderWidth: 1, padding: 14, gap: 2 },
-  wide: { width: "100%" },
-  art: { width: 52, height: 52, marginLeft: -6, marginTop: -6, marginBottom: 4 },
-  num: { fontSize: 26, lineHeight: 32 },
+  fill: { flex: 1 },
+  rule: { height: StyleSheet.hairlineWidth },
+  total: { flexDirection: "row", alignItems: "center", gap: 12 },
+  artBig: { width: 56, height: 56, marginLeft: -4 },
+  num: { fontSize: 30, lineHeight: 36 },
+  bar: { flexDirection: "row", height: 12, borderRadius: 6, overflow: "hidden", gap: 2 },
+  list: { gap: 8 },
+  row: { flexDirection: "row", alignItems: "center", gap: 10, minHeight: 60, paddingRight: 14, borderRadius: 14, overflow: "hidden" },
+  edge: { width: 5, alignSelf: "stretch" },
+  art: { width: 40, height: 40 },
 });

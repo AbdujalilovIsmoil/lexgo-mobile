@@ -39,9 +39,9 @@ function Dash() {
         empty={{ icon: "layers", title: t("admStudio.dash.emptyTitle"), text: t(a.isAdmin ? "admStudio.dash.emptyAdmin" : "admStudio.dash.emptyText") }}
         header={
           <View style={{ gap: 14, paddingBottom: 12 }}>
+            <StudioOverview />
             <StudioHero onExport={doExport} exporting={exporting} />
             <DashNav />
-            <StudioOverview />
             <EntityCards />
             <DashMine />
             {a.isAdmin ? <Button title={t("admStudio.dash.sync")} icon="refresh-cw" variant="soft" size="sm" loading={sync.isPending} onPress={askSync} /> : null}
