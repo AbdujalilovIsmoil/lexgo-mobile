@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { StyleSheet, View } from "react-native";
 import { BottomSheet, Button, Chip, IconButton, SheetOption, SheetScroll, Text } from "@/shared/ui";
-import { DateField, useDateRange, type DatePreset } from "@/shared/ui/admin";
+import { PeriodPicker, useDateRange } from "@/shared/ui/admin";
 import { useColors } from "@/shared/theme";
 import { useInsets } from "@/shared/lib/insets";
 import { useT } from "@/shared/i18n";
@@ -9,8 +9,6 @@ import { EMPTY_FILTER, distinct, leadMatches, regionLabel, scoreLabel, sourceLab
 
 type Props = { visible: boolean; onClose: () => void; value: LeadFilter; onApply: (f: LeadFilter) => void; leads: Lead[]; ops: Operator[]; meId: string };
 type Key = "score" | "region" | "source" | "urgency";
-
-const PERIODS: DatePreset[] = ["all", "today", "d7", "d30", "d90", "custom"];
 
 // Operator, score, region, source, urgency and creation period in one bottom sheet. Nothing is applied until the pinned button
 // (it shows how many leads match); "reset" empties every field.
@@ -60,16 +58,7 @@ export function LeadFilterSheet({ visible, onClose, value, onApply, leads, ops, 
           {chips("region", t("admLeads.region"), distinct(leads, (l) => l.region), (v) => regionLabel(t, v))}
           {chips("source", t("admLeads.source"), distinct(leads, (l) => l.source), (v) => sourceLabel(t, v))}
           {chips("urgency", t("admLeads.urgency"), distinct(leads, (l) => l.urgency), (v) => urgencyLabel(t, v))}
-          <View style={s.group}>
-            <Text variant="small" tone="gray">{t("pyx.period")}</Text>
-            {PERIODS.map((p) => <SheetOption key={p} on={bar.preset === p} label={t(`adm.${p}`)} onPress={() => bar.setPreset(p)} />)}
-            {bar.preset === "custom" ? (
-              <View style={s.dates}>
-                <View style={s.flex}><DateField label={t("adm.from")} value={bar.from} onChange={bar.setFrom} /></View>
-                <View style={s.flex}><DateField label={t("adm.to")} value={bar.to} onChange={bar.setTo} /></View>
-              </View>
-            ) : null}
-          </View>
+          <PeriodPicker bar={bar} label={t("pyx.period")} />
         </SheetScroll>
         <View style={[s.bar, { borderTopColor: c.line, paddingBottom: insets.bottom + 14 }]}>
           <IconButton icon="rotate-ccw" size={48} label={t("adm.reset")} onPress={reset} />
@@ -84,6 +73,5 @@ const s = StyleSheet.create({
   flex: { flex: 1 },
   group: { gap: 6, marginBottom: 16 },
   chips: { flexDirection: "row", flexWrap: "wrap", gap: 8 },
-  dates: { flexDirection: "row", gap: 10, marginTop: 8 },
   bar: { flexDirection: "row", alignItems: "center", gap: 12, paddingTop: 14, paddingHorizontal: 20, borderTopWidth: 1 },
 });
