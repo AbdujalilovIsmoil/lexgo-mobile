@@ -1,7 +1,7 @@
-import { StyleSheet, View } from "react-native";
+import { Image, StyleSheet, View } from "react-native";
 import { Icon, Pill, Text } from "@/shared/ui";
 import { ProgressBar } from "@/shared/ui/charts";
-import { groupMeta, useStudioText, useSummary, type StudioGroup } from "@/entities/admin-studio";
+import { groupArt, groupMeta, useStudioText, useSummary, type StudioGroup } from "@/entities/admin-studio";
 import { useColors } from "@/shared/theme";
 import { useT } from "@/shared/i18n";
 
@@ -12,6 +12,7 @@ export function GroupHeader({ group }: { group: StudioGroup }) {
   const { group: label, ctorName } = useStudioText();
   const c = useColors();
   const m = groupMeta(group.key);
+  const art = groupArt(group.key);
   const by = useSummary().data?.byCode ?? {};
   const n = (...st: string[]) => group.items.reduce((sum, i) => sum + st.reduce((x, k) => x + (by[i.code]?.[k] ?? 0), 0), 0);
   const returned = n("changes_requested", "rejected");
@@ -23,7 +24,7 @@ export function GroupHeader({ group }: { group: StudioGroup }) {
     <View style={[s.card, { backgroundColor: c.surface, borderColor: c.line }]}>
       <View style={[s.wash, { backgroundColor: `${m.color}1F` }]} />
       <View style={s.row}>
-        <View style={[s.icon, { backgroundColor: `${m.color}26` }]}><Icon name={m.icon} size={20} color={m.color} /></View>
+        {art ? <Image source={art} resizeMode="contain" style={s.art} accessible={false} /> : <View style={[s.icon, { backgroundColor: `${m.color}26` }]}><Icon name={m.icon} size={20} color={m.color} /></View>}
         <View style={s.fill}>
           <Text variant="h4" numberOfLines={1}>{label(group.key, group.title)}</Text>
           <Text variant="caption" tone="gray">{t("admStudioD.groups.progress", { done: group.completed, total: group.total })}</Text>
@@ -49,6 +50,7 @@ const s = StyleSheet.create({
   wash: { position: "absolute", top: -60, left: -50, width: 190, height: 190, borderRadius: 95 },
   row: { flexDirection: "row", alignItems: "center", gap: 12 },
   fill: { flex: 1 },
+  art: { width: 56, height: 56, marginLeft: -4 },
   icon: { width: 40, height: 40, borderRadius: 13, alignItems: "center", justifyContent: "center" },
   pills: { flexDirection: "row", flexWrap: "wrap", gap: 6 },
 });

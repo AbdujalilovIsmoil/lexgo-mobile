@@ -10,6 +10,7 @@ export * from "./model/releaseQueries";
 export type { ReleaseInput, ReleaseItem, RuntimeRow, StudioRelease } from "./model/typesRelease";
 export * from "./model/dashQueries";
 export * from "./model/typesSummary";
+export { KPI_ART, groupArt } from "./model/studioArt";
 export * from "./model/typesJourney";
 export * from "./model/journeyQueries";
 export { getSummary } from "./api/summaryApi";

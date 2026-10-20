@@ -54,4 +54,5 @@ export const admStudioD: Messages["admStudioD"] = {
     abandon: "Stop", archive: "Archive", restore: "Restore", abandonTitle: "Stop the process \"{name}\"?", abandonText: "The process moves to \"Stopped\". The record already made stays, and you can restore it later.",
     archiveTitle: "Archive the process \"{name}\"?", archiveText: "The process leaves the lists and is kept in \"Archive\". You can restore it if needed.", listTitle: "Creation processes",
   },
+  ov: { title: "Overall status", ctors: "{done} / {total} constructors set up", groups: "{n} sections · {done} fully ready", ringLabel: "Studio readiness: {pct}%", total: "Records", totalActive: "{n} active", published: "On the site", publishedHint: "Published", draft: "Draft", draftHint: "Not sent yet", submitted: "In review", submittedHint: "Awaiting a decision", approved: "Awaiting publication", approvedHint: "Approved" },
 };

@@ -54,4 +54,5 @@ export const admStudioD: Messages["admStudioD"] = {
     abandon: "Остановить", archive: "В архив", restore: "Восстановить", abandonTitle: "Остановить процесс «{name}»?", abandonText: "Процесс перейдёт в «Остановленные». Созданная запись не удалится, позже его можно восстановить.",
     archiveTitle: "Архивировать процесс «{name}»?", archiveText: "Процесс уйдёт из списков и сохранится в «Архиве». При необходимости его можно восстановить.", listTitle: "Процессы создания",
   },
+  ov: { title: "Общее состояние", ctors: "Настроено конструкторов: {done} / {total}", groups: "{n} разделов · полностью готово: {done}", ringLabel: "Готовность Studio: {pct}%", total: "Записи", totalActive: "активно: {n}", published: "На сайте", publishedHint: "Опубликовано", draft: "Черновик", draftHint: "Ещё не отправлено", submitted: "На проверке", submittedHint: "Ждёт решения", approved: "Ждёт публикации", approvedHint: "Утверждено" },
 };
