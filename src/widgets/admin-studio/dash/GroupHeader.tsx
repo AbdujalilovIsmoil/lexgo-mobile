@@ -1,38 +1,54 @@
 import { StyleSheet, View } from "react-native";
 import { Icon, Pill, Text } from "@/shared/ui";
-import { groupMeta, useStudioText, type StudioGroup } from "@/entities/admin-studio";
+import { ProgressBar } from "@/shared/ui/charts";
+import { groupMeta, useStudioText, useSummary, type StudioGroup } from "@/entities/admin-studio";
 import { useColors } from "@/shared/theme";
+import { useT } from "@/shared/i18n";
 
-// Header of one group: icon, title, "done / total" and the group's sequence (each code coloured by its state).
+// One group of the studio as a card, like the web's: a wash of the group's colour in the corner, its icon and name, "done / total set
+// up" with a bar, the next constructor to set up, and what is waiting inside it (returned, awaiting approval, awaiting publication).
 export function GroupHeader({ group }: { group: StudioGroup }) {
-  const { t, group: label } = useStudioText();
+  const { t } = useT();
+  const { group: label, ctorName } = useStudioText();
   const c = useColors();
   const m = groupMeta(group.key);
+  const by = useSummary().data?.byCode ?? {};
+  const n = (...st: string[]) => group.items.reduce((sum, i) => sum + st.reduce((x, k) => x + (by[i.code]?.[k] ?? 0), 0), 0);
+  const returned = n("changes_requested", "rejected");
+  const review = n("submitted", "in_review");
+  const publish = n("approved");
+  const next = group.items.find((i) => i.code === group.next);
+  const done = group.total > 0 && group.completed >= group.total;
   return (
-    <View style={s.box}>
+    <View style={[s.card, { backgroundColor: c.surface, borderColor: c.line }]}>
+      <View style={[s.wash, { backgroundColor: `${m.color}1F` }]} />
       <View style={s.row}>
-        <View style={[s.icon, { backgroundColor: `${m.color}22` }]}><Icon name={m.icon} size={18} color={m.color} /></View>
+        <View style={[s.icon, { backgroundColor: `${m.color}26` }]}><Icon name={m.icon} size={20} color={m.color} /></View>
         <View style={s.fill}>
-          <Text variant="h4" numberOfLines={1}>{group.order}. {label(group.key, group.title)}</Text>
-          <Text variant="caption" style={{ color: c.gray }}>{t("ntd.studioV2.progress", { done: group.completed, total: group.total })}{group.next ? ` · ${t("ntd.studioV2.next", { code: group.next })}` : ""}</Text>
+          <Text variant="h4" numberOfLines={1}>{label(group.key, group.title)}</Text>
+          <Text variant="caption" tone="gray">{t("admStudioD.groups.progress", { done: group.completed, total: group.total })}</Text>
         </View>
       </View>
-      <View style={s.seq}>
-        {group.items.map((i, k) => (
-          <View key={i.code} style={s.row}>
-            {k > 0 ? <Icon name="chevron-right" size={12} tone="gray" /> : null}
-            <Pill label={i.code} tone={i.nav?.completed ? "ok" : i.nav?.availability === "blocked" ? "warn" : "gray"} small />
-          </View>
-        ))}
-      </View>
+      <ProgressBar value={group.total ? group.completed / group.total : 0} color={done ? c.ok : m.color} />
+      <Text variant="small" weight="semibold" style={{ color: done ? c.ok : c.ink }} numberOfLines={1}>
+        {done ? t("admStudioD.groups.allDone") : next ? t("admStudioD.groups.next", { name: ctorName(next.code, next.title) }) : ""}
+      </Text>
+      {returned || review || publish ? (
+        <View style={s.pills}>
+          {returned ? <Pill small tone="err" icon="rotate-ccw" label={t("admStudioD.groups.returned", { n: returned })} /> : null}
+          {review ? <Pill small tone="warn" icon="clock" label={t("admStudioD.groups.review", { n: review })} /> : null}
+          {publish ? <Pill small tone="ok" icon="upload-cloud" label={t("admStudioD.groups.publish", { n: publish })} /> : null}
+        </View>
+      ) : null}
     </View>
   );
 }
 
 const s = StyleSheet.create({
-  box: { gap: 8, paddingTop: 14 },
-  row: { flexDirection: "row", alignItems: "center", gap: 4 },
-  icon: { width: 36, height: 36, borderRadius: 12, alignItems: "center", justifyContent: "center", marginRight: 8 },
+  card: { marginTop: 16, padding: 16, gap: 10, borderRadius: 18, borderWidth: 1, overflow: "hidden" },
+  wash: { position: "absolute", top: -60, left: -50, width: 190, height: 190, borderRadius: 95 },
+  row: { flexDirection: "row", alignItems: "center", gap: 12 },
   fill: { flex: 1 },
-  seq: { flexDirection: "row", flexWrap: "wrap", gap: 4, rowGap: 6 },
+  icon: { width: 40, height: 40, borderRadius: 13, alignItems: "center", justifyContent: "center" },
+  pills: { flexDirection: "row", flexWrap: "wrap", gap: 6 },
 });

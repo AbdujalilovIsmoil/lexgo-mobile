@@ -34,7 +34,7 @@ export const admStudioD = {
     errors: { service_context_required: "Nom yoki tavsif yo'q.", ai_provider_unavailable: "AI xizmati sozlanmagan.", ai_generation_failed: "AI so'rovi bajarilmadi, qayta urinib ko'ring.", ai_response_invalid: "AI javobi noto'g'ri formatda.", ai_response_empty: "AI foydali taklif topmadi." },
   },
   create: {
-    title: "Yangi xizmat yoki paket", lead: "Xizmat yoki paket qadamma-qadam yaratiladi va har qadamdan keyin saqlanadi.", kind: "Nima yaratamiz?", service: "Xizmat", package: "Paket",
+    title: "Yaratish", lead: "Xizmat yoki paket qadamma-qadam yaratiladi va har qadamdan keyin saqlanadi.", kind: "Nima yaratamiz?", service: "Xizmat", package: "Paket",
     serviceWhat: "Bitta xizmat: narx, muddat, ijrochiga talablar va shablon.", packageWhat: "Bir nechta xizmatdan tuzilgan paket va uning darajalari.",
     name: "Nomi", namePhService: "Masalan: Nikoh shartnomasini tuzish", namePhPackage: "Masalan: Oila huquqi paketi", start: "Boshlash", startTitle: "Yangisini boshlash",
     drafts: "Boshlangan ishlar", resume: "Davom ettirish", empty: "Tugallanmagan ish yo'q.", needEdit: "Yangi xizmat yoki paket yaratish uchun Studio muharriri roli kerak.",
@@ -44,5 +44,6 @@ export const admStudioD = {
     notCompleted: "Yozuv yuborildi, lekin jarayonni yakunlash uchun bu majburiy qadamlar qoldi: {list}.", missing: "Jarayon topilmadi", missingText: "Bu yaratish jarayoni o'chirilgan yoki sizga ko'rinmaydi.",
     step: { duration: "Muddat", rules: "Qoidalar", guarantees: "Kafolatlar", services: "Paket tarkibi", price_factors: "Narx omillari", priceFactors: "Narx omillari", checklist: "Bajarish ro'yxati", category: "Kategoriya va tavsif", pricing: "Narx", requirements: "Ijrochiga talablar", template: "Hujjat shabloni", tiers: "Darajalar", eligibility: "Kimga ko'rinadi", review: "Tekshirib yuborish" },
   },
-  home: { lead: "Bo'limlarni tartib bilan sozlang, tasdiqlashga yuboring va saytga chiqaring.", excel: "Excel", newBtn: "Yangi xizmat yoki paket" },
+  home: { lead: "Bo'limlarni tartib bilan sozlang, tasdiqlashga yuboring va saytga chiqaring.", excel: "Excel", newBtn: "Yaratish" },
+  groups: { progress: "{done} / {total} sozlangan", next: "Davom ettirish: {name}", allDone: "Hammasi sozlangan", returned: "{n} ta qaytarilgan", review: "{n} ta tasdiq kutmoqda", publish: "{n} ta e'lon kutmoqda" },
 };

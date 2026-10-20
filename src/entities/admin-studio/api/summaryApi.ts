@@ -24,9 +24,11 @@ function card(raw: unknown): EntityCard {
 export async function getSummary(): Promise<StudioSummary> {
   const d = asDict(await http("/studio/objects/summary"));
   const perCode: Record<string, number> = {};
+  const byCode: Record<string, Record<string, number>> = {};
   for (const x of asArr(d.by_constructor_detail)) {
     const r = asDict(x);
     const code = asStr(r.constructor_code);
+    if (code) byCode[code] = nums(r.by_status);
     if (code) perCode[code] = Math.max(asNum(r.total, 0) - asNum(asDict(r.by_status).archived, 0), 0);
   }
   return {
@@ -35,6 +37,7 @@ export async function getSummary(): Promise<StudioSummary> {
     incompleteTotal: asNum(d.incomplete_total, 0),
     byStatus: nums(d.by_status),
     perCode,
+    byCode,
     cards: asArr(d.entity_cards).map(card).filter((c) => c.key && c.code),
   };
 }

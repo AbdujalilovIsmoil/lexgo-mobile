@@ -19,5 +19,7 @@ export type StudioSummary = {
   byStatus: Record<string, number>;
   /** Studio objects per constructor, archived ones left out. */
   perCode: Record<string, number>;
+  /** Studio objects per constructor and status. */
+  byCode: Record<string, Record<string, number>>;
   cards: EntityCard[];
 };

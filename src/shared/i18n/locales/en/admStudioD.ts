@@ -36,7 +36,7 @@ export const admStudioD: Messages["admStudioD"] = {
     errors: { service_context_required: "The title or description is missing.", ai_provider_unavailable: "The AI service is not configured.", ai_generation_failed: "The AI request failed, try again.", ai_response_invalid: "The AI answer has a wrong format.", ai_response_empty: "The AI found nothing useful." },
   },
   create: {
-    title: "New service or package", lead: "A service or package is created step by step and saved after every step.", kind: "What are we creating?", service: "Service", package: "Package",
+    title: "Create", lead: "A service or package is created step by step and saved after every step.", kind: "What are we creating?", service: "Service", package: "Package",
     serviceWhat: "One service: price, time, requirements for the performer and a template.", packageWhat: "A package of several services and its tiers.",
     name: "Name", namePhService: "For example: drafting a marriage contract", namePhPackage: "For example: family law package", start: "Start", startTitle: "Start a new one",
     drafts: "Work in progress", resume: "Resume", empty: "Nothing unfinished.", needEdit: "Creating a service or package needs the Studio editor role.",
@@ -46,5 +46,6 @@ export const admStudioD: Messages["admStudioD"] = {
     notCompleted: "The record was sent, but these required steps are left: {list}.", missing: "Process not found", missingText: "This creation process was deleted or is not visible to you.",
     step: { duration: "Time", rules: "Rules", guarantees: "Guarantees", services: "Package contents", price_factors: "Price factors", priceFactors: "Price factors", checklist: "Completion checklist", category: "Category and description", pricing: "Price", requirements: "Requirements for the performer", template: "Document template", tiers: "Tiers", eligibility: "Who sees it", review: "Review and send" },
   },
-  home: { lead: "Set the sections up in order, send them for approval and publish them to the site.", excel: "Excel", newBtn: "New service or package" },
+  home: { lead: "Set the sections up in order, send them for approval and publish them to the site.", excel: "Excel", newBtn: "Create" },
+  groups: { progress: "{done} / {total} set up", next: "Continue: {name}", allDone: "All set up", returned: "{n} returned", review: "{n} awaiting approval", publish: "{n} awaiting publication" },
 };

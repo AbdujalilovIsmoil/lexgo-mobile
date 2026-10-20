@@ -36,7 +36,7 @@ export const admStudioD: Messages["admStudioD"] = {
     errors: { service_context_required: "Нет названия или описания.", ai_provider_unavailable: "ИИ-сервис не настроен.", ai_generation_failed: "Запрос к ИИ не выполнен, повторите.", ai_response_invalid: "Ответ ИИ в неверном формате.", ai_response_empty: "ИИ не нашёл подходящих вариантов." },
   },
   create: {
-    title: "Новая услуга или пакет", lead: "Услуга или пакет создаётся по шагам и сохраняется после каждого шага.", kind: "Что создаём?", service: "Услуга", package: "Пакет",
+    title: "Создать", lead: "Услуга или пакет создаётся по шагам и сохраняется после каждого шага.", kind: "Что создаём?", service: "Услуга", package: "Пакет",
     serviceWhat: "Одна услуга: цена, срок, требования к исполнителю и шаблон.", packageWhat: "Пакет из нескольких услуг и его уровни.",
     name: "Название", namePhService: "Например: составление брачного договора", namePhPackage: "Например: пакет семейного права", start: "Начать", startTitle: "Начать новое",
     drafts: "Начатые работы", resume: "Продолжить", empty: "Незавершённых работ нет.", needEdit: "Для создания услуги или пакета нужна роль редактора Studio.",
@@ -46,5 +46,6 @@ export const admStudioD: Messages["admStudioD"] = {
     notCompleted: "Запись отправлена, но остались обязательные шаги: {list}.", missing: "Процесс не найден", missingText: "Этот процесс создания удалён или вам не виден.",
     step: { duration: "Срок", rules: "Правила", guarantees: "Гарантии", services: "Состав пакета", price_factors: "Ценовые факторы", priceFactors: "Ценовые факторы", checklist: "Чек-лист выполнения", category: "Категория и описание", pricing: "Цена", requirements: "Требования к исполнителю", template: "Шаблон документа", tiers: "Уровни", eligibility: "Кому виден", review: "Проверка и отправка" },
   },
-  home: { lead: "Настройте разделы по порядку, отправьте на согласование и опубликуйте на сайте.", excel: "Excel", newBtn: "Новая услуга или пакет" },
+  home: { lead: "Настройте разделы по порядку, отправьте на согласование и опубликуйте на сайте.", excel: "Excel", newBtn: "Создать" },
+  groups: { progress: "{done} / {total} настроено", next: "Продолжить: {name}", allDone: "Всё настроено", returned: "Возвращено: {n}", review: "Ждут согласования: {n}", publish: "Ждут публикации: {n}" },
 };
