@@ -70,7 +70,7 @@ function Detail({ id }: { id: string }) {
             <Text variant="small" tone="gray">{j.status === "completed" || !missing(j).length ? t("admStudioD.create.doneText") : t("admStudioD.create.notCompleted", { list: missing(j).map(label).join(", ") })}</Text>
             <View style={{ flexDirection: "row", gap: 8, flexWrap: "wrap" }}>
               {f.objectId ? <Button title={t("admStudioD.create.openRecord")} icon="external-link" size="sm" onPress={() => router.replace({ pathname: "/manage/studio/object", params: { id: f.objectId } } as never)} /> : null}
-              <Button title={t("admStudioD.create.backList")} variant="line" size="sm" onPress={() => router.replace("/manage/studio/journeys" as never)} />
+              <Button title={t("admStudioD.create.backList")} variant="line" size="sm" onPress={() => router.replace("/manage/studio/create" as never)} />
             </View>
           </Card>
         ) : step ? (

@@ -14,5 +14,8 @@ export type Journey = {
   context: Record<string, unknown>;
   actions: JourneyActions;
   updatedAt: string;
+  createdAt: string;
+  ownerId: string;
+  ownerName: string;
 };
 export type JourneyDef = { type: string; steps: JourneyStep[] };

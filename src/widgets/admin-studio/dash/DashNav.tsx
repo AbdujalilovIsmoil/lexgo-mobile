@@ -9,7 +9,7 @@ export function DashNav() {
   const router = useRouter();
   return (
     <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: 8, paddingVertical: 4 }}>
-      <Chip icon="git-merge" label={t("admStudioD.journeys.title")} onPress={() => router.push("/manage/studio/journeys" as never)} />
+      <Chip icon="git-merge" label={t("admStudioD.jlist.listTitle")} onPress={() => router.push("/manage/studio/create" as never)} />
     </ScrollView>
   );
 }

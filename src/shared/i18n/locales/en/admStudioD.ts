@@ -48,4 +48,10 @@ export const admStudioD: Messages["admStudioD"] = {
   },
   home: { lead: "Set the sections up in order, send them for approval and publish them to the site.", excel: "Excel", newBtn: "Create" },
   groups: { progress: "{done} / {total} set up", next: "Continue: {name}", allDone: "All set up", returned: "{n} returned", review: "{n} awaiting approval", publish: "{n} awaiting publication" },
+  jlist: {
+    filterLabel: "Process state", draft: "Drafts", completed: "Completed", abandoned: "Stopped", archived: "Archive", ownerYou: "You", ownerOther: "Another employee", ownerLine: "Author: {name}", startedOn: "Started: {when}",
+    stepNow: "Current step", empty: { draft: "Nothing unfinished.", completed: "Nothing completed yet.", abandoned: "No stopped processes.", archived: "No archived processes." },
+    abandon: "Stop", archive: "Archive", restore: "Restore", abandonTitle: "Stop the process \"{name}\"?", abandonText: "The process moves to \"Stopped\". The record already made stays, and you can restore it later.",
+    archiveTitle: "Archive the process \"{name}\"?", archiveText: "The process leaves the lists and is kept in \"Archive\". You can restore it if needed.", listTitle: "Creation processes",
+  },
 };

@@ -46,4 +46,10 @@ export const admStudioD = {
   },
   home: { lead: "Bo'limlarni tartib bilan sozlang, tasdiqlashga yuboring va saytga chiqaring.", excel: "Excel", newBtn: "Yaratish" },
   groups: { progress: "{done} / {total} sozlangan", next: "Davom ettirish: {name}", allDone: "Hammasi sozlangan", returned: "{n} ta qaytarilgan", review: "{n} ta tasdiq kutmoqda", publish: "{n} ta e'lon kutmoqda" },
+  jlist: {
+    filterLabel: "Jarayon holati", draft: "Qoralamalar", completed: "Yakunlangan", abandoned: "To'xtatilgan", archived: "Arxiv", ownerYou: "Siz", ownerOther: "Boshqa xodim", ownerLine: "Muallif: {name}", startedOn: "Boshlangan: {when}",
+    stepNow: "Hozirgi qadam", empty: { draft: "Tugallanmagan ish yo'q.", completed: "Hali yakunlangan ish yo'q.", abandoned: "To'xtatilgan jarayon yo'q.", archived: "Arxivda jarayon yo'q." },
+    abandon: "To'xtatish", archive: "Arxivlash", restore: "Tiklash", abandonTitle: "«{name}» jarayoni to'xtatilsinmi?", abandonText: "Jarayon \"To'xtatilgan\" ro'yxatiga o'tadi. Yaratilgan yozuv o'chmaydi, keyin tiklab davom ettirish mumkin.",
+    archiveTitle: "«{name}» jarayoni arxivlansinmi?", archiveText: "Jarayon ro'yxatlardan olinadi va \"Arxiv\"da saqlanadi. Kerak bo'lsa, uni tiklash mumkin.", listTitle: "Yaratish jarayonlari",
+  },
 };

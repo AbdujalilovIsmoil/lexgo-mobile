@@ -48,4 +48,10 @@ export const admStudioD: Messages["admStudioD"] = {
   },
   home: { lead: "Настройте разделы по порядку, отправьте на согласование и опубликуйте на сайте.", excel: "Excel", newBtn: "Создать" },
   groups: { progress: "{done} / {total} настроено", next: "Продолжить: {name}", allDone: "Всё настроено", returned: "Возвращено: {n}", review: "Ждут согласования: {n}", publish: "Ждут публикации: {n}" },
+  jlist: {
+    filterLabel: "Состояние процесса", draft: "Черновики", completed: "Завершённые", abandoned: "Остановленные", archived: "Архив", ownerYou: "Вы", ownerOther: "Другой сотрудник", ownerLine: "Автор: {name}", startedOn: "Начат: {when}",
+    stepNow: "Текущий шаг", empty: { draft: "Незавершённых работ нет.", completed: "Завершённых работ пока нет.", abandoned: "Остановленных процессов нет.", archived: "В архиве процессов нет." },
+    abandon: "Остановить", archive: "В архив", restore: "Восстановить", abandonTitle: "Остановить процесс «{name}»?", abandonText: "Процесс перейдёт в «Остановленные». Созданная запись не удалится, позже его можно восстановить.",
+    archiveTitle: "Архивировать процесс «{name}»?", archiveText: "Процесс уйдёт из списков и сохранится в «Архиве». При необходимости его можно восстановить.", listTitle: "Процессы создания",
+  },
 };

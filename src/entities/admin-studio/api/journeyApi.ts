@@ -30,6 +30,9 @@ function journey(raw: unknown): Journey {
     context: asDict(d.context),
     actions: { update: bool(a.update), abandon: bool(a.abandon), archive: bool(a.archive), restore: bool(a.restore) },
     updatedAt: asStr(d.updated_at),
+    createdAt: asStr(d.created_at),
+    ownerId: asStr(d.owner_user_id) || asStr(asDict(d.created_by).id),
+    ownerName: asStr(asDict(d.created_by).name),
   };
 }
 
