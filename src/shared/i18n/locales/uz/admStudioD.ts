@@ -50,7 +50,8 @@ export const admStudioD = {
     filterLabel: "Jarayon holati", draft: "Qoralamalar", completed: "Yakunlangan", abandoned: "To'xtatilgan", archived: "Arxiv", ownerYou: "Siz", ownerOther: "Boshqa xodim", ownerLine: "Muallif: {name}", startedOn: "Boshlangan: {when}",
     stepNow: "Hozirgi qadam", empty: { draft: "Tugallanmagan ish yo'q.", completed: "Hali yakunlangan ish yo'q.", abandoned: "To'xtatilgan jarayon yo'q.", archived: "Arxivda jarayon yo'q." },
     abandon: "To'xtatish", archive: "Arxivlash", restore: "Tiklash", abandonTitle: "«{name}» jarayoni to'xtatilsinmi?", abandonText: "Jarayon \"To'xtatilgan\" ro'yxatiga o'tadi. Yaratilgan yozuv o'chmaydi, keyin tiklab davom ettirish mumkin.",
-    archiveTitle: "«{name}» jarayoni arxivlansinmi?", archiveText: "Jarayon ro'yxatlardan olinadi va \"Arxiv\"da saqlanadi. Kerak bo'lsa, uni tiklash mumkin.", listTitle: "Yaratish jarayonlari",
+    archiveTitle: "«{name}» jarayoni arxivlansinmi?", archiveText: "Jarayon ro'yxatlardan olinadi va \"Arxiv\"da saqlanadi. Kerak bo'lsa, uni tiklash mumkin.", listTitle: "Jarayonlar",
   },
   ov: { title: "Umumiy holat", ctors: "{done} / {total} konstruktor sozlangan", groups: "{n} bo'lim · {done} tasi to'liq tayyor", ringLabel: "Studio tayyorligi: {pct}%", total: "Yozuvlar", totalActive: "{n} tasi faol", published: "Saytda", publishedHint: "E'lon qilingan", draft: "Qoralama", draftHint: "Hali yuborilmagan", submitted: "Tekshiruvda", submittedHint: "Qaror kutmoqda", approved: "E'lon kutmoqda", approvedHint: "Tasdiqlangan" },
+  entity: { title: "Xizmatlar va paketlar", total: "Tizimda jami", studio: "Studioda {n} ta yozuv", open: "Ro'yxatni ochish", newService: "Yangi xizmat", newPackage: "Yangi paket", aria: "{name}. Tizimda jami {total}, faol {active}, nofaol {inactive}, tugallanmagan {incomplete}" },
 };

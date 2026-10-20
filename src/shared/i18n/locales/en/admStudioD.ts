@@ -52,7 +52,8 @@ export const admStudioD: Messages["admStudioD"] = {
     filterLabel: "Process state", draft: "Drafts", completed: "Completed", abandoned: "Stopped", archived: "Archive", ownerYou: "You", ownerOther: "Another employee", ownerLine: "Author: {name}", startedOn: "Started: {when}",
     stepNow: "Current step", empty: { draft: "Nothing unfinished.", completed: "Nothing completed yet.", abandoned: "No stopped processes.", archived: "No archived processes." },
     abandon: "Stop", archive: "Archive", restore: "Restore", abandonTitle: "Stop the process \"{name}\"?", abandonText: "The process moves to \"Stopped\". The record already made stays, and you can restore it later.",
-    archiveTitle: "Archive the process \"{name}\"?", archiveText: "The process leaves the lists and is kept in \"Archive\". You can restore it if needed.", listTitle: "Creation processes",
+    archiveTitle: "Archive the process \"{name}\"?", archiveText: "The process leaves the lists and is kept in \"Archive\". You can restore it if needed.", listTitle: "Processes",
   },
   ov: { title: "Overall status", ctors: "{done} / {total} constructors set up", groups: "{n} sections · {done} fully ready", ringLabel: "Studio readiness: {pct}%", total: "Records", totalActive: "{n} active", published: "On the site", publishedHint: "Published", draft: "Draft", draftHint: "Not sent yet", submitted: "In review", submittedHint: "Awaiting a decision", approved: "Awaiting publication", approvedHint: "Approved" },
+  entity: { title: "Services and packages", total: "In the system", studio: "{n} records in Studio", open: "Open the list", newService: "New service", newPackage: "New package", aria: "{name}. In the system {total}, active {active}, inactive {inactive}, incomplete {incomplete}" },
 };

@@ -52,7 +52,8 @@ export const admStudioD: Messages["admStudioD"] = {
     filterLabel: "Состояние процесса", draft: "Черновики", completed: "Завершённые", abandoned: "Остановленные", archived: "Архив", ownerYou: "Вы", ownerOther: "Другой сотрудник", ownerLine: "Автор: {name}", startedOn: "Начат: {when}",
     stepNow: "Текущий шаг", empty: { draft: "Незавершённых работ нет.", completed: "Завершённых работ пока нет.", abandoned: "Остановленных процессов нет.", archived: "В архиве процессов нет." },
     abandon: "Остановить", archive: "В архив", restore: "Восстановить", abandonTitle: "Остановить процесс «{name}»?", abandonText: "Процесс перейдёт в «Остановленные». Созданная запись не удалится, позже его можно восстановить.",
-    archiveTitle: "Архивировать процесс «{name}»?", archiveText: "Процесс уйдёт из списков и сохранится в «Архиве». При необходимости его можно восстановить.", listTitle: "Процессы создания",
+    archiveTitle: "Архивировать процесс «{name}»?", archiveText: "Процесс уйдёт из списков и сохранится в «Архиве». При необходимости его можно восстановить.", listTitle: "Процессы",
   },
   ov: { title: "Общее состояние", ctors: "Настроено конструкторов: {done} / {total}", groups: "{n} разделов · полностью готово: {done}", ringLabel: "Готовность Studio: {pct}%", total: "Записи", totalActive: "активно: {n}", published: "На сайте", publishedHint: "Опубликовано", draft: "Черновик", draftHint: "Ещё не отправлено", submitted: "На проверке", submittedHint: "Ждёт решения", approved: "Ждёт публикации", approvedHint: "Утверждено" },
+  entity: { title: "Услуги и пакеты", total: "Всего в системе", studio: "В Studio записей: {n}", open: "Открыть список", newService: "Новая услуга", newPackage: "Новый пакет", aria: "{name}. Всего в системе {total}, активно {active}, неактивно {inactive}, не завершено {incomplete}" },
 };
