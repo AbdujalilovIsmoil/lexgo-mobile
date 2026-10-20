@@ -4,7 +4,6 @@ import { useIsAuthed } from "@/entities/session";
 import { useBadgeStore } from "@/shared/lib/badgeStore";
 import { useT } from "@/shared/i18n";
 import { useColors } from "@/shared/theme";
-import { AiAccessory } from "./AiAccessory";
 import { TABS } from "./tabConfig";
 import { useTabRole } from "./useTabRole";
 import { useVisibleTabs } from "./useTabItems";
@@ -18,7 +17,7 @@ const SF: Record<string, string> = {
 
 const AI_ORB = require("../../../assets/tabs/ai-orb.png");
 
-// The AI tab is drawn as its colour orb and also floats as a strip above the bar (iOS 26).
+// The AI tab is drawn as its colour orb.
 // The system tab bar (UITabBar): Liquid Glass on iOS 26 with no custom drawing. Every route is declared, in the role's order first;
 // the ones outside the role or not allowed right now are hidden. `bar` is false on screens that ask for no bar (the AI chat).
 export function NativeTabsBar({ bar }: { bar: boolean }) {
@@ -32,7 +31,6 @@ export function NativeTabsBar({ bar }: { bar: boolean }) {
   const rest = [...new Set(Object.values(TABS).flat().map((d) => d.route))].filter((r) => !shown.some((d) => d.route === r));
   return (
     <NativeTabs hidden={!bar} tintColor={c.accent}>
-      {shown.some((d) => d.center) ? <NativeTabs.BottomAccessory><AiAccessory /></NativeTabs.BottomAccessory> : null}
       {shown.map((def) => {
         const n = def.badge ? (badges[def.badge] ?? 0) : 0;
         const guard = def.auth && !authed;
