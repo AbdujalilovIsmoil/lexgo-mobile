@@ -16,6 +16,7 @@ import { NavigationTheme } from "./NavigationTheme";
 import { SessionBoundary } from "./SessionBoundary";
 import { PackageMounts } from "./mounts";
 import { SystemChrome } from "./SystemChrome";
+import { UpdateMount } from "./UpdateMount";
 
 // Dark from the very first frame; SystemChrome later follows the theme.
 void SystemUI.setBackgroundColorAsync("#03102B").catch(() => {});
@@ -32,6 +33,7 @@ function Chrome({ children }: { children: ReactNode }) {
       <ClientSidebar />
       <SessionBoundary />
       <PackageMounts />
+      <UpdateMount />
     </NavigationTheme>
   );
 }

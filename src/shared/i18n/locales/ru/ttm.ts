@@ -17,4 +17,5 @@ export const ttm: Messages["ttm"] = {
   due: { today: "Сегодня {time}", tomorrow: "Завтра {time}", yesterday: "Вчера {time}" }, peopleCount: "Исполнителей: {n}",
   kpi: { created: "Выдано сегодня", done: "Выполнено сегодня", open: "Не выполнено", openLate: "Просрочено: {n}", unassigned: "Не назначено задач: {n}" },
   progress: { title: "Уровень выполнения", foot: "Из {total} задач готово {done}", late: "Просрочено задач: {n}" },
+  alert: { assigned: "Вам назначена задача", returned: "Задача возвращена на доработку", testing: "Задача готова к проверке" },
 };

@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { StyleSheet, View } from "react-native";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import Animated, { SlideInUp, SlideOutUp } from "react-native-reanimated";
+import { useRouter } from "expo-router";
 import { useQueryClient } from "@tanstack/react-query";
 import { alertText, CATEGORY_COLOR, CATEGORY_ICON, linkInputOf, markIdsRead, useBannerStore, useLocalPrefs } from "@/entities/notification";
 import { useOpenLink } from "@/features/open-link";
@@ -21,6 +22,7 @@ export function NotificationBanner() {
   const qc = useQueryClient();
   const insets = useInsets();
   const { open, resolve } = useOpenLink();
+  const router = useRouter();
   const item = useBannerStore((s) => s.item);
   const hide = useBannerStore((s) => s.hide);
   const vibrate = useLocalPrefs((s) => s.vibrate);
@@ -37,6 +39,7 @@ export function NotificationBanner() {
   const swipe = Gesture.Pan().runOnJS(true).onEnd((e) => e.translationY < -10 && hide());
   const go = () => {
     hide();
+    if (item.event.startsWith("tasks.")) return router.navigate("/team-tasks" as never);
     void markIdsRead(qc, item.ids);
     if (resolve(request).kind === "target") void open(request, "banner");
     else void open({ url: "lexgo:///notifications" }, "banner");

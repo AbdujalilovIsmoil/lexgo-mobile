@@ -17,4 +17,5 @@ export const ttm: Messages["ttm"] = {
   due: { today: "Today {time}", tomorrow: "Tomorrow {time}", yesterday: "Yesterday {time}" }, peopleCount: "{n} assignees",
   kpi: { created: "Given today", done: "Done today", open: "Not done", openLate: "{n} overdue", unassigned: "{n} tasks unassigned" },
   progress: { title: "Completion", foot: "{done} of {total} tasks are ready", late: "{n} tasks overdue" },
+  alert: { assigned: "A task was assigned to you", returned: "A task was sent back for rework", testing: "A task is ready to check" },
 };

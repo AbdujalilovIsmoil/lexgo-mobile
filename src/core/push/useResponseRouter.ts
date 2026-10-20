@@ -27,6 +27,10 @@ export function useResponseRouter(): void {
       handled.current.add(id);
       const d = asDict(r.notification.request.content.data);
       const t = (key: string) => translate(useLocaleStore.getState().locale, key);
+      if (asStr(d.event).startsWith("tasks.")) {
+        router.navigate("/team-tasks" as never); // a task alert opens the team's tasks
+        return;
+      }
       const input = { event: asStr(d.event), category: asStr(d.category), entityType: asStr(d.entity_type), entityId: asStr(d.entity_id), deepLink: asStr(d.deep_link), data: d };
       void openLink({ input }, currentViewer(), { navigate: (h) => router.navigate(h as never), say: toast, t }, "push_tap").then((res) => {
         if (res === "none") router.navigate("/notifications");

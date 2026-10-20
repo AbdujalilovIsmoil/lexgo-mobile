@@ -5,6 +5,7 @@ import { usePermissionSync } from "./usePermissionSync";
 import { usePolling } from "./usePolling";
 import { usePushToken } from "./usePushToken";
 import { useRealtimeAlerts } from "./useRealtimeAlerts";
+import { useTaskAlerts } from "./useTaskAlerts";
 import { useResponseRouter } from "./useResponseRouter";
 import "./handler";
 import "./task";
@@ -18,6 +19,7 @@ export function PushMount() {
   useAskCallAlerts();
   useBadgeSync();
   useRealtimeAlerts();
+  useTaskAlerts();
   useResponseRouter();
   usePolling();
   usePushToken();

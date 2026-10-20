@@ -1,6 +1,7 @@
 import { StyleSheet, View } from "react-native";
 import Constants from "expo-constants";
 import { Card, Text } from "@/shared/ui";
+import { AppUpdateCard } from "./AppUpdateCard";
 import { LogoutButton } from "./LogoutButton";
 import { useT } from "@/shared/i18n";
 import { ThemeSegment } from "@/features/theme-switch";
@@ -29,6 +30,7 @@ export function AppSettings() {
         </Text>
         <LocaleSegment />
       </Card>
+      <AppUpdateCard />
       {authed ? <LogoutButton title={t("profile.logout")} onPress={confirm} /> : null}
       <Text variant="caption" tone="gray2" center style={s.version}>
         {t("profile.version", { v: version })}

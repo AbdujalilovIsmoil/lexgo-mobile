@@ -15,4 +15,5 @@ export const ttm = {
   due: { today: "Bugun {time}", tomorrow: "Ertaga {time}", yesterday: "Kecha {time}" }, peopleCount: "{n} ta ijrochi",
   kpi: { created: "Bugun berilgan", done: "Bugun bajarilgan", open: "Bajarilmagan", openLate: "{n} tasining muddati o'tgan", unassigned: "{n} ta vazifa biriktirilmagan" },
   progress: { title: "Bajarilish darajasi", foot: "Jami {total} ta vazifadan {done} tasi tayyor", late: "{n} ta vazifaning muddati o'tgan" },
+  alert: { assigned: "Sizga vazifa biriktirildi", returned: "Vazifa qayta ishlashga qaytarildi", testing: "Vazifa tekshirishga tayyor" },
 };

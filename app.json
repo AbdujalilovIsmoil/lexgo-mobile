@@ -177,6 +177,14 @@
         "projectId": "3c3729af-185c-4be7-8c62-298aff835b84"
       }
     },
-    "owner": "ismoilabdujalilov"
+    "owner": "ismoilabdujalilov",
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/3c3729af-185c-4be7-8c62-298aff835b84",
+      "checkAutomatically": "ON_LOAD",
+      "fallbackToCacheTimeout": 0
+    }
   }
 }
