@@ -1,13 +1,13 @@
 import { useState } from "react";
 import type { ExportDef } from "@/entities/admin-export";
-import { DateRangeBar, FormSheet, SelectField, useDateRange } from "@/shared/ui/admin";
+import { FormSheet, PeriodPicker, SelectField, useDateRange } from "@/shared/ui/admin";
 import { Text } from "@/shared/ui";
 import { humanizeSlug } from "@/shared/lib/format";
 import { useKept } from "@/shared/lib/useKept";
 import { useT } from "@/shared/i18n";
 import { useRunExport } from "../model/useRunExport";
 
-// Choose the period (and one filter, where the export has it), then download the workbook and share it.
+// Choose the period (ready-made, or two days tapped on a calendar) and one filter where the export has it, then download the workbook and share it.
 export function ExportSheet({ def: current, onClose }: { def: ExportDef | null; onClose: () => void }) {
   const { t } = useT();
   const def = useKept(current);
@@ -24,7 +24,7 @@ export function ExportSheet({ def: current, onClose }: { def: ExportDef | null; 
       onSubmit={def ? () => run.mutate({ def, q: { from: bar.range.from, to: bar.range.to, filter: picked } }) : undefined}
       submitLabel={t("ag2.download")} submitting={run.isPending}
     >
-      {def?.dates ? <><Text variant="small" tone="gray">{t("ag2.period")}</Text><DateRangeBar bar={bar} withAll /></> : <Text variant="small" tone="gray">{t("ag2.noPeriod")}</Text>}
+      {def?.dates ? <PeriodPicker bar={bar} label={t("ag2.period")} /> : <Text variant="small" tone="gray">{t("ag2.noPeriod")}</Text>}
       {f ? <SelectField label={t(`ag2.by.${f.param}`)} value={picked} options={options} onChange={setFilter} /> : null}
     </FormSheet>
   );

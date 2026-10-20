@@ -1,4 +1,5 @@
 export const admMkt = {
+  lead: "Buyurtmalar, to'lovlar va sotuvchilar yuklamasi bir joyda.",
   eyebrow: "Jonli nazorat · 60 soniyada yangilanadi",
   revenue: "To'langan tushum",
   revenueSub: "{n} ta to'langan buyurtma",

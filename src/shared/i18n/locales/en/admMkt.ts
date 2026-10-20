@@ -1,6 +1,7 @@
 import type { Messages } from "../uz";
 
 export const admMkt: Messages["admMkt"] = {
+  lead: "Orders, payments and seller workload in one place.",
   eyebrow: "Live monitor · refreshes every minute",
   revenue: "Paid revenue",
   revenueSub: "{n} paid orders",
