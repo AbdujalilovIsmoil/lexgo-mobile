@@ -16,7 +16,7 @@ const SF: Record<string, string> = {
   headphones: "headphones", video: "video.fill", "bar-chart-2": "chart.bar.fill", sliders: "slider.horizontal.3", bell: "bell.fill", user: "person.fill",
 };
 
-const AI_ORB = require("../../../assets/tabs/ai-orb.png"); // eslint-disable-line @typescript-eslint/no-require-imports
+const AI_ORB = require("../../../assets/tabs/ai-orb.png");
 
 // The AI tab is drawn as its colour orb and also floats as a strip above the bar (iOS 26).
 // The system tab bar (UITabBar): Liquid Glass on iOS 26 with no custom drawing. Every route is declared, in the role's order first;
