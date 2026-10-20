@@ -1,14 +1,14 @@
 import { useState } from "react";
 import { StyleSheet, View } from "react-native";
 import { REGION_KEYS } from "@/entities/admin-dash";
-import { BottomSheet, Button, Chip, IconButton, SheetScroll, Text } from "@/shared/ui";
+import { BottomSheet, Button, IconButton, SheetOption, SheetScroll, Text } from "@/shared/ui";
 import { PeriodPicker, useDateRange } from "@/shared/ui/admin";
 import { useColors } from "@/shared/theme";
 import { useInsets } from "@/shared/lib/insets";
 import { useT } from "@/shared/i18n";
 import type { DashFilterState } from "./useDashFilter";
 
-// Region and period of a dashboard in one bottom sheet (the period's "custom" opens a calendar). Nothing changes until the
+// Region (radio rows) and period of a dashboard in one bottom sheet, laid out like the other filter sheets (the period's "custom" opens a calendar). Nothing changes until the
 // pinned button; "reset" empties both.
 export function DashFilterSheet({ f, visible, onClose }: { f: DashFilterState; visible: boolean; onClose: () => void }) {
   const { t } = useT();
@@ -40,10 +40,8 @@ export function DashFilterSheet({ f, visible, onClose }: { f: DashFilterState; v
         <SheetScroll>
           <View style={s.group}>
             <Text variant="small" tone="gray">{t("admDash.filter.region")}</Text>
-            <View style={s.chips}>
-              <Chip label={t("admDash.filter.allRegions")} active={region === ""} onPress={() => setRegion("")} />
-              {REGION_KEYS.map((k) => <Chip key={k} label={t(`admDash.region.${k}`)} active={region === k} onPress={() => setRegion(k)} />)}
-            </View>
+            <SheetOption on={region === ""} label={t("admDash.filter.allRegions")} onPress={() => setRegion("")} />
+            {REGION_KEYS.map((k) => <SheetOption key={k} on={region === k} label={t(`admDash.region.${k}`)} onPress={() => setRegion(k)} />)}
           </View>
           <PeriodPicker bar={draft} label={t("pyx.period")} />
         </SheetScroll>
@@ -59,6 +57,5 @@ export function DashFilterSheet({ f, visible, onClose }: { f: DashFilterState; v
 const s = StyleSheet.create({
   flex: { flex: 1 },
   group: { gap: 8, marginBottom: 20 },
-  chips: { flexDirection: "row", flexWrap: "wrap", gap: 8 },
   bar: { flexDirection: "row", alignItems: "center", gap: 12, paddingTop: 14, paddingHorizontal: 20, borderTopWidth: 1 },
 });
