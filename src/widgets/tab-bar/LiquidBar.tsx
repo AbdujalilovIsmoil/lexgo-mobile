@@ -11,7 +11,7 @@ import { useInsets } from "@/shared/lib/insets";
 import { shadows, useTheme } from "@/shared/theme";
 import { AiOrbButton } from "./AiOrbButton";
 import { BlurGuard, loadCommunityBlur } from "./communityBlur";
-import { loadGlass } from "./glass";
+import { loadGlass } from "@/shared/lib/glass";
 import { LiquidIndicator } from "./LiquidIndicator";
 import { LiquidItem } from "./LiquidItem";
 import { useTabItems } from "./useTabItems";

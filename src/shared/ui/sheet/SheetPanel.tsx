@@ -4,7 +4,8 @@ import { GestureDetector, GestureHandlerRootView, type GestureType } from "react
 import { useReanimatedKeyboardAnimation } from "react-native-keyboard-controller";
 import Animated, { useAnimatedStyle, type SharedValue } from "react-native-reanimated";
 import { useInsets } from "@/shared/lib/insets";
-import { useColors } from "@/shared/theme";
+import { useColors, useTheme } from "@/shared/theme";
+import { GlassBackdrop, useGlass } from "../GlassBackdrop";
 import { SheetBackdrop } from "./SheetBackdrop";
 import { SheetHeader } from "./SheetHeader";
 import { useSheetFit } from "./SheetFitContext";
@@ -19,6 +20,8 @@ const TOP_GAP = 10;
 // not resize, and with edge-to-edge nothing pans for us).
 export function SheetPanel({ h, gesture, low, onClose, title, subtitle, children }: Props) {
   const c = useColors();
+  const { dark } = useTheme();
+  const lens = !!useGlass();
   const insets = useInsets();
   const { height: H } = useWindowDimensions();
   const { height: kb } = useReanimatedKeyboardAnimation(); // 0 … -keyboardHeight
@@ -31,7 +34,8 @@ export function SheetPanel({ h, gesture, low, onClose, title, subtitle, children
   return (
     <GestureHandlerRootView style={s.root}>
       <SheetBackdrop height={h} low={low} onPress={onClose} />
-      <Animated.View accessibilityViewIsModal accessibilityLabel={title} onAccessibilityEscape={onClose} style={[s.sheet, { backgroundColor: c.surface, borderColor: c.line }, sheet]}>
+      <Animated.View accessibilityViewIsModal accessibilityLabel={title} onAccessibilityEscape={onClose} style={[s.sheet, { backgroundColor: lens ? "transparent" : c.surface, borderColor: c.line }, sheet]}>
+        {lens ? <GlassBackdrop radius={28} tint={dark ? "rgba(10,17,32,0.62)" : "rgba(255,255,255,0.66)"} /> : null}
         <GestureDetector gesture={gesture}>
           <View collapsable={false} onLayout={(e) => fit?.setHeader(e.nativeEvent.layout.height)}>
             <SheetHeader title={title} subtitle={subtitle} onClose={onClose} />

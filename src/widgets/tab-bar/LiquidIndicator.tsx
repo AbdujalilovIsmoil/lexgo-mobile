@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { StyleSheet } from "react-native";
 import Animated, { useAnimatedStyle, useSharedValue, withSpring, type SharedValue } from "react-native-reanimated";
 import { useTheme } from "@/shared/theme";
-import { loadGlass } from "./glass";
+import { loadGlass } from "@/shared/lib/glass";
 
 type Props = { index: number; slot: number; hidden: boolean; left: number; lift: SharedValue<number> };
 

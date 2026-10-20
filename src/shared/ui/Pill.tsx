@@ -2,6 +2,7 @@ import { StyleSheet, View } from "react-native";
 import { radius, useColors } from "@/shared/theme";
 import { Text } from "./Text";
 import { Icon, type IconName } from "./Icon";
+import { GlassBackdrop, useGlass } from "./GlassBackdrop";
 import { LiveDot } from "./LiveDot";
 
 export type PillTone = "blue" | "cy" | "ok" | "gray" | "glass" | "err" | "warn";
@@ -21,8 +22,10 @@ export function Pill({ label, tone = "blue", icon, small, live }: Props) {
     warn: { bg: c.warnBg, fg: c.warn },
   };
   const { bg, fg } = map[tone];
+  const lens = useGlass() && tone === "glass";
   return (
-    <View style={[s.pill, { backgroundColor: bg }, small && s.small]}>
+    <View style={[s.pill, { backgroundColor: lens ? "transparent" : bg }, small && s.small]}>
+      {lens ? <GlassBackdrop radius={radius.pill} tint="rgba(255,255,255,0.16)" /> : null}
       {live ? <LiveDot color={fg} size={small ? 6 : 7} /> : icon ? <Icon name={icon} size={small ? 11 : 13} color={fg} /> : null}
       <Text variant="caption" weight="semibold" style={{ color: fg, fontSize: small ? 11 : 12 }}>
         {label}

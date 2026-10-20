@@ -3,6 +3,7 @@ import Animated, { FadeInUp, FadeOutDown } from "react-native-reanimated";
 import { useInsets } from "@/shared/lib/insets";
 import { radius, shadows, useTheme } from "@/shared/theme";
 import { useToastStore } from "./toastStore";
+import { GlassBackdrop, useGlass } from "./GlassBackdrop";
 import { Text } from "./Text";
 import { Icon, type IconName } from "./Icon";
 
@@ -11,12 +12,14 @@ export function Toaster() {
   const toasts = useToastStore((s) => s.toasts);
   const insets = useInsets();
   const { colors: c, dark } = useTheme();
+  const lens = !!useGlass();
   if (!toasts.length) return null;
   const icons: Record<string, IconName> = { info: "info", ok: "check-circle", err: "alert-circle" };
   return (
     <View pointerEvents="none" accessibilityLiveRegion="polite" style={[s.host, { bottom: insets.bottom + 84 }]}>
       {toasts.map((t) => (
-        <Animated.View key={t.id} accessible accessibilityRole="alert" accessibilityLabel={t.text} entering={FadeInUp.duration(220)} exiting={FadeOutDown.duration(180)} style={[s.toast, { backgroundColor: dark ? c.surface2 : "#0B1F45" }, shadows.s2]}>
+        <Animated.View key={t.id} accessible accessibilityRole="alert" accessibilityLabel={t.text} entering={FadeInUp.duration(220)} exiting={FadeOutDown.duration(180)} style={[s.toast, { backgroundColor: lens ? "transparent" : dark ? c.surface2 : "#0B1F45" }, shadows.s2]}>
+          {lens ? <GlassBackdrop radius={radius.r} tint={dark ? "rgba(8,16,36,0.55)" : "rgba(11,31,69,0.62)"} /> : null}
           <Icon name={icons[t.kind]} size={18} color={t.kind === "err" ? "#FF9494" : t.kind === "ok" ? "#4ADE9F" : "#93C6FF"} />
           <Text variant="small" tone="white" style={s.text}>
             {t.text}

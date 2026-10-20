@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { Modal, Pressable, StyleSheet, View } from "react-native";
 import Animated from "react-native-reanimated";
-import { radius, shadows, useColors } from "@/shared/theme";
+import { radius, shadows, useColors, useTheme } from "@/shared/theme";
+import { GlassBackdrop, useGlass } from "../GlassBackdrop";
 import { errorHaptic } from "@/shared/lib/haptics";
 import { useKept } from "@/shared/lib/useKept";
 import { Icon } from "../Icon";
@@ -15,6 +16,8 @@ import { useDialogMotion } from "./useDialogMotion";
 // the Android back button cancel it; while the action runs it can't be dismissed.
 export function ConfirmDialog() {
   const c = useColors();
+  const { dark } = useTheme();
+  const lens = !!useGlass();
   const live = useDialogStore((st) => st.spec);
   const close = useDialogStore((st) => st.close);
   const spec = useKept(live);
@@ -41,7 +44,8 @@ export function ConfirmDialog() {
         <Animated.View style={[StyleSheet.absoluteFill, { backgroundColor: "#020A1C" }, dim]}>
           <Pressable style={StyleSheet.absoluteFill} onPress={cancel} accessibilityLabel="close" />
         </Animated.View>
-        <Animated.View style={[s.card, shadows.s2, { backgroundColor: c.surface, borderColor: c.line }, card]}>
+        <Animated.View style={[s.card, shadows.s2, { backgroundColor: lens ? "transparent" : c.surface, borderColor: c.line }, card]}>
+          {lens ? <GlassBackdrop radius={radius.rx} tint={dark ? "rgba(10,17,32,0.6)" : "rgba(255,255,255,0.7)"} /> : null}
           <View style={[s.ring, { backgroundColor: spec.danger ? c.errBg : c.tint2 }]}>
             <View style={[s.badge, { backgroundColor: spec.danger ? c.errBg : c.tint2, borderColor: tone }]}>
               <Icon name={spec.icon ?? "help-circle"} size={28} color={tone} />

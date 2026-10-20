@@ -26,6 +26,7 @@ export { Toaster } from "./Toaster";
 export { toast, useToastStore } from "./toastStore";
 export { HeroScroll } from "./HeroScroll";
 export { IconButton } from "./IconButton";
+export { GlassBackdrop, useGlass } from "./GlassBackdrop";
 export { SendButton } from "./SendButton";
 export { MarkdownText } from "./MarkdownText";
 export { BottomSheet, SheetBack, SheetScroll } from "./sheet";

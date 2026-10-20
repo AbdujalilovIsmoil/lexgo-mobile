@@ -6,7 +6,8 @@ import Animated, { useAnimatedStyle, withSpring } from "react-native-reanimated"
 import { scheduleOnRN } from "react-native-worklets";
 import { useAccess } from "@/entities/access";
 import { useSession } from "@/entities/session";
-import { useColors } from "@/shared/theme";
+import { useColors, useTheme } from "@/shared/theme";
+import { GlassBackdrop, useGlass } from "@/shared/ui";
 import { useTabRole } from "@/widgets/tab-bar/useTabRole";
 import { GUEST_OPEN } from "./navItems";
 import { SidebarHandle } from "./SidebarHandle";
@@ -23,6 +24,8 @@ const HIDE = new Set(["auth", "chat", "call", "lawyer", "assistant", "instructor
 // drawer out; the page dims as it comes. Tap the dim area, drag the drawer left, or press back to close.
 export function ClientSidebar() {
   const c = useColors();
+  const { dark } = useTheme();
+  const lens = !!useGlass();
   const router = useRouter();
   const seg = useSegments();
   const role = useTabRole();
@@ -60,7 +63,10 @@ export function ClientSidebar() {
     <>
       <Animated.View pointerEvents={open ? "auto" : "none"} style={[StyleSheet.absoluteFill, s.scrim, scrim]}><View style={s.fill} onTouchEnd={hide} /></Animated.View>
       <GestureDetector gesture={drag}>
-        <Animated.View pointerEvents={open ? "auto" : "none"} style={[s.panel, { width: w, backgroundColor: c.surface, borderColor: c.line }, panel]}><SidebarPanel p={p} onGo={go} /></Animated.View>
+        <Animated.View pointerEvents={open ? "auto" : "none"} style={[s.panel, { width: w, backgroundColor: lens ? "transparent" : c.surface, borderColor: c.line }, panel]}>
+          {lens ? <GlassBackdrop radius={0} tint={dark ? "rgba(10,17,32,0.6)" : "rgba(255,255,255,0.68)"} /> : null}
+          <SidebarPanel p={p} onGo={go} />
+        </Animated.View>
       </GestureDetector>
       <SidebarHandle x={x} p={p} w={w} onOpen={show} onClose={hide} />
     </>
