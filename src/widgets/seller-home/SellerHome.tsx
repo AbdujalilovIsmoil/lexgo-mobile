@@ -1,9 +1,10 @@
 import type { ReactNode } from "react";
-import { RefreshControl, ScrollView, View } from "react-native";
+import { View } from "react-native";
 import { useQueryClient } from "@tanstack/react-query";
 import { groupTasks, n, useCabinet } from "@/entities/pro-workspace";
 import { displayName, useSession } from "@/entities/session";
 import { useResync } from "@/shared/realtime";
+import { HeroScroll } from "@/shared/ui";
 import { HeaderExtra } from "@/shared/ui/headerExtra";
 import { useInsets } from "@/shared/lib/insets";
 import { todayKey } from "@/shared/lib/pro/dates";
@@ -40,13 +41,12 @@ export function SellerHome({ bottomPad, orgEntry }: { bottomPad: number; orgEntr
   const name = displayName(session?.user);
   const pad = Math.max(bottomPad, insets.bottom + 24);
   const body = { padding: 16, gap: 14 } as const;
-  const refreshing = <RefreshControl refreshing={cabinet.isRefetching} onRefresh={refresh} />;
   if (!c || c.limited) {
     return (
-      <ScrollView contentContainerStyle={{ ...body, paddingBottom: pad }} refreshControl={refreshing} showsVerticalScrollIndicator={false}>
+      <HeroScroll contentContainerStyle={{ ...body, paddingBottom: pad }}>
         <StatusBanner />
         <InfoCards orgEntry={orgEntry} />
-      </ScrollView>
+      </HeroScroll>
     );
   }
   const meetings = n(c.workload, "courts_today");
@@ -59,7 +59,7 @@ export function SellerHome({ bottomPad, orgEntry }: { bottomPad: number; orgEntr
   ];
   let k = 0;
   return (
-    <ScrollView contentContainerStyle={{ paddingBottom: pad }} refreshControl={refreshing} showsVerticalScrollIndicator={false}>
+    <HeroScroll contentContainerStyle={{ paddingBottom: pad }}>
       <SellerHero name={name} stats={stats} meetings={meetings} tasks={today} />
       <View style={{ height: 16 }} />
       <HeaderExtra />
@@ -75,6 +75,6 @@ export function SellerHome({ bottomPad, orgEntry }: { bottomPad: number; orgEntr
         {advocate ? <BoostCard i={k++} /> : <SecurityFold i={k++} />}
         {orgEntry}
       </View>
-    </ScrollView>
+    </HeroScroll>
   );
 }
