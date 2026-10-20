@@ -39,7 +39,8 @@ export function ClientSidebar() {
   const scrim = useAnimatedStyle(() => ({ opacity: p.value }));
   /* eslint-disable react-hooks/immutability */
   const drag = Gesture.Pan().activeOffsetX(-10).onUpdate((e) => { x.value = Math.min(0, e.translationX); })
-    .onEnd((e, ok) => { if (!ok) return; if (e.translationX < -w * 0.3 || e.velocityX < -500) scheduleOnRN(hide); else x.value = withSpring(0, SPRING); });
+    .onEnd((e, ok) => { if (!ok) return; if (e.translationX < -w * 0.3 || e.velocityX < -500) scheduleOnRN(hide); else x.value = withSpring(0, SPRING); })
+    .onFinalize((_, ok) => { if (!ok) { if (x.value < -w * 0.3) scheduleOnRN(hide); else x.value = withSpring(0, SPRING); } }); // a cancelled drag never stays half way
   /* eslint-enable react-hooks/immutability */
   const { salesOperator } = useAccess();
   const manage = seg[0] === "manage" && (!salesOperator || seg[1] === "call" || seg[1] === "chat");
@@ -61,7 +62,7 @@ export function ClientSidebar() {
       <GestureDetector gesture={drag}>
         <Animated.View pointerEvents={open ? "auto" : "none"} style={[s.panel, { width: w, backgroundColor: c.surface, borderColor: c.line }, panel]}><SidebarPanel p={p} onGo={go} /></Animated.View>
       </GestureDetector>
-      {open ? null : <SidebarHandle x={x} p={p} w={w} onOpen={show} onClose={hide} />}
+      <SidebarHandle x={x} p={p} w={w} onOpen={show} onClose={hide} />
     </>
   );
 }

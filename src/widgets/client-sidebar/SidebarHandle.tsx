@@ -29,10 +29,19 @@ export function SidebarHandle({ x, p, w, onOpen, onClose }: Props) {
     const loop = setInterval(nudge, 8000);
     return () => { clearTimeout(first); clearInterval(loop); };
   }, [tease, label, covered]);
+  // The pan reports where the drawer was when it began, so it also works if the (invisible) handle is touched while the drawer is
+  // open. A cancelled pan (the system's edge swipe, an interruption) settles by where the drawer is — it never stays half way.
+  const from = useSharedValue(-w);
   /* eslint-disable react-hooks/immutability */
-  const pan = Gesture.Pan().minDistance(12).activeOffsetX([-12, 12]).failOffsetY([-24, 24]).onUpdate((e) => { x.value = Math.max(-w, Math.min(0, -w + e.translationX)); })
-    .onEnd((e, ok) => { if (!ok) return; if (e.translationX > w * 0.25 || e.velocityX > 500) scheduleOnRN(onOpen); else scheduleOnRN(onClose); });
-  const tap = Gesture.Tap().maxDistance(24).maxDuration(600).onEnd((_, ok) => { if (ok) scheduleOnRN(onOpen); });
+  const pan = Gesture.Pan().minDistance(12).activeOffsetX([-12, 12]).failOffsetY([-24, 24])
+    .onBegin(() => { from.value = x.value; })
+    .onUpdate((e) => { x.value = Math.max(-w, Math.min(0, from.value + e.translationX)); })
+    .onEnd((e, ok) => {
+      if (!ok) return;
+      if (x.value + e.velocityX * 0.15 > -w / 2) scheduleOnRN(onOpen); else scheduleOnRN(onClose);
+    })
+    .onFinalize((_, ok) => { if (!ok) scheduleOnRN(x.value > -w / 2 ? onOpen : onClose); });
+  const tap = Gesture.Tap().maxDistance(24).maxDuration(600).onEnd((_, ok) => { if (ok) scheduleOnRN(x.value > -w / 2 ? onClose : onOpen); }); // out of sight but still under the finger when the drawer is out: it closes it
   /* eslint-enable react-hooks/immutability */
   const style = useAnimatedStyle(() => ({ opacity: interpolate(p.value, [0, 0.12], [1, 0], Extrapolation.CLAMP), transform: [{ translateX: tease.value + Math.max(0, x.value + w) }] }));
   const tip = useAnimatedStyle(() => ({ opacity: Math.min(label.value, interpolate(p.value, [0, 0.12], [1, 0], Extrapolation.CLAMP)), transform: [{ translateX: tease.value + Math.max(0, x.value + w) }] }));
