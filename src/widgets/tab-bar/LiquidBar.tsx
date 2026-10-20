@@ -52,7 +52,7 @@ export function LiquidBar(props: BottomTabBarProps) {
   const centerActive = shown >= 0 && !!items[shown]?.def.center;
   return (
     <View pointerEvents="box-none" style={[s.wrap, { paddingBottom: Math.max(insets.bottom - 8, 12) }]}>
-      <View style={[s.shadow, !GLASS && shadows.s2]}>
+      <View style={[s.shadow, (!GLASS || !dark) && shadows.s2]}>
         {GLASS ? (
           <View style={s.under} pointerEvents="none">
             <BlurView intensity={dark ? 70 : 80} tint={dark ? "systemChromeMaterialDark" : "systemChromeMaterialLight"} style={StyleSheet.absoluteFill} />
@@ -61,7 +61,7 @@ export function LiquidBar(props: BottomTabBarProps) {
         {GLASS ? (
           // One glass container: the bar and the lens are neighbouring pieces of the same liquid surface, so they blend as the lens moves.
           <GLASS.Container spacing={16} style={[s.glass, s.bare]}>
-            <GLASS.View glassEffectStyle="regular" colorScheme={dark ? "dark" : "light"} tintColor={dark ? "rgba(16,64,190,0.52)" : "rgba(22,104,240,0.20)"} style={[StyleSheet.absoluteFill, s.round]} />
+            <GLASS.View glassEffectStyle="regular" colorScheme={dark ? "dark" : "light"} tintColor={dark ? "rgba(16,64,190,0.52)" : "rgba(22,104,240,0.30)"} style={[StyleSheet.absoluteFill, s.round]} />
             {width > 0 ? <LiquidIndicator left={PAD + 2} index={Math.max(shown, 0)} slot={slot} hidden={shown < 0 || centerActive} lift={lift} /> : null}
           </GLASS.Container>
         ) : (
