@@ -60,7 +60,7 @@ export function SellerHome({ bottomPad, orgEntry }: { bottomPad: number; orgEntr
   let k = 0;
   return (
     <HeroScroll contentContainerStyle={{ paddingBottom: pad }}>
-      <SellerHero name={name} stats={stats} meetings={meetings} tasks={today} />
+      <SellerHero name={name} stats={stats} meetings={meetings} tasks={today} advocate={advocate} license={c.license} />
       <View style={{ height: 16 }} />
       <HeaderExtra />
       <View style={body}>

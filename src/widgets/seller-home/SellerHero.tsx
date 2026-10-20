@@ -12,19 +12,31 @@ export type HeroStat = { key: string; icon: IconName; tint: string; value: strin
 // The professional's hero, built like the client's: the same dark gradient with the header row inside it (logo, greeting, tools),
 // "Welcome, name", the headline and its line, today's plan, and the four counters — clients, active cases, meetings, documents —
 // as gradient tiles of one size in a 2×2 grid; each opens its list.
-export function SellerHero({ name, stats, tasks, meetings }: { name: string; stats: HeroStat[]; tasks: number; meetings: number }) {
+// The accent follows the role: an advocate gets gold and a licence badge (shield, with the licence number when known), a lawyer
+// (yurist) gets violet and a briefcase badge. It colours the glow, the greeting, the plan icon and the badge.
+const ACCENT = { advocate: { main: "#F5C451", glow: "rgba(245,196,81,0.2)", chip: "rgba(245,196,81,0.14)" }, lawyer: { main: "#A99BFF", glow: "rgba(169,155,255,0.22)", chip: "rgba(169,155,255,0.16)" } } as const;
+
+export function SellerHero({ name, stats, tasks, meetings, advocate, license }: { name: string; stats: HeroStat[]; tasks: number; meetings: number; advocate: boolean; license?: string }) {
   const { t } = useT();
   const insets = useInsets();
   const router = useRouter();
+  const a = ACCENT[advocate ? "advocate" : "lawyer"];
+  const badge = `${t(advocate ? "au1.role.advokat" : "au1.role.yurist")}${advocate && license ? ` · ${license}` : ""}`;
   return (
     <GradientBox variant="dark" round={0} style={[s.hero, { paddingTop: insets.top + HEADER_GAP }]}>
       <FocusStatusBar style="light" />
-      <View style={s.glow} pointerEvents="none" />
+      <View style={[s.glow, { backgroundColor: a.glow }]} pointerEvents="none" />
       <HeroTopRow name={name} />
-      <Text variant="small" weight="semibold" style={s.hi}>{t("shm.dash.hi", { name })}</Text>
+      <View style={s.hiRow}>
+        <Text variant="small" weight="semibold" style={[s.hi, { color: a.main }]}>{t("shm.dash.hi", { name })}</Text>
+        <View style={[s.badge, { borderColor: a.main, backgroundColor: a.chip }]} accessible accessibilityLabel={badge}>
+          <Icon name={advocate ? "shield" : "briefcase"} size={12} color={a.main} />
+          <Text variant="caption" weight="bold" numberOfLines={1} style={{ color: a.main }}>{badge}</Text>
+        </View>
+      </View>
       <Text variant="hx" tone="white">{t("shm.dash.heroTitle")}</Text>
       <Text variant="lead" style={s.sub}>{t("shm.dash.heroSub")}</Text>
-      <View style={s.plan}><Icon name="clock" size={15} color="#00CFE8" /><Text variant="small" style={s.planTx}>{t("shm.dash.greetSub", { meetings, tasks })}</Text></View>
+      <View style={s.plan}><Icon name="clock" size={15} color={a.main} /><Text variant="small" style={s.planTx}>{t("shm.dash.greetSub", { meetings, tasks })}</Text></View>
       <View style={s.grid}>
         {stats.map((x, i) => (
           <View key={x.key} style={s.cell}><Fade i={i}>
@@ -49,8 +61,10 @@ const TONES: readonly (readonly [string, string])[] = [["#1668F0", "#00CFE8"], [
 
 const s = StyleSheet.create({
   hero: { paddingHorizontal: 16, paddingBottom: 22, borderBottomLeftRadius: 28, borderBottomRightRadius: 28, gap: 10 },
-  glow: { position: "absolute", top: -120, right: -80, width: 320, height: 320, borderRadius: 160, backgroundColor: "rgba(0,207,232,0.18)" },
-  hi: { color: "#00CFE8", marginTop: 8 },
+  glow: { position: "absolute", top: -120, right: -80, width: 320, height: 320, borderRadius: 160 },
+  hiRow: { flexDirection: "row", alignItems: "center", gap: 10, marginTop: 8 },
+  hi: { flexShrink: 1 },
+  badge: { flexDirection: "row", alignItems: "center", gap: 5, paddingVertical: 3, paddingHorizontal: 9, borderRadius: 999, borderWidth: 1, flexShrink: 0, maxWidth: "55%" },
   sub: { color: "#B7CDEC" },
   plan: { flexDirection: "row", alignItems: "center", gap: 8 },
   planTx: { color: "#C4DEFF", flex: 1 },
