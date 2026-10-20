@@ -15,9 +15,9 @@ const SF: Record<string, string> = {
   headphones: "headphones", video: "video.fill", "bar-chart-2": "chart.bar.fill", sliders: "slider.horizontal.3", bell: "bell.fill", user: "person.fill",
 };
 
-const AI_ORB = require("../../../assets/tabs/ai-orb.png");
+// The AI tab: a glass pearl (clear bead, prismatic rim) that lights up with the brand gradient while the tab is open.
+const AI_PEARL = { default: require("../../../assets/tabs/ai-glass.png"), selected: require("../../../assets/tabs/ai-glass-on.png") };
 
-// The AI tab is drawn as its colour orb.
 // The system tab bar (UITabBar): Liquid Glass on iOS 26 with no custom drawing. Every route is declared, in the role's order first;
 // the ones outside the role or not allowed right now are hidden. `bar` is false on screens that ask for no bar (the AI chat).
 export function NativeTabsBar({ bar }: { bar: boolean }) {
@@ -41,7 +41,7 @@ export function NativeTabsBar({ bar }: { bar: boolean }) {
             disabled={guard} // a visitor's tap on a personal tab never switches it: the (still emitted) press sends them to sign in
             listeners={guard ? { tabPress: () => router.push("/auth/login") } : undefined}
           >
-            {def.center ? <NativeTabs.Trigger.Icon src={AI_ORB} renderingMode="original" /> : <NativeTabs.Trigger.Icon sf={SF[def.icon] as never} />}
+            {def.center ? <NativeTabs.Trigger.Icon src={AI_PEARL} renderingMode="original" /> : <NativeTabs.Trigger.Icon sf={SF[def.icon] as never} />}
             <NativeTabs.Trigger.Label>{t(def.labelKey)}</NativeTabs.Trigger.Label>
             {n ? <NativeTabs.Trigger.Badge>{n > 99 ? "99+" : String(n)}</NativeTabs.Trigger.Badge> : null}
           </NativeTabs.Trigger>
