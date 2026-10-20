@@ -1,5 +1,5 @@
 import { useMemo, useState, type ReactNode } from "react";
-import { StyleSheet, View } from "react-native";
+import { Platform, StyleSheet, View } from "react-native";
 import { useInsets } from "@/shared/lib/insets";
 import { useColors } from "@/shared/theme";
 import { Text } from "@/shared/ui";
@@ -37,8 +37,8 @@ export function TabPage({ title, subtitle, right, noActions, children }: Props) 
   );
 }
 
-// Bottom padding that keeps list content clear of the floating tab bar.
-export const useTabPad = (): number => useInsets().bottom + 120;
+// Bottom padding that keeps list content clear of the floating tab bar (on iOS also of the AI strip above it).
+export const useTabPad = (): number => useInsets().bottom + 120 + (Platform.OS === "ios" ? 56 : 0);
 
 const st = StyleSheet.create({
   fill: { flex: 1 },

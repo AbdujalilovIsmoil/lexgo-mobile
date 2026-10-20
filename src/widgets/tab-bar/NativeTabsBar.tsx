@@ -4,6 +4,7 @@ import { useIsAuthed } from "@/entities/session";
 import { useBadgeStore } from "@/shared/lib/badgeStore";
 import { useT } from "@/shared/i18n";
 import { useColors } from "@/shared/theme";
+import { AiAccessory } from "./AiAccessory";
 import { TABS } from "./tabConfig";
 import { useTabRole } from "./useTabRole";
 import { useVisibleTabs } from "./useTabItems";
@@ -15,6 +16,9 @@ const SF: Record<string, string> = {
   headphones: "headphones", video: "video.fill", "bar-chart-2": "chart.bar.fill", sliders: "slider.horizontal.3", bell: "bell.fill", user: "person.fill",
 };
 
+const AI_ORB = require("../../../assets/tabs/ai-orb.png"); // eslint-disable-line @typescript-eslint/no-require-imports
+
+// The AI tab is drawn as its colour orb and also floats as a strip above the bar (iOS 26).
 // The system tab bar (UITabBar): Liquid Glass on iOS 26 with no custom drawing. Every route is declared, in the role's order first;
 // the ones outside the role or not allowed right now are hidden. `bar` is false on screens that ask for no bar (the AI chat).
 export function NativeTabsBar({ bar }: { bar: boolean }) {
@@ -28,6 +32,7 @@ export function NativeTabsBar({ bar }: { bar: boolean }) {
   const rest = [...new Set(Object.values(TABS).flat().map((d) => d.route))].filter((r) => !shown.some((d) => d.route === r));
   return (
     <NativeTabs hidden={!bar} tintColor={c.accent}>
+      {shown.some((d) => d.center) ? <NativeTabs.BottomAccessory><AiAccessory /></NativeTabs.BottomAccessory> : null}
       {shown.map((def) => {
         const n = def.badge ? (badges[def.badge] ?? 0) : 0;
         const guard = def.auth && !authed;
@@ -38,7 +43,7 @@ export function NativeTabsBar({ bar }: { bar: boolean }) {
             disabled={guard} // a visitor's tap on a personal tab never switches it: the (still emitted) press sends them to sign in
             listeners={guard ? { tabPress: () => router.push("/auth/login") } : undefined}
           >
-            <NativeTabs.Trigger.Icon sf={SF[def.icon] as never} />
+            {def.center ? <NativeTabs.Trigger.Icon src={AI_ORB} renderingMode="original" /> : <NativeTabs.Trigger.Icon sf={SF[def.icon] as never} />}
             <NativeTabs.Trigger.Label>{t(def.labelKey)}</NativeTabs.Trigger.Label>
             {n ? <NativeTabs.Trigger.Badge>{n > 99 ? "99+" : String(n)}</NativeTabs.Trigger.Badge> : null}
           </NativeTabs.Trigger>
