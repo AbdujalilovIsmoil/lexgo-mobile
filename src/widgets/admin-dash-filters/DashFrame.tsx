@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 import { RefreshControl, ScrollView, View } from "react-native";
 import { useInsets } from "@/shared/lib/insets";
+import { TabScrollView } from "@/widgets/tab-page";
 import { QueryBoundary } from "@/shared/ui/admin";
 import { DashFilters } from "./DashFilters";
 import { DemoBanner } from "./DemoBanner";
@@ -10,7 +11,7 @@ type DashViewState = { demo: boolean; isLoading: boolean; isError: boolean; erro
 
 // Body of every dashboard screen: pull-to-refresh, the filter header, the demo banner and
 // skeleton → error (or `errorSlot`) → content.
-export function DashFrame({ f, view, errorSlot, inline, tabPad, sheetFilters, children }: { f: DashFilterState; view: DashViewState; errorSlot?: ReactNode; inline?: boolean; tabPad?: boolean; sheetFilters?: boolean; children: ReactNode }) {
+export function DashFrame({ f, view, errorSlot, inline, tabPad, sheetFilters, tabHeader, children }: { f: DashFilterState; view: DashViewState; errorSlot?: ReactNode; inline?: boolean; tabPad?: boolean; sheetFilters?: boolean; tabHeader?: boolean; children: ReactNode }) {
   const insets = useInsets();
   const retry = () => void view.refetch();
   const body = (
@@ -26,9 +27,11 @@ export function DashFrame({ f, view, errorSlot, inline, tabPad, sheetFilters, ch
   );
   // `inline`: embedded in another scroll view (staff Home), so no own scroller / refresh.
   if (inline) return <View style={{ gap: 14, marginTop: 20 }}>{body}</View>;
+  // `tabHeader`: the bottom-tab page's header is the first thing in the scroller, so it scrolls away with the cards.
+  const Scroller = tabHeader ? TabScrollView : ScrollView;
   return (
-    <ScrollView showsVerticalScrollIndicator={false} refreshControl={<RefreshControl refreshing={view.isRefetching} onRefresh={retry} />} contentContainerStyle={{ gap: 14, paddingBottom: insets.bottom + (tabPad ? 130 : 24) }}>
+    <Scroller showsVerticalScrollIndicator={false} refreshControl={<RefreshControl refreshing={view.isRefetching} onRefresh={retry} />} contentContainerStyle={{ gap: 14, paddingBottom: insets.bottom + (tabPad ? 130 : 24) }}>
       {body}
-    </ScrollView>
+    </Scroller>
   );
 }

@@ -13,8 +13,8 @@ describe("tab bars", () => {
 });
 
 describe("a sales operator's bar is the web's \"Sotuv operatori\" panel", () => {
-  it("lands on the funnel; the duty desk, AI, meetings and the hub follow", () => {
-    expect(TABS.sales.map((x) => x.route)).toEqual(["pipeline", "duty", "ai", "smeetings", "admin"]);
+  it("lands on the funnel; the duty desk, AI, meetings and call analytics follow", () => {
+    expect(TABS.sales.map((x) => x.route)).toEqual(["pipeline", "duty", "ai", "smeetings", "canalytics"]);
     expect(homeRoute("sales")).toBe("pipeline");
     expect(allowedRoutes("sales")).not.toContain("index");
   });

@@ -1,6 +1,7 @@
 export const tabs = {
   ceo: "CEO",
   hrm: "HRM",
+  analytics: "Tahlil",
   admin: "Boshqaruv",
   home: "Bosh sahifa",
   services: "Xizmatlar",

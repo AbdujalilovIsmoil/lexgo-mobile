@@ -41,12 +41,12 @@ const row = (key: string, icon: IconName, route: string, badge?: NavItem["badge"
 export type Seller = { kind?: string; orgOwner?: boolean; limited?: boolean; actions?: { acceptOrders: boolean; secureChat: boolean }; modules?: ReadonlySet<string> };
 
 // The web sidebar of a sales operator (AdminShell groups "Mijozlar va sotuv" → "Katalog va buyurtmalar" → "Yordam va huquq") in its
-// order: the funnel, duty desk and meetings are tabs, the rest open their admin screens. A row needs its module (`modules`).
+// order: the funnel, duty desk, meetings and call analytics are tabs, the rest open their admin screens. A row needs its module (`modules`).
 const SALES: { mod: string; row: NavItem }[] = [
   { mod: "pipeline", row: tab("pipeline", "trending-up", "/(tabs)/pipeline", "admHub.mod.pipeline.title") },
   { mod: "callcenter", row: tab("duty", "headphones", "/(tabs)/duty", "admHub.mod.callcenter.title") },
   { mod: "meetings", row: tab("smeetings", "video", "/(tabs)/smeetings", "admHub.mod.meetings.title") },
-  { mod: "callAnalytics", row: tab("callAnalytics", "bar-chart-2", "/manage/callAnalytics", "admHub.mod.callAnalytics.title") },
+  { mod: "callAnalytics", row: tab("callAnalytics", "bar-chart-2", "/(tabs)/canalytics", "admHub.mod.callAnalytics.title") },
   { mod: "marketplace", row: tab("marketplace", "shopping-bag", "/manage/marketplace", "admHub.mod.marketplace.title") },
   { mod: "notifications", row: tab("notifySend", "send", "/manage/notifications", "admHub.mod.notifications.title") },
 ];

@@ -32,15 +32,17 @@ export function SidebarHandle({ x, p, w, onOpen, onClose }: Props) {
   // The pan reports where the drawer was when it began, so it also works if the (invisible) handle is touched while the drawer is
   // open. A cancelled pan (the system's edge swipe, an interruption) settles by where the drawer is — it never stays half way.
   const from = useSharedValue(-w);
+  const moved = useSharedValue(false); // the pan really started: a plain tap fails the pan too and must not settle anything
   /* eslint-disable react-hooks/immutability */
   const pan = Gesture.Pan().minDistance(12).activeOffsetX([-12, 12]).failOffsetY([-24, 24])
-    .onBegin(() => { from.value = x.value; })
+    .onBegin(() => { from.value = x.value; moved.value = false; })
+    .onStart(() => { moved.value = true; })
     .onUpdate((e) => { x.value = Math.max(-w, Math.min(0, from.value + e.translationX)); })
     .onEnd((e, ok) => {
       if (!ok) return;
       if (x.value + e.velocityX * 0.15 > -w / 2) scheduleOnRN(onOpen); else scheduleOnRN(onClose);
     })
-    .onFinalize((_, ok) => { if (!ok) scheduleOnRN(x.value > -w / 2 ? onOpen : onClose); });
+    .onFinalize((_, ok) => { if (!ok && moved.value) scheduleOnRN(x.value > -w / 2 ? onOpen : onClose); });
   const tap = Gesture.Tap().maxDistance(24).maxDuration(600).onEnd((_, ok) => { if (ok) scheduleOnRN(x.value > -w / 2 ? onClose : onOpen); }); // out of sight but still under the finger when the drawer is out: it closes it
   /* eslint-enable react-hooks/immutability */
   const style = useAnimatedStyle(() => ({ opacity: interpolate(p.value, [0, 0.12], [1, 0], Extrapolation.CLAMP), transform: [{ translateX: tease.value + Math.max(0, x.value + w) }] }));
