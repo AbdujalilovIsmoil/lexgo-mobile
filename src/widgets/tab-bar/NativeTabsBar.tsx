@@ -34,6 +34,7 @@ export function NativeTabsBar({ bar }: { bar: boolean }) {
       {shown.map((def) => {
         const n = def.badge ? (badges[def.badge] ?? 0) : 0;
         const guard = def.auth && !authed;
+        // the AI pearl is large enough to stand without its caption (`Label hidden`)
         return (
           <NativeTabs.Trigger
             key={`${role}-${def.route}`}
@@ -42,7 +43,7 @@ export function NativeTabsBar({ bar }: { bar: boolean }) {
             listeners={guard ? { tabPress: () => router.push("/auth/login") } : undefined}
           >
             {def.center ? <NativeTabs.Trigger.Icon src={AI_PEARL} renderingMode="original" /> : <NativeTabs.Trigger.Icon sf={SF[def.icon] as never} />}
-            <NativeTabs.Trigger.Label>{t(def.labelKey)}</NativeTabs.Trigger.Label>
+            <NativeTabs.Trigger.Label hidden={def.center}>{t(def.labelKey)}</NativeTabs.Trigger.Label>
             {n ? <NativeTabs.Trigger.Badge>{n > 99 ? "99+" : String(n)}</NativeTabs.Trigger.Badge> : null}
           </NativeTabs.Trigger>
         );
