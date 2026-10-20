@@ -47,10 +47,16 @@ export function LiquidBar(props: BottomTabBarProps) {
   const centerActive = shown >= 0 && !!items[shown]?.def.center;
   return (
     <View pointerEvents="box-none" style={[s.wrap, { paddingBottom: Math.max(insets.bottom - 8, 12) }]}>
-      <View style={[s.shadow, shadows.s2]}>
-        <View style={s.glass}>
+      <View style={[s.shadow, !GLASS && shadows.s2]}>
+        <View style={[s.glass, GLASS && s.bare]}>
           {GLASS ? (
-            <GlassView glassEffectStyle="regular" isInteractive style={StyleSheet.absoluteFill} />
+            <GlassView
+              glassEffectStyle="regular"
+              isInteractive
+              colorScheme={dark ? "dark" : "light"}
+              tintColor={dark ? "rgba(11,22,44,0.40)" : "rgba(255,255,255,0.38)"}
+              style={[StyleSheet.absoluteFill, s.round]}
+            />
           ) : (
             <>
               <BlurView intensity={dark ? 60 : 75} tint={dark ? "systemChromeMaterialDark" : "systemChromeMaterialLight"} style={StyleSheet.absoluteFill} />
@@ -76,6 +82,8 @@ const s = StyleSheet.create({
   wrap: { position: "absolute", left: 0, right: 0, bottom: 0, paddingHorizontal: 14 },
   shadow: { borderRadius: 35 },
   glass: { ...StyleSheet.absoluteFill, borderRadius: 35, overflow: "hidden", borderWidth: StyleSheet.hairlineWidth * 2, borderColor: "rgba(255,255,255,0.35)" },
+  bare: { borderWidth: 0 },
+  round: { borderRadius: 35 },
   sheen: { position: "absolute", left: 0, right: 0, top: 0, height: 34 },
   row: { flexDirection: "row", alignItems: "center", paddingHorizontal: PAD, height: 70 },
 });
