@@ -97,3 +97,31 @@ describe("seller rows follow the web's permission rules (both kinds)", () => {
     expect(navFor("seller", { kind: "advocate" }).map((i) => i.key)).toEqual(expect.arrayContaining(["opportunities", "messages", "cases", "stats"]));
   });
 });
+
+describe("a professional's profile links live in the sidebar", () => {
+  const ACCOUNT = ["edit", "payments", "plan", "family", "methods", "consents", "gifts", "complaints", "warranty"];
+  it("both kinds list the account screens, after the tools and before the settings", () => {
+    for (const kind of ["lawyer", "advocate"]) {
+      const keys = navFor("seller", { kind }).map((i) => i.key);
+      expect(keys).toEqual(expect.arrayContaining(ACCOUNT));
+      expect(keys.indexOf("edit")).toBeGreaterThan(keys.indexOf("stats"));
+      expect(keys.indexOf("edit")).toBeLessThan(keys.indexOf("security"));
+    }
+  });
+  it("an account under review can still reach its own data", () => {
+    expect(navFor("seller", { kind: "lawyer", limited: true }).map((i) => i.key)).toEqual(expect.arrayContaining(ACCOUNT));
+  });
+  it("the organisation rows belong to its owner and never repeat a route", () => {
+    const owner = navFor("seller", { kind: "lawyer", orgOwner: true }).map((i) => i.key);
+    expect(owner).toEqual(expect.arrayContaining(["org", "orgMembers", "orgWorkload"]));
+    expect(navFor("seller", { kind: "lawyer" }).map((i) => i.key)).not.toContain("orgMembers");
+    for (const kind of ["lawyer", "advocate"]) {
+      const routes = navFor("seller", { kind, orgOwner: true, callCenterLawyer: true }).map((i) => i.route);
+      expect(new Set(routes).size).toBe(routes.length);
+    }
+  });
+  it("the document pool is for a call-center lawyer", () => {
+    expect(navFor("seller", { kind: "lawyer", callCenterLawyer: true }).map((i) => i.key)).toContain("docPool");
+    expect(navFor("seller", { kind: "lawyer" }).map((i) => i.key)).not.toContain("docPool");
+  });
+});

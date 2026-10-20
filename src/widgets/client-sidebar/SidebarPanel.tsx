@@ -30,7 +30,7 @@ export function SidebarPanel({ p, onGo }: { p: SharedValue<number>; onGo: (route
   const cabinet = useCabinet().data;
   const limited = cabinet ? cabinet.limited : user?.accountStatus === "pending";
   const modules = role === "sales" ? new Set(visibleModules(access).map((m) => m.key)) : undefined;
-  const nav = navFor(role, { kind: user?.role, orgOwner: access.orgOwner, limited, actions: cabinet?.actions, modules });
+  const nav = navFor(role, { kind: user?.role, orgOwner: access.orgOwner, callCenterLawyer: access.callCenterLawyer, limited, actions: cabinet?.actions, modules });
   const client = role === "client" || role === "guest";
   const badges = { notifications: useUnreadCount(), support: useBadge("support") };
   return (

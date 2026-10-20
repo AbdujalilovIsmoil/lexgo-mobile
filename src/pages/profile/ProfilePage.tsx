@@ -20,7 +20,9 @@ export function ProfilePage() {
   const c = useColors();
   const insets = useInsets();
   const session = useSession();
-  const client = useTabRole() === "client";
+  const role = useTabRole();
+  const client = role === "client";
+  const seller = role === "seller"; // a professional's links live in the sidebar
   if (!session) return <GuestWelcome />;
   return (
     <HeroScroll style={{ backgroundColor: c.bg }} contentContainerStyle={{ paddingBottom: insets.bottom + 130 }}>
@@ -31,8 +33,8 @@ export function ProfilePage() {
           <View style={{ paddingHorizontal: 16, marginTop: 14 }}><IdentityCard /></View>
         </>
       )}
-      {client ? null : <ProfileMenu />}
-      {client ? null : <ProfileExtrasMenu />}
+      {client || seller ? null : <ProfileMenu />}
+      {client || seller ? null : <ProfileExtrasMenu />}
       <AppSettings />
     </HeroScroll>
   );

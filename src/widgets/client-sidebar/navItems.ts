@@ -1,6 +1,6 @@
 import type { IconName } from "@/shared/ui";
 import { CC_SECTIONS, COMMON_SECTION, STAFF_SECTIONS } from "@/widgets/profile/menu/staffItems";
-import { PRO_SECTIONS } from "@/widgets/profile/menu/proItems";
+import { ORG_SECTION, POOL_ITEM, PRO_SECTIONS } from "@/widgets/profile/menu/proItems";
 import type { TabRole } from "@/widgets/tab-bar/tabConfig";
 
 export type NavItem = { key: string; icon: IconName; route: string; badge?: "notifications" | "support"; label?: string };
@@ -38,7 +38,7 @@ const flat = (sections: { items: NavItem[] }[]): NavItem[] => sections.flatMap((
 // What the drawer lists for each role: the client (and the visitor) get the web portal's rows; the others get their own home and
 // tabs first, then the tools of their role, then notifications and the account/app settings.
 const row = (key: string, icon: IconName, route: string, badge?: NavItem["badge"]): NavItem => ({ key, icon, route, label: `lsb.${key}`, badge });
-export type Seller = { kind?: string; orgOwner?: boolean; limited?: boolean; actions?: { acceptOrders: boolean; secureChat: boolean }; modules?: ReadonlySet<string> };
+export type Seller = { kind?: string; orgOwner?: boolean; callCenterLawyer?: boolean; limited?: boolean; actions?: { acceptOrders: boolean; secureChat: boolean }; modules?: ReadonlySet<string> };
 
 // The web sidebar of a sales operator (AdminShell groups "Mijozlar va sotuv" → "Katalog va buyurtmalar" → "Yordam va huquq") in its
 // order: the funnel, duty desk, meetings and call analytics are tabs, the rest open their admin screens. A row needs its module (`modules`).
@@ -75,9 +75,30 @@ function sellerNav(s: Seller): NavItem[] {
     ? [row("dashboard", "grid", "/(tabs)/workspace"), row("marketplace", "briefcase", "/pro/market"), row("marketplaceOrders", "tag", "/pro/orders"), row("cases", "file-text", "/pro/cases"), row("urgentAssigned", "zap", "/pro/urgent"), row("tasks", "check-square", "/pro/tasks"), row("calendar", "calendar", "/pro/calendar"), row("clients", "users", "/(tabs)/clients"), row("services", "target", "/pro/services"), row("documents", "file", "/pro/templates"), row("documentRequests", "file-text", "/pro/docs"), row("files", "folder-plus", "/pro/files"), row("chat", "message-circle", "/(tabs)/messages"), row("meetings", "video", "/meetings"), row("notifications", "bell", "/notifications", "notifications"), row("ai", "star", "/(tabs)/ai"), row("assistant", "eye", "/assistant"), row("referrals", "gift", "/pro/referrals"), row("promotion", "zap", "/pro/promotions"), row("subscription", "award", "/subscription"), row("support", "headphones", "/support", "support")]
     : [row("dashboard", "grid", "/(tabs)/workspace"), row("opportunities", "briefcase", "/pro/market"), row("marketplaceOrders", "tag", "/pro/orders"), row("cases", "file-text", "/pro/cases"), row("urgentAssigned", "zap", "/pro/urgent"), row("documentRequests", "file-text", "/pro/docs"), row("calendar", "calendar", "/pro/calendar"), row("clients", "users", "/(tabs)/clients"), row("services", "target", "/pro/services"), row("tasks", "check-square", "/pro/tasks"), row("messages", "message-circle", "/(tabs)/messages"), row("meetings", "video", "/meetings"), row("notifications", "bell", "/notifications", "notifications"), ...(s.orgOwner ? [row("organization", "briefcase", "/org")] : []), row("files", "folder-plus", "/pro/files"), row("assistant", "eye", "/assistant"), row("referrals", "gift", "/pro/referrals"), row("promotion", "zap", "/pro/promotions"), row("subscription", "award", "/subscription"), row("support", "headphones", "/support", "support")];
   const extra = flat(PRO_SECTIONS).filter((i) => ["stats", "availability", "onboarding", "proPackages"].includes(i.key));
+  // What the profile page used to list for a professional: the account screens (personal data, payments, plan, family, cards, consents,
+  // gifts, complaints, warranty), the organisation of its owner and the document pool of a call-center lawyer. The profile keeps no
+  // links; they live here. Like the settings below they are always there (an account under review can still reach its own data).
+  const account = ACCOUNT.map((a) => ({ ...a, label: `py9.menu.${a.key}` }));
+  const org = s.orgOwner ? flat([ORG_SECTION]).filter((i) => i.route !== "/org" || !hasOrgRow(web)) : [];
+  const pool = s.callCenterLawyer ? flat([{ items: [POOL_ITEM] }]) : [];
   const settings = flat([COMMON_SECTION]).filter((i) => i.key !== "notifications"); // app settings: always there
-  return [...[...web, ...extra].filter((i) => !sellerRowHidden(i.key, s)), ...settings];
+  return [...[...web, ...extra].filter((i) => !sellerRowHidden(i.key, s)), ...account, ...org, ...pool, ...settings];
 }
+
+// Account screens of a professional, in the profile's old order (referrals are the "referrals" row of the web sidebar already).
+const ACCOUNT: NavItem[] = [
+  { key: "edit", icon: "edit-3", route: "/profile/edit" },
+  { key: "payments", icon: "file-text", route: "/payments" },
+  { key: "plan", icon: "layers", route: "/entitlements" },
+  { key: "family", icon: "users", route: "/profile/family" },
+  { key: "methods", icon: "credit-card", route: "/profile/methods" },
+  { key: "consents", icon: "check-square", route: "/profile/consents" },
+  { key: "gifts", icon: "gift", route: "/profile/gifts" },
+  { key: "complaints", icon: "message-square", route: "/complaints" },
+  { key: "warranty", icon: "shield", route: "/warranty" },
+];
+// The advokat's web list already has the owner's "organization" row (/org).
+const hasOrgRow = (web: NavItem[]): boolean => web.some((i) => i.route === "/org");
 
 export function navFor(role: TabRole, seller: Seller = {}): NavItem[] {
   if (role === "client" || role === "guest") return NAV;
