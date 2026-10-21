@@ -74,3 +74,15 @@ describe("sales operator (the web's \"Sotuv operatori\")", () => {
     expect(visibleModules(buildAccess(u({ permissions: SALES_PERMS }))).map((m) => m.key)).toEqual(expect.arrayContaining(["retention", "chats"]));
   });
 });
+
+describe("on-duty call-centre lawyer (the web's \"Navbatchi yurist\")", () => {
+  // An advocate account that also carries call_center_lawyer + sales_operator, with the permissions the web panel grants.
+  const PERMS = ["callcenter.access", "cases.manage", "documents.manage", "leads.manage", "meetings.manage", "notifications.manage", "orders.manage", "sales.access", "tasks.status.ready", "templates.manage"];
+  const duty = u({ role: "advocate", backendRole: "advokat", roles: ["call_center_lawyer", "sales_operator"], permissions: PERMS });
+  it("gets exactly the modules of the web sidebar, in its order", () => {
+    expect(visibleModules(buildAccess(duty)).map((m) => m.key)).toEqual(["pipeline", "callcenter", "meetings", "callAnalytics", "marketplace", "templates", "support", "notifications"]);
+  });
+  it("a plain advocate with the same permissions keeps the mobile-only modules", () => {
+    expect(visibleModules(buildAccess(u({ role: "advocate", backendRole: "advokat", permissions: PERMS }))).map((m) => m.key)).toEqual(expect.arrayContaining(["retention", "chats"]));
+  });
+});

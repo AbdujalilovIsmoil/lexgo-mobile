@@ -42,6 +42,8 @@ const CORE_MODULES: AdminModule[] = [
 
 export const MODULES: AdminModule[] = [...CORE_MODULES, ...ADM_MODULES];
 export const moduleByKey = (key: string): AdminModule | undefined => MODULES.find((m) => m.key === key);
-// A sales operator sees exactly the web sidebar of their role; everyone else also gets the mobile-only modules.
-export const moduleShown = (m: AdminModule, a: Access): boolean => m.visible(a) && !(a.salesOperator && m.web);
+// A sales operator and an on-duty call-centre lawyer (the web's "Navbatchi yurist", an advocate account that also carries the
+// call_center_lawyer role) see exactly the web sidebar of their role; everyone else also gets the mobile-only modules.
+export const webSidebarOnly = (a: Access): boolean => a.salesOperator || a.callCenterLawyer;
+export const moduleShown = (m: AdminModule, a: Access): boolean => m.visible(a) && !(webSidebarOnly(a) && m.web);
 export const visibleModules = (a: Access): AdminModule[] => MODULES.filter((m) => moduleShown(m, a));
