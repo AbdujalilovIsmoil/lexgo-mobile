@@ -28,7 +28,7 @@ export default function TabsLayout() {
   // iOS: the system tab bar (Liquid Glass on iOS 26). Android keeps the flat bar below.
   if (Platform.OS === "ios") return <NativeTabsBar bar={current !== "ai"} />;
   return (
-    <Tabs tabBar={(props) => <TabBar {...props} />} screenOptions={{ headerShown: false, lazy: true }}>
+    <Tabs tabBar={(props) => <TabBar {...props} />} screenOptions={{ headerShown: false, lazy: true, freezeOnBlur: true }}>
       {ROUTES.slice(0, 1).map((n) => <Tabs.Screen key={n} name={n} />)}
       <Tabs.Screen name="ai" options={{ tabBarStyle: { display: "none" } }} />
       {ROUTES.slice(1).map((n) => <Tabs.Screen key={n} name={n} />)}
