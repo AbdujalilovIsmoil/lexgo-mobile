@@ -59,8 +59,8 @@ export function Input({ label, error, hint, left, right, style, ...rest }: Props
 const s = StyleSheet.create({
   wrap: { gap: 6 },
   label: { marginLeft: 4 },
-  field: { flexDirection: "row", alignItems: "center", borderRadius: radius.r, minHeight: 52, paddingHorizontal: 14 },
-  input: { flex: 1, fontFamily: "Inter_500Medium", fontSize: 16, paddingVertical: 12 },
-  side: { marginHorizontal: 4 },
+  field: { flexDirection: "row", alignItems: "center", gap: 10, borderRadius: radius.r, minHeight: 52, paddingHorizontal: 14 },
+  input: { flex: 1, minWidth: 0, fontFamily: "Inter_500Medium", fontSize: 16, paddingVertical: 12 },
+  side: { alignItems: "center", justifyContent: "center" },
   msg: { marginLeft: 4 },
 });
