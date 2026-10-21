@@ -131,3 +131,17 @@ describe("the team's tasks row", () => {
     expect(TEAM_TASKS).toMatchObject({ key: "teamTasks", route: "/team-tasks", label: "ttm.title" });
   });
 });
+
+describe("on-duty call-centre lawyer drawer follows the web admin sidebar", () => {
+  const duty = ["pipeline", "callcenter", "meetings", "callAnalytics", "marketplace", "templates", "support", "notifications"].map((key) => ({ key, icon: "grid" as const }));
+  const list = navFor("seller", { kind: "advocate", callCenterLawyer: true, duty });
+  it("lists the web rows in order, each an admin screen, then the way back to the portal", () => {
+    expect(list.slice(0, duty.length).map((i) => i.key)).toEqual(duty.map((d) => d.key));
+    expect(list.slice(0, duty.length).every((i) => i.route === `/manage/${i.key}`)).toBe(true);
+    expect(list[duty.length].key).toBe("dashboard");
+  });
+  it("has none of the advocate portal's account, stats or document-pool rows", () => {
+    expect(list.map((i) => i.key)).not.toEqual(expect.arrayContaining(["stats", "family", "methods"]));
+    expect(list.length).toBeLessThan(navFor("seller", { kind: "advocate", callCenterLawyer: true }).length / 2);
+  });
+});

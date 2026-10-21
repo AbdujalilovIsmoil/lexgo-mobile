@@ -12,7 +12,7 @@ import { useT } from "@/shared/i18n";
 import { useTabRole } from "@/widgets/tab-bar/useTabRole";
 import { EXTRA, TEAM_TASKS, isActive, navFor } from "./navItems";
 import { SidebarItem } from "./SidebarItem";
-import { useAccess, visibleModules } from "@/entities/access";
+import { useAccess, visibleModules, webSidebarOnly } from "@/entities/access";
 import { useCabinet } from "@/entities/pro-workspace";
 
 // The drawer content: brand + role, the web sidebar rows in the web order, the mobile-only account rows, and sign out.
@@ -30,7 +30,8 @@ export function SidebarPanel({ p, onGo }: { p: SharedValue<number>; onGo: (route
   const cabinet = useCabinet().data;
   const limited = cabinet ? cabinet.limited : user?.accountStatus === "pending";
   const modules = role === "sales" ? new Set(visibleModules(access).map((m) => m.key)) : undefined;
-  const base = navFor(role, { kind: user?.role, orgOwner: access.orgOwner, callCenterLawyer: access.callCenterLawyer, limited, actions: cabinet?.actions, modules });
+  const duty = role === "seller" && webSidebarOnly(access) ? visibleModules(access).map((m) => ({ key: m.key, icon: m.icon })) : undefined;
+  const base = navFor(role, { kind: user?.role, orgOwner: access.orgOwner, callCenterLawyer: access.callCenterLawyer, limited, actions: cabinet?.actions, modules, duty });
   const nav = access.can("tasks.view") && role !== "guest" ? [TEAM_TASKS, ...base] : base;
   const client = role === "client" || role === "guest";
   const badges = { notifications: useUnreadCount(), support: useBadge("support") };

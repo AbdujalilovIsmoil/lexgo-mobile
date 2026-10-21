@@ -38,7 +38,7 @@ const flat = (sections: { items: NavItem[] }[]): NavItem[] => sections.flatMap((
 // What the drawer lists for each role: the client (and the visitor) get the web portal's rows; the others get their own home and
 // tabs first, then the tools of their role, then notifications and the account/app settings.
 const row = (key: string, icon: IconName, route: string, badge?: NavItem["badge"]): NavItem => ({ key, icon, route, label: `lsb.${key}`, badge });
-export type Seller = { kind?: string; orgOwner?: boolean; callCenterLawyer?: boolean; limited?: boolean; actions?: { acceptOrders: boolean; secureChat: boolean }; modules?: ReadonlySet<string> };
+export type Seller = { kind?: string; orgOwner?: boolean; callCenterLawyer?: boolean; limited?: boolean; actions?: { acceptOrders: boolean; secureChat: boolean }; modules?: ReadonlySet<string>; duty?: readonly { key: string; icon: IconName }[] };
 
 // The web sidebar of a sales operator (AdminShell groups "Mijozlar va sotuv" → "Katalog va buyurtmalar" → "Yordam va huquq") in its
 // order: the funnel, duty desk, meetings and call analytics are tabs, the rest open their admin screens. A row needs its module (`modules`).
@@ -70,6 +70,7 @@ export function sellerRowHidden(key: string, s: Seller): boolean {
 // The web sidebar of a yurist (law-main PortalShell LAWYER_NAV) or an advokat (ADVOCATE_NAV) in its exact order and with its own titles, then the
 // mobile-only tools (stats, availability, onboarding, packages) and the app settings (notifications is already a web row).
 function sellerNav(s: Seller): NavItem[] {
+  if (s.duty) return dutyNav(s.duty);
   const lawyer = s.kind !== "advocate";
   const web = lawyer
     ? [row("dashboard", "grid", "/(tabs)/workspace"), row("marketplace", "briefcase", "/pro/market"), row("marketplaceOrders", "tag", "/pro/orders"), row("cases", "file-text", "/pro/cases"), row("urgentAssigned", "zap", "/pro/urgent"), row("tasks", "check-square", "/pro/tasks"), row("calendar", "calendar", "/pro/calendar"), row("clients", "users", "/(tabs)/clients"), row("services", "target", "/pro/services"), row("documents", "file", "/pro/templates"), row("documentRequests", "file-text", "/pro/docs"), row("files", "folder-plus", "/pro/files"), row("chat", "message-circle", "/(tabs)/messages"), row("meetings", "video", "/meetings"), row("notifications", "bell", "/notifications", "notifications"), row("ai", "star", "/(tabs)/ai"), row("assistant", "eye", "/assistant"), row("referrals", "gift", "/pro/referrals"), row("promotion", "zap", "/pro/promotions"), row("subscription", "award", "/subscription"), row("support", "headphones", "/support", "support")]
@@ -83,6 +84,14 @@ function sellerNav(s: Seller): NavItem[] {
   const pool = s.callCenterLawyer ? flat([{ items: [POOL_ITEM] }]) : [];
   const settings = flat([COMMON_SECTION]).filter((i) => i.key !== "notifications"); // app settings: always there
   return [...[...web, ...extra].filter((i) => !sellerRowHidden(i.key, s)), ...account, ...org, ...pool, ...settings];
+}
+
+// An on-duty call-centre lawyer works in the web's admin panel: its sidebar is just the modules they may open (each an admin screen),
+// then the way back to the portal (the web's "Portalga qaytish") and the app settings. No account, stats or document-pool rows.
+function dutyNav(mods: readonly { key: string; icon: IconName }[]): NavItem[] {
+  const rows = mods.map((m): NavItem => ({ key: m.key, icon: m.icon, route: `/manage/${m.key}`, label: `admHub.mod.${m.key}.title`, badge: m.key === "support" ? "support" : m.key === "notifications" ? "notifications" : undefined }));
+  const settings = flat([COMMON_SECTION]).filter((i) => i.key !== "notifications");
+  return [...rows, row("dashboard", "grid", "/(tabs)/workspace"), ...settings];
 }
 
 // Account screens of a professional, in the profile's old order (referrals are the "referrals" row of the web sidebar already).
