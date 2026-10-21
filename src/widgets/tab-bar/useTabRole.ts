@@ -1,4 +1,4 @@
-import { useAccess } from "@/entities/access";
+import { useAccess, webSidebarOnly } from "@/entities/access";
 import { useSession } from "@/entities/session";
 import type { TabRole } from "./tabConfig";
 
@@ -14,4 +14,12 @@ export function useTabRole(): TabRole {
   if (a.seller) return "seller";
   if (a.salesOperator) return "sales";
   return a.staff ? "staff" : "client";
+}
+
+// Whether the role's own drawer (ClientSidebar) lists the admin screens itself, so the admin module switcher is not drawn on them: a
+// sales operator, and an on-duty call-centre lawyer working as a professional (the web's "Navbatchi yurist").
+export function useOwnSidebar(): boolean {
+  const a = useAccess();
+  const role = useTabRole();
+  return a.salesOperator || (role === "seller" && webSidebarOnly(a));
 }

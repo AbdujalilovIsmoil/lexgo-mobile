@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 import { StyleSheet, useWindowDimensions, View } from "react-native";
-import { useAccess } from "@/entities/access";
+import { useOwnSidebar } from "@/widgets/tab-bar/useTabRole";
 import { useColors } from "@/shared/theme";
 import { useHideHandle } from "../model/useCurrentModule";
 import { AdminDrawer } from "./AdminDrawer";
@@ -9,14 +9,14 @@ import { DrawerPanel } from "./DrawerPanel";
 
 const WIDE = 900;
 
-// Wraps the admin stack. A sales operator gets none of it: the role's own sidebar (ClientSidebar) stays on these screens.
+// Wraps the admin stack. A sales operator (or an on-duty call-centre lawyer) gets none of it: the role's own sidebar (ClientSidebar) stays on these screens.
 // On a phone: the edge handle + sliding switcher. On a tablet (wide window): the switcher is a permanent rail.
 export function AdminDrawerHost({ children }: { children: ReactNode }) {
   const c = useColors();
   const { width } = useWindowDimensions();
   const hide = useHideHandle();
-  const { salesOperator } = useAccess();
-  if (salesOperator) return <View style={s.fill}>{children}</View>;
+  const ownSidebar = useOwnSidebar();
+  if (ownSidebar) return <View style={s.fill}>{children}</View>;
   if (width >= WIDE && !hide) {
     return (
       <View style={s.row}>

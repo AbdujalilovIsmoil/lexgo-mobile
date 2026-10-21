@@ -4,11 +4,10 @@ import { useRouter, useSegments } from "expo-router";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import Animated, { useAnimatedStyle, withSpring } from "react-native-reanimated";
 import { scheduleOnRN } from "react-native-worklets";
-import { useAccess } from "@/entities/access";
 import { useSession } from "@/entities/session";
 import { useColors, useTheme } from "@/shared/theme";
 import { GlassBackdrop, useGlass } from "@/shared/ui";
-import { useTabRole } from "@/widgets/tab-bar/useTabRole";
+import { useOwnSidebar, useTabRole } from "@/widgets/tab-bar/useTabRole";
 import { GUEST_OPEN } from "./navItems";
 import { SidebarHandle } from "./SidebarHandle";
 import { SidebarPanel } from "./SidebarPanel";
@@ -17,7 +16,7 @@ import { SPRING, useDrawer } from "./useDrawer";
 
 // Screens that need the whole width (rooms, calls, auth, the assistant): no sidebar there. Every role has one.
 // The admin area has its own module switcher on the same edge, so it gets no second handle (`manage`, see below) — except for a
-// sales operator, whose sidebar rows already include those screens: they keep this sidebar and no module switcher is drawn.
+// sales operator or an on-duty call-centre lawyer, whose sidebar rows already include those screens: they keep this sidebar and no module switcher is drawn.
 const HIDE = new Set(["auth", "chat", "call", "lawyer", "assistant", "instructor", "specialist", "sel-dev", "cc-preview"]);
 
 // The sidebar of every role (the client's rows are the web portal's; see navFor for the others). The handle on the left edge (or a drag from it) pulls the
@@ -45,8 +44,8 @@ export function ClientSidebar() {
     .onEnd((e, ok) => { if (!ok) return; if (e.translationX < -w * 0.3 || e.velocityX < -500) scheduleOnRN(hide); else x.value = withSpring(0, SPRING); })
     .onFinalize((_, ok) => { if (!ok) { if (x.value < -w * 0.3) scheduleOnRN(hide); else x.value = withSpring(0, SPRING); } }); // a cancelled drag never stays half way
   /* eslint-enable react-hooks/immutability */
-  const { salesOperator } = useAccess();
-  const manage = seg[0] === "manage" && (!salesOperator || seg[1] === "call" || seg[1] === "chat");
+  const ownSidebar = useOwnSidebar();
+  const manage = seg[0] === "manage" && (!ownSidebar || seg[1] === "call" || seg[1] === "chat");
   const hidden = HIDE.has(String(seg[0])) || manage || (seg[0] === "(tabs)" && seg[1] === "ai");
   const session = useSession();
   const who = session ? `${session.user.id}:${session.user.backendRole}` : "";
