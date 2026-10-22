@@ -15,8 +15,8 @@ const profile = t("profile", "user", "tabs.profile");
 // list or the permission hub.
 export const TABS: Record<TabRole, TabDef[]> = {
   // A visitor gets the client's bar and pages; the two tabs that hold personal data (`auth`) send them to sign in when pressed.
-  guest: [t("index", "home", "tabs.home"), t("services", "grid", "tabs.services"), ai, { ...t("works", "briefcase", "tabs.works"), auth: true }, { ...messages, auth: true }],
-  client: [t("index", "home", "tabs.home"), t("services", "grid", "tabs.services"), ai, t("works", "briefcase", "tabs.works"), messages],
+  guest: [t("index", "home", "tabs.home"), t("services", "file-text", "tabs.services"), ai, { ...t("works", "briefcase", "tabs.works"), auth: true }, { ...messages, auth: true }],
+  client: [t("index", "home", "tabs.home"), t("services", "file-text", "tabs.services"), ai, t("works", "briefcase", "tabs.works"), messages],
   seller: [t("workspace", "layers", "tabs.workspace"), t("requests", "inbox", "tabs.requests", "requests"), ai, t("clients", "users", "tabs.clients"), messages],
   // The web's "Sotuv operatori" panel: the funnel (its landing page) and the duty desk first, meetings and call analytics; the rest of the
   // role's sidebar (marketplace monitoring, notifications) is reached from the sidebar.

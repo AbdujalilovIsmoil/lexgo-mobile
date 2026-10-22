@@ -17,7 +17,7 @@ import { useVisibleTabs } from "./useTabItems";
 
 // Feather names of tabConfig → SF Symbols of the system tab bar.
 const SF: Record<string, string> = {
-  home: "house.fill", grid: "square.grid.2x2.fill", zap: "sparkles", briefcase: "briefcase.fill", "message-circle": "message.fill",
+  home: "house.fill", "file-text": "doc.text.fill", zap: "sparkles", briefcase: "briefcase.fill", "message-circle": "message.fill",
   layers: "square.stack.3d.up.fill", inbox: "tray.fill", users: "person.2.fill", "trending-up": "chart.line.uptrend.xyaxis",
   headphones: "headphones", video: "video.fill", "bar-chart-2": "chart.bar.fill", sliders: "slider.horizontal.3", bell: "bell.fill", user: "person.fill",
 };
