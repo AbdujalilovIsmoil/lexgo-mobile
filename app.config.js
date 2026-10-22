@@ -1,14 +1,10 @@
-const appJson = require("./app.json");
+const fs = require("fs");
 
-// LEXGO_PERSONAL_TEAM=1 → build without the paid-only capabilities (see
-// plugins/withPersonalTeam.js). The plugin is listed first so its mod runs last.
-module.exports = () => {
-  const config = appJson.expo;
-  if (process.env.LEXGO_PERSONAL_TEAM !== "1") return config;
-  const { associatedDomains: _omit, ...ios } = config.ios;
-  return {
-    ...config,
-    ios: { ...ios, appleTeamId: "UWT4C7T59B" },
-    plugins: ["./plugins/withPersonalTeam", ...config.plugins],
-  };
+// app.json stays the single source; this only adds what depends on files that are not in git.
+// Android push (FCM) needs Firebase's google-services.json: put it in the project root, or point GOOGLE_SERVICES_JSON at it
+// (an EAS "file" environment variable gives a path). Without it the build still works — it just gets no FCM token.
+module.exports = ({ config }) => {
+  const file = process.env.GOOGLE_SERVICES_JSON || "./google-services.json";
+  if (!fs.existsSync(file)) return config;
+  return { ...config, android: { ...config.android, googleServicesFile: file } };
 };
