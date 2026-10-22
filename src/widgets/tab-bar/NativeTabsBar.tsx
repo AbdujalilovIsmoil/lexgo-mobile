@@ -1,11 +1,13 @@
 import { useEffect } from "react";
+import { View } from "react-native";
 import { NativeTabs } from "expo-router/unstable-native-tabs";
 import { useRouter } from "expo-router";
 import { useIsAuthed } from "@/entities/session";
 import { useBadgeStore } from "@/shared/lib/badgeStore";
 import { useT } from "@/shared/i18n";
-import { AURORA, useColors, useTheme } from "@/shared/theme";
+import { AURORA, useColors } from "@/shared/theme";
 import { useAuroraStyle } from "@/shared/ui";
+import { AiRaisedButton } from "./AiRaisedButton";
 import { installTabReach, setBarRoutes } from "./tabReach";
 import { TABS } from "./tabConfig";
 import { useTabRole } from "./useTabRole";
@@ -18,35 +20,32 @@ const SF: Record<string, string> = {
   headphones: "headphones", video: "video.fill", "bar-chart-2": "chart.bar.fill", sliders: "slider.horizontal.3", bell: "bell.fill", user: "person.fill",
 };
 
-// The AI tab: a flat disc in the brand gradient with a white four-point spark — the one filled, coloured item in the row, so it stands apart
-// from the symbol tabs; the selected state is a touch deeper with a white ring.
 installTabReach();
 
-const AI_DISC = { default: require("../../../assets/tabs/ai-glass.png"), selected: require("../../../assets/tabs/ai-glass-on.png") };
-// On the light bar the bead takes a blue spark and a deeper rim so it reads (the lit state is the same).
-const AI_DISC_LIGHT = { default: require("../../../assets/tabs/ai-glass-light.png"), selected: require("../../../assets/tabs/ai-glass-on.png") };
+// The AI tab's slot in the system bar is left empty (a clear image; its caption stays): AiRaisedButton stands in it, rising above the bar.
+const AI_SLOT = require("../../../assets/tabs/ai-slot.png");
 
 // The system tab bar (UITabBar): Liquid Glass on iOS 26 with no custom drawing. Every route is declared, in the role's order first;
 // the ones outside the role or not allowed right now are hidden. `bar` is false on screens that ask for no bar (the AI chat).
 export function NativeTabsBar({ bar }: { bar: boolean }) {
   const { t } = useT();
   const c = useColors();
-  const { dark } = useTheme();
   const router = useRouter();
   const authed = useIsAuthed();
   const role = useTabRole();
   const badges = useBadgeStore((s) => s.badges);
   const shown = useVisibleTabs();
+  const centerAt = shown.findIndex((d) => d.center);
   const barKey = shown.map((d) => d.route).join(",");
   useEffect(() => { setBarRoutes(barKey ? barKey.split(",") : []); }, [barKey]); // links to any other tab page open it as a stack screen
   const aurora = useAuroraStyle(); // every tab page sits on the aurora (the pages themselves are transparent)
   const rest = [...new Set(Object.values(TABS).flat().map((d) => d.route))].filter((r) => !shown.some((d) => d.route === r));
   return (
+    <View style={{ flex: 1 }}>
     <NativeTabs hidden={!bar} tintColor={c.accent}>
       {shown.map((def) => {
         const n = def.badge ? (badges[def.badge] ?? 0) : 0;
         const guard = def.auth && !authed;
-        // the AI pearl is large enough to stand without its caption (`Label hidden`)
         return (
           <NativeTabs.Trigger
             key={`${role}-${def.route}`}
@@ -56,7 +55,7 @@ export function NativeTabsBar({ bar }: { bar: boolean }) {
             disabled={guard} // a visitor's tap on a personal tab never switches it: the (still emitted) press sends them to sign in
             listeners={guard ? { tabPress: () => router.push("/auth/login") } : undefined}
           >
-            {def.center ? <NativeTabs.Trigger.Icon src={dark ? AI_DISC : AI_DISC_LIGHT} renderingMode="original" /> : <NativeTabs.Trigger.Icon sf={SF[def.icon] as never} />}
+            {def.center ? <NativeTabs.Trigger.Icon src={AI_SLOT} renderingMode="original" /> : <NativeTabs.Trigger.Icon sf={SF[def.icon] as never} />}
             <NativeTabs.Trigger.Label>{t(def.labelKey)}</NativeTabs.Trigger.Label>
             {n ? <NativeTabs.Trigger.Badge>{n > 99 ? "99+" : String(n)}</NativeTabs.Trigger.Badge> : null}
           </NativeTabs.Trigger>
@@ -64,5 +63,7 @@ export function NativeTabsBar({ bar }: { bar: boolean }) {
       })}
       {rest.map((name) => <NativeTabs.Trigger key={`hidden-${name}`} name={name} contentStyle={AURORA ? aurora : undefined} hidden />)}
     </NativeTabs>
+    {bar && centerAt >= 0 ? <AiRaisedButton index={centerAt} count={shown.length} labelKey={shown[centerAt].labelKey} /> : null}
+    </View>
   );
 }
