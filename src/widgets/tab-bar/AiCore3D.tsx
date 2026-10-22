@@ -1,10 +1,26 @@
 import { useEffect, useRef } from "react";
 import { PixelRatio, StyleSheet } from "react-native";
-import { GLView, type ExpoWebGLRenderingContext } from "expo-gl";
+import { requireOptionalNativeModule } from "expo";
+import type { ExpoWebGLRenderingContext } from "expo-gl";
 import * as THREE from "three";
 import Animated, { useAnimatedStyle, type SharedValue } from "react-native-reanimated";
 
 type Props = { size: number; t: SharedValue<number>; calm?: boolean };
+
+// expo-gl is a native module: a build made before it was added does not have it, and importing it up front would crash every screen that
+// reaches this file. Ask the module registry first, load it on use, and draw no crystal when it is missing.
+type GL = typeof import("expo-gl");
+let gl3d: GL | null | undefined;
+function loadGL(): GL | null {
+  if (gl3d !== undefined) return gl3d;
+  try {
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
+    gl3d = requireOptionalNativeModule("ExpoGL") ? (require("expo-gl") as GL) : null;
+  } catch {
+    gl3d = null;
+  }
+  return gl3d;
+}
 
 const clamp = (v: number) => { "worklet"; return Math.min(1, Math.max(0, v)); };
 
@@ -59,9 +75,11 @@ export function AiCore3D({ size, t, calm = false }: Props) {
     stop.current = () => { alive = false; cancelAnimationFrame(raf); renderer.dispose(); geo.dispose(); };
   };
 
+  const GL = loadGL();
+  if (!GL) return null;
   return (
     <Animated.View pointerEvents="none" style={[s.wrap, { width: size, height: size, left: "50%", top: "50%", marginLeft: -size / 2, marginTop: -size / 2 }, style]}>
-      <GLView style={{ width: size, height: size }} onContextCreate={onContext} msaaSamples={PixelRatio.get() > 2 ? 0 : 4} />
+      <GL.GLView style={{ width: size, height: size }} onContextCreate={onContext} msaaSamples={PixelRatio.get() > 2 ? 0 : 4} />
     </Animated.View>
   );
 }
