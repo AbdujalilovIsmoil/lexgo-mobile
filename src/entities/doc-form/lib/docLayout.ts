@@ -1,7 +1,7 @@
 // The text of a document (from the server: the heading, the paragraphs, "[spots to fill]") laid out as a page. No guessing at the content: only
 // what the shape of a line says — the first line is the title, a short numbered or ALL-CAPS line is a heading, "1)", "-", "a." start a list
 // item — and every line break the server sent stays.
-export type Seg = { slot: boolean; text: string };
+export type Seg = { slot: boolean; text: string; n?: number }; // n: the spot's number in the document (1, 2, 3…), set by layoutDoc
 export type Block =
   | { kind: "title"; segs: Seg[] }
   | { kind: "heading"; segs: Seg[]; center: boolean }
@@ -47,6 +47,9 @@ export function layoutDoc(text: string): Block[] {
     if (item) return void out.push({ kind: "item", marker: item[1], segs: segsOf(item[2]) });
     out.push({ kind: "para", segs: segsOf(line) });
   });
+  // The spots are numbered in reading order, so the page and the form can speak of "field 7".
+  let n = 0;
+  for (const b of out) if ("segs" in b) for (const g of b.segs) if (g.slot) g.n = ++n;
   return out;
 }
 
@@ -62,3 +65,6 @@ export function excerpt(text: string, max: number): string {
   const nl = cut.lastIndexOf("\n");
   return (nl > max * 0.4 ? cut.slice(0, nl) : cut).trimEnd();
 }
+
+// ①…⑳ for the first twenty spots, "(21)" after that.
+export const circled = (n: number): string => (n >= 1 && n <= 20 ? String.fromCodePoint(0x2460 + n - 1) : `(${n})`);

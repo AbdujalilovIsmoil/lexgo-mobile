@@ -45,7 +45,7 @@ export const dcat = {
     signInFirst: "Davom etish uchun hisobingizga kiring",
     pooled: "Navbatchi advokatlarda",
     minutes: "≈ {n} daqiqa",
-    slotsN: "Sariq joylar: {n} ta maydonni siz to'ldirasiz",
+    slotsN: "Ko'k maydonlar: {n} tasini siz to'ldirasiz",
     lang: {
       "uz-cyrl": "O'zbekcha (kirill)",
       "uz-latn": "O'zbekcha (lotin)",

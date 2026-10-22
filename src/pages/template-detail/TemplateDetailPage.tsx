@@ -78,7 +78,7 @@ export function TemplateDetailPage({ id }: { id: string }) {
           ) : null}
           <Text variant="h4">{t("dcat.whatNext")}</Text>
           <TemplateActions actions={actions} />
-          <TemplatePreview text={text} loading={render.isLoading} error={render.error} onRetry={() => void render.refetch()} open={full} onOpen={() => { setFull(true); trackDoc("document_preview_opened", { category: tpl.category, language: tpl.language }); }} onClose={() => setFull(false)} title={tpl.name} />
+          <TemplatePreview kicker={categoryLabel(t, tpl.category)} text={text} loading={render.isLoading} error={render.error} onRetry={() => void render.refetch()} open={full} onOpen={() => { setFull(true); trackDoc("document_preview_opened", { category: tpl.category, language: tpl.language }); }} onClose={() => setFull(false)} title={tpl.name} />
         </ScrollView>
       )}
       <TemplateGates gates={clean.gates} />
