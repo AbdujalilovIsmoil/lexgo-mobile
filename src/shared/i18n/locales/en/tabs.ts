@@ -6,7 +6,7 @@ export const tabs: Messages["tabs"] = {
   analytics: "Analytics",
   admin: "Manage",
   home: "Home",
-  services: "Services",
+  services: "Documents",
   ai: "AI",
   lawyers: "Lawyers",
   orders: "Orders",

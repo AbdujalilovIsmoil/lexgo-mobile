@@ -4,7 +4,7 @@ export const tabs = {
   analytics: "Tahlil",
   admin: "Boshqaruv",
   home: "Bosh sahifa",
-  services: "Xizmatlar",
+  services: "Hujjatlar",
   ai: "AI",
   lawyers: "Advokat",
   orders: "Buyurtmalar",

@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-import { Text as RNText, useWindowDimensions, View } from "react-native";
+import { memo, useEffect, useState } from "react";
+import { useWindowDimensions, View } from "react-native";
 import { NativeTabs } from "expo-router/unstable-native-tabs";
 import { useRouter } from "expo-router";
 import { useIsAuthed } from "@/entities/session";
@@ -8,6 +8,7 @@ import { useT } from "@/shared/i18n";
 import { AURORA, useColors } from "@/shared/theme";
 import { useAuroraStyle } from "@/shared/ui";
 import { AiRaisedButton } from "./AiRaisedButton";
+import { CaptionMeter, ReturnWatcher } from "./BarHelpers";
 import { AI_SLOT as AI_WIDTH, GAP_SLOT, captionFit, shortCaption } from "./captionFit";
 import { installTabReach, setBarRoutes } from "./tabReach";
 import { TABS, type TabDef } from "./tabConfig";
@@ -30,7 +31,7 @@ const AI_SLOT = require("../../../assets/tabs/ai-slot.png");
 
 // The system tab bar (UITabBar): Liquid Glass on iOS 26 with no custom drawing. Every route is declared, in the role's order first;
 // the ones outside the role or not allowed right now are hidden. `bar` is false on screens that ask for no bar (the AI chat).
-export function NativeTabsBar({ bar }: { bar: boolean }) {
+export const NativeTabsBar = memo(function NativeTabsBar({ bar }: { bar: boolean }) {
   const { t } = useT();
   const c = useColors();
   const router = useRouter();
@@ -62,15 +63,13 @@ export function NativeTabsBar({ bar }: { bar: boolean }) {
   const w10 = (x: string) => measured[x] ?? x.length * 5.8;
   const extra = (shown.some((d) => d.center) ? AI_WIDTH : 0) + (shown.some((d) => d.route === GAP.route) ? GAP_SLOT : 0);
   const fit = captionFit(width, fulls.map(w10), shorts.map(w10), extra);
+  const [nudge, setNudge] = useState(0); // see ReturnWatcher
   const caption = (x: string) => (fit.mode === "short" ? shortCaption(x) : x);
   return (
     <View style={{ flex: 1 }}>
-    <View pointerEvents="none" style={{ position: "absolute", top: -200, left: 0, opacity: 0, alignItems: "flex-start" }}>
-      {[...new Set([...fulls, ...shorts])].map((x) => (
-        <RNText key={x} numberOfLines={1} allowFontScaling={false} style={{ fontSize: 10, fontWeight: "600" }} onTextLayout={(e) => { const w = e.nativeEvent.lines[0]?.width; if (w) setMeasured((m) => (Math.abs((m[x] ?? 0) - w) < 0.5 ? m : { ...m, [x]: w })); }}>{x}</RNText>
-      ))}
-    </View>
-    <NativeTabs hidden={!bar} tintColor={c.accent} labelStyle={{ fontSize: fit.size }}>
+    <CaptionMeter texts={[...new Set([...fulls, ...shorts])]} onWidths={(w) => setMeasured((m) => ({ ...m, ...w }))} />
+    <ReturnWatcher onSettled={() => setNudge((n) => n + 1)} />
+    <NativeTabs hidden={!bar} tintColor={c.accent} labelStyle={{ fontSize: fit.size + (nudge % 2) * 0.01 }}>
       {shown.map((def) => {
         const n = def.badge ? (badges[def.badge] ?? 0) : 0;
         const guard = (def.auth && !authed) || def.route === GAP.route;
@@ -94,4 +93,4 @@ export function NativeTabsBar({ bar }: { bar: boolean }) {
     {bar && centerAt >= 0 ? <AiRaisedButton labelKey={shown[centerAt].labelKey} /> : null}
     </View>
   );
-}
+});
