@@ -8,7 +8,7 @@ import { useInsets } from "@/shared/lib/insets";
 import { useColors } from "@/shared/theme";
 import { useT } from "@/shared/i18n";
 
-type Props = { index: number; count: number; labelKey: string };
+type Props = { index: number; count: number; labelKey: string }; // labelKey: the button's accessibility label
 
 // The system bar floats ~21pt in from each edge; its slots share the rest equally. These match iOS 26's UITabBar and are the only
 // numbers to tune if the button drifts from its slot.
@@ -20,7 +20,7 @@ const RISE = 22; // how far the disc stands above the bar's top edge
 
 const ORB = require("../../../assets/tabs/ai-orb.png");
 
-// iOS: the AI tab's slot in the system bar has no icon (its caption stays, in line with the others); this button stands over it, rising above the bar. A soft ring breathes out of it
+// iOS: the AI tab's slot in the system bar has no icon (no caption); this button stands over it, rising above the bar. A soft ring breathes out of it
 // every few seconds — the only motion, off with Reduce Motion.
 export function AiRaisedButton({ index, count, labelKey }: Props) {
   const c = useColors();
@@ -36,7 +36,7 @@ export function AiRaisedButton({ index, count, labelKey }: Props) {
   }, [breath, calm]);
   const ring = useAnimatedStyle(() => ({ opacity: 0.38 * (1 - breath.value), transform: [{ scale: 1 + breath.value * 0.42 }] }));
   const slot = (width - BAR_INSET * 2) / Math.max(count, 1);
-  const centerX = BAR_INSET + slot * (index + 0.5);
+  const centerX = count % 2 === 1 && index === (count - 1) / 2 ? width / 2 : BAR_INSET + slot * (index + 0.5);
   const bottom = insets.bottom + BAR_LIFT + BAR_HEIGHT - SIZE + RISE - 6;
   return (
     <View pointerEvents="box-none" style={StyleSheet.absoluteFill}>

@@ -22,7 +22,7 @@ const SF: Record<string, string> = {
 
 installTabReach();
 
-// The AI tab's slot in the system bar is left empty (a clear image; its caption stays): AiRaisedButton stands in it, rising above the bar.
+// The AI tab's slot in the system bar is left empty (a clear image, no caption): AiRaisedButton stands in it, rising above the bar.
 const AI_SLOT = require("../../../assets/tabs/ai-slot.png");
 
 // The system tab bar (UITabBar): Liquid Glass on iOS 26 with no custom drawing. Every route is declared, in the role's order first;
@@ -34,7 +34,15 @@ export function NativeTabsBar({ bar }: { bar: boolean }) {
   const authed = useIsAuthed();
   const role = useTabRole();
   const badges = useBadgeStore((s) => s.badges);
-  const shown = useVisibleTabs();
+  // With an odd number of tabs the AI tab takes the middle slot, so the raised button sits at the exact centre of the bar.
+  const visible = useVisibleTabs();
+  const shown = (() => {
+    const ai = visible.find((d) => d.center);
+    if (!ai || visible.length % 2 === 0) return visible;
+    const rest = visible.filter((d) => d !== ai);
+    rest.splice(Math.floor(visible.length / 2), 0, ai);
+    return rest;
+  })();
   const centerAt = shown.findIndex((d) => d.center);
   const barKey = shown.map((d) => d.route).join(",");
   useEffect(() => { setBarRoutes(barKey ? barKey.split(",") : []); }, [barKey]); // links to any other tab page open it as a stack screen
@@ -56,7 +64,7 @@ export function NativeTabsBar({ bar }: { bar: boolean }) {
             listeners={guard ? { tabPress: () => router.push("/auth/login") } : undefined}
           >
             {def.center ? <NativeTabs.Trigger.Icon src={AI_SLOT} renderingMode="original" /> : <NativeTabs.Trigger.Icon sf={SF[def.icon] as never} />}
-            <NativeTabs.Trigger.Label>{t(def.labelKey)}</NativeTabs.Trigger.Label>
+            <NativeTabs.Trigger.Label hidden={def.center}>{t(def.labelKey)}</NativeTabs.Trigger.Label>
             {n ? <NativeTabs.Trigger.Badge>{n > 99 ? "99+" : String(n)}</NativeTabs.Trigger.Badge> : null}
           </NativeTabs.Trigger>
         );
