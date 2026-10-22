@@ -1,4 +1,4 @@
-import { StyleSheet, View } from "react-native";
+import { Platform, StyleSheet, View } from "react-native";
 import { BottomSheet, Button, Icon, IconButton, PressableScale, SheetScroll, Text, type IconName } from "@/shared/ui";
 import { radius, useColors } from "@/shared/theme";
 import { useInsets } from "@/shared/lib/insets";
@@ -55,7 +55,7 @@ export function InboxFilterSheet({ visible, onClose, options, value, onChange, t
             </View>
           ) : null}
         </SheetScroll>
-        <View style={[s.bar, { borderTopColor: c.line, paddingBottom: Math.max(insets.bottom - 18, 12) }]}>
+        <View style={[s.bar, { borderTopColor: c.line, paddingBottom: Platform.OS === "ios" ? 16 : Math.max(insets.bottom - 18, 12) }]}>
           <IconButton icon="rotate-ccw" size={48} label={t("dm1.reset")} onPress={() => onChange("all")} />
           <Button title={`${t("dm11.fShow")} · ${total}`} variant="gradient" full style={s.flex} onPress={onClose} />
         </View>
