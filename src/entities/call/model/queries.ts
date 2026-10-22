@@ -11,7 +11,7 @@ export const meetKeys = {
 };
 
 // `live` = the user socket pushes call.* events; otherwise poll.
-export const useInvited = (live: boolean) => useQuery({ queryKey: meetKeys.mine, queryFn: listInvited, refetchInterval: live ? false : 10_000 });
+export const useInvited = (live: boolean) => useQuery({ queryKey: meetKeys.mine, queryFn: () => listInvited(), refetchInterval: live ? false : 10_000 });
 export const useAdminCalls = (f: AdminCallFilter, enabled: boolean) => useQuery({ queryKey: meetKeys.platform(f), queryFn: () => listAdminCalls(f), enabled });
 export const useAdminCall = (id: string | null) => useQuery({ queryKey: meetKeys.detail(id ?? ""), queryFn: () => getAdminCall(id ?? ""), enabled: !!id });
 // Event driven: the room socket's call.* frames invalidate this key (no timer polling).

@@ -5,5 +5,5 @@ export { noteLatency, resetLatency } from "./latency";
 export { probeHealth } from "./health";
 export { OfflineBanner } from "./OfflineBanner";
 export { StaleNote } from "./StaleNote";
-export { netLogText } from "./netLog";
+export { netLog, netLogText } from "./netLog";
 export { readOsPath, describeOsPath, type OsPath } from "./osPath";

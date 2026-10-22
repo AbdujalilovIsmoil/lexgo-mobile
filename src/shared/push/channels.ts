@@ -18,3 +18,20 @@ export async function ensureChannels(names: Record<ChannelId, string>): Promise<
     /* channels are an enhancement: the default channel from app.json still delivers */
   }
 }
+
+// An incoming call's OS notification carries two buttons: join (opens the app on the call) and decline (answered without opening it).
+export const CALL_ACTIONS = "incoming_call";
+export const CALL_JOIN = "join";
+export const CALL_DECLINE = "decline";
+
+/** Registers / renames the call buttons; call again when the language changes. The OS keeps them for pushes that arrive while closed. */
+export async function ensureCallActions(labels: { join: string; decline: string }): Promise<void> {
+  try {
+    await Notifications.setNotificationCategoryAsync(CALL_ACTIONS, [
+      { identifier: CALL_JOIN, buttonTitle: labels.join, options: { opensAppToForeground: true } },
+      { identifier: CALL_DECLINE, buttonTitle: labels.decline, options: { opensAppToForeground: false, isDestructive: true } },
+    ]);
+  } catch {
+    /* without the buttons a tap still opens the call */
+  }
+}

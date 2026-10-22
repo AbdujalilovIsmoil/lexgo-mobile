@@ -1,6 +1,15 @@
 import { asDict, asStr } from "@/shared/lib/json";
 
-export type RemoteData = { type: string; callId: string; taskId: string };
+export type RemoteData = {
+  type: string;
+  callId: string;
+  taskId: string;
+  roomId: string;
+  callerName: string;
+  callerId: string;
+  callType: string;
+  action: string; // a notification button the person pressed (a response handed to the background task), "" otherwise
+};
 
 const parse = (v: unknown): Record<string, unknown> => {
   if (typeof v !== "string") return asDict(v);
@@ -19,7 +28,16 @@ export function remoteDataOf(payload: unknown): RemoteData {
   const req = asDict(asDict(p.request).content);
   const bags = [asDict(p.data), parse(asDict(p.data).dataString), parse(asDict(p.data).body), parse(content.data), parse(req.data), p];
   const pick = (k: string): string => bags.map((b) => asStr(b[k])).find(Boolean) ?? "";
-  return { type: pick("type") || pick("event"), callId: pick("call_id"), taskId: pick("task_id") };
+  return {
+    type: pick("type") || pick("event"),
+    callId: pick("call_id"),
+    taskId: pick("task_id"),
+    roomId: pick("room_id") || pick("secure_chat_room_id"),
+    callerName: pick("caller_name"),
+    callerId: pick("caller_user_id"),
+    callType: pick("call_type"),
+    action: asStr(p.actionIdentifier),
+  };
 }
 
 /** One call / task event is announced once, however many channels (socket, push, local alert) bring it: type + call_id / task_id. */

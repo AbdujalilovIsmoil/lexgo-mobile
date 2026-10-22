@@ -3,11 +3,13 @@ import { useRootNavigationState, useRouter } from "expo-router";
 import * as Notifications from "expo-notifications";
 import { useQueryClient } from "@tanstack/react-query";
 import { markIdsRead } from "@/entities/notification";
+import { declineFromNotification } from "@/features/call";
 import { currentViewer, openLink } from "@/features/open-link";
 import { translate } from "@/shared/i18n/useT";
 import { useLocaleStore } from "@/shared/i18n/localeStore";
 import { asDict, asStr } from "@/shared/lib/json";
 import { toast } from "@/shared/ui";
+import { CALL_DECLINE, dismissCallAlerts } from "@/shared/push";
 import { remoteDataOf } from "./remoteData";
 import { advanceWatermark } from "./seen";
 
@@ -30,6 +32,11 @@ export function useResponseRouter(): void {
       const t = (key: string) => translate(useLocaleStore.getState().locale, key);
       const remote = remoteDataOf(r);
       const event = asStr(d.event) || remote.type; // a local alert says `event`, a remote push `type`
+      if (event === "call.incoming" && remote.callId) {
+        // Decline answers the call without opening anything; Join / a tap open it, and either way the ringing notification goes.
+        if (r.actionIdentifier === CALL_DECLINE) return void declineFromNotification(remote.roomId, remote.callId);
+        void dismissCallAlerts(remote.callId);
+      }
       if (event.startsWith("tasks.")) {
         const task = remote.taskId || asStr(d.task_id);
         router.navigate((task ? `/team-tasks?task=${encodeURIComponent(task)}` : "/team-tasks") as never); // a task alert opens that task

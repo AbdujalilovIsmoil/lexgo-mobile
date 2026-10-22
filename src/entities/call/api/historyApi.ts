@@ -5,8 +5,9 @@ import { normParticipant } from "./normalizeCall";
 import { kind, normAdminCall } from "./normalizeAdmin";
 
 // GET /calls/invited — meetings I hosted or was invited to (the host has a participant row too).
-export async function listInvited(): Promise<Invited[]> {
-  return listFrom(await http("/calls/invited"), "items", "data", "calls")
+/** GET /calls/invited — the calls I am a participant of, newest first; `limit` keeps the ring safety net's request small. */
+export async function listInvited(limit?: number): Promise<Invited[]> {
+  return listFrom(await http(limit ? `/calls/invited?limit=${limit}` : "/calls/invited"), "items", "data", "calls")
     .map((v) => {
       const d = asDict(v);
       return {

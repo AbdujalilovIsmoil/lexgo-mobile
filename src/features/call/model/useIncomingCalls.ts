@@ -2,18 +2,28 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { AppState } from "react-native";
 import { useRouter } from "expo-router";
 import { deviceId } from "@/shared/push";
+import { netLog, serverNow } from "@/shared/network";
 import { callPath, listInvited, patchParticipant, type Invited } from "@/entities/call";
 import { useResync, useSocketState, useUserEvents } from "@/shared/realtime";
 import { useSession } from "@/entities/session";
 import { alertIncoming, clearIncomingAlert } from "../lib/ringAlert";
-import { callIdOf, isOver, NUDGE, parseRing, RING, type Incoming } from "../lib/ringEvent";
+import { callIdOf, isOver, MINE_DONE, NUDGE, parseRing, ringable, ringFrameOf, ringSkip, type Incoming } from "../lib/ringEvent";
 
 export type { Incoming };
-const POLL_MS = 8000; // only while the user socket is down
+const POLL_MS = 8000; // while the user socket is down
+const SAFETY_MS = 15_000; // while it is up: a ring the socket did not bring still shows within seconds
 const RING_MS = 45_000; // an unanswered ring stops by itself (still joinable from the meetings list)
 const make = (c: Invited): Incoming => ({ roomId: c.roomId, callId: c.callId, type: c.type, callerName: c.callerName, title: c.title });
+const FRESH_MS = 3 * 60_000;
+const short = (id: string) => id.slice(0, 8);
+// A call I am invited to still rings from the list (as before); one in a newer participant state ("ringing", …) only while it is new,
+// so a long meeting I never joined does not ring at every launch.
+const ringsFromList = (c: Invited): boolean =>
+  ringable(c.callStatus) && !!c.status && !MINE_DONE.includes(c.status) && (c.status === "invited" || !c.startedAt || serverNow() - Date.parse(c.startedAt) < FRESH_MS);
 
-// Incoming calls / invites: `call.incoming` on the user socket (+ safety nets) and GET /calls/invited on start, foreground, reconnect.
+// Incoming calls / invites, on whatever screen the person is: `call.incoming` on the user socket (bare or wrapped in a
+// notification), a ring handed over by a push while the app is open, and GET /calls/invited — on start, on foreground, after a
+// reconnect, and as a light safety net every few seconds while the app is open. Each decision goes to the connection journal.
 export function useIncomingCalls(inCall: boolean) {
   const router = useRouter();
   const myId = useSession()?.user.id ?? "";
@@ -26,17 +36,18 @@ export function useIncomingCalls(inCall: boolean) {
   const poll = useCallback(async () => {
     if (!myId || busy.current || AppState.currentState !== "active") return;
     try {
-      const list = await listInvited();
-      const hit = list.find((c) => c.callStatus === "active" && c.status === "invited" && !seen.current.has(c.callId));
+      const list = await listInvited(5);
+      const hit = list.find((c) => ringsFromList(c) && !seen.current.has(c.callId));
       const now = list.find((c) => c.callId === cur.current?.callId);
-      const settled = !!now && (now.callStatus !== "active" || now.status !== "invited");
+      const settled = !!now && (!ringable(now.callStatus) || MINE_DONE.includes(now.status));
+      if (hit && cur.current?.callId !== hit.callId) netLog("call", `poll ${short(hit.callId)} call=${hit.callStatus} me=${hit.status} -> ring`);
       setInc((c) => (hit ? (c?.callId === hit.callId ? { ...c, callerName: c.callerName || hit.callerName, title: c.title || hit.title } : c ?? make(hit)) : settled ? null : c));
     } catch { /* the next poll tries again */ }
   }, [myId]);
 
   useEffect(() => {
     void poll();
-    const id = online || !myId ? undefined : setInterval(() => void poll(), POLL_MS);
+    const id = myId ? setInterval(() => void poll(), online ? SAFETY_MS : POLL_MS) : undefined;
     const app = AppState.addEventListener("change", (s) => { if (s === "active") void poll(); });
     return () => { clearInterval(id); app.remove(); };
   }, [online, myId, poll]);
@@ -46,15 +57,23 @@ export function useIncomingCalls(inCall: boolean) {
     const id = setTimeout(() => { seen.current.add(inc.callId); setInc(null); clearIncomingAlert(inc.callId); }, RING_MS);
     return () => clearTimeout(id);
   }, [inc]);
-  useUserEvents(["call.", ...NUDGE], (e) => {
+  useUserEvents(["call.", "notification.created", ...NUDGE], (e) => {
     if (NUDGE.includes(e.event)) return void poll();
-    const id = callIdOf(e);
-    if (RING.includes(e.event)) {
-      const ring = parseRing(e, myId);
-      if (!ring || busy.current || seen.current.has(id)) return;
+    const frame = ringFrameOf(e);
+    if (frame) {
+      const id = callIdOf(frame);
+      const skip = ringSkip(frame, myId) || (busy.current ? "in a call" : seen.current.has(id) ? "already handled" : cur.current?.callId === id ? "already ringing" : "");
+      netLog("call", `${e.event === frame.event ? frame.event : `${e.event}/${frame.event}`} ${short(id)} -> ${skip ? `skip (${skip})` : "ring"}`);
+      const ring = skip ? null : parseRing(frame, myId);
+      if (!ring) return;
       setInc(ring); alertIncoming(ring);
       if (!ring.callerName) void poll();
-    } else if (id && cur.current?.callId === id && isOver(e)) {
+      return;
+    }
+    if (e.event === "notification.created") return;
+    const id = callIdOf(e);
+    if (id && cur.current?.callId === id && isOver(e)) {
+      netLog("call", `${e.event} ${short(id)} -> ring stops`);
       seen.current.add(id); setInc(null); clearIncomingAlert(id);
     }
   });

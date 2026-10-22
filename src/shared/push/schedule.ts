@@ -3,7 +3,7 @@ import { track } from "@/shared/analytics";
 import { channelOf } from "./channels";
 import { readPermission } from "./permission";
 
-export type LocalAlert = { id: string; title: string; body: string; category: string; event: string; data: Record<string, unknown>; ids?: string[]; sound?: boolean; delaySec?: number };
+export type LocalAlert = { id: string; title: string; body: string; category: string; event: string; data: Record<string, unknown>; ids?: string[]; sound?: boolean; delaySec?: number; actions?: string };
 
 // Only these payload keys travel inside an OS notification (ids needed to open the right screen;
 // no phones, names or message text — the lock screen can be read by anyone).
@@ -22,7 +22,7 @@ export async function showLocalAlert(a: LocalAlert): Promise<boolean> {
   try {
     await Notifications.scheduleNotificationAsync({
       identifier: a.id,
-      content: { title: a.title, body: a.body, data: { local: true, event: a.event, category: a.category, nids: (a.ids ?? []).slice(0, 8).join(","), ...routeData(a.data) }, sound: a.sound === false ? false : "default" },
+      content: { title: a.title, body: a.body, data: { local: true, event: a.event, category: a.category, nids: (a.ids ?? []).slice(0, 8).join(","), ...routeData(a.data) }, sound: a.sound === false ? false : "default", ...(a.actions ? { categoryIdentifier: a.actions } : {}) },
       trigger: a.delaySec ? { type: Notifications.SchedulableTriggerInputTypes.TIME_INTERVAL, seconds: a.delaySec, channelId: channelOf(a.category, a.event) } : { channelId: channelOf(a.category, a.event) },
     });
     track("local_alert", { event: a.event, category: a.category });

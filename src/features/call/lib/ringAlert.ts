@@ -3,18 +3,18 @@ import * as Notifications from "expo-notifications";
 import { localPrefs } from "@/entities/notification";
 import { useLocaleStore } from "@/shared/i18n/localeStore";
 import { translate } from "@/shared/i18n/useT";
-import { dismissCallAlerts, showLocalAlert } from "@/shared/push";
+import { CALL_ACTIONS, dismissCallAlerts, showLocalAlert } from "@/shared/push";
 import type { Incoming } from "./ringEvent";
 
 const idOf = (callId: string) => `call-${callId}`;
 
-/** The app is not on screen (backgrounded but its socket is still up): ring through the OS "calls" channel so a tap opens the call. */
+/** The app is not on screen (in the background, or started by a push): ring through the OS "calls" channel with Join / Decline. */
 export function alertIncoming(inc: Incoming): void {
   if (AppState.currentState === "active") return;
   const t = (k: string) => translate(useLocaleStore.getState().locale, k);
   void showLocalAlert({
     id: idOf(inc.callId), title: inc.callerName || t("admMeet.someone"), body: inc.type === "audio" ? t("admMeet.invitesAudio") : t("admMeet.invitesVideo"),
-    category: "calls", event: "call.incoming", data: { room_id: inc.roomId, call_id: inc.callId }, sound: localPrefs().sound,
+    category: "calls", event: "call.incoming", data: { room_id: inc.roomId, call_id: inc.callId }, sound: localPrefs().sound, actions: CALL_ACTIONS,
   });
 }
 
