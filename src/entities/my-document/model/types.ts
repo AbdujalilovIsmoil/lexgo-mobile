@@ -26,6 +26,7 @@ export type DocRow = {
   currency: string;
   requestedType: string;
   createdAt: string;
+  updatedAt: string; // the backend orders the list by it: shown, never re-sorted
   templateId: string;
   fileReady: boolean;
   format: string;

@@ -1,8 +1,9 @@
-import { useMemo, useState, type ReactElement } from "react";
+import { useEffect, useMemo, useRef, useState, type ReactElement } from "react";
 import { ActivityIndicator, FlatList, StyleSheet, View } from "react-native";
 import { useRouter } from "expo-router";
 import { matchTemplates, useCatalogTemplates, useTemplateCategories, type DocTemplate } from "@/entities/doc-template";
 import { isOfflineError } from "@/shared/api";
+import { trackDoc } from "@/shared/analytics";
 import { PAGE, growWindow, nextCount } from "@/shared/lib/pageWindow";
 import { useDebounced } from "@/shared/lib/useDebounced";
 import { Button, EmptyState, ErrorView, Skeleton, Text } from "@/shared/ui";
@@ -49,6 +50,14 @@ export function DocCatalog({ footer, onOpen }: { footer?: ReactElement | null; o
   const total = cat ? info.find((c) => c.key === cat)?.count ?? list.rows.length : info.reduce((a, c) => a + c.count, 0) || list.rows.length;
   const line = list.loading || list.error ? "" : needle.trim() || lang ? t("dcat.countOf", { n: rows.length, total: total || byLang.length }) : t("dcat.count", { n: total || rows.length });
   const reset = () => { setCat(""); setLang(""); };
+  // Analytics (no text, no ids): the catalogue opened once; a search once per settled query.
+  useEffect(() => { trackDoc("document_catalog_opened"); }, []);
+  const searched = useRef("");
+  useEffect(() => {
+    const q = needle.trim();
+    if (q.length >= 2 && q !== searched.current) { searched.current = q; trackDoc("document_template_searched", { category: cat || undefined, language: lang || undefined }); }
+    if (!q) searched.current = "";
+  }, [needle, cat, lang]);
 
   const state = list.loading ? (
     <View style={s.skeletons}>{[0, 1, 2, 3, 4, 5].map((i) => <Skeleton key={i} height={92} round={20} />)}</View>

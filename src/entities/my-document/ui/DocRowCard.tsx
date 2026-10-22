@@ -17,7 +17,9 @@ export function DocRowCard({ row, onPress, children }: { row: DocRow; onPress: (
   const color = useToneColor();
   const group = groupOf(row.status);
   const price = row.price > 0 ? `${fmtMoney(row.price)} ${t("adm.currency")}` : "";
-  const meta = [fmtDate(row.createdAt, locale), price].filter(Boolean).join(" · ");
+  // The row says when it last changed (the backend's own `updated_at` order), not when it was born.
+  const meta = [fmtDate(row.updatedAt || row.createdAt, locale), price].filter(Boolean).join(" · ");
+  const pooled = row.lawyerActive && !row.lawyer && group !== "ready" && group !== "closed";
   return (
     <RowCard
       icon={MODE_ICON[row.mode]}
@@ -28,11 +30,11 @@ export function DocRowCard({ row, onPress, children }: { row: DocRow; onPress: (
       right={<StatusBadge status={row.status} label={row.statusLabel} />}
       onPress={onPress}
     >
-      {group !== "closed" ? <Text variant="caption" tone={group === "ready" ? "ok" : "gray"}>{t(`dm2.next.${group}`)}</Text> : null}
+      {group !== "closed" ? <Text variant="caption" tone={group === "ready" ? "ok" : "gray"}>{row.nextAction || t(`dm2.next.${group}`)}</Text> : null}
       <View style={s.chips}>
         <Pill label={t(`dm1.mode.${row.mode}`)} tone="gray" icon={MODE_ICON[row.mode]} small />
         {row.fileReady ? <Pill label={(row.format || "docx").toUpperCase()} tone="ok" icon="file-text" small /> : null}
-        {row.lawyer ? <Pill label={row.lawyer} tone="gray" icon="user" small /> : null}
+        {row.lawyer ? <Pill label={row.lawyer} tone="gray" icon="user" small /> : pooled ? <Pill label={t("dcat.pooled")} tone="warn" icon="clock" small /> : null}
         {row.meeting === "active" ? <Pill label={t("dm1.meetingActive")} tone="ok" icon="video" small /> : null}
         {row.rating.submitted && row.rating.value ? <Pill label={`${row.rating.value}/5`} tone="warn" icon="star" small /> : null}
       </View>

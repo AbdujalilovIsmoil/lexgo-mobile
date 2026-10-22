@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { ScrollView, StyleSheet, View } from "react-native";
 import { Chip, IconButton } from "@/shared/ui";
-import { SearchBox } from "@/shared/ui/admin";
+import { ChipBar, SearchBox } from "@/shared/ui/admin";
 import { useT } from "@/shared/i18n";
 import type { DocMode } from "@/entities/my-document";
 import { filterChips } from "@/features/my-documents";
@@ -10,6 +10,7 @@ import { DocScope, type StatKey } from "./DocScope";
 
 type Props = {
   counts: Record<string, number>;
+  modeCounts: Record<string, number>;
   statusCounts: Record<string, number>;
   total: number;
   loading: boolean;
@@ -26,7 +27,7 @@ type Props = {
 
 // Top of the list: the archive split (pills with counts), a search over every document and a filter button — mode and
 // exact status live in a sheet, and what is applied from it shows underneath as chips that can be removed one by one.
-export function DocListHeader({ counts, statusCounts, total, loading, group, mode, q, status, seen, onGroup, onMode, onQuery, onStatus }: Props) {
+export function DocListHeader({ counts, modeCounts, statusCounts, total, loading, group, mode, q, status, seen, onGroup, onMode, onQuery, onStatus }: Props) {
   const { t } = useT();
   const [open, setOpen] = useState(false);
   const modes: { value: "" | DocMode; label: string }[] = [
@@ -40,6 +41,7 @@ export function DocListHeader({ counts, statusCounts, total, loading, group, mod
   const chips = filterChips({ mode, status }, { mode: (m) => t(`docSheet.modeShort.${m}`), status: word });
   return (
     <View style={s.col}>
+      <ChipBar options={modes.map((m) => ({ ...m, count: loading ? undefined : modeCounts[m.value || "all"] ?? 0 }))} value={mode} onChange={onMode} />
       <DocScope counts={counts} value={group} onChange={onGroup} loading={loading} />
       <View style={s.search}>
         <View style={s.flex}><SearchBox value={q} onChangeText={onQuery} placeholder={t("dm1.searchPh")} /></View>

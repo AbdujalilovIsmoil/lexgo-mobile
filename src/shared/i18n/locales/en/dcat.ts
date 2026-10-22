@@ -43,6 +43,7 @@ export const dcat = {
     toCatalog: "Back to the catalogue",
     fieldsN: "{n} fields",
     signInFirst: "Sign in to continue",
+    pooled: "With the duty lawyers",
     lang: {
       "uz-cyrl": "Uzbek (Cyrillic)",
       "uz-latn": "Uzbek (Latin)",

@@ -19,6 +19,7 @@ export function baseRow(d: Dict): DocRow {
     currency: asStr(d.currency, "UZS"),
     requestedType: asStr(d.requested_document_type),
     createdAt: asStr(d.created_at),
+    updatedAt: asStr(d.updated_at),
     templateId: asStr(d.template_id),
     fileReady: READY.has(status) || cf.status === "ready",
     format: asStr(cf.file_name).split(".").pop() ?? "",
@@ -41,12 +42,19 @@ const meetingOf = (d: Dict): string => {
   return m.active === true || m.is_active === true || /active|live|ongoing/i.test(s) ? "active" : s;
 };
 
+// `next_action` is a sentence, or an object carrying one (label / title / message): the words the backend wants the client to read.
+export function nextActionText(v: unknown): string {
+  if (typeof v === "string") return v.trim();
+  const d = asDict(v);
+  return asStr(d.label ?? d.title ?? d.message ?? d.text ?? d.description).trim();
+}
+
 // GET /document-requests/service-flow item: a summary with the request nested in `document_request`.
 export function normFlow(v: unknown): DocRow {
   const d = asDict(v);
   const file = asDict(d.file);
   const row = baseRow({ ...asDict(d.document_request), ...d });
-  return { ...row, fileReady: file.ready === true, format: asStr(file.format), nextAction: asStr(d.next_action), meeting: meetingOf(d) };
+  return { ...row, fileReady: file.ready === true, format: asStr(file.format), nextAction: nextActionText(d.next_action), meeting: meetingOf(d) };
 }
 
 // GET /document-requests (light list): enough for search, counts and work ids.

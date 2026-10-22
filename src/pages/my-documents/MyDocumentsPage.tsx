@@ -45,7 +45,7 @@ export default function MyDocumentsPage() {
         onSend={setSend}
         onReset={l.reset}
         onBrowse={() => go("/services")}
-        header={<DocListHeader counts={l.counts} statusCounts={l.statusCounts} total={l.total} loading={l.countsLoading} group={l.group} mode={l.mode} q={l.q} status={l.status} seen={l.seen} onStatus={l.setStatus} onGroup={l.setGroup} onMode={l.setMode} onQuery={l.setQ} />}
+        header={<DocListHeader counts={l.counts} modeCounts={l.modeCounts} statusCounts={l.statusCounts} total={l.total} loading={l.countsLoading} group={l.group} mode={l.mode} q={l.q} status={l.status} seen={l.seen} onStatus={l.setStatus} onGroup={l.setGroup} onMode={l.setMode} onQuery={l.setQ} />}
       />
       <DocDetailSheet
         id={shown}

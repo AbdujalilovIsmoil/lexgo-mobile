@@ -43,6 +43,7 @@ export const dcat = {
     toCatalog: "Katalogga qaytish",
     fieldsN: "{n} ta maydon",
     signInFirst: "Davom etish uchun hisobingizga kiring",
+    pooled: "Navbatchi advokatlarda",
     lang: {
       "uz-cyrl": "O'zbekcha (kirill)",
       "uz-latn": "O'zbekcha (lotin)",

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { trackDoc } from "@/shared/analytics";
 import { downloadAndShare } from "@/shared/lib/files";
 import { errorHaptic } from "@/shared/lib/haptics";
 import { useT } from "@/shared/i18n";
@@ -14,6 +15,8 @@ export function useShare() {
     setBusy(true);
     try {
       await downloadAndShare(f.path, f.name ?? "document", f.mime);
+      // The blank template and the finished document are different events; neither carries the file's name (it may hold personal data).
+      trackDoc(f.path.includes("/clean-template-file") ? "document_clean_template_downloaded" : "document_completed_file_downloaded");
     } catch {
       errorHaptic();
       toast(t("dm3.downloadFail"), "err");

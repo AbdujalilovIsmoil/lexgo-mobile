@@ -28,6 +28,13 @@ export function useDocList() {
     return c;
   }, [lite.data]);
 
+  // How many documents each of the backend's tabs holds (all / filled myself / with AI / with a lawyer).
+  const modeCounts = useMemo(() => {
+    const c: Record<string, number> = { all: lite.data?.length ?? 0 };
+    for (const r of lite.data ?? []) c[r.mode] = (c[r.mode] ?? 0) + 1;
+    return c;
+  }, [lite.data]);
+
   const statusCounts = useMemo(() => {
     const c: Record<string, number> = {};
     for (const r of lite.data ?? []) c[r.status] = (c[r.status] ?? 0) + 1;
@@ -52,7 +59,7 @@ export function useDocList() {
   const reset = () => { setShown(PAGE); setGroup(""); setMode(""); setStatus(""); setQ(""); };
   const page = pageInfo(items.length, total);
   return {
-    items, query, page, counts, statusCounts, total, countsLoading: lite.isLoading, group, mode, q, status, seen, local, reset, refresh,
+    items, query, page, counts, modeCounts, statusCounts, total, countsLoading: lite.isLoading, group, mode, q, status, seen, local, reset, refresh,
     setStatus: (v: string) => win(() => setStatus(v)),
     setGroup: (g: GroupFilter) => win(() => setGroup(g)),
     setMode: (m: "" | DocMode) => win(() => setMode(m)),
