@@ -35,6 +35,11 @@ export const nt3 = {
     slow: "Sekin",
     kind: { wifi: "Wi-Fi", cellular: "Mobil internet", other: "Ulangan", none: "Yo'q" },
     sock: { online: "Ulangan", connecting: "Ulanmoqda…", offline: "Uzilgan" },
+    cause: "Sabab",
+    why: { denied: "Telefon LexGo'ga internetni bermayapti", no_network: "Telefonda tarmoq yo'q" },
+    detail: "Tafsilot",
+    recheck: "Qayta tekshirish",
+    share: "Jurnalni ulashish",
   },
   diagTitle: "Anonim statistika",
   diagSwitch: "Statistika yig'ish",
@@ -44,6 +49,7 @@ export const nt3 = {
   diagCleared: "Statistika tozalandi",
   net: {
     offline: "Internet yo'q",
+    denied: "LexGo uchun internet o'chiq",
     queued: "{n} ta yozuv yuborilmagan",
     back: "Ulanish tiklandi",
     serverDown: "Server javob bermayapti",
@@ -54,5 +60,12 @@ export const nt3 = {
     syncFailed: "{n} ta o'zgarish serverga o'tmadi",
     cached: "Oflayn: saqlangan nusxa",
     updatedAt: "Yangilangan: {when}",
+  },
+  denied: {
+    title: "LexGo internetga ulana olmayapti",
+    ios: "Telefonda internet bor, lekin iPhone sozlamalarida LexGo uchun u o'chirilgan. «Sozlamalar» ni bosing va «Mobil internet» ni yoqing (ba'zi iPhone'larda: «Simsiz ma'lumotlar» → «Wi-Fi va mobil internet»).",
+    android: "Telefonda internet bor, lekin sozlamalarda LexGo uchun u cheklangan. «Sozlamalar» ni bosing va LexGo uchun mobil internet va Wi-Fi ni yoqing.",
+    open: "Sozlamalar",
+    later: "Keyinroq",
   },
 };

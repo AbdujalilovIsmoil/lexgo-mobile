@@ -54,7 +54,7 @@ export function ConfirmDialog() {
           </View>
           <Text variant="h3" center={!m3} style={m3 && s.start}>{spec.title}</Text>
           <Text variant="small" tone="gray" center={!m3} style={[s.msg, m3 && s.start]}>{spec.message}</Text>
-          <DialogActions cancelLabel={spec.cancelLabel} confirmLabel={spec.confirmLabel} icon={spec.icon} danger={spec.danger} busy={busy} onCancel={cancel} onConfirm={() => void confirm()} />
+          <DialogActions cancelLabel={spec.cancelLabel} confirmLabel={spec.confirmLabel} icon={spec.confirmIcon ?? spec.icon} danger={spec.danger} busy={busy} onCancel={cancel} onConfirm={() => void confirm()} />
         </Animated.View>
       </View>
     </Modal>

@@ -7,6 +7,7 @@ export type DialogSpec = {
   confirmLabel: string;
   cancelLabel: string;
   icon?: IconName;
+  confirmIcon?: IconName; // the confirm button's own icon when it should differ from the header's (e.g. a gear for "Settings")
   danger?: boolean;
   onConfirm: () => void | Promise<void>;
 };

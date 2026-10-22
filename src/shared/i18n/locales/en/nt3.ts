@@ -37,6 +37,11 @@ export const nt3: Messages["nt3"] = {
     slow: "Slow",
     kind: { wifi: "Wi-Fi", cellular: "Mobile data", other: "Connected", none: "None" },
     sock: { online: "Connected", connecting: "Connecting…", offline: "Disconnected" },
+    cause: "Cause",
+    why: { denied: "The phone does not let LexGo use the internet", no_network: "No network on the phone" },
+    detail: "Details",
+    recheck: "Check again",
+    share: "Share the log",
   },
   diagTitle: "Anonymous statistics",
   diagSwitch: "Collect statistics",
@@ -46,6 +51,7 @@ export const nt3: Messages["nt3"] = {
   diagCleared: "Statistics cleared",
   net: {
     offline: "No internet",
+    denied: "Internet is off for LexGo",
     queued: "{n} unsent",
     back: "Back online",
     serverDown: "Server not responding",
@@ -56,5 +62,12 @@ export const nt3: Messages["nt3"] = {
     syncFailed: "{n} changes could not be synced",
     cached: "Offline: saved copy",
     updatedAt: "Updated {when}",
+  },
+  denied: {
+    title: "LexGo cannot reach the internet",
+    ios: "The phone is online, but iPhone settings turn the internet off for LexGo. Tap “Settings” and turn on “Mobile Data” (on some iPhones: “Wireless Data” → “WLAN & Cellular Data”).",
+    android: "The phone is online, but its settings restrict the internet for LexGo. Tap “Settings” and allow LexGo mobile data and Wi-Fi.",
+    open: "Settings",
+    later: "Later",
   },
 };

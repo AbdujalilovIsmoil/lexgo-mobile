@@ -1,0 +1,5 @@
+{
+  "platforms": ["apple", "android"],
+  "apple": { "modules": ["NetPathModule"] },
+  "android": { "modules": ["org.cognilabs.netpath.NetPathModule"] }
+}

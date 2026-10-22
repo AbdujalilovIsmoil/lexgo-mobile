@@ -17,6 +17,7 @@ export function OfflineBanner() {
   const insets = useInsets();
   const queued = useQueueCount();
   const online = useNetStore((s) => s.online);
+  const cause = useNetStore((s) => s.cause);
   const slow = useNetStore((s) => s.slow);
   const down = useNetStore((s) => s.serverDown);
   const restoredAt = useNetStore((s) => s.restoredAt);
@@ -34,7 +35,7 @@ export function OfflineBanner() {
 
   const q = queued > 0 ? ` · ${t("nt3.net.queued", { n: queued })}` : "";
   let look: Look | null = null;
-  if (!online) look = { icon: "wifi-off", text: t("nt3.net.offline") + q, bg: "#B42318" };
+  if (!online) look = { icon: "wifi-off", text: t(cause === "denied" ? "nt3.net.denied" : "nt3.net.offline") + q, bg: "#B42318" };
   else if (down) look = { icon: "server", text: t("nt3.net.serverDown"), bg: "#B42318" };
   else if (slow) look = { icon: "activity", text: t("nt3.net.slow"), bg: "#B54708" };
   else if (queued > 0) look = { icon: "upload-cloud", text: t("nt3.net.syncing", { n: queued }), bg: "#175CD3" };

@@ -1,10 +1,10 @@
 import { useEffect, useRef } from "react";
-import { AppState } from "react-native";
+import { AppState, Linking, Platform } from "react-native";
 import { useQueryClient } from "@tanstack/react-query";
 import { flushOutbox, onFlushed } from "@/shared/cache";
 import { useT } from "@/shared/i18n";
-import { toast } from "@/shared/ui";
-import { OfflineBanner, onBackOnline, probeHealth, recheckNetwork, startNetworkMonitor } from "@/shared/network";
+import { confirmDialog, toast } from "@/shared/ui";
+import { OfflineBanner, onBackOnline, probeHealth, recheckNetwork, startNetworkMonitor, useNetStore } from "@/shared/network";
 import { kickUserSocket } from "@/shared/realtime";
 import { track } from "@/shared/analytics";
 import { startSoftOffline } from "./softOffline";
@@ -57,5 +57,28 @@ export function NetworkMount() {
       clearInterval(tick);
     };
   }, [qc]);
+  useDeniedNotice();
   return <OfflineBanner />;
+}
+
+// The phone has a network but does not let LexGo use it (iOS: Mobile Data / Wireless Data off for the app; Android: a per-app data
+// restriction). "No internet" would send the person looking in the wrong place, so once per launch the app says what is off and opens
+// its own page in the system settings, where the switch is.
+function useDeniedNotice(): void {
+  const { t } = useT();
+  const denied = useNetStore((s) => s.cause === "denied");
+  const told = useRef(false);
+  useEffect(() => {
+    if (!denied || told.current) return;
+    told.current = true;
+    confirmDialog({
+      title: t("nt3.denied.title"),
+      message: t(Platform.OS === "ios" ? "nt3.denied.ios" : "nt3.denied.android"),
+      confirmLabel: t("nt3.denied.open"),
+      cancelLabel: t("nt3.denied.later"),
+      icon: "wifi-off",
+      confirmIcon: "settings",
+      onConfirm: () => void Linking.openSettings().catch(() => undefined),
+    });
+  }, [denied, t]);
 }

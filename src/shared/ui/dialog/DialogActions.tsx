@@ -42,5 +42,5 @@ const s = StyleSheet.create({
   end: { flexDirection: "row", gap: 8, alignSelf: "stretch", justifyContent: "flex-end" },
   text: { minHeight: 48, borderRadius: radius.pill, flexDirection: "row", alignItems: "center", justifyContent: "center", gap: 8, paddingHorizontal: 16 },
   btn: { flex: 1, minHeight: 50, borderRadius: radius.pill, flexDirection: "row", alignItems: "center", justifyContent: "center", gap: 8, paddingHorizontal: 12 },
-  confirm: { color: "#FFFFFF", fontFamily: "Inter_600SemiBold", fontSize: 15 },
+  confirm: { color: "#FFFFFF", fontFamily: "Inter_600SemiBold", fontSize: 15, flexShrink: 1, textAlign: "center" }, // a long label wraps inside the pill, never past its icon
 });
