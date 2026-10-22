@@ -47,6 +47,13 @@ iOS (flags on) is a glass-on-colour system.
   inputs) use the same two tokens; `surface` stays for opaque things (thumbs, sheets' content). Do not nest cards.
 - The tab bar is the system `NativeTabs` bar; the app's theme is handed to iOS (`Appearance.setColorScheme`) so it matches. The AI tab is a raised button: its slot in the system bar is an empty 8 pt image (kept narrow: the bar sizes items by content, and a wide slot truncates the neighbours' captions to "Xiz…"), and `AiRaisedButton` stands in it, rising above the bar. The disc is drawn live on a Skia canvas (`AiMark`): a constellation of neuron nodes joined into a four-point spark — the links are drawn node to node, the spokes reach the core, the nodes light up, the spark fills with a soft glow and a pulse of "thought" runs round the network, in a 10 s loop (static with Reduce Motion), plus a soft ring that breathes out of it. The AI tab is always the middle slot (an empty disabled `gap` slot beside it when the tab count is even), so the button is centred on the screen; its height constants are at the top of the file. A three.js gem (`AiCore3D`: a lit, flat-faceted stretched bipyramid turning on its axis, a tilted ring and orbiting beads, on a transparent `expo-gl` surface, ~30 fps, 4x MSAA) turns in front of the web — it needs a dev build with `expo-gl`; on a build without it the module is not loaded and no crystal is drawn (the mark is otherwise complete). Glows, aurora and glass spheres were tried and dropped as too flashy for the calm, exact tone.
 
+## Scrolling header (iOS)
+
+A stack screen's header (`Header`, `AdminPage`) is wrapped in `ChromeFrame`. On iOS the page's scroll view (`Screen` with `topInset={false}`) runs up
+underneath it (negative margin + the header's height as top padding, both from `shared/lib/pageChrome`, one record per screen), and as the page scrolls
+the header's canvas fades into a blur-glass pane (`expo-blur` system chrome material) with a hairline, so content passes under the glass. At the top of the page it
+looks exactly as before. Android, `transparent` / `light` headers over a hero, and pages whose body is not a `Screen` are unchanged.
+
 ## Materials (Android — Material 3 Expressive)
 
 Android is the second design language: tonal, not glass. Same content and section order as iOS; brand colours, no Dynamic Color.

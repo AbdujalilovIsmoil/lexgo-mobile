@@ -1,7 +1,9 @@
 import { type ReactNode } from "react";
-import { RefreshControl, StyleSheet, View, type ScrollViewProps } from "react-native";
+import { Platform, RefreshControl, StyleSheet, View, type ScrollViewProps } from "react-native";
+import { useAnimatedScrollHandler } from "react-native-reanimated";
 import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
 import { useInsets } from "@/shared/lib/insets";
+import { usePageChrome, useHeaderHeight } from "@/shared/lib/pageChrome";
 import { useColors } from "@/shared/theme";
 
 type Props = ScrollViewProps & {
@@ -20,19 +22,29 @@ export function Screen({ children, scroll = true, padded = true, refreshing, onR
   const insets = useInsets();
   const extra = StyleSheet.flatten(contentContainerStyle) ?? {};
   const top = topInset ? insets.top : 0;
+  // iOS, under a stack header (topInset off): the page runs up beneath the header, which blurs as the page scrolls (Header reads `y`).
+  const chrome = usePageChrome();
+  const headerH = useHeaderHeight(chrome);
+  const bleed = Platform.OS === "ios" && !topInset && headerH > 0 ? headerH : 0;
+  const y = chrome.y;
+  const onScroll = useAnimatedScrollHandler((e) => {
+    // eslint-disable-next-line react-hooks/immutability
+    y.value = e.contentOffset.y;
+  });
   const padding = {
-    paddingTop: top + (typeof extra.paddingTop === "number" ? extra.paddingTop : 0),
+    paddingTop: top + bleed + (typeof extra.paddingTop === "number" ? extra.paddingTop : 0),
     paddingBottom: typeof extra.paddingBottom === "number" ? extra.paddingBottom : bottomInset ? insets.bottom + 24 : 0,
   };
   const body = scroll ? (
     <KeyboardAwareScrollView
       bottomOffset={24}
       {...rest}
+      {...(!topInset && Platform.OS === "ios" ? { onScroll } : null)}
       style={s.fill}
       contentContainerStyle={[extra, padded && s.padded, padding]}
       keyboardShouldPersistTaps="handled"
       showsVerticalScrollIndicator={false}
-      refreshControl={onRefresh ? <RefreshControl refreshing={!!refreshing} onRefresh={onRefresh} tintColor={c.accent} progressViewOffset={top} /> : undefined}
+      refreshControl={onRefresh ? <RefreshControl refreshing={!!refreshing} onRefresh={onRefresh} tintColor={c.accent} progressViewOffset={top + bleed} /> : undefined}
     >
       {children}
     </KeyboardAwareScrollView>
@@ -40,7 +52,7 @@ export function Screen({ children, scroll = true, padded = true, refreshing, onR
     <View style={[s.fill, padded && s.padded, padding]}>{children}</View>
   );
   return (
-    <View style={[s.fill, { backgroundColor: c.canvas }]}>
+    <View style={[s.fill, { backgroundColor: c.canvas }, bleed ? { marginTop: -bleed } : null]}>
       {body}
       {top > 0 ? <View pointerEvents="none" style={[s.mask, { height: top, backgroundColor: c.canvas }]} /> : null}
     </View>

@@ -3,6 +3,7 @@ import { StyleSheet, View } from "react-native";
 import { useRouter } from "expo-router";
 import { HEADER_GAP, useInsets } from "@/shared/lib/insets";
 import { useColors } from "@/shared/theme";
+import { ChromeFrame } from "../ChromeFrame";
 import { IconButton } from "../IconButton";
 import { Text } from "../Text";
 import { HeaderExtra, HeaderRight } from "../headerExtra";
@@ -18,6 +19,7 @@ export function AdminPage({ hideBack, title, subtitle, onBack, right, footer, ch
   const back = onBack ?? (() => (router.canGoBack() ? router.back() : router.replace("/")));
   return (
     <View style={[s.fill, { backgroundColor: c.canvas }]}>
+      <ChromeFrame>
       <View style={[s.bar, { paddingTop: insets.top + HEADER_GAP }]}>
         {hideBack ? null : <IconButton icon="chevron-left" onPress={back} />}
         <View style={s.titles}>
@@ -27,6 +29,7 @@ export function AdminPage({ hideBack, title, subtitle, onBack, right, footer, ch
         <View style={s.right}>{right ?? <HeaderRight />}</View>
       </View>
       <HeaderExtra />
+      </ChromeFrame>
       <View style={s.fill}>{children}</View>
       {footer ? <View style={[s.footer, { borderTopColor: c.line, backgroundColor: c.bg, paddingBottom: insets.bottom + 10 }]}>{footer}</View> : null}
     </View>

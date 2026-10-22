@@ -1,8 +1,9 @@
 import { type ReactNode } from "react";
-import { StyleSheet, View } from "react-native";
+import { Platform, StyleSheet, View } from "react-native";
 import { HEADER_GAP, useInsets } from "@/shared/lib/insets";
 import { useRouter } from "expo-router";
 import { useColors } from "@/shared/theme";
+import { ChromeFrame } from "./ChromeFrame";
 import { IconButton } from "./IconButton";
 import { Text } from "./Text";
 import { HeaderExtra, HeaderRight } from "./headerExtra";
@@ -15,9 +16,10 @@ export function Header({ title, right, onBack, transparent, light }: Props) {
   const insets = useInsets();
   const router = useRouter();
   const fg = light ? "#fff" : c.ink;
+  const plain = transparent || light; // over a hero: no glass frame, no banner
   return (
-    <>
-    <View style={[s.bar, { paddingTop: insets.top + HEADER_GAP, backgroundColor: transparent ? "transparent" : c.canvas }]}>
+    <ChromeFrame off={plain}>
+    <View style={[s.bar, { paddingTop: insets.top + HEADER_GAP, backgroundColor: plain || Platform.OS === "ios" ? "transparent" : c.canvas }]}>
       <IconButton icon="chevron-left" tone={light ? "glass" : "tint"} onPress={onBack ?? (() => (router.canGoBack() ? router.back() : router.replace("/")))} />
       {title ? (
         <Text variant="h4" numberOfLines={1} style={[s.title, { color: fg }]}>
@@ -28,8 +30,8 @@ export function Header({ title, right, onBack, transparent, light }: Props) {
       )}
       <View style={s.right}>{right ?? <HeaderRight glass={light} />}</View>
     </View>
-    {transparent || light ? null : <HeaderExtra />}
-    </>
+    {plain ? null : <HeaderExtra />}
+    </ChromeFrame>
   );
 }
 
