@@ -28,6 +28,8 @@ import { tzCsv } from "./tzCsv";
 import { tgp } from "./tgp";
 import { so1 } from "./so1";
 import { dcat } from "./dcat";
+import { dcf } from "./dcf";
+import { dcl } from "./dcl";
 
 // Namespaces pre-registered per work package (see TZ_STATUS.md for owners).
 export const tzBundle = {
@@ -35,5 +37,5 @@ export const tzBundle = {
   ...tzAx, ...tzSp, ...tzDc, ...tzDm, ...tzAd,
   ...tzAw, ...tzSl, ...tzMk, ...tzUg, ...tzOg,
   ...tzPy, ...tzNt, ...tzCc, ...tzAg, ...rp, ccs, ...tzCx,
-  ...cpA, ...cpB, ...cpC, ...cpD, ...tzCsv, ...tgp, ...so1, ...dcat,
+  ...cpA, ...cpB, ...cpC, ...cpD, ...tzCsv, ...tgp, ...so1, ...dcat, ...dcf, ...dcl,
 };
