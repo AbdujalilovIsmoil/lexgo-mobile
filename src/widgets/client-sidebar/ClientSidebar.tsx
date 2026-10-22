@@ -1,10 +1,11 @@
-import { useEffect } from "react";
-import { BackHandler, StyleSheet, useWindowDimensions, View } from "react-native";
+import { useEffect, useRef } from "react";
+import { BackHandler, Pressable, StyleSheet, useWindowDimensions, View } from "react-native";
 import { useRouter, useSegments } from "expo-router";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import Animated, { useAnimatedStyle, withSpring } from "react-native-reanimated";
 import { scheduleOnRN } from "react-native-worklets";
 import { useSession } from "@/entities/session";
+import { useT } from "@/shared/i18n";
 import { useColors, useTheme } from "@/shared/theme";
 import { GlassBackdrop, useGlass } from "@/shared/ui";
 import { useOwnSidebar, useTabRole } from "@/widgets/tab-bar/useTabRole";
@@ -22,6 +23,7 @@ const HIDE = new Set(["auth", "chat", "call", "lawyer", "assistant", "instructor
 // The sidebar of every role (the client's rows are the web portal's; see navFor for the others). The handle on the left edge (or a drag from it) pulls the
 // drawer out; the page dims as it comes. Tap the dim area, drag the drawer left, or press back to close.
 export function ClientSidebar() {
+  const { t } = useT();
   const c = useColors();
   const { dark } = useTheme();
   const lens = !!useGlass(true); // the drawer stays glass
@@ -40,13 +42,14 @@ export function ClientSidebar() {
   const panel = useAnimatedStyle(() => ({ transform: [{ translateX: x.value }] }));
   const scrim = useAnimatedStyle(() => ({ opacity: p.value }));
   /* eslint-disable react-hooks/immutability */
-  const drag = Gesture.Pan().activeOffsetX(-10).onUpdate((e) => { x.value = Math.min(0, e.translationX); })
+  const drag = Gesture.Pan().activeOffsetX(-16).failOffsetY([-14, 14]).onUpdate((e) => { x.value = Math.min(0, e.translationX); })
     .onEnd((e, ok) => { if (!ok) return; if (e.translationX < -w * 0.3 || e.velocityX < -500) scheduleOnRN(hide); else x.value = withSpring(0, SPRING); })
     .onFinalize((_, ok) => { if (!ok) { if (x.value < -w * 0.3) scheduleOnRN(hide); else x.value = withSpring(0, SPRING); } }); // a cancelled drag never stays half way
   /* eslint-enable react-hooks/immutability */
   const ownSidebar = useOwnSidebar();
   const manage = seg[0] === "manage" && (!ownSidebar || seg[1] === "call" || seg[1] === "chat");
   const hidden = HIDE.has(String(seg[0])) || manage || (seg[0] === "(tabs)" && seg[1] === "ai");
+  const going = useRef(false);
   const session = useSession();
   const who = session ? `${session.user.id}:${session.user.backendRole}` : "";
   // The drawer must never stay half-open behind a hidden route, a sign-in/out or a role switch (it would also keep
@@ -56,15 +59,24 @@ export function ClientSidebar() {
     x.value = -w;
   }, [hidden, who, w, x]);
   if (hidden) return null;
-  // A visitor may open the public pages; every other row is personal, so it leads to sign-in.
-  const go = (route: string) => { hide(); router.navigate((role === "guest" && !GUEST_OPEN.includes(route.split("?")[0]) ? "/auth/login" : route) as never); };
+  // A visitor may open the public pages; every other row is personal, so it leads to sign-in. The drawer closes first and the page
+  // opens once it is out of the way (a heavy page mounting during the closing spring made both stutter); a second tap while that is
+  // pending is ignored.
+  const go = (route: string) => {
+    if (going.current) return;
+    going.current = true;
+    hide();
+    const to = role === "guest" && !GUEST_OPEN.includes(route.split("?")[0]) ? "/auth/login" : route;
+    setTimeout(() => { going.current = false; router.navigate(to as never); }, 180);
+  };
   return (
     <>
-      <Animated.View pointerEvents={open ? "auto" : "none"} style={[StyleSheet.absoluteFill, s.scrim, scrim]}><View style={s.fill} onTouchEnd={hide} /></Animated.View>
+      <Animated.View pointerEvents={open ? "auto" : "none"} style={[StyleSheet.absoluteFill, s.scrim, scrim]}><Pressable style={s.fill} onPress={hide} accessibilityRole="button" accessibilityLabel={t("a11y.close")} /></Animated.View>
       <GestureDetector gesture={drag}>
         <Animated.View pointerEvents={open ? "auto" : "none"} style={[s.panel, { width: w, backgroundColor: lens ? "transparent" : c.surface, borderColor: c.line }, panel]}>
           {lens ? <GlassBackdrop always radius={0} tint={dark ? "rgba(10,17,32,0.6)" : "rgba(255,255,255,0.68)"} /> : null}
-          <SidebarPanel p={p} onGo={go} />
+          {/* the panel's empty parts claim the touch too, so it never reaches the page behind (rows and buttons claim theirs first) */}
+          <View style={s.fill} onStartShouldSetResponder={() => true}><SidebarPanel p={p} onGo={go} /></View>
         </Animated.View>
       </GestureDetector>
       <SidebarHandle x={x} p={p} w={w} onOpen={show} onClose={hide} />

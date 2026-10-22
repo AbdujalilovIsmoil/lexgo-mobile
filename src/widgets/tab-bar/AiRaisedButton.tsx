@@ -15,7 +15,7 @@ type Props = { labelKey: string }; // the button's accessibility label
 // and are the only numbers to tune if the button sits too high or low.
 const BAR_LIFT = -11; // bar bottom relative to the safe area (the system bar floats a little below the home indicator line)
 const BAR_HEIGHT = 62;
-const SIZE = 64;
+const SIZE_MAX = 64; // on a narrow screen the disc shrinks (16% of the width, 52–64 pt) so it never crowds the neighbouring captions
 const SHIFT = 13; // to the right: the bar's middle slot sits a little right of the screen centre (slot widths follow the captions)
 const RISE = 8; // how far the disc stands above the bar's top edge
 
@@ -27,6 +27,7 @@ export function AiRaisedButton({ labelKey }: Props) {
   const router = useRouter();
   const insets = useInsets();
   const { width } = useWindowDimensions();
+  const size = Math.round(Math.min(SIZE_MAX, Math.max(52, width * 0.16)));
   const calm = useReducedMotion();
   const breath = useSharedValue(0);
   useEffect(() => {
@@ -34,7 +35,7 @@ export function AiRaisedButton({ labelKey }: Props) {
     breath.value = withRepeat(withDelay(900, withTiming(1, { duration: 2400, easing: Easing.out(Easing.cubic) })), -1);
   }, [breath, calm]);
   const ring = useAnimatedStyle(() => ({ opacity: 0.38 * (1 - breath.value), transform: [{ scale: 1 + breath.value * 0.42 }] }));
-  const bottom = insets.bottom + BAR_LIFT + (BAR_HEIGHT - SIZE) / 2 + RISE;
+  const bottom = insets.bottom + BAR_LIFT + (BAR_HEIGHT - size) / 2 + RISE;
   return (
     <View pointerEvents="box-none" style={StyleSheet.absoluteFill}>
       <PressableScale
@@ -42,19 +43,19 @@ export function AiRaisedButton({ labelKey }: Props) {
         scale={0.92}
         accessibilityRole="button"
         accessibilityLabel={t(labelKey)}
-        style={[s.btn, { left: width / 2 - SIZE / 2 + SHIFT, bottom }]}
+        style={[s.btn, { width: size, height: size, left: width / 2 - size / 2 + SHIFT, bottom }]}
       >
-        <Animated.View pointerEvents="none" style={[s.ring, { backgroundColor: c.accent }, ring]} />
-        <View style={s.orb} />
-        <View style={s.mark}><AiMark size={SIZE} calm={calm} /></View>
+        <Animated.View pointerEvents="none" style={[s.ring, { width: size - 6, height: size - 6, borderRadius: size / 2, backgroundColor: c.accent }, ring]} />
+        <View style={[s.orb, { width: size - 4, height: size - 4, borderRadius: size / 2 }]} />
+        <View style={[s.mark, { width: size, height: size }]}><AiMark size={size} calm={calm} /></View>
       </PressableScale>
     </View>
   );
 }
 
 const s = StyleSheet.create({
-  btn: { position: "absolute", width: SIZE, height: SIZE, alignItems: "center", justifyContent: "center" },
-  ring: { position: "absolute", width: SIZE - 6, height: SIZE - 6, borderRadius: SIZE / 2 },
-  mark: { position: "absolute", width: SIZE, height: SIZE },
-  orb: { width: SIZE - 4, height: SIZE - 4, borderRadius: SIZE / 2, backgroundColor: "#1668F0", shadowColor: "#1668F0", shadowOpacity: 0.28, shadowRadius: 12, shadowOffset: { width: 0, height: 5 } },
+  btn: { position: "absolute", alignItems: "center", justifyContent: "center" },
+  ring: { position: "absolute" },
+  mark: { position: "absolute" },
+  orb: { backgroundColor: "#1668F0", shadowColor: "#1668F0", shadowOpacity: 0.28, shadowRadius: 12, shadowOffset: { width: 0, height: 5 } },
 });

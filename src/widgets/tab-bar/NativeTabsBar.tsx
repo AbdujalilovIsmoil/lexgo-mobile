@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { View } from "react-native";
+import { useWindowDimensions, View } from "react-native";
 import { NativeTabs } from "expo-router/unstable-native-tabs";
 import { useRouter } from "expo-router";
 import { useIsAuthed } from "@/entities/session";
@@ -33,6 +33,10 @@ export function NativeTabsBar({ bar }: { bar: boolean }) {
   const { t } = useT();
   const c = useColors();
   const router = useRouter();
+  // Captions are fixed-size and scale with the screen (10 pt on a 400 pt phone, smaller on a narrow one): the bar sizes its items by content, so a
+  // caption that does not fit is cut to "Xiz…". A set size also keeps the system's larger-text setting from swelling them.
+  const { width } = useWindowDimensions();
+  const caption = Math.max(8.5, Math.min(10.5, Math.round((width / 40) * 2) / 2));
   const authed = useIsAuthed();
   const role = useTabRole();
   const badges = useBadgeStore((s) => s.badges);
@@ -54,7 +58,7 @@ export function NativeTabsBar({ bar }: { bar: boolean }) {
   const rest = [...new Set(Object.values(TABS).flat().map((d) => d.route))].filter((r) => !shown.some((d) => d.route === r));
   return (
     <View style={{ flex: 1 }}>
-    <NativeTabs hidden={!bar} tintColor={c.accent}>
+    <NativeTabs hidden={!bar} tintColor={c.accent} labelStyle={{ fontSize: caption }}>
       {shown.map((def) => {
         const n = def.badge ? (badges[def.badge] ?? 0) : 0;
         const guard = (def.auth && !authed) || def.route === GAP.route;
