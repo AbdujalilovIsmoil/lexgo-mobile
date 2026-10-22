@@ -1,73 +1,77 @@
 import { useEffect, useMemo } from "react";
-import { Canvas, Circle, Group, LinearGradient, Path, Skia, vec } from "@shopify/react-native-skia";
-import { Easing, useDerivedValue, useSharedValue, withRepeat, withTiming } from "react-native-reanimated";
+import { BlurMask, Canvas, Circle, Group, LinearGradient, Path, Skia, vec } from "@shopify/react-native-skia";
+import { Easing, useDerivedValue, useSharedValue, withRepeat, withTiming, type SharedValue } from "react-native-reanimated";
 
 type Props = { size: number; calm?: boolean };
 
-// The AI mark, drawn live on a Skia canvas: scales of justice whose beam is the AI spark. Every few seconds it is drawn again line by
-// line — the spark, the pillar, the base, the strings, the pans — then fills in white, holds, and fades. `calm` (Reduce Motion) shows
-// it finished and still. Coordinates are in a 552-unit square, scaled to `size`.
+// The AI mark, drawn live on a Skia canvas: a constellation of neuron nodes joined into a four-point spark. Every cycle the links are
+// drawn node to node around the spark, the spokes reach the core, the nodes light up, the spark fills with a soft glow, and a pulse of
+// "thought" keeps running around the network until it fades and is drawn again. `calm` (Reduce Motion) shows it finished and still.
+// Coordinates are in a 552-unit square, scaled to `size`.
 const U = 552;
-const CX = 276;
-const TY = 200; // the spark's centre (the beam's height)
-const R = 112;
-const TIP = R + 14; // pans hang from the spark's left and right tips
+const C = U / 2;
+const TIP = 190; // tip radius of the spark
+const INNER = 74; // radius of its inner corners
 const CYCLE = 10000;
+const SEG = 0.026; // delay between successive links when drawing
 
-function sparkPath() {
-  const p = Skia.Path.Make();
-  const n = 48, e = 2 / 0.62;
-  for (let i = 0; i < 4 * n; i++) {
-    const a = (2 * Math.PI * i) / (4 * n);
-    const c = Math.cos(a), s = Math.sin(a);
-    const x = CX + Math.sign(c) * Math.abs(c) ** e * R, y = TY + Math.sign(s) * Math.abs(s) ** e * R;
-    if (i === 0) p.moveTo(x, y); else p.lineTo(x, y);
-  }
-  return p.close();
-}
-const line = (x1: number, y1: number, x2: number, y2: number) => Skia.Path.Make().moveTo(x1, y1).lineTo(x2, y2);
-const pan = (cx: number) => Skia.Path.Make().addArc({ x: cx - 68, y: 330 - 56, width: 136, height: 112 }, 0, 180).close();
-
-type Part = { path: ReturnType<typeof Skia.Path.Make>; width: number; at: number; fill?: boolean };
-
+const V = Array.from({ length: 8 }, (_, k) => {
+  const a = (k * Math.PI) / 4, r = k % 2 === 0 ? TIP : INNER;
+  return { x: C + Math.sin(a) * r, y: C - Math.cos(a) * r, tip: k % 2 === 0 };
+});
 const clamp = (v: number) => { "worklet"; return Math.min(1, Math.max(0, v)); };
+const seg = (x1: number, y1: number, x2: number, y2: number) => Skia.Path.Make().moveTo(x1, y1).lineTo(x2, y2);
 
 export function AiMark({ size, calm = false }: Props) {
-  const t = useSharedValue(calm ? 0.5 : 0);
+  const t = useSharedValue(calm ? 0.6 : 0);
   useEffect(() => {
-    if (calm) { t.value = 0.5; return; }
+    if (calm) { t.value = 0.6; return; }
     t.value = withRepeat(withTiming(1, { duration: CYCLE, easing: Easing.linear }), -1);
   }, [calm, t]);
 
-  const parts = useMemo<Part[]>(() => {
-    const out: Part[] = [{ path: sparkPath(), width: 14, at: 0, fill: true }];
-    out.push({ path: line(CX, TY + 62, CX, 438), width: 28, at: 0.06 });
-    out.push({ path: line(204, 442, 348, 442), width: 32, at: 0.1 });
-    for (const [i, tx] of [CX - TIP, CX + TIP].entries()) {
-      out.push({ path: line(tx, TY, tx - 52, 330), width: 13, at: 0.13 + i * 0.01 });
-      out.push({ path: line(tx, TY, tx + 52, 330), width: 13, at: 0.135 + i * 0.01 });
-      out.push({ path: pan(tx), width: 12, at: 0.16 + i * 0.015, fill: true });
-    }
-    return out;
-  }, []);
+  const star = useMemo(() => { const p = Skia.Path.Make().moveTo(V[0].x, V[0].y); V.slice(1).forEach((v) => p.lineTo(v.x, v.y)); return p.close(); }, []);
+  const edges = useMemo(() => V.map((v, i) => seg(v.x, v.y, V[(i + 1) % 8].x, V[(i + 1) % 8].y)), []);
+  const spokes = useMemo(() => V.filter((v) => v.tip).map((v) => seg(C, C, v.x, v.y)), []);
 
-  const fill = useDerivedValue(() => clamp((t.value - 0.25) / 0.06) * (1 - clamp((t.value - 0.9) / 0.08)));
   const fade = useDerivedValue(() => 1 - clamp((t.value - 0.9) / 0.08));
+  const glow = useDerivedValue(() => 0.2 * clamp((t.value - 0.3) / 0.08) * fade.value);
+  // the pulse runs round the outline from 0.38 to 0.9 (three laps)
+  const pulse = useDerivedValue(() => {
+    const u = ((clamp((t.value - 0.38) / 0.52) * 3) % 1) * 8;
+    const i = Math.min(7, Math.floor(u)), f = u - i, a = V[i], b = V[(i + 1) % 8];
+    return vec(a.x + (b.x - a.x) * f, a.y + (b.y - a.y) * f);
+  });
+  const pulseOn = useDerivedValue(() => clamp((t.value - 0.38) / 0.03) * fade.value);
   const k = size / U;
   return (
     <Canvas style={{ width: size, height: size }} pointerEvents="none">
       <Group transform={[{ scale: k }]}>
-        <Circle cx={U / 2} cy={U / 2} r={U / 2 - 12}>
+        <Circle cx={C} cy={C} r={C - 12}>
           <LinearGradient start={vec(120, 0)} end={vec(430, U)} colors={["#1668F0", "#00A6E6", "#00CFE8"]} positions={[0, 0.62, 1]} />
         </Circle>
-        {parts.map((p, i) => <Stroke key={i} part={p} t={t} fade={fade} />)}
-        {parts.filter((p) => p.fill).map((p, i) => <Path key={`f${i}`} path={p.path} color="white" opacity={fill} />)}
+        <Path path={star} color="white" opacity={glow} />
+        {edges.map((p, i) => <Link key={`e${i}`} path={p} width={12} at={i * SEG} win={0.07} t={t} fade={fade} />)}
+        {spokes.map((p, i) => <Link key={`s${i}`} path={p} width={7} at={0.2 + i * 0.016} win={0.08} t={t} fade={fade} soft />)}
+        {V.map((v, i) => <Node key={`n${i}`} x={v.x} y={v.y} r={v.tip ? 27 : 17} at={i * SEG + 0.03} t={t} fade={fade} />)}
+        <Node x={C} y={C} r={36} at={0.26} t={t} fade={fade} />
+        <Circle c={pulse} r={34} color="white" opacity={pulseOn}><BlurMask blur={18} style="normal" /></Circle>
+        <Circle c={pulse} r={15} color="white" opacity={pulseOn} />
       </Group>
     </Canvas>
   );
 }
 
-function Stroke({ part, t, fade }: { part: Part; t: ReturnType<typeof useSharedValue<number>>; fade: ReturnType<typeof useDerivedValue<number>> }) {
-  const end = useDerivedValue(() => clamp((t.value - part.at) / 0.1));
-  return <Path path={part.path} style="stroke" strokeWidth={part.width} strokeCap="round" strokeJoin="round" color="white" start={0} end={end} opacity={fade} />;
+type TV = SharedValue<number>;
+
+function Link({ path, width, at, win, t, fade, soft }: { path: ReturnType<typeof seg>; width: number; at: number; win: number; t: TV; fade: TV; soft?: boolean }) {
+  const end = useDerivedValue(() => clamp((t.value - at) / win));
+  const o = useDerivedValue(() => (soft ? 0.7 : 1) * fade.value);
+  return <Path path={path} style="stroke" strokeWidth={width} strokeCap="round" color="white" start={0} end={end} opacity={o} />;
+}
+
+// A node pops in (a little overshoot) when its links arrive.
+function Node({ x, y, r, at, t, fade }: { x: number; y: number; r: number; at: number; t: TV; fade: TV }) {
+  const rr = useDerivedValue(() => { const p = clamp((t.value - at) / 0.05); return r * p * (1 + 0.25 * Math.sin(p * Math.PI)); });
+  const o = useDerivedValue(() => clamp((t.value - at) / 0.02) * fade.value);
+  return <Circle cx={x} cy={y} r={rr} color="white" opacity={o} />;
 }
