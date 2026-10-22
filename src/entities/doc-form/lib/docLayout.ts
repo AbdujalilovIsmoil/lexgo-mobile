@@ -4,6 +4,7 @@
 //  · that ALL-CAPS line is the title, a "(…)" line under it is its subtitle;
 //  · the closing short lines (a name, "имзо", a date — or one line of nothing but spots) are the signature row: the first on the left, the last on the
 //    right, a middle one centred;
+//  · a short "Key: value" line (Da'vogar: […], Manzil: […]) is a row — the key on the left, the value on the right;
 //  · in between: a short numbered or ALL-CAPS line is a heading, "1)", "-", "a." start a list item. Every line break the server sent stays.
 export type Seg = { slot: boolean; text: string; n?: number }; // n: the spot's number in the document (1, 2, 3…), set by layoutDoc
 export type Block =
@@ -13,6 +14,7 @@ export type Block =
   | { kind: "heading"; segs: Seg[]; center: boolean }
   | { kind: "item"; marker: string; segs: Seg[] }
   | { kind: "para"; segs: Seg[] }
+  | { kind: "kv"; key: string; value: Seg[] }
   | { kind: "sign"; cells: Seg[][] }
   | { kind: "gap" };
 
@@ -20,6 +22,8 @@ const SLOT = /(\[[^\]\n]+\]|\{[^}\n]+\})/g;
 const IS_SLOT = /^(\[[^\]\n]+\]|\{[^}\n]+\})$/;
 const NUMBERED = /^(\d+(?:\.\d+)*[.)]?)\s+(\S.*)$/;
 const BULLET = /^([-–—•*]|[a-zA-Zа-яА-ЯЎўҚқҒғҲҳ][.)])\s+(\S.*)$/;
+// "Key: value": a short label (up to four words, no digits-numbering, no spot) before the colon and a short value after it.
+const KEY_VALUE = /^([^:\[\]{}\d][^:\[\]{}]{1,30}):\s+(\S.*)$/;
 const SIGN_WORD = /^[\s_\-–—.()]*(имзо|imzo|подпись|signature)[\s_\-–—.()]*$/i;
 
 export function segsOf(line: string): Seg[] {
@@ -32,6 +36,7 @@ const caps = (s: string): boolean => {
   return letters.length >= 4 && letters === letters.toUpperCase();
 };
 const endsSentence = (s: string): boolean => /[.,;:!?]$/.test(s.trim());
+const endsStop = (s: string): boolean => /[.,;!?]$/.test(s.trim()); // a colon does not end a heading ("SO'RAYMAN:")
 const isTitleLine = (t: string): boolean => { const b = bareOf(t); return b.length <= 80 && caps(b) && !endsSentence(b); };
 // A line of nothing but spots ("[date][sign][name]"): spots with only spaces between.
 const slotOnly = (t: string): boolean => /x/.test(bareOf(t)) && bareOf(t).replace(/[x\s]/g, "") === "";
@@ -82,7 +87,9 @@ export function layoutDoc(text: string): Block[] {
     const nextBlank = i + 1 >= end || ne[i + 1].gap;
     const bare = bareOf(t);
     const short = bare.length <= 80;
-    if (short && caps(bare) && !endsSentence(bare)) { out.push({ kind: "heading", segs: segsOf(t), center: true }); continue; }
+    if (short && caps(bare) && !endsStop(bare)) { out.push({ kind: "heading", segs: segsOf(t), center: true }); continue; }
+    const kv = KEY_VALUE.exec(t);
+    if (kv && kv[1].trim().split(/\s+/).length <= 4 && !endsSentence(kv[1]) && bareOf(kv[2]).length <= 90) { out.push({ kind: "kv", key: kv[1].trim(), value: segsOf(kv[2]) }); continue; }
     const num = NUMBERED.exec(t);
     if (num && short && !endsSentence(bare) && (prevBlank || nextBlank)) { out.push({ kind: "heading", segs: segsOf(t), center: false }); continue; }
     const item = num ?? BULLET.exec(t);
@@ -99,7 +106,7 @@ export function layoutDoc(text: string): Block[] {
 
 // Every segment of every block, in reading order.
 function segsOfBlocks(blocks: Block[]): Seg[] {
-  return blocks.flatMap((b): Seg[] => (b.kind === "recipient" ? b.lines.flat() : b.kind === "sign" ? b.cells.flat() : "segs" in b ? b.segs : []));
+  return blocks.flatMap((b): Seg[] => (b.kind === "recipient" ? b.lines.flat() : b.kind === "sign" ? b.cells.flat() : b.kind === "kv" ? b.value : "segs" in b ? b.segs : []));
 }
 
 // How many spots are left to fill.

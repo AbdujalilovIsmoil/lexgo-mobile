@@ -58,12 +58,36 @@ describe("body", () => {
     expect(b.find((x) => x.kind === "heading" && x.center)).toBeTruthy();
     expect(b.filter((x) => x.kind === "item").map((x) => (x.kind === "item" ? x.marker : ""))).toEqual(["1)", "-"]);
   });
+  it("an ALL-CAPS line ending with a colon (SO'RAYMAN:) is a centred heading", () => {
+    expect(layoutDoc("T\nbody\nSO'RAYMAN:\n1) x").find((x) => x.kind === "heading")).toMatchObject({ center: true });
+  });
   it("a long numbered sentence is an item, not a heading", () => {
     const b = layoutDoc("T\n\n1. Tomonlar ushbu shartnomaga muvofiq barcha majburiyatlarni bajarishga rozilik bildirdilar, shu jumladan to'lov bo'yicha.\nx");
     expect(b.some((x) => x.kind === "item")).toBe(true);
   });
   it("blank lines become gaps", () => {
     expect(kinds("a\n\n\nb")).toEqual(["title", "gap", "para"]);
+  });
+});
+
+describe("key: value rows", () => {
+  const rows = (t: string) => layoutDoc(t).filter((b) => b.kind === "kv");
+  it("a short Key: [value] line is a row: key and value apart", () => {
+    const r = rows("T\nDa'vogar: [Da'vogarning F.I.O.]\nManzil: [Manzil]\nTelefon raqami: [Telefon]\nbody text of the document that goes on");
+    expect(r).toHaveLength(3);
+    expect(r[0].kind === "kv" && r[0].key).toBe("Da'vogar");
+    expect(r[0].kind === "kv" && r[0].value[0]).toMatchObject({ slot: true, text: "Da'vogarning F.I.O." });
+  });
+  it("a heading with a colon and no value, a long sentence with a colon and a numbered line are not rows", () => {
+    expect(rows("T\nSO'RAYMAN:\nx")).toHaveLength(0);
+    expect(rows("T\nTomonlar quyidagicha kelishdilar va rozi bo'ldilar: barcha majburiyatlar bajarilishi shart\nx")).toHaveLength(0);
+    expect(rows("T\n1. Narx: 5 000 so'm\nx")).toHaveLength(0);
+  });
+  it("a long value stays a paragraph", () => {
+    expect(rows(`T\nIzoh: ${"uzun matn ".repeat(15)}\nx`)).toHaveLength(0);
+  });
+  it("spots in a value are numbered with the rest", () => {
+    expect(slotCount(layoutDoc("T\nManzil: [Manzil]\nbody [x]"))).toBe(2);
   });
 });
 

@@ -80,6 +80,14 @@ function Numbered({ segs, size, line }: { segs: Seg[]; size: number; line: numbe
 function BlockView({ b, size, line }: { b: Block; size: number; line: number }) {
   switch (b.kind) {
     case "gap": return <View style={{ height: Math.round(size * 0.65) }} />;
+    case "kv":
+      // "Key: value" as a row: the key on the left, the value on the right (justifyContent: space-between), a hairline under each.
+      return (
+        <View style={s.kv}>
+          <Text style={[s.key, { fontSize: size - 1, lineHeight: Math.round((size - 1) * 1.55), fontFamily: SERIF }]}>{b.key}</Text>
+          <View style={s.value}><Inline segs={b.value} size={size - 1} line={Math.round((size - 1) * 1.55)} align="right" /></View>
+        </View>
+      );
     case "recipient":
       // The block that heads an application: it stands on the right of the page, its lines read from the left.
       return <View style={s.recipient}>{b.lines.map((l, i) => <Inline key={i} segs={l} size={size} line={line} />)}</View>;
@@ -137,6 +145,9 @@ const s = StyleSheet.create({
   brand: { fontSize: 9.5, letterSpacing: 2, color: BRAND, fontWeight: "800" },
   headRule: { height: 1, backgroundColor: RULE, marginTop: 8, marginBottom: 18 },
   text: { color: INK },
+  kv: { flexDirection: "row", justifyContent: "space-between", alignItems: "flex-start", gap: 14, paddingVertical: 6, borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: RULE },
+  key: { color: SOFT, fontWeight: "600", flexShrink: 0, maxWidth: "40%" },
+  value: { flex: 1, alignItems: "flex-end" },
   recipient: { alignSelf: "flex-end", width: "62%", gap: 2, paddingBottom: 18 },
   subtitle: { paddingBottom: 12, paddingHorizontal: 8 },
   sign: { flexDirection: "row", justifyContent: "space-between", alignItems: "flex-end", gap: 10, paddingTop: 10 },
