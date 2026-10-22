@@ -49,18 +49,27 @@ const GAP_MS = 1200;
 
 // Our own reachability check: any HTTP answer from the API (even a 404) proves the internet works. Two tries a moment apart, each
 // given 6 s, so a slow first TLS handshake or a network that is still coming up does not read as "no internet".
+let lastProbe = "";
+function logProbe(p: Probe): void {
+  const what = p.ok ? "ok" : `fail: ${p.error}`;
+  if (what === lastProbe) return; // the same failure every recheck while offline says nothing new
+  lastProbe = what;
+  netLog("probe", p.ok ? `ok ${p.ms} ms` : `fail ${p.ms} ms: ${p.error}`);
+}
+
 async function apiReachable(): Promise<Probe> {
   const first = await probeApi(TRY_MS);
-  netLog("probe", first.ok ? `ok ${first.ms} ms` : `fail ${first.ms} ms: ${first.error}`);
+  logProbe(first);
   if (first.ok) return first;
   await new Promise((r) => setTimeout(r, GAP_MS));
   const second = await probeApi(TRY_MS);
-  netLog("probe", second.ok ? `ok ${second.ms} ms` : `fail ${second.ms} ms: ${second.error}`);
+  logProbe(second);
   return second;
 }
 
 let generation = 0;
 let retry: ReturnType<typeof setTimeout> | null = null;
+let lastOs = "";
 
 function scheduleRecheck(): void {
   if (retry) return;
@@ -70,11 +79,21 @@ function scheduleRecheck(): void {
   }, 10_000);
 }
 
-export function applyNetworkState(s: NetworkState): void {
+/** `force`: re-decide even if the OS repeats the same state (the periodic recheck, the app coming to the foreground, the retry button). */
+export function applyNetworkState(s: NetworkState, force = false): void {
+  const sig = `${String(s.type)} connected=${String(s.isConnected)} internet=${String(s.isInternetReachable)}`;
+  const same = sig === lastOs;
+  lastOs = sig;
+  const st = useNetStore.getState();
+  // While offline the same OS state again tells nothing new (Android repeats it every few seconds while a per-app restriction blocks
+  // the app); the periodic recheck looks again on its own, so each repeat does not start a request.
+  if (same && !st.online && !force) return;
   const gen = (generation += 1);
   const verdict = verdictOf(s, NetworkStateType.NONE);
-  netLog("os", `${String(s.type)} connected=${String(s.isConnected)} internet=${String(s.isInternetReachable)} -> ${verdict}`);
-  if (verdict === "online") return commit(true, s.type);
+  if (!same) netLog("os", `${sig} -> ${verdict}`);
+  // "Online" is believed at once — unless LexGo was found blocked: Android keeps reporting the very network a per-app restriction
+  // keeps the app off, so then our own request decides.
+  if (verdict === "online" && st.cause !== "denied") return commit(true, s.type);
   // The OS says "offline" or "connected, internet not reachable". Neither is believed on its own: iOS reports an unsatisfied path for a
   // moment at launch, on a new install, behind a VPN or while it waits for the radio, and expo-network turns a missed path update into
   // "no connection". Only when our own API cannot be reached either is the device offline — and then the OS is asked why, so a phone
@@ -90,20 +109,34 @@ export function applyNetworkState(s: NetworkState): void {
   })();
 }
 
-/** Re-reads the OS state (app came to the foreground, retry button). */
+/** Re-reads the OS state and decides again (app came to the foreground, retry button, the periodic recheck while offline). */
 export async function recheckNetwork(): Promise<void> {
   try {
-    applyNetworkState(await getNetworkStateAsync());
+    applyNetworkState(await getNetworkStateAsync(), true);
   } catch {
     /* keep the last known state */
   }
+}
+
+/**
+ * One of our own requests failed while the OS reports a network (GET /health, see health.ts). Android does not show a per-app
+ * restriction in that state, so the OS is asked directly: if it keeps LexGo off the network, the app goes offline with that cause
+ * (true is returned) instead of calling the server down.
+ */
+export async function noteApiUnreachable(error: string): Promise<boolean> {
+  const path = await readOsPath();
+  if (!isDenied(path)) return false;
+  generation += 1;
+  commit(false, undefined, "denied", `${describeOsPath(path)} · ${error}`);
+  scheduleRecheck();
+  return true;
 }
 
 export function startNetworkMonitor(): () => void {
   netLog("start", `${Platform.OS} ${String(Platform.Version)}`);
   void readOsPath().then((p) => netLog("os-path", describeOsPath(p))); // what the OS gives this app at launch, for the journal
   void recheckNetwork();
-  const sub = addNetworkStateListener(applyNetworkState);
+  const sub = addNetworkStateListener((s) => applyNetworkState(s));
   // A real answer from the API beats any OS flag: if the banner says offline but a request just succeeded, we are online.
   onReached(() => {
     if (!useNetStore.getState().online) {

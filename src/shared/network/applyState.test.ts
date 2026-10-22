@@ -1,5 +1,5 @@
 import { NetworkStateType } from "expo-network";
-import { applyNetworkState } from "./NetworkMonitor";
+import { applyNetworkState, noteApiUnreachable } from "./NetworkMonitor";
 import { useNetStore } from "./netStore";
 import { readOsPath, type OsPath } from "./osPath";
 import { probeApi } from "./probe";
@@ -78,9 +78,53 @@ describe("applyNetworkState", () => {
   });
 
   it("coming back online clears the cause and the detail", async () => {
+    probe.mockResolvedValue(ok);
     useNetStore.setState({ online: false, cause: "denied", detail: "x" });
-    applyNetworkState(osSays(true, true));
+    applyNetworkState(osSays(true, true), true);
     await settle();
     expect(useNetStore.getState()).toMatchObject({ online: true, cause: "", detail: "" });
+  });
+
+  it("while LexGo is blocked, the OS repeating 'online' does not flip it back: our own request decides", async () => {
+    probe.mockResolvedValue(fail("Network request failed"));
+    osPath.mockResolvedValue(path({ reason: "blocked", interfaces: ["wifi"] }));
+    useNetStore.setState({ online: false, cause: "denied", detail: "x" });
+    applyNetworkState(osSays(true, true), true);
+    await settle();
+    expect(useNetStore.getState()).toMatchObject({ online: false, cause: "denied" });
+  });
+
+  it("the same OS state again while offline starts no new request, unless a recheck forces it", async () => {
+    probe.mockResolvedValue(fail("The Internet connection appears to be offline."));
+    applyNetworkState({ type: NetworkStateType.NONE, isConnected: false, isInternetReachable: false });
+    await settle();
+    expect(probe).toHaveBeenCalledTimes(2);
+    applyNetworkState({ type: NetworkStateType.NONE, isConnected: false, isInternetReachable: false });
+    await settle();
+    expect(probe).toHaveBeenCalledTimes(2);
+    applyNetworkState({ type: NetworkStateType.NONE, isConnected: false, isInternetReachable: false }, true);
+    await settle();
+    expect(probe).toHaveBeenCalledTimes(4);
+  });
+});
+
+describe("noteApiUnreachable", () => {
+  afterEach(() => jest.useRealTimers());
+  beforeEach(() => {
+    jest.useFakeTimers();
+    osPath.mockReset();
+    useNetStore.setState({ online: true, offlineSince: 0, cause: "", detail: "" });
+  });
+
+  it("a failed request on a network the OS keeps LexGo off (Android per-app restriction) is 'denied'", async () => {
+    osPath.mockResolvedValue(path({ reason: "blocked", interfaces: ["wifi"] }));
+    expect(await noteApiUnreachable("Network request failed")).toBe(true);
+    expect(useNetStore.getState()).toMatchObject({ online: false, cause: "denied" });
+  });
+
+  it("otherwise it is left to the server-down check", async () => {
+    osPath.mockResolvedValue(path({ status: "satisfied", reason: "none", interfaces: ["wifi"] }));
+    expect(await noteApiUnreachable("timeout")).toBe(false);
+    expect(useNetStore.getState().online).toBe(true);
   });
 });

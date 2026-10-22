@@ -1,5 +1,6 @@
 import { http } from "@/shared/api";
 import { asDict, asStr } from "@/shared/lib/json";
+import { noteApiUnreachable } from "./NetworkMonitor";
 import { netLog } from "./netLog";
 import { useNetStore } from "./netStore";
 
@@ -18,7 +19,9 @@ export async function probeHealth(): Promise<boolean> {
     useNetStore.setState({ serverDown: false, ...(Number.isFinite(server) ? { skewMs: Math.round(server - (t0 + rtt / 2)) } : {}) });
     return true;
   } catch (e) {
-    netLog("health", `fail ${Date.now() - t0} ms: ${e instanceof Error ? e.message : "error"}`);
+    const why = e instanceof Error ? e.message : "error";
+    netLog("health", `fail ${Date.now() - t0} ms: ${why}`);
+    if (await noteApiUnreachable(why)) return false; // LexGo is blocked on this phone: not the server's fault
     useNetStore.setState({ serverDown: useNetStore.getState().online });
     return false;
   } finally {

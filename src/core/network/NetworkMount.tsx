@@ -4,6 +4,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { flushOutbox, onFlushed } from "@/shared/cache";
 import { useT } from "@/shared/i18n";
 import { confirmDialog, toast } from "@/shared/ui";
+import { useDialogStore, type DialogSpec } from "@/shared/ui/dialog";
 import { OfflineBanner, onBackOnline, probeHealth, recheckNetwork, startNetworkMonitor, useNetStore } from "@/shared/network";
 import { kickUserSocket } from "@/shared/realtime";
 import { track } from "@/shared/analytics";
@@ -63,15 +64,21 @@ export function NetworkMount() {
 
 // The phone has a network but does not let LexGo use it (iOS: Mobile Data / Wireless Data off for the app; Android: a per-app data
 // restriction). "No internet" would send the person looking in the wrong place, so once per launch the app says what is off and opens
-// its own page in the system settings, where the switch is.
+// its own page in the system settings, where the switch is. When the internet comes back while it is still open, it closes itself.
 function useDeniedNotice(): void {
   const { t } = useT();
   const denied = useNetStore((s) => s.cause === "denied");
   const told = useRef(false);
+  const open = useRef<DialogSpec | null>(null);
   useEffect(() => {
-    if (!denied || told.current) return;
+    if (!denied) {
+      if (open.current && useDialogStore.getState().spec === open.current) useDialogStore.getState().close();
+      open.current = null;
+      return;
+    }
+    if (told.current) return;
     told.current = true;
-    confirmDialog({
+    const spec: DialogSpec = {
       title: t("nt3.denied.title"),
       message: t(Platform.OS === "ios" ? "nt3.denied.ios" : "nt3.denied.android"),
       confirmLabel: t("nt3.denied.open"),
@@ -79,6 +86,8 @@ function useDeniedNotice(): void {
       icon: "wifi-off",
       confirmIcon: "settings",
       onConfirm: () => void Linking.openSettings().catch(() => undefined),
-    });
+    };
+    open.current = spec;
+    confirmDialog(spec);
   }, [denied, t]);
 }
