@@ -9,7 +9,7 @@ import { AURORA, useColors } from "@/shared/theme";
 import { useAuroraStyle } from "@/shared/ui";
 import { AiRaisedButton } from "./AiRaisedButton";
 import { installTabReach, setBarRoutes } from "./tabReach";
-import { TABS } from "./tabConfig";
+import { TABS, type TabDef } from "./tabConfig";
 import { useTabRole } from "./useTabRole";
 import { useVisibleTabs } from "./useTabItems";
 
@@ -23,6 +23,7 @@ const SF: Record<string, string> = {
 installTabReach();
 
 // The AI tab's slot in the system bar is left empty (a clear image, no caption): AiRaisedButton stands in it, rising above the bar.
+const GAP: TabDef = { route: "gap", icon: "home", labelKey: "" };
 const AI_SLOT = require("../../../assets/tabs/ai-slot.png");
 
 // The system tab bar (UITabBar): Liquid Glass on iOS 26 with no custom drawing. Every route is declared, in the role's order first;
@@ -34,14 +35,16 @@ export function NativeTabsBar({ bar }: { bar: boolean }) {
   const authed = useIsAuthed();
   const role = useTabRole();
   const badges = useBadgeStore((s) => s.badges);
-  // With an odd number of tabs the AI tab takes the middle slot, so the raised button sits at the exact centre of the bar.
+  // The AI tab always takes the middle slot, so the raised button sits at the exact centre of the bar: with an even number of tabs an
+  // empty disabled slot (`gap`) beside it makes the count odd.
   const visible = useVisibleTabs();
   const shown = (() => {
     const ai = visible.find((d) => d.center);
-    if (!ai || visible.length % 2 === 0) return visible;
-    const rest = visible.filter((d) => d !== ai);
-    rest.splice(Math.floor(visible.length / 2), 0, ai);
-    return rest;
+    if (!ai) return visible;
+    const others = visible.filter((d) => d !== ai);
+    const left = Math.floor(visible.length / 2);
+    const row = [...others.slice(0, left), ai, ...others.slice(left)];
+    return visible.length % 2 === 0 ? [...row.slice(0, left + 1), GAP, ...row.slice(left + 1)] : row;
   })();
   const centerAt = shown.findIndex((d) => d.center);
   const barKey = shown.map((d) => d.route).join(",");
@@ -53,7 +56,7 @@ export function NativeTabsBar({ bar }: { bar: boolean }) {
     <NativeTabs hidden={!bar} tintColor={c.accent}>
       {shown.map((def) => {
         const n = def.badge ? (badges[def.badge] ?? 0) : 0;
-        const guard = def.auth && !authed;
+        const guard = (def.auth && !authed) || def.route === GAP.route;
         return (
           <NativeTabs.Trigger
             key={`${role}-${def.route}`}
@@ -61,17 +64,17 @@ export function NativeTabsBar({ bar }: { bar: boolean }) {
             contentStyle={AURORA ? aurora : undefined}
             disableAutomaticContentInsets
             disabled={guard} // a visitor's tap on a personal tab never switches it: the (still emitted) press sends them to sign in
-            listeners={guard ? { tabPress: () => router.push("/auth/login") } : undefined}
+            listeners={guard && def.route !== GAP.route ? { tabPress: () => router.push("/auth/login") } : undefined}
           >
-            {def.center ? <NativeTabs.Trigger.Icon src={AI_SLOT} renderingMode="original" /> : <NativeTabs.Trigger.Icon sf={SF[def.icon] as never} />}
-            <NativeTabs.Trigger.Label hidden={def.center}>{t(def.labelKey)}</NativeTabs.Trigger.Label>
+            {def.center || def.route === GAP.route ? <NativeTabs.Trigger.Icon src={AI_SLOT} renderingMode="original" /> : <NativeTabs.Trigger.Icon sf={SF[def.icon] as never} />}
+            <NativeTabs.Trigger.Label hidden={def.center || def.route === GAP.route}>{t(def.labelKey)}</NativeTabs.Trigger.Label>
             {n ? <NativeTabs.Trigger.Badge>{n > 99 ? "99+" : String(n)}</NativeTabs.Trigger.Badge> : null}
           </NativeTabs.Trigger>
         );
       })}
       {rest.map((name) => <NativeTabs.Trigger key={`hidden-${name}`} name={name} contentStyle={AURORA ? aurora : undefined} hidden />)}
     </NativeTabs>
-    {bar && centerAt >= 0 ? <AiRaisedButton index={centerAt} count={shown.length} labelKey={shown[centerAt].labelKey} /> : null}
+    {bar && centerAt >= 0 ? <AiRaisedButton labelKey={shown[centerAt].labelKey} /> : null}
     </View>
   );
 }
