@@ -13,10 +13,10 @@ type Props = { labelKey: string }; // the button's accessibility label
 
 // The AI tab is always the middle slot of the system bar, so the button is simply centred on the screen. These match iOS 26's UITabBar
 // and are the only numbers to tune if the button sits too high or low.
-const BAR_LIFT = 6; // bar bottom above the safe area
+const BAR_LIFT = -11; // bar bottom relative to the safe area (the system bar floats a little below the home indicator line)
 const BAR_HEIGHT = 62;
 const SIZE = 64;
-const SHIFT = 12; // to the right: the bar's middle slot sits a little right of the screen centre (slot widths follow the captions)
+const SHIFT = 9; // to the right: the bar's middle slot sits a little right of the screen centre (slot widths follow the captions)
 const RISE = 8; // how far the disc stands above the bar's top edge
 
 // iOS: the AI tab's slot in the system bar has no icon (no caption); this button stands over it, rising above the bar. A soft ring breathes out of it

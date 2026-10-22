@@ -40,7 +40,17 @@ export function AiCore3D({ size, t, calm = false }: Props) {
     const w = gl.drawingBufferWidth, h = gl.drawingBufferHeight;
     const canvas = { width: w, height: h, clientWidth: w, clientHeight: h, style: {}, addEventListener() {}, removeEventListener() {}, getContext: () => gl } as unknown as HTMLCanvasElement;
     (gl as unknown as { canvas: unknown }).canvas = canvas;
-    const renderer = new THREE.WebGLRenderer({ canvas, context: gl as unknown as WebGL2RenderingContext, alpha: true, antialias: true });
+    // expo-gl's context is WebGL2, but its class also passes three's `instanceof WebGLRenderingContext` test (which rejects WebGL 1):
+    // hide that global while the renderer is made.
+    const g = globalThis as { WebGLRenderingContext?: unknown };
+    const webgl1 = g.WebGLRenderingContext;
+    g.WebGLRenderingContext = undefined;
+    let renderer: THREE.WebGLRenderer;
+    try {
+      renderer = new THREE.WebGLRenderer({ canvas, context: gl as unknown as WebGL2RenderingContext, alpha: true, antialias: true });
+    } finally {
+      g.WebGLRenderingContext = webgl1;
+    }
     renderer.setPixelRatio(1);
     renderer.setSize(w, h, false);
     renderer.setClearColor(0x000000, 0);
