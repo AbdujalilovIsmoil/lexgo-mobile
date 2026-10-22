@@ -45,7 +45,8 @@ iOS (flags on) is a glass-on-colour system.
 - **Cards** are frosted panes, not real glass (a native glass view per list row is too heavy): `glassFill` + `glassLine`, a short bright
   top sheen, no shadow (a shadow would show through the translucent fill). Card-shaped surfaces that are not `<Card>` (rows, panels,
   inputs) use the same two tokens; `surface` stays for opaque things (thumbs, sheets' content). Do not nest cards.
-- The tab bar is the system `NativeTabs` bar; the app's theme is handed to iOS (`Appearance.setColorScheme`) so it matches. The AI tab is a plain `sparkles` SF Symbol with its caption, like every other tab (the earlier glass-pearl and colour-sphere images were dropped: too flashy for the calm, exact tone).
+- The tab bar is the system `NativeTabs` bar; the app's theme is handed to iOS (`Appearance.setColorScheme`) so it matches. The AI tab
+  is a glass-pearl icon (`assets/tabs/ai-glass*.png`: a light-bar variant with a blue spark, a lit selected state) and has no caption.
 
 ## Materials (Android — Material 3 Expressive)
 
