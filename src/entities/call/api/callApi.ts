@@ -31,7 +31,7 @@ export async function endCall(roomId: string, callId: string): Promise<void> {
   try { await post(base(roomId, callId, "/end")); } catch { await http(`/calls/${encodeURIComponent(callId)}`, { method: "PATCH", body: { status: "ended" } }); }
 }
 
-type Patch = Partial<{ status: string; role: string; mic_enabled: boolean; camera_enabled: boolean; screen_enabled: boolean }>;
+type Patch = Partial<{ answered_device_id: string; status: string; role: string; mic_enabled: boolean; camera_enabled: boolean; screen_enabled: boolean }>;
 /** PATCH …/participants/{user} — my own mic/camera/status, or the host muting / removing somebody. Answers with the call. */
 export async function patchParticipant(roomId: string, callId: string, userId: string, patch: Patch): Promise<Call> {
   return normCall(await http(base(roomId, callId, `/participants/${encodeURIComponent(userId)}`), { method: "PATCH", body: patch }));

@@ -43,7 +43,11 @@ export const nt2: Messages["nt2"] = {
   },
   remote: {
     title: "Remote push",
-    text: "The server does not accept a device token yet, so no push arrives while the app is closed. While the app is open or in the background, events arrive over the live connection and a periodic check.",
+    text: {
+      on: "Notifications are on: calls and tasks reach this phone even when the app is closed.",
+      wait: "This device is not registered on the server yet (no network, or this build has no push service). While the app is open or in the background, events arrive over the live connection.",
+      off: "Notification permission is not granted, so calls and task alerts do not arrive while the app is closed.",
+    },
     on: "On",
     wait: "Waiting",
     off: "Not available yet",

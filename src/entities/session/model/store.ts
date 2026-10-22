@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { runSessionReset } from "@/shared/lib/sessionReset";
+import { runBeforeSignOut, runSessionReset } from "@/shared/lib/sessionReset";
 import { hydrateLock, useLockStore } from "./lockStore";
 import { readSession, wipeSession, writeSession, writeSid, writeTokens, writeUser } from "./persist";
 import type { Session, User } from "./types";
@@ -48,6 +48,7 @@ export const useSessionStore = create<SessionState>((set, get) => {
     // `expired`: the server ended the session (the lock setting survives so the next sign-in of the
     // same account keeps it). A deliberate sign-out also drops the lock.
     signOut: async (expired) => {
+      if (!expired) await runBeforeSignOut();
       await wipeSession();
       if (!expired) await useLockStore.getState().disable();
       useLockStore.getState().unlock();

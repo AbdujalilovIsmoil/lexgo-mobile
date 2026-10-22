@@ -9,6 +9,7 @@ import { useTaskAlerts } from "./useTaskAlerts";
 import { useResponseRouter } from "./useResponseRouter";
 import "./handler";
 import "./task";
+import "./remote";
 
 // Everything that turns notification events into something the user notices: permission state,
 // channels, the badge, banners / OS alerts from the socket, taps on OS notifications, the periodic job.

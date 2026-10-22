@@ -41,7 +41,11 @@ export const nt2 = {
   },
   remote: {
     title: "Masofaviy push",
-    text: "Server hozircha qurilma tokenini qabul qilmaydi, shuning uchun ilova yopiq bo'lganda push kelmaydi. Ilova ochiq yoki orqa fonda bo'lsa, voqealar jonli ulanish va vaqti-vaqti bilan tekshiruv orqali yetib keladi.",
+    text: {
+      on: "Bildirishnomalar yoqilgan: qo'ng'iroq va vazifalar ilova yopiq bo'lsa ham shu telefonga yetib keladi.",
+      wait: "Qurilma hali serverda ro'yxatdan o'tmadi (internet yoki shu yig'ilmada push xizmati yo'q). Ilova ochiq yoki orqa fonda bo'lsa, voqealar jonli ulanish orqali yetib keladi.",
+      off: "Bildirishnomaga ruxsat berilmagan, shuning uchun ilova yopiq bo'lganda qo'ng'iroq va vazifa xabarlari kelmaydi.",
+    },
     on: "Yoqilgan",
     wait: "Kutilmoqda",
     off: "Hozircha yo'q",

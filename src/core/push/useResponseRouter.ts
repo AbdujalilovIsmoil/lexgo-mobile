@@ -8,6 +8,7 @@ import { translate } from "@/shared/i18n/useT";
 import { useLocaleStore } from "@/shared/i18n/localeStore";
 import { asDict, asStr } from "@/shared/lib/json";
 import { toast } from "@/shared/ui";
+import { remoteDataOf } from "./remoteData";
 import { advanceWatermark } from "./seen";
 
 // PushRouter: a tap on an OS notification (cold start included) opens the screen the event is about,
@@ -27,11 +28,14 @@ export function useResponseRouter(): void {
       handled.current.add(id);
       const d = asDict(r.notification.request.content.data);
       const t = (key: string) => translate(useLocaleStore.getState().locale, key);
-      if (asStr(d.event).startsWith("tasks.")) {
-        router.navigate("/team-tasks" as never); // a task alert opens the team's tasks
+      const remote = remoteDataOf(r);
+      const event = asStr(d.event) || remote.type; // a local alert says `event`, a remote push `type`
+      if (event.startsWith("tasks.")) {
+        const task = remote.taskId || asStr(d.task_id);
+        router.navigate((task ? `/team-tasks?task=${encodeURIComponent(task)}` : "/team-tasks") as never); // a task alert opens that task
         return;
       }
-      const input = { event: asStr(d.event), category: asStr(d.category), entityType: asStr(d.entity_type), entityId: asStr(d.entity_id), deepLink: asStr(d.deep_link), data: d };
+      const input = { event, category: asStr(d.category), entityType: asStr(d.entity_type), entityId: asStr(d.entity_id), deepLink: asStr(d.deep_link), data: d };
       void openLink({ input }, currentViewer(), { navigate: (h) => router.navigate(h as never), say: toast, t }, "push_tap").then((res) => {
         if (res === "none") router.navigate("/notifications");
       });

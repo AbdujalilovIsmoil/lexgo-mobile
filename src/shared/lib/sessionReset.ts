@@ -18,3 +18,17 @@ export function runSessionReset(): void {
     }
   }
 }
+
+// Work that needs the session's token and so must finish BEFORE a deliberate sign-out wipes it (e.g. telling the backend to stop pushing
+// to this phone). Each runs at most 3 s: a slow network must not hold the sign-out.
+const before = new Set<() => Promise<void>>();
+
+export function registerBeforeSignOut(fn: () => Promise<void>): () => void {
+  before.add(fn);
+  return () => void before.delete(fn);
+}
+
+export async function runBeforeSignOut(): Promise<void> {
+  const wait = new Promise<void>((r) => setTimeout(r, 3000));
+  await Promise.race([Promise.allSettled([...before].map((fn) => fn())).then(() => undefined), wait]);
+}

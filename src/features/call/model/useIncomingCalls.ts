@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { AppState } from "react-native";
 import { useRouter } from "expo-router";
+import { deviceId } from "@/shared/push";
 import { callPath, listInvited, patchParticipant, type Invited } from "@/entities/call";
 import { useResync, useSocketState, useUserEvents } from "@/shared/realtime";
 import { useSession } from "@/entities/session";
@@ -61,7 +62,8 @@ export function useIncomingCalls(inCall: boolean) {
   const answer = (decline: boolean) => {
     if (!inc) return;
     seen.current.add(inc.callId); setInc(null); clearIncomingAlert(inc.callId);
-    if (decline) void patchParticipant(inc.roomId, inc.callId, myId, { status: "declined" }).catch(() => undefined);
+    // The backend stops the ringing on this person's OTHER devices and leaves this one out, so it is told which device answered.
+    if (decline) void deviceId().then((d) => patchParticipant(inc.roomId, inc.callId, myId, { status: "declined", ...(d ? { answered_device_id: d } : {}) })).catch(() => undefined);
     else router.push(callPath(inc.roomId, inc.callId) as never);
   };
   return { inc, accept: () => answer(false), decline: () => answer(true) };

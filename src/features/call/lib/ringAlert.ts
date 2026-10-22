@@ -3,7 +3,7 @@ import * as Notifications from "expo-notifications";
 import { localPrefs } from "@/entities/notification";
 import { useLocaleStore } from "@/shared/i18n/localeStore";
 import { translate } from "@/shared/i18n/useT";
-import { showLocalAlert } from "@/shared/push";
+import { dismissCallAlerts, showLocalAlert } from "@/shared/push";
 import type { Incoming } from "./ringEvent";
 
 const idOf = (callId: string) => `call-${callId}`;
@@ -19,4 +19,4 @@ export function alertIncoming(inc: Incoming): void {
 }
 
 /** The ring is over (answered, declined, ended, timed out): take its notification away. */
-export const clearIncomingAlert = (callId: string): void => void Notifications.dismissNotificationAsync(idOf(callId)).catch(() => undefined);
+export const clearIncomingAlert = (callId: string): void => void Promise.all([Notifications.dismissNotificationAsync(idOf(callId)).catch(() => undefined), dismissCallAlerts(callId)]);

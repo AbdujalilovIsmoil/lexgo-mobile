@@ -1,8 +1,9 @@
 import { useState } from "react";
+import { useLocalSearchParams } from "expo-router";
 import { View } from "react-native";
 import { Button, Chip, EmptyState, IconButton } from "@/shared/ui";
 import { AdminPage, PagedList, SearchBox } from "@/shared/ui/admin";
-import { EMPTY_FILTER, useMoveTask, useTaskLive, useTaskMeta, useTeamTasks, type TaskFilter, type TeamTask } from "@/entities/team-tasks";
+import { EMPTY_FILTER, useMoveTask, useTaskLive, useTaskMeta, useTeamTask, useTeamTasks, type TaskFilter, type TeamTask } from "@/entities/team-tasks";
 import { useAccess } from "@/entities/access";
 import { TaskFormSheet } from "@/features/team-task-form";
 import { StatusBar, TaskDetailSheet, TaskFilterSheet, TaskKpis, TaskRow, filterCount } from "@/widgets/team-tasks";
@@ -17,7 +18,12 @@ function Tasks() {
   const [q, setQ] = useState("");
   const dq = useDebounced(q, 300);
   const [filters, setFilters] = useState(false);
-  const [open, setOpen] = useState<TeamTask | null>(null);
+  const [picked, setOpen] = useState<TeamTask | null>(null);
+  // A task alert (push tap) opens its detail: /team-tasks?task=<id>. Closing the sheet drops it for this visit.
+  const linked = String(useLocalSearchParams<{ task?: string }>().task ?? "");
+  const [dismissed, setDismissed] = useState("");
+  const fromLink = useTeamTask(linked && linked !== dismissed ? linked : "").data ?? null;
+  const open = picked ?? fromLink;
   const [creating, setCreating] = useState(false);
   const move = useMoveTask();
   useTaskLive();
@@ -54,7 +60,7 @@ function Tasks() {
           </View>
         }
       />
-      <TaskDetailSheet item={open} canAssign={!!meta?.canAssign} onClose={() => setOpen(null)} />
+      <TaskDetailSheet item={open} canAssign={!!meta?.canAssign} onClose={() => { setOpen(null); setDismissed(linked); }} />
       <TaskFormSheet visible={creating} onClose={() => setCreating(false)} task={null} canAssign={!!meta?.canAssign} />
       <TaskFilterSheet visible={filters} onClose={() => setFilters(false)} value={f} onApply={setF} />
     </AdminPage>

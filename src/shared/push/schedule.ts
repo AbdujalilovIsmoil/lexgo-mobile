@@ -33,3 +33,14 @@ export async function showLocalAlert(a: LocalAlert): Promise<boolean> {
 }
 
 export const clearDelivered = (): void => void Notifications.dismissAllNotificationsAsync().catch(() => {});
+
+/** Takes away every delivered notification of one call (a local ring or the remote push), whatever its identifier. */
+export async function dismissCallAlerts(callId: string): Promise<void> {
+  try {
+    const shown = await Notifications.getPresentedNotificationsAsync();
+    const mine = shown.filter((n) => n.request.identifier === `call-${callId}` || n.request.identifier === callId || (n.request.content.data as Record<string, unknown> | undefined)?.call_id === callId);
+    await Promise.all(mine.map((n) => Notifications.dismissNotificationAsync(n.request.identifier)));
+  } catch {
+    /* nothing shown, or notifications unavailable */
+  }
+}

@@ -16,7 +16,7 @@ import { markSeen, wasSeen } from "./seen";
 // A task event on the user socket that concerns THIS person becomes an alert: given a task, sent back for rework, or ready for the
 // check. The event itself only names the task, so the task is fetched and the person's own part in it decides. The app open: a banner
 // (unless the task list is on screen, which refreshes by itself); in the background but still connected: an OS notification.
-// With the app closed nothing arrives: that needs a remote push, which the backend cannot send to this app yet.
+// With the app closed the backend's remote push (POST /devices) brings the same alert; a tap on it opens the task (/team-tasks?task=<id>).
 export function useTaskAlerts(): void {
   const { t } = useT();
   const qc = useQueryClient();

@@ -1,37 +1,34 @@
 import * as Notifications from "expo-notifications";
-import { http } from "@/shared/api";
-import { PUSH_TOKEN_ENABLED, PUSH_TOKEN_PATH } from "@/shared/config/infra";
+import { useLocaleStore } from "@/shared/i18n/localeStore";
 import { readSecret, writeSecret } from "@/shared/lib/storage";
+import { buildRegistration, installationId, removeRegistration, sendRegistration } from "./device";
 import { readPermission } from "./permission";
 
-export type TokenResult = "disabled" | "denied" | "no_endpoint" | "error" | "uploaded";
+export type TokenResult = "denied" | "error" | "uploaded" | "unchanged";
 const KEY = "lexgo_push_token";
 
+const tokenOf = (data: unknown): string => (typeof data === "string" ? data : "");
+
 /**
- * Obtains the device push token and, when an endpoint is configured, sends it to the backend.
- * Today the backend has NO device-token endpoint (TZ 46 lists none), so the default is
- * PUSH_TOKEN_ENABLED=false → "disabled", and with the flag on but no path → "no_endpoint"
- * (the token is only kept in SecureStore). Set EXPO_PUBLIC_PUSH_TOKEN=1 and
- * EXPO_PUBLIC_PUSH_TOKEN_PATH=/… once the backend adds it. The token is never logged.
+ * Obtains the device push token (FCM on Android, APNs on iOS) and registers it with POST /devices. Safe to call again and again: the
+ * backend call is made only when the token, the language or the app version changed. The token is never logged.
  */
-export async function registerPushToken(): Promise<TokenResult> {
-  if (!PUSH_TOKEN_ENABLED) return "disabled";
+export async function registerPushToken(token?: string, force = false): Promise<TokenResult> {
   if ((await readPermission()).status !== "granted") return "denied";
   try {
-    const { data, type } = await Notifications.getDevicePushTokenAsync();
-    const token = typeof data === "string" ? data : JSON.stringify(data);
-    await writeSecret(KEY, token);
-    if (!PUSH_TOKEN_PATH) return "no_endpoint";
-    await http(PUSH_TOKEN_PATH, { method: "POST", body: { token, platform: type } });
-    return "uploaded";
+    const t = token ?? tokenOf((await Notifications.getDevicePushTokenAsync()).data);
+    if (!t) return "error";
+    await writeSecret(KEY, t);
+    const sent = await sendRegistration(buildRegistration(t, await installationId(), useLocaleStore.getState().locale), force);
+    return sent ? "uploaded" : "unchanged";
   } catch {
-    return "error";
+    return "error"; // no Firebase config in this build, no network, … — the live connection and the periodic check still alert
   }
 }
 
-/** Forget the stored token on sign-out (and tell the backend if it ever got one). */
+/** Sign-out: delete the token on the backend and forget it here. */
 export async function forgetPushToken(): Promise<void> {
   const had = await readSecret(KEY);
   await writeSecret(KEY, null);
-  if (had && PUSH_TOKEN_PATH) await http(PUSH_TOKEN_PATH, { method: "DELETE", body: { token: had } }).catch(() => {});
+  if (had) await removeRegistration(had);
 }
