@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { RefreshControl, ScrollView } from "react-native";
+import { useRouter } from "expo-router";
 import { useQueryClient } from "@tanstack/react-query";
 import { ErrorView, Skeleton } from "@/shared/ui";
 import { AdminPage } from "@/shared/ui/admin";
@@ -16,6 +17,7 @@ export default function DocumentDetailPage({ id }: { id: string }) {
   const { t } = useT();
   const insets = useInsets();
   const qc = useQueryClient();
+  const router = useRouter();
   const q = useDoc(id);
   const doc = q.data;
   const policy = useDocPolicy(id, !!doc).data;
@@ -44,7 +46,7 @@ export default function DocumentDetailPage({ id }: { id: string }) {
           <VersionsSheet docId={doc.id} title={doc.title} canCreate={can.version} visible={sheet === "versions"} onClose={close} onOpen={openFile} />
           <ReviewSheet docId={doc.id} visible={sheet === "review"} onClose={close} />
           <RatingSheet docId={doc.id} visible={sheet === "rate"} onClose={close} />
-          <CtorSheet visible={ctor.visible} title={ctor.title} message={ctor.message} onYes={() => setSheet("answers")} onClose={ctor.close} />
+          <CtorSheet visible={ctor.visible} title={ctor.title} message={ctor.message} onYes={() => (doc?.templateId ? router.push(`/templates/${encodeURIComponent(doc.templateId)}/fill?request=${encodeURIComponent(doc.id)}` as never) : setSheet("answers"))} onClose={ctor.close} />
         </>
       ) : null}
       <FilePreview visible={!!file} onClose={() => setFile(null)} file={shownFile} />

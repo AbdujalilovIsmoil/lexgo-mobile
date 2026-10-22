@@ -12,7 +12,7 @@ export function TemplateActions({ actions }: { actions: Action[] }) {
     <View style={s.col}>
       {actions.map((a) => (
         <PressableScale key={a.key} onPress={a.onPress} disabled={a.busy} accessibilityRole="button" accessibilityLabel={`${a.title}. ${a.hint}`} accessibilityState={{ busy: !!a.busy }}
-          style={[s.row, a.primary ? { backgroundColor: c.accent, borderColor: c.accent } : { backgroundColor: c.glassFill, borderColor: c.glassLine }]}>
+          style={[s.row, a.primary ? { backgroundColor: c.accentStrong, borderColor: c.accentStrong } : { backgroundColor: c.glassFill, borderColor: c.glassLine }]}>
           <View style={[s.tile, { backgroundColor: a.primary ? "rgba(255,255,255,0.2)" : c.tint2 }]}><Icon name={a.busy ? "loader" : a.icon} size={22} color={a.primary ? "#FFFFFF" : c.accent} /></View>
           <View style={s.txt}>
             <Text variant="body" weight="bold" style={a.primary ? { color: "#FFFFFF" } : undefined}>{a.title}</Text>

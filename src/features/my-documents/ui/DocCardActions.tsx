@@ -25,7 +25,8 @@ export function DocCardActions({ row, onSend }: Props) {
   const waiting = row.paymentRequired && !row.fileReady;
   const canContinue = row.ctor?.available === true;
   const canSend = row.mode === "manual" && !closed && !waiting && row.canSend;
-  const go = () => router.push(docPath(row.id) as never);
+  // "Continue" opens the section constructor on this very request (a document that came from a template); others open their page.
+  const go = () => router.push((row.templateId ? `/templates/${encodeURIComponent(row.templateId)}/fill?request=${encodeURIComponent(row.id)}` : docPath(row.id)) as never);
   const download = () => void dl.share({ path: `/document-requests/${encodeURIComponent(row.id)}/file`, name: docFileName(row.title, row.format, "document"), mime: MIME });
   const acts: Record<string, Act | null> = {
     dl: row.fileReady ? { key: "dl", label: t("dm11.actDownload"), icon: "download", onPress: download } : null,
