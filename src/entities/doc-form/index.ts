@@ -22,3 +22,4 @@ export { classify, type Failure } from "./lib/classify";
 export { renderTemplate } from "./api/templateRenderApi";
 export { serviceSource, type FillSource } from "./model/fillSource";
 export { Autosaver, type SaveState } from "./lib/autosaver";
+export { layoutDoc, slotCount, excerpt } from "./lib/docLayout";

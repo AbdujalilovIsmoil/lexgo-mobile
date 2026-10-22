@@ -45,6 +45,7 @@ export const dcat = {
     signInFirst: "Sign in to continue",
     pooled: "With the duty lawyers",
     minutes: "≈ {n} min",
+    slotsN: "Yellow spots: {n} fields for you to fill in",
     lang: {
       "uz-cyrl": "Uzbek (Cyrillic)",
       "uz-latn": "Uzbek (Latin)",
