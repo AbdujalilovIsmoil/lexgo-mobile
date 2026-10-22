@@ -7,9 +7,15 @@ import { router } from "expo-router";
 let bar: string[] = [];
 export const setBarRoutes = (routes: string[]) => { bar = routes; };
 
-const rewritePath = (path: string): string => {
+// The tab pages (app/(tabs)/*.tsx apart from the home): a bare "/orders" or "/lawyers" (the sidebar writes them so) reaches the same screen
+// as "/(tabs)/orders", so it is rewritten the same way — only the exact path: "/orders/<id>" and "/services/<id>" are real stack screens.
+const TAB_PAGES = new Set(["services", "works", "messages", "workspace", "requests", "clients", "leads", "csupport", "cclients", "cmeetings", "pipeline", "duty", "smeetings", "canalytics", "lawyers", "orders", "admin", "hrm", "notifs", "profile", "ai"]);
+
+export const rewritePath = (path: string): string => {
   const m = /^\/\(tabs\)\/([a-z]+)(.*)$/.exec(path);
-  return m && !bar.includes(m[1]) ? `/m/${m[1]}${m[2]}` : path;
+  if (m) return !bar.includes(m[1]) ? `/m/${m[1]}${m[2]}` : path;
+  const b = /^\/([a-z]+)(\?.*)?$/.exec(path);
+  return b && TAB_PAGES.has(b[1]) && !bar.includes(b[1]) ? `/m/${b[1]}${b[2] ?? ""}` : path;
 };
 const rewrite = (href: unknown): unknown => {
   if (typeof href === "string") return rewritePath(href);
