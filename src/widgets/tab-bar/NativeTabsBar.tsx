@@ -18,7 +18,7 @@ const SF: Record<string, string> = {
   headphones: "headphones", video: "video.fill", "bar-chart-2": "chart.bar.fill", sliders: "slider.horizontal.3", bell: "bell.fill", user: "person.fill",
 };
 
-// The AI tab: a glass pearl (clear bead, prismatic rim) that lights up with the brand gradient while the tab is open.
+// The AI tab: a coloured glass sphere (aurora under a glass lens, "AI" mark) that lights up with the brand gradient while the tab is open.
 installTabReach();
 
 const AI_PEARL = { default: require("../../../assets/tabs/ai-glass.png"), selected: require("../../../assets/tabs/ai-glass-on.png") };
