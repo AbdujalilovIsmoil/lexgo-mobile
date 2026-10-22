@@ -38,18 +38,22 @@ function commit(online: boolean, type?: NetworkStateType): void {
   }
 }
 
-// Our own reachability check: any HTTP answer from the API (even a 404) proves the internet works.
+// Our own reachability check: any HTTP answer from the API (even a 404) proves the internet works. Two tries, so one dropped packet
+// on a slow link does not read as "no internet".
 async function apiReachable(): Promise<boolean> {
-  const ctl = new AbortController();
-  const timer = setTimeout(() => ctl.abort(), 4000);
-  try {
-    await fetch(`${API_BASE}/health`, { method: "GET", signal: ctl.signal });
-    return true;
-  } catch {
-    return false;
-  } finally {
-    clearTimeout(timer);
+  for (let attempt = 0; attempt < 2; attempt += 1) {
+    const ctl = new AbortController();
+    const timer = setTimeout(() => ctl.abort(), 4000);
+    try {
+      await fetch(`${API_BASE}/health`, { method: "GET", signal: ctl.signal });
+      return true;
+    } catch {
+      /* try once more */
+    } finally {
+      clearTimeout(timer);
+    }
   }
+  return false;
 }
 
 let generation = 0;
@@ -65,10 +69,10 @@ function scheduleRecheck(): void {
 
 export function applyNetworkState(s: NetworkState): void {
   const gen = (generation += 1);
-  const verdict = verdictOf(s, NetworkStateType.NONE);
-  if (verdict === "offline") return commit(false, s.type);
-  if (verdict === "online") return commit(true, s.type);
-  // "connected, internet not reachable": believe the OS only if our API cannot be reached either.
+  if (verdictOf(s, NetworkStateType.NONE) === "online") return commit(true, s.type);
+  // The OS says "offline" or "connected, internet not reachable". Neither is believed on its own: iOS reports an unsatisfied path for a
+  // moment at launch, on a new install, behind a VPN or while it waits for the radio, and expo-network turns a missed path update into
+  // "no connection". Only when our own API cannot be reached either is the device offline.
   void apiReachable().then((ok) => {
     if (gen !== generation) return; // a newer state arrived meanwhile
     commit(ok, s.type);
