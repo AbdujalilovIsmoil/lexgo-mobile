@@ -17,7 +17,7 @@ export type TemplatesState = {
 // and 5 MB) are still downloading. A single branch asks only for itself.
 export function useTemplates(branch: Branch = "all"): TemplatesState {
   const cats = branch === "all" ? [...TEMPLATE_CATEGORIES] : [branch];
-  const results = useQueries({ queries: TEMPLATE_CATEGORIES.map((c) => ({ queryKey: ["doc-templates", c], queryFn: () => listTemplates(c), enabled: cats.includes(c), staleTime: 30 * 60 * 1000 })) });
+  const results = useQueries({ queries: TEMPLATE_CATEGORIES.map((c) => ({ queryKey: ["doc-templates", c], queryFn: () => listTemplates(c), enabled: cats.includes(c), staleTime: 12 * 60 * 60 * 1000 })) });
   const on = TEMPLATE_CATEGORIES.map((c, i) => ({ c, q: results[i] })).filter((x) => cats.includes(x.c));
   const counts = Object.fromEntries(TEMPLATE_CATEGORIES.map((c, i) => [c, results[i].data ? results[i].data!.length : null])) as TemplatesState["counts"];
   const rows = on.flatMap((x) => x.q.data ?? []);

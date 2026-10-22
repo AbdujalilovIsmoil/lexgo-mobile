@@ -6,7 +6,9 @@ export const DAY = 24 * 60 * 60 * 1000;
 
 // Public catalogue data only (same for every visitor): it is saved on the phone, so the next launch paints it
 // instantly and the backend is asked again only once the data is stale. Nothing user-specific is ever persisted.
-const PUBLIC_ROOTS = ["service-categories", "services", "services-pages", "service-passport", "plans", "market-meta", "promo-active", "lawyers", "lawyers-pages", "lawyer"];
+// The template catalogue (slim rows, ≈0.5 MB for all ~1000; the raw answers are ≈14 MB and never stored) is public and changes rarely: kept for a day,
+// so a launch neither downloads nor parses it again. The heavy per-template queries (detail, render) are not listed on purpose.
+const PUBLIC_ROOTS = ["doc-templates", "doc-template-categories", "doc-template-linked", "service-categories", "services", "services-pages", "service-passport", "plans", "market-meta", "promo-active", "lawyers", "lawyers-pages", "lawyer"];
 
 export const persister = createAsyncStoragePersister({ storage: AsyncStorage, key: "lexgo_query_cache", throttleTime: 2000 });
 

@@ -1,5 +1,5 @@
 import { useMemo, useState, type ReactNode } from "react";
-import { RefreshControl, StyleSheet } from "react-native";
+import { RefreshControl, StyleSheet, View } from "react-native";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useQueryClient } from "@tanstack/react-query";
 import { useOfferedServiceIds } from "@/entities/lawyer";
@@ -33,7 +33,7 @@ export function ServicesPage() {
   if (pre) return <AdvocateServices pre={pre} onClear={() => setPre(null)} onOrder={setOrder} onNewDoc={() => setNewDoc(true)} sheets={sheets} />;
   return (
     <TabPage title={t("dcat.title")} subtitle={t("dcat.lead")}>
-      <DocCatalog top={<CatalogActions />} footer={<NewDocOrder onNewDoc={() => setNewDoc(true)} />} />
+      <DocCatalog top={<View style={s.top}><CatalogActions /><NewDocOrder onNewDoc={() => setNewDoc(true)} /></View>} />
       {sheets}
     </TabPage>
   );
@@ -72,4 +72,4 @@ function AdvocateServices({ pre, onClear, onNewDoc, sheets }: Advocate) {
   );
 }
 
-const s = StyleSheet.create({ content: { paddingTop: 4, paddingHorizontal: 16, gap: 14 } });
+const s = StyleSheet.create({ top: { gap: 10 }, content: { paddingTop: 4, paddingHorizontal: 16, gap: 14 } });

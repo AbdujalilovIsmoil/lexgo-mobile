@@ -1,4 +1,4 @@
-export { http, httpRaw, bindAuth, accessToken, type HttpInit } from "./http";
+export { http, httpText, httpRaw, bindAuth, accessToken, type HttpInit } from "./http";
 export { onRoundTrip, onReached } from "./roundTrip";
 export {
   ApiError,

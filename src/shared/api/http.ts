@@ -51,8 +51,8 @@ const demoed = (path: string, init: HttpInit): unknown => (demoOn() && (!init.me
 
 export const http = <T = unknown>(path: string, init: HttpInit = {}): Promise<T> => { const d = demoed(path, init); return d !== undefined ? Promise.resolve(d as T) : shareGet(path, init, getToken() ?? "", () => send<T>(path, init)); };
 
-// JSON request with bearer auth and one transparent token refresh on 401.
-async function send<T>(path: string, init: HttpInit): Promise<T> {
+// A request with bearer auth and one transparent token refresh on 401; the body comes back as text.
+async function sendText(path: string, init: HttpInit): Promise<string> {
   let res = await run(path, init, getToken());
   if (res.status === 401 && init.auth !== false && getToken()) {
     const fresh = await refreshOnce();
@@ -62,10 +62,18 @@ async function send<T>(path: string, init: HttpInit): Promise<T> {
     const body = await res.json().catch(() => ({}));
     throw parseErrorBody(res.status, body, res.headers.get("Retry-After"));
   }
-  if (res.status === 204) return undefined as T;
-  const text = await res.text();
+  return res.status === 204 ? "" : await res.text();
+}
+
+// JSON request with bearer auth and one transparent token refresh on 401.
+async function send<T>(path: string, init: HttpInit): Promise<T> {
+  const text = await sendText(path, init);
   return (text ? JSON.parse(text) : undefined) as T;
 }
+
+// The same request, answered as raw text and NOT parsed: for a huge JSON (the template catalogue, ≈9 MB) whose parsing the caller moves off the
+// JS thread — parsing it here froze every touch for a second or more.
+export const httpText = (path: string, init: HttpInit = {}): Promise<string> => shareGet(path, { ...init, raw: false }, `${getToken() ?? ""}|text`, () => sendText(path, init));
 
 // Raw variant for endpoints that use non-2xx statuses as data (login 428).
 export async function httpRaw(path: string, init: HttpInit = {}): Promise<{ status: number; body: unknown }> {
