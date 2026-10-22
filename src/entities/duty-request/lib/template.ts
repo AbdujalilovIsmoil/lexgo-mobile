@@ -33,6 +33,7 @@ registerSessionReset(() => asked.clear());
 export const ctorPromptFor = (r: Pick<DutyResult, "docId" | "created" | "ctor">): DutyCtor | null =>
   r.created && r.docId && r.ctor && r.ctor.available && r.ctor.promptRequired && !asked.has(r.docId) ? r.ctor : null;
 export const markCtorAsked = (docId: string): void => void asked.add(docId);
+export const wasCtorAsked = (docId: string): boolean => asked.has(docId); // My Documents asks the same question: not twice for one request
 export const resetCtorAsked = (): void => asked.clear(); // tests
 
 // Document requests started in this session for a template (by user and template), so a retry after an unknown outcome never creates a second one.

@@ -2,6 +2,7 @@ import { useState } from "react";
 import { registerSessionReset } from "@/shared/lib/sessionReset";
 import { useT } from "@/shared/i18n";
 import type { MyDoc } from "@/entities/my-document";
+import { wasCtorAsked } from "@/entities/duty-request";
 
 // "Your work went to the duty advocate — will you also fill it in yourself?" Asked once per
 // request (the backend keeps prompt_required true for the whole hold), "no" just waits.
@@ -14,7 +15,7 @@ export function useCtorPrompt(doc: MyDoc | undefined) {
   const [closed, setClosed] = useState("");
   const id = doc?.id ?? "";
   const ctor = doc?.ctor;
-  const ask = !!id && !!ctor && ctor.available && ctor.promptRequired && !asked.has(id) && closed !== id;
+  const ask = !!id && !!ctor && ctor.available && ctor.promptRequired && !asked.has(id) && !wasCtorAsked(id) && closed !== id;
   const close = () => { asked.add(id); setClosed(id); };
   return { visible: ask, close, title: ctor?.title || t("dm3.ctorTitle"), message: ctor?.message || t("dm3.ctorText") };
 }
