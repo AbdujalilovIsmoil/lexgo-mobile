@@ -1,4 +1,4 @@
-import { categoryKey } from "@/entities/doc-template";
+import { categoryKey } from "@/entities/doc-template/lib/match"; // the pure helper itself: the entity index pulls in native modules
 import { humanizeSlug } from "@/shared/lib/format";
 
 type T = (key: string, vars?: Record<string, string | number>) => string;
