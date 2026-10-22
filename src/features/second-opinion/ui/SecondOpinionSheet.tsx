@@ -9,7 +9,7 @@ import { useT } from "@/shared/i18n";
 import type { MarketOrder } from "@/entities/order";
 import { detailHref } from "@/entities/urgent/model/hrefs";
 import {
-  addDirection, canQuote, clampCount, soErrorKind, soKeys, toggleDirection, trackPromo, useHidePromotion, useSoCreate, useSoOptions, useSoQuote,
+  addDirection, canQuote, clampCount, promotionSessionId, soErrorKind, useOriginStore, soKeys, toggleDirection, trackPromo, useHidePromotion, useSoCreate, useSoOptions, useSoQuote,
   type Promotion, type SoChannel, type SoErrorKind, type SoQuote,
 } from "@/entities/second-opinion";
 
@@ -78,6 +78,7 @@ export function SecondOpinionSheet({ visible, onClose, order, promo }: Props) {
     createM.mutate([quote.requestUrl, quote.requestPayload, need], {
       onSuccess: (r) => {
         void trackPromo(promo, "request_created");
+        if (r.id) useOriginStore.getState().put(r.id, { orderId: order.id, eventUrl: promo.eventUrl, placement: promo.placement, session: promotionSessionId() });
         void qc.invalidateQueries({ queryKey: ["market-orders"] });
         void qc.invalidateQueries({ queryKey: ["urgent"] });
         toast(t("so1.sent"), "ok");

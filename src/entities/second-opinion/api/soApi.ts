@@ -21,8 +21,8 @@ export async function fetchPromotion(url: string, placement: Placement | "auto" 
 }
 
 // POST …/second-opinion-promotion/events. Analytics never break the screen: a failure is reported to the caller as `false`.
-export async function postPromoEvent(p: { eventUrl: string; orderId: string; placement: Placement }, event: PromoEventName, metadata: Record<string, unknown>): Promise<boolean> {
-  const session = promotionSessionId();
+export async function postPromoEvent(p: { eventUrl: string; orderId: string; placement: Placement; session?: string }, event: PromoEventName, metadata: Record<string, unknown>): Promise<boolean> {
+  const session = p.session || promotionSessionId(); // `purchased` comes later: it carries the session that started the request
   try {
     await http(p.eventUrl, { method: "POST", body: { event, placement: p.placement, session_id: session, idempotency_key: eventKey(p.orderId, p.placement, session, event), metadata } });
     return true;

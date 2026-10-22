@@ -1,6 +1,8 @@
+import { useMemo } from "react";
 import { RefreshControl, ScrollView } from "react-native";
 import { AdminPage, QueryBoundary } from "@/shared/ui/admin";
 import { useRequest, useUrgentLabels, type Scope } from "@/entities/urgent";
+import { useSecondOpinionPurchased } from "@/entities/second-opinion";
 import { useInsets } from "@/shared/lib/insets";
 import { useT } from "@/shared/i18n";
 import { RequestDetail } from "./RequestDetail";
@@ -15,6 +17,8 @@ export function DetailScreen({ id, scope, pool }: Props) {
   const insets = useInsets();
   const q = useRequest(id, scope === "cc" || pool ? "cc" : "me");
   const req = q.data;
+  const own = useMemo(() => (req && scope === "client" ? [req] : []), [req, scope]);
+  useSecondOpinionPurchased(own); // a request born from the group second opinion: `purchased` once it shows as paid
   return (
     <AdminPage title={req ? label.kind(req.serviceKind, req.serviceTitle) : t("ug1.title")} subtitle={req?.workId}>
       <ScrollView

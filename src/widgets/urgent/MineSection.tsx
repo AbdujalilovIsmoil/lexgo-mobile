@@ -1,6 +1,7 @@
 import { StyleSheet, View } from "react-native";
 import { useRouter } from "expo-router";
 import { ClientRow, detailHref, useMine, useUrgentFlash } from "@/entities/urgent";
+import { useSecondOpinionPurchased } from "@/entities/second-opinion";
 import { EmptyState, ErrorView, Icon, PressableScale, Skeleton, Text } from "@/shared/ui";
 import { useColors } from "@/shared/theme";
 import { useT } from "@/shared/i18n";
@@ -15,6 +16,7 @@ export function MineSection() {
   const q = useMine();
   const fresh = useUrgentFlash((f) => f.fresh);
   const rows = q.data ?? [];
+  useSecondOpinionPurchased(rows);
   return (
     <View style={s.col}>
       <View style={s.head}>
