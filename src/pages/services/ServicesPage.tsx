@@ -6,9 +6,9 @@ import { useOfferedServiceIds } from "@/entities/lawyer";
 import { useResponseNote } from "@/entities/response-window";
 import type { Service } from "@/entities/service";
 import { useTemplateDownload } from "@/features/service-open";
-import { PreSellerBanner } from "@/widgets/services-catalog";
+import { CatalogActions, PreSellerBanner } from "@/widgets/services-catalog";
 import { DocCatalog } from "@/widgets/doc-catalog";
-import { MoreWays, ServicesHub, useServicesHub } from "@/widgets/services-hub";
+import { MoreWays, NewDocOrder, ServicesHub, useServicesHub } from "@/widgets/services-hub";
 import { TabPage, useTabPad, TabScrollView } from "@/widgets/tab-page";
 import { useColors } from "@/shared/theme";
 import { useT } from "@/shared/i18n";
@@ -33,7 +33,7 @@ export function ServicesPage() {
   if (pre) return <AdvocateServices pre={pre} onClear={() => setPre(null)} onOrder={setOrder} onNewDoc={() => setNewDoc(true)} sheets={sheets} />;
   return (
     <TabPage title={t("dcat.title")} subtitle={t("dcat.lead")}>
-      <DocCatalog footer={<MoreWays onNewDoc={() => setNewDoc(true)} />} />
+      <DocCatalog top={<CatalogActions />} footer={<NewDocOrder onNewDoc={() => setNewDoc(true)} />} />
       {sheets}
     </TabPage>
   );

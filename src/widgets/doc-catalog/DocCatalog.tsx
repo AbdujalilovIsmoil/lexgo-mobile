@@ -18,9 +18,8 @@ const SEARCH = { kind: "search" } as const;
 type Item = typeof SEARCH | DocTemplate;
 
 // The ready-documents catalogue (README): the page IS the catalogue — search pinned on top, a category / language sheet, the documents ten
-// at a time, and an explained state for loading, an empty category, no search match, an error and being offline. `footer` (the other ways
-// in) closes the list. The search field is the list's first row, kept on screen by `stickyHeaderIndices`.
-export function DocCatalog({ footer, onOpen }: { footer?: ReactElement | null; onOpen?: (t: DocTemplate) => void }) {
+// at a time, and an explained state for loading, an empty category, no search match, an error and being offline. `top` (the AI-intake and urgent-advocate cards) sits above the search, `footer` closes the list. The search field is the list's first row, kept on screen by `stickyHeaderIndices`.
+export function DocCatalog({ top: cards, footer, onOpen }: { top?: ReactElement | null; footer?: ReactElement | null; onOpen?: (t: DocTemplate) => void }) {
   const { t } = useT();
   const router = useRouter();
   const top = useTabHeader(16);
@@ -84,7 +83,7 @@ export function DocCatalog({ footer, onOpen }: { footer?: ReactElement | null; o
         data={[SEARCH, ...(list.loading || list.error ? [] : shown)]}
         keyExtractor={(x) => ("kind" in x ? "search" : x.id)}
         stickyHeaderIndices={[1]}
-        ListHeaderComponent={<>{top}</>}
+        ListHeaderComponent={<>{top}{cards ? <View style={s.cards}>{cards}</View> : null}</>}
         ListFooterComponent={foot}
         ItemSeparatorComponent={Sep}
         contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: clearance }}
@@ -106,6 +105,7 @@ export function DocCatalog({ footer, onOpen }: { footer?: ReactElement | null; o
 
 const Sep = () => <View style={s.gap} />;
 const s = StyleSheet.create({
+  cards: { paddingTop: 4, paddingBottom: 8 },
   skeletons: { gap: 10, alignSelf: "stretch" },
   gap: { height: 10 },
   foot: { alignItems: "center", gap: 10, paddingTop: 16 },

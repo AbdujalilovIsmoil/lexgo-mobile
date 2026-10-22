@@ -1,3 +1,3 @@
 export { ServicesHub } from "./ServicesHub";
-export { MoreWays } from "./MoreWays";
+export { MoreWays, NewDocOrder } from "./MoreWays";
 export { useServicesHub } from "./useServicesHub";
