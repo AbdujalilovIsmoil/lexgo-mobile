@@ -55,7 +55,7 @@ export function InboxFilterSheet({ visible, onClose, options, value, onChange, t
             </View>
           ) : null}
         </SheetScroll>
-        <View style={[s.bar, { borderTopColor: c.line, paddingBottom: insets.bottom + 14 }]}>
+        <View style={[s.bar, { borderTopColor: c.line, paddingBottom: Math.max(insets.bottom - 14, 12) }]}>
           <IconButton icon="rotate-ccw" size={48} label={t("dm1.reset")} onPress={() => onChange("all")} />
           <Button title={`${t("dm11.fShow")} · ${total}`} variant="gradient" full style={s.flex} onPress={onClose} />
         </View>
@@ -74,6 +74,6 @@ const s = StyleSheet.create({
   row: { flexDirection: "row", alignItems: "center", gap: 12, minHeight: 50, paddingHorizontal: 12, borderRadius: 14, borderWidth: 1.5 },
   dot: { width: 10, height: 10, borderRadius: 5 },
   radio: { width: 22, height: 22, borderRadius: 11, borderWidth: 2, alignItems: "center", justifyContent: "center" },
-  bar: { flexDirection: "row", alignItems: "center", gap: 12, paddingTop: 14, paddingHorizontal: 20, borderTopWidth: 1 },
+  bar: { flexDirection: "row", alignItems: "center", gap: 12, paddingTop: 12, paddingHorizontal: 20, borderTopWidth: 1 },
   flex: { flex: 1 },
 });
