@@ -61,7 +61,7 @@ export function AiMark({ size, calm = false }: Props) {
         <Circle c={pulse} r={15} color="white" opacity={pulseOn} />
       </Group>
     </Canvas>
-    <AiCore3D size={size * 0.26} t={t} calm={calm} />
+    <AiCore3D size={size * 0.6} t={t} calm={calm} />
     </View>
   );
 }

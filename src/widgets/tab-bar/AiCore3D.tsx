@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import { PixelRatio, StyleSheet } from "react-native";
+import { StyleSheet } from "react-native";
 import { requireOptionalNativeModule } from "expo";
 import type { ExpoWebGLRenderingContext } from "expo-gl";
 import * as THREE from "three";
@@ -24,15 +24,14 @@ function loadGL(): GL | null {
 
 const clamp = (v: number) => { "worklet"; return Math.min(1, Math.max(0, v)); };
 
-// The three.js part of the AI mark: a small glass crystal (an icosahedron — white edges over faint additive faces) turning slowly in the
-// core of the neuron spark. It is drawn on a transparent GL surface above the Skia canvas, appears with the core and fades with the
+// The three.js part of the AI mark: a lit 3D gem (a stretched bipyramid with a ring and orbiting points) turning in front of the neuron web. It is drawn on a transparent GL surface above the Skia canvas, appears with the core and fades with the
 // mark. `t` is the mark's timeline. `calm` renders one still frame.
 export function AiCore3D({ size, t, calm = false }: Props) {
   const stop = useRef<(() => void) | null>(null);
   useEffect(() => () => stop.current?.(), []);
 
   const style = useAnimatedStyle(() => {
-    const p = clamp((t.value - 0.26) / 0.06) * (1 - clamp((t.value - 0.9) / 0.08));
+    const p = clamp((t.value - 0.2) / 0.08) * (1 - clamp((t.value - 0.9) / 0.08));
     return { opacity: p, transform: [{ scale: 0.6 + 0.4 * p }] };
   });
 
@@ -56,19 +55,35 @@ export function AiCore3D({ size, t, calm = false }: Props) {
     renderer.setClearColor(0x000000, 0);
 
     const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(36, 1, 0.1, 10);
-    camera.position.z = 3.2;
-    const crystal = new THREE.Group();
-    const geo = new THREE.IcosahedronGeometry(1, 0);
-    crystal.add(new THREE.LineSegments(new THREE.EdgesGeometry(geo), new THREE.LineBasicMaterial({ color: 0xffffff })));
-    crystal.add(new THREE.Mesh(geo, new THREE.MeshBasicMaterial({ color: 0x9fe8ff, transparent: true, opacity: 0.22, blending: THREE.AdditiveBlending, depthWrite: false })));
-    const inner = new THREE.Mesh(new THREE.OctahedronGeometry(0.42), new THREE.MeshBasicMaterial({ color: 0xffffff }));
-    crystal.add(inner);
-    scene.add(crystal);
+    const camera = new THREE.PerspectiveCamera(34, 1, 0.1, 12);
+    camera.position.z = 5;
+    // a lit 3D gem — a stretched bipyramid with flat facets that flash as it turns — with a ring tilted around it and a few points
+    // orbiting: the neuron mark's spark, now in space.
+    const spark = new THREE.Group();
+    const geo = new THREE.OctahedronGeometry(1, 0);
+    geo.scale(0.8, 1.25, 0.8);
+    spark.add(new THREE.Mesh(geo, new THREE.MeshPhongMaterial({ color: 0xd6f2ff, emissive: 0x1b63d8, specular: 0xffffff, shininess: 110, flatShading: true, transparent: true, opacity: 0.93 })));
+    spark.add(new THREE.LineSegments(new THREE.EdgesGeometry(geo), new THREE.LineBasicMaterial({ color: 0xffffff })));
+    const ring = new THREE.Mesh(new THREE.TorusGeometry(1.3, 0.022, 8, 80), new THREE.MeshBasicMaterial({ color: 0xffffff }));
+    const bead = new THREE.SphereGeometry(0.075, 12, 12);
+    const beadMat = new THREE.MeshBasicMaterial({ color: 0xffffff });
+    const dots = new THREE.Group();
+    for (let i = 0; i < 8; i++) {
+      const m = new THREE.Mesh(bead, beadMat);
+      m.position.set(Math.cos((i / 8) * Math.PI * 2) * 1.3, 0, Math.sin((i / 8) * Math.PI * 2) * 1.3);
+      dots.add(m);
+    }
+    const orbit = new THREE.Group();
+    orbit.add(ring, dots);
+    scene.add(spark, orbit, new THREE.AmbientLight(0x7fbfff, 0.9));
+    const sun = new THREE.DirectionalLight(0xffffff, 2.2);
+    sun.position.set(2.5, 3, 4);
+    scene.add(sun);
 
     const draw = (time: number) => {
-      crystal.rotation.set(0.45 + time * 0.0004, time * 0.0009, 0.2);
-      inner.rotation.set(time * 0.0012, -time * 0.0007, 0);
+      spark.rotation.set(0.28, time * 0.0017, 0);
+      orbit.rotation.set(1.15, 0.35, time * 0.0011);
+      dots.rotation.y = time * 0.0022;
       renderer.render(scene, camera);
       gl.endFrameEXP();
     };
@@ -82,14 +97,14 @@ export function AiCore3D({ size, t, calm = false }: Props) {
       draw(time);
     };
     raf = requestAnimationFrame(loop);
-    stop.current = () => { alive = false; cancelAnimationFrame(raf); renderer.dispose(); geo.dispose(); };
+    stop.current = () => { alive = false; cancelAnimationFrame(raf); renderer.dispose(); geo.dispose(); ring.geometry.dispose(); bead.dispose(); };
   };
 
   const GL = loadGL();
   if (!GL) return null;
   return (
     <Animated.View pointerEvents="none" style={[s.wrap, { width: size, height: size, left: "50%", top: "50%", marginLeft: -size / 2, marginTop: -size / 2 }, style]}>
-      <GL.GLView style={{ width: size, height: size }} onContextCreate={onContext} msaaSamples={PixelRatio.get() > 2 ? 0 : 4} />
+      <GL.GLView style={{ width: size, height: size }} onContextCreate={onContext} msaaSamples={4} />
     </Animated.View>
   );
 }
