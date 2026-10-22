@@ -18,12 +18,13 @@ const SF: Record<string, string> = {
   headphones: "headphones", video: "video.fill", "bar-chart-2": "chart.bar.fill", sliders: "slider.horizontal.3", bell: "bell.fill", user: "person.fill",
 };
 
-// The AI tab: a coloured glass sphere (aurora under a glass lens, "AI" mark) that lights up with the brand gradient while the tab is open.
+// The AI tab: a flat disc in the brand gradient with a white four-point spark — the one filled, coloured item in the row, so it stands apart
+// from the symbol tabs; the selected state is a touch deeper with a white ring.
 installTabReach();
 
-const AI_PEARL = { default: require("../../../assets/tabs/ai-glass.png"), selected: require("../../../assets/tabs/ai-glass-on.png") };
+const AI_DISC = { default: require("../../../assets/tabs/ai-glass.png"), selected: require("../../../assets/tabs/ai-glass-on.png") };
 // On the light bar the bead takes a blue spark and a deeper rim so it reads (the lit state is the same).
-const AI_PEARL_LIGHT = { default: require("../../../assets/tabs/ai-glass-light.png"), selected: require("../../../assets/tabs/ai-glass-on.png") };
+const AI_DISC_LIGHT = { default: require("../../../assets/tabs/ai-glass-light.png"), selected: require("../../../assets/tabs/ai-glass-on.png") };
 
 // The system tab bar (UITabBar): Liquid Glass on iOS 26 with no custom drawing. Every route is declared, in the role's order first;
 // the ones outside the role or not allowed right now are hidden. `bar` is false on screens that ask for no bar (the AI chat).
@@ -55,8 +56,8 @@ export function NativeTabsBar({ bar }: { bar: boolean }) {
             disabled={guard} // a visitor's tap on a personal tab never switches it: the (still emitted) press sends them to sign in
             listeners={guard ? { tabPress: () => router.push("/auth/login") } : undefined}
           >
-            {def.center ? <NativeTabs.Trigger.Icon src={dark ? AI_PEARL : AI_PEARL_LIGHT} renderingMode="original" /> : <NativeTabs.Trigger.Icon sf={SF[def.icon] as never} />}
-            <NativeTabs.Trigger.Label hidden={def.center}>{t(def.labelKey)}</NativeTabs.Trigger.Label>
+            {def.center ? <NativeTabs.Trigger.Icon src={dark ? AI_DISC : AI_DISC_LIGHT} renderingMode="original" /> : <NativeTabs.Trigger.Icon sf={SF[def.icon] as never} />}
+            <NativeTabs.Trigger.Label>{t(def.labelKey)}</NativeTabs.Trigger.Label>
             {n ? <NativeTabs.Trigger.Badge>{n > 99 ? "99+" : String(n)}</NativeTabs.Trigger.Badge> : null}
           </NativeTabs.Trigger>
         );
