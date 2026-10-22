@@ -3,6 +3,7 @@ import { ApiError } from "@/shared/api";
 import { useT } from "@/shared/i18n";
 import { cleanSourcePath, getDocSchema, getTemplateMeta, previewDoc } from "../api/docFormApi";
 import { renderTemplate } from "../api/templateRenderApi";
+import type { FillSource } from "./fillSource";
 
 export const docFormKeys = {
   schema: (id: string, locale: string) => ["doc-schema", id, locale] as const,
@@ -49,5 +50,17 @@ export function useTemplateRender(templateId: string) {
     enabled: !!templateId,
     staleTime: 10 * 60 * 1000,
     retry: 1,
+  });
+}
+
+// Server preview of a fill source (a service or a document request); same refetch-on-change behaviour as `usePreview`.
+export function usePreviewOf(source: FillSource, answers: Record<string, string>, enabled: boolean) {
+  const body = JSON.stringify(answers);
+  return useQuery({
+    queryKey: docFormKeys.preview(source.previewKey, body),
+    queryFn: () => source.preview(answers),
+    enabled,
+    placeholderData: keepPreviousData,
+    staleTime: 30 * 1000,
   });
 }

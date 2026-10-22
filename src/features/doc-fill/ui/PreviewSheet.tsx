@@ -1,15 +1,15 @@
 import { View } from "react-native";
-import { usePreview, PreviewText } from "@/entities/doc-form";
+import { usePreviewOf, PreviewText, type FillSource } from "@/entities/doc-form";
 import { BottomSheet, EmptyState, ErrorView, SheetScroll, Skeleton, Text } from "@/shared/ui";
 import { ProgressBar } from "@/shared/ui/charts";
 import { useT } from "@/shared/i18n";
 
-type Props = { visible: boolean; onClose: () => void; serviceId: string; wire: Record<string, string> };
+type Props = { visible: boolean; onClose: () => void; source: FillSource; wire: Record<string, string> };
 
 // "How does it look so far": the server fills the template with the current answers.
-export function PreviewSheet({ visible, onClose, serviceId, wire }: Props) {
+export function PreviewSheet({ visible, onClose, source, wire }: Props) {
   const { t } = useT();
-  const q = usePreview(serviceId, wire, visible);
+  const q = usePreviewOf(source, wire, visible);
   return (
     <BottomSheet visible={visible} onClose={onClose} title={t("dc4.previewTitle")} subtitle={t("dc4.previewSub")} snaps={[0.7, 0.94]}>
       <SheetScroll>

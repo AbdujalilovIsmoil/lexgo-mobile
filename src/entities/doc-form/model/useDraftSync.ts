@@ -13,12 +13,12 @@ export function useDraftSync(key: string, snap: Snapshot) {
   useEffect(() => {
     latest.current = snap;
   });
-  const { answers, step, need } = snap;
+  const { answers, step, need, requestId } = snap;
   useEffect(() => {
     if (done.current) return;
-    const id = setTimeout(() => save(key, { answers, step, need }), 600);
+    const id = setTimeout(() => save(key, { answers, step, need, requestId }), 600);
     return () => clearTimeout(id);
-  }, [key, answers, step, need, save]);
+  }, [key, answers, step, need, requestId, save]);
   useEffect(
     () => () => {
       if (!done.current) save(key, latest.current);

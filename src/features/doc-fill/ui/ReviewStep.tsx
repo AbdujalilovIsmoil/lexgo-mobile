@@ -1,15 +1,15 @@
 import { View } from "react-native";
-import { PreviewText, ReviewSummary, usePreview, type DocAnswers, type DocSchema, type Problem } from "@/entities/doc-form";
+import { PreviewText, ReviewSummary, usePreviewOf, type DocAnswers, type DocSchema, type FillSource, type Problem } from "@/entities/doc-form";
 import { Skeleton, Text } from "@/shared/ui";
 import { ProgressBar } from "@/shared/ui/charts";
 import { useT } from "@/shared/i18n";
 
-type Props = { schema: DocSchema; serviceId: string; answers: DocAnswers; wire: Record<string, string>; problems: Problem[]; onFix: (section: number) => void };
+type Props = { schema: DocSchema; source: FillSource; answers: DocAnswers; wire: Record<string, string>; problems: Problem[]; onFix: (section: number) => void };
 
 // Last step: unanswered fields first, the entered values, then the server's preview.
-export function ReviewStep({ schema, serviceId, answers, wire, problems, onFix }: Props) {
+export function ReviewStep({ schema, source, answers, wire, problems, onFix }: Props) {
   const { t } = useT();
-  const q = usePreview(serviceId, wire, true);
+  const q = usePreviewOf(source, wire, true);
   return (
     <View style={{ gap: 14 }}>
       <Text variant="h3">{t("dc2.reviewTitle")}</Text>

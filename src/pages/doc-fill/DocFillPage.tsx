@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { draftKey, useDocSchema, useDraftsReady, useDraftStore, type DocSchema } from "@/entities/doc-form";
+import { useMemo, useState } from "react";
+import { draftKey, serviceSource, useDocSchema, useDraftsReady, useDraftStore, type DocSchema } from "@/entities/doc-form";
 import { useSession } from "@/entities/session";
 import { FillFlow } from "@/features/doc-fill";
 import { FlowFailure, FlowLoading, LoginGate } from "@/widgets/doc-flow";
@@ -21,5 +21,6 @@ export function DocFillPage({ id }: { id: string }) {
 // Mounted once everything is loaded, so the draft is read exactly once.
 function Restored({ id, user, schema }: { id: string; user: string; schema: DocSchema }) {
   const [draft] = useState(() => useDraftStore.getState().drafts[draftKey(user, "manual", id)]);
-  return <FillFlow serviceId={id} userId={user} schema={schema} draft={draft} />;
+  const source = useMemo(() => serviceSource(id), [id]);
+  return <FillFlow source={source} userId={user} schema={schema} draft={draft} />;
 }

@@ -1,12 +1,12 @@
 import { View } from "react-native";
-import { SectionForm, SectionTabs, type DocSchema } from "@/entities/doc-form";
+import { SectionForm, SectionTabs, type DocSchema, type FillSource } from "@/entities/doc-form";
 import type { useDocFill } from "../model/useDocFill";
 import { ReviewStep } from "./ReviewStep";
 
-type Props = { f: ReturnType<typeof useDocFill>; schema: DocSchema; serviceId: string };
+type Props = { f: ReturnType<typeof useDocFill>; schema: DocSchema; source: FillSource };
 
 // Tabs + the current section (or the review) of the manual wizard.
-export function FillBody({ f, schema, serviceId }: Props) {
+export function FillBody({ f, schema, source }: Props) {
   const { wiz } = f;
   return (
     <>
@@ -14,7 +14,7 @@ export function FillBody({ f, schema, serviceId }: Props) {
         <SectionTabs sections={schema.sections} answers={f.answers} step={wiz.step} onStep={wiz.go} />
       </View>
       {wiz.review ? (
-        <ReviewStep schema={schema} serviceId={serviceId} answers={f.answers} wire={f.wire} problems={wiz.problems} onFix={wiz.jump} />
+        <ReviewStep schema={schema} source={source} answers={f.answers} wire={f.wire} problems={wiz.problems} onFix={wiz.jump} />
       ) : wiz.section ? (
         <SectionForm section={wiz.section} answers={f.answers} errorOf={wiz.errorOf} onChange={f.set} />
       ) : null}

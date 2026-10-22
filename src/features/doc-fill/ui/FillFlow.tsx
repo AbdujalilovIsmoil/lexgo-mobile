@@ -1,25 +1,27 @@
 import { useState } from "react";
 import { StyleSheet } from "react-native";
 import { useRouter } from "expo-router";
-import { ResultView, type Draft, type DocSchema } from "@/entities/doc-form";
+import { ResultView, type Draft, type DocSchema, type FillSource, type GeneratedDoc } from "@/entities/doc-form";
 import { IconButton, Screen, confirmDialog } from "@/shared/ui";
 import { AdminPage } from "@/shared/ui/admin";
 import { ManualDocPlanSheet } from "@/features/manual-doc-plan";
 import { useKeyboardOpen } from "@/shared/lib/doc/useKeyboardOpen";
 import { useT } from "@/shared/i18n";
+import { trackDoc } from "@/shared/analytics";
 import { useDocFill } from "../model/useDocFill";
 import { DraftBanner } from "./DraftBanner";
 import { FillBody } from "./FillBody";
 import { FillFooter } from "./FillFooter";
 import { PreviewSheet } from "./PreviewSheet";
+import { SaveStatus } from "./SaveStatus";
 
-type Props = { serviceId: string; userId: string; schema: DocSchema; draft?: Draft };
+type Props = { source: FillSource; userId: string; schema: DocSchema; draft?: Draft; initialDoc?: GeneratedDoc | null };
 
-// Manual document fill: section wizard → review → server-built file.
-export function FillFlow({ serviceId, userId, schema, draft }: Props) {
+// Manual document fill: section wizard → review → server-built file. Used for a catalogue service and for a template's document request.
+export function FillFlow({ source, userId, schema, draft, initialDoc }: Props) {
   const { t } = useT();
   const router = useRouter();
-  const f = useDocFill({ serviceId, userId, schema, draft });
+  const f = useDocFill({ source, userId, schema, draft, initialDoc });
   const kb = useKeyboardOpen();
   const [preview, setPreview] = useState(false);
   const [banner, setBanner] = useState(!!draft && Object.values(draft.answers).some(Boolean));
@@ -31,7 +33,7 @@ export function FillFlow({ serviceId, userId, schema, draft }: Props) {
   const right = f.doc ? undefined : (
     <>
       <IconButton icon="trash-2" size={40} onPress={askClear} label={t("dc2.draftClear")} />
-      <IconButton icon="eye" size={40} onPress={() => setPreview(true)} label={t("dc4.previewTitle")} />
+      <IconButton icon="eye" size={40} onPress={() => { setPreview(true); if (source.meta) trackDoc("document_preview_opened", { ...source.meta, mode: "self" }); }} label={t("dc4.previewTitle")} />
     </>
   );
   return (
@@ -42,11 +44,12 @@ export function FillFlow({ serviceId, userId, schema, draft }: Props) {
         ) : (
           <>
             {banner && draft ? <DraftBanner at={draft.at} onClear={() => { f.clear(); setBanner(false); }} onHide={() => setBanner(false)} /> : null}
-            <FillBody f={f} schema={schema} serviceId={serviceId} />
+            {source.save ? <SaveStatus state={f.saveState} onRetry={f.retrySave} /> : null}
+            <FillBody f={f} schema={schema} source={source} />
           </>
         )}
       </Screen>
-      <PreviewSheet visible={preview} onClose={() => setPreview(false)} serviceId={serviceId} wire={f.wire} />
+      <PreviewSheet visible={preview} onClose={() => setPreview(false)} source={source} wire={f.wire} />
       <ManualDocPlanSheet message={f.plan} onClose={f.closePlan} />
     </AdminPage>
   );

@@ -1,6 +1,9 @@
 // Ready legal documents — constructor of a template (no linked service).
 export const dcf = {
   dcf: {
-    title: "O'zim to'ldirish",
+    title: "Hujjatni o'zim to'ldiraman",
+    saving: "Saqlanmoqda…",
+    saved: "Saqlandi",
+    saveRetry: "Saqlanmadi — qayta urinish",
   },
 };

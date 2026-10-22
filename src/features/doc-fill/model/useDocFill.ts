@@ -1,34 +1,63 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { AppState } from "react-native";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import {
-  classify, draftKey, generateDoc, missingFromError, toWire, useDraftSync, useSectionWizard,
-  type Draft, type DocAnswers, type DocSchema, type GeneratedDoc,
+  Autosaver, classify, draftKey, missingFromError, toWire, useDraftSync, useSectionWizard,
+  type Draft, type DocAnswers, type DocSchema, type FillSource, type GeneratedDoc, type SaveState,
 } from "@/entities/doc-form";
+import { trackDoc } from "@/shared/analytics";
 import { toast } from "@/shared/ui";
 import { useT } from "@/shared/i18n";
 import { errorHaptic, successHaptic } from "@/shared/lib/haptics";
 
-type Args = { serviceId: string; userId: string; schema: DocSchema; draft?: Draft };
+type Args = { source: FillSource; userId: string; schema: DocSchema; draft?: Draft; initialDoc?: GeneratedDoc | null };
 
-// Manual fill (TZ 12): section wizard + local draft + server preview / generate.
-export function useDocFill({ serviceId, userId, schema, draft }: Args) {
+// Manual fill (TZ 12): section wizard + local draft + server preview / generate. The source says where the preview and the file come from
+// (a service, or a template's document request); a request source also gets the server autosave of the answers (Saving / Saved / Retry).
+export function useDocFill({ source, userId, schema, draft, initialDoc }: Args) {
   const { t } = useT();
   const qc = useQueryClient();
   const [answers, setAnswers] = useState<DocAnswers>(draft?.answers ?? {});
-  const [doc, setDoc] = useState<GeneratedDoc | null>(null);
+  const [doc, setDoc] = useState<GeneratedDoc | null>(initialDoc ?? null);
   const [plan, setPlan] = useState<string | null>(null);
   const wiz = useSectionWizard(schema.sections, answers, { strict: true, initial: draft?.step });
-  const sync = useDraftSync(draftKey(userId, "manual", serviceId), { answers, step: wiz.step });
+  const sync = useDraftSync(draftKey(userId, source.draftMode, source.draftId), { answers, step: wiz.step, requestId: source.requestId });
   const fields = useMemo(() => schema.sections.flatMap((s) => s.fields), [schema]);
   const wire = useMemo(() => toWire(fields, answers), [fields, answers]);
 
+  // Server autosave of the full answers: one save at a time, ~800 ms after the last change, once more on leaving and when the app is backgrounded.
+  const [saveState, setSaveState] = useState<SaveState>("idle");
+  const [saver] = useState(() => {
+    const save = source.save;
+    if (!save) return null;
+    const s = new Autosaver((json) => save(JSON.parse(json) as Record<string, string>), (st) => {
+      setSaveState(st);
+      if (st === "saved" && source.meta) trackDoc("document_constructor_saved", { ...source.meta, mode: "self" });
+    });
+    s.baseline(JSON.stringify(source.serverWire ?? {}));
+    return s;
+  });
+  const json = JSON.stringify(wire);
+  useEffect(() => { saver?.push(json); }, [saver, json]);
+  useEffect(() => () => void saver?.flush(), [saver]);
+  useEffect(() => {
+    if (!saver) return;
+    const sub = AppState.addEventListener("change", (s) => { if (s !== "active") void saver.flush(); });
+    return () => sub.remove();
+  }, [saver]);
+
   const gen = useMutation({
-    mutationFn: () => generateDoc(serviceId, wire),
+    mutationFn: () => {
+      if (source.meta) trackDoc("document_generation_requested", { ...source.meta, mode: "self" });
+      return source.generate(wire);
+    },
     onSuccess: (d) => {
+      saver?.stop(); // the document exists: nothing may write to the request after it
       sync.finish();
       setDoc(d);
       successHaptic();
       void qc.invalidateQueries({ queryKey: ["documents"] });
+      void qc.invalidateQueries({ queryKey: ["my-docs"] });
     },
     onError: (e) => {
       errorHaptic();
@@ -48,5 +77,5 @@ export function useDocFill({ serviceId, userId, schema, draft }: Args) {
     setAnswers({});
     wiz.go(0);
   };
-  return { answers, set, wiz, wire, doc, gen, plan, closePlan: () => setPlan(null), clear };
+  return { answers, set, wiz, wire, doc, gen, plan, closePlan: () => setPlan(null), clear, saveState, retrySave: () => void saver?.retry() };
 }

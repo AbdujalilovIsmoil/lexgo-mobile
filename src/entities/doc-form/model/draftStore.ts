@@ -4,8 +4,8 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { registerSessionReset } from "@/shared/lib/sessionReset";
 
 // Local draft of a document being filled (TZ 12): answers + position, kept per
-// user and service so a closed app or a failed call never loses typed text.
-export type Draft = { answers: Record<string, string>; step: number; need?: string; at: number };
+// user and service (or template) so a closed app or a failed call never loses typed text.
+export type Draft = { answers: Record<string, string>; step: number; need?: string; requestId?: string; at: number };
 
 type State = {
   drafts: Record<string, Draft>;
@@ -15,8 +15,9 @@ type State = {
 };
 
 const MAX = 30;
-export const draftKey = (userId: string, mode: "manual" | "ai", serviceId: string): string => `${userId}:${mode}:${serviceId}`;
-const hasText = (d: Omit<Draft, "at">) => Object.values(d.answers).some((v) => v.trim()) || !!d.need?.trim();
+// "tpl": a template with no linked service, filled through a document request (the draft keeps that request's id, so the same one is resumed).
+export const draftKey = (userId: string, mode: "manual" | "ai" | "tpl", id: string): string => `${userId}:${mode}:${id}`;
+const hasText = (d: Omit<Draft, "at">) => Object.values(d.answers).some((v) => v.trim()) || !!d.need?.trim() || !!d.requestId;
 
 export const useDraftStore = create<State>()(
   persist(
