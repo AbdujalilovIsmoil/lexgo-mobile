@@ -12,7 +12,7 @@ import { useTabClearance, useTabHeader } from "@/widgets/tab-page";
 import { CatalogFilterSheet } from "./CatalogFilterSheet";
 import { CatalogRow } from "./CatalogRow";
 import { CatalogSearch } from "./CatalogSearch";
-import { categoryLabel, languageLabel } from "./labels";
+import { boilerplate, categoryLabel, languageLabel } from "./labels";
 
 const SEARCH = { kind: "search" } as const;
 type Item = typeof SEARCH | DocTemplate;
@@ -33,6 +33,7 @@ export function DocCatalog({ top: cards, footer, onOpen }: { top?: ReactElement 
   const needle = useDebounced(text, 300);
   const info = useMemo(() => cats.data ?? [], [cats.data]);
   const languages = useMemo(() => [...new Set([...info.flatMap((c) => c.languages), ...list.rows.map((r) => r.language)].filter(Boolean))], [info, list.rows]);
+  const plain = useMemo(() => boilerplate(list.rows.map((r) => r.description.trim())), [list.rows]); // sentences many documents share
   const byLang = useMemo(() => (lang ? list.rows.filter((r) => r.language === lang) : list.rows), [list.rows, lang]);
   const rows = useMemo(() => matchTemplates(byLang, needle), [byLang, needle]);
   // The window of shown rows belongs to one (category, language, search): another one starts again at the first ten.
@@ -96,7 +97,7 @@ export function DocCatalog({ top: cards, footer, onOpen }: { top?: ReactElement 
         showsVerticalScrollIndicator={false}
         renderItem={({ item }) => "kind" in item
           ? <CatalogSearch value={text} onChange={setText} onFilters={() => setSheet(true)} active={active} chips={chips} line={line} />
-          : <CatalogRow item={item} cats={info} onOpen={() => open(item)} />}
+          : <CatalogRow item={item} cats={info} onOpen={() => open(item)} showLang={languages.length > 1} plain={plain} />}
       />
       <CatalogFilterSheet visible={sheet} onClose={() => setSheet(false)} cats={info} keys={list.keys} languages={languages} cat={cat} lang={lang} onCat={setCat} onLang={setLang} onReset={reset} total={rows.length} />
     </>

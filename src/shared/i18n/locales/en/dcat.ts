@@ -44,6 +44,7 @@ export const dcat = {
     fieldsN: "{n} fields",
     signInFirst: "Sign in to continue",
     pooled: "With the duty lawyers",
+    minutes: "≈ {n} min",
     lang: {
       "uz-cyrl": "Uzbek (Cyrillic)",
       "uz-latn": "Uzbek (Latin)",
