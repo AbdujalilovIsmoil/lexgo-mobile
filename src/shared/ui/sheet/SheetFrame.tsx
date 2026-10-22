@@ -1,4 +1,5 @@
-import { Modal, StyleSheet, View } from "react-native";
+import { Modal, Platform, StyleSheet, View } from "react-native";
+import { initialWindowMetrics, SafeAreaProvider } from "react-native-safe-area-context";
 import type { ReactNode } from "react";
 import { OverlayHost } from "../overlay/OverlayHost";
 
@@ -11,10 +12,12 @@ import { OverlayHost } from "../overlay/OverlayHost";
 // already follows Android Modal windows by itself; the Modal is edge-to-edge on both bars.
 export function SheetFrame({ native, onRequestClose, children }: { native: boolean; onRequestClose: () => void; children: ReactNode }) {
   if (!native) return <View style={StyleSheet.absoluteFill}>{children}</View>;
+  const body = <>{children}<OverlayHost /></>;
   return (
     <Modal transparent visible animationType="none" statusBarTranslucent navigationBarTranslucent onRequestClose={onRequestClose}>
-      {children}
-      <OverlayHost />
+      {/* iOS: a sheet opened from a tab page would otherwise inherit that page's bottom inset, which includes the tab bar (83pt instead of
+          the home indicator's 34) although the sheet covers the bar — its own provider reports the window's real insets. */}
+      {Platform.OS === "ios" ? <SafeAreaProvider initialMetrics={initialWindowMetrics}>{body}</SafeAreaProvider> : body}
     </Modal>
   );
 }

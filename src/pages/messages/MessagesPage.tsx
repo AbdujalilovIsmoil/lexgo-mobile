@@ -24,8 +24,9 @@ export function MessagesPage() {
   const router = useRouter();
   const myId = useSession()?.user.id ?? "";
   const insets = useInsets();
-  // Top edge of the tab bar (the iOS bar floats lower than the Android one): the list ends a little above it, the new-chat button sits on it.
-  const barTop = insets.bottom + (Platform.OS === "ios" ? 48 : 76);
+  // Top edge of the tab bar, from the screen's bottom. On iOS the system bar is part of the screen's safe area, so `insets.bottom` already
+  // reaches its top; the Android bar floats over the page. The list ends a little above it, the new-chat button sits on it.
+  const barTop = Platform.OS === "ios" ? insets.bottom : insets.bottom + 76;
   const pad = barTop + 16;
   const q = useRooms(useSocketState() === "online", myId);
   const staff = useAccess().staff;
