@@ -1,5 +1,4 @@
 import { useQueries } from "@tanstack/react-query";
-import { useIsAuthed } from "@/entities/session";
 import { listTemplates } from "../api/templateApi";
 import { TEMPLATE_CATEGORIES, type DocTemplate } from "../lib/match";
 
@@ -14,12 +13,11 @@ export type TemplatesState = {
   refetching: boolean;
 };
 
-// One request per branch, in parallel: the small ones (criminal, administrative) show up at once while the big ones (civil, economic ≈ 9 MB
+// The catalogue is public (the server lets everyone read it). One request per branch, in parallel: the small ones (criminal, administrative) show up at once while the big ones (civil, economic ≈ 9 MB
 // and 5 MB) are still downloading. A single branch asks only for itself.
 export function useTemplates(branch: Branch = "all"): TemplatesState {
-  const authed = useIsAuthed();
   const cats = branch === "all" ? [...TEMPLATE_CATEGORIES] : [branch];
-  const results = useQueries({ queries: TEMPLATE_CATEGORIES.map((c) => ({ queryKey: ["doc-templates", c], queryFn: () => listTemplates(c), enabled: authed && cats.includes(c), staleTime: 30 * 60 * 1000 })) });
+  const results = useQueries({ queries: TEMPLATE_CATEGORIES.map((c) => ({ queryKey: ["doc-templates", c], queryFn: () => listTemplates(c), enabled: cats.includes(c), staleTime: 30 * 60 * 1000 })) });
   const on = TEMPLATE_CATEGORIES.map((c, i) => ({ c, q: results[i] })).filter((x) => cats.includes(x.c));
   const counts = Object.fromEntries(TEMPLATE_CATEGORIES.map((c, i) => [c, results[i].data ? results[i].data!.length : null])) as TemplatesState["counts"];
   const rows = on.flatMap((x) => x.q.data ?? []);

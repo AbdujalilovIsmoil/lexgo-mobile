@@ -1,6 +1,7 @@
 import { ApiError } from "@/shared/api";
 import { latencyBucket, sizeBucket } from "./buckets";
-import { track } from "./client";
+import { Platform } from "react-native";
+import { track, type DocEventName } from "./client";
 
 /** Class of a failure without its message (messages can quote user data). */
 export function errorClass(e: unknown): string {
@@ -27,3 +28,6 @@ export const trackScreen = (screen: string): void => track("screen_view", { scre
 export const trackUpload = (flow: string, bytes: number): void => track("upload_size", { flow, size: sizeBucket(bytes) });
 export const trackCallQuality = (quality: string, kind: string): void => track("call_quality", { quality, kind });
 export const trackWsReconnect = (attempt: number): void => track("ws_reconnect", { attempt });
+
+/** A ready-documents event: category, language, mode and status are the only metadata (the scrubber drops ids and free text anyway). */
+export const trackDoc = (name: DocEventName, props?: { category?: string; language?: string; mode?: string; status?: string }): void => track(name, { platform: Platform.OS, ...props });

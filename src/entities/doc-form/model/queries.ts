@@ -2,6 +2,7 @@ import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { ApiError } from "@/shared/api";
 import { useT } from "@/shared/i18n";
 import { cleanSourcePath, getDocSchema, getTemplateMeta, previewDoc } from "../api/docFormApi";
+import { renderTemplate } from "../api/templateRenderApi";
 
 export const docFormKeys = {
   schema: (id: string, locale: string) => ["doc-schema", id, locale] as const,
@@ -38,3 +39,15 @@ export function usePreview(serviceId: string, answers: Record<string, string>, e
 }
 
 export { cleanSourcePath };
+
+// A template's server preview with no answers (the document as a reader sees it) and its section schema. Public, so a guest can read it.
+export function useTemplateRender(templateId: string) {
+  const { t, locale } = useT();
+  return useQuery({
+    queryKey: ["doc-template-render", templateId, locale] as const,
+    queryFn: () => renderTemplate(templateId, {}, t("dc2.extraSection")),
+    enabled: !!templateId,
+    staleTime: 10 * 60 * 1000,
+    retry: 1,
+  });
+}

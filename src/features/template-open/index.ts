@@ -1,0 +1,1 @@
+export { useCleanTemplate } from "./useCleanTemplate";

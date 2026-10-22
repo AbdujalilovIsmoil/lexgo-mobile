@@ -6,7 +6,13 @@ import { scrubProps } from "./scrub";
 export type AnalyticsName =
   | "screen_view" | "action_started" | "action_completed" | "action_failed" | "api_latency" | "ws_reconnect"
   | "call_quality" | "upload_size" | "funnel_step" | "deep_link_result" | "push_permission" | "local_alert"
-  | "outbox_flush" | "network_change";
+  | "outbox_flush" | "network_change"
+  | DocEventName;
+// Ready legal documents (README §24): never an answer, a file name, a voice URL or a message — only the kind of thing.
+export type DocEventName =
+  | "document_catalog_opened" | "document_template_searched" | "document_template_opened" | "document_constructor_started" | "document_constructor_saved"
+  | "document_preview_opened" | "document_generation_requested" | "document_clean_template_downloaded" | "document_lawyer_request_started"
+  | "document_lawyer_request_submitted" | "document_completed_file_downloaded";
 export type AnalyticsEvent = { t: number; name: AnalyticsName; props: Record<string, string | number | boolean> };
 export type Transport = (batch: AnalyticsEvent[]) => void | Promise<void>;
 

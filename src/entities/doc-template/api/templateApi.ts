@@ -5,11 +5,14 @@ import { safeUploadName } from "@/shared/lib/safeName";
 
 import type { DocTemplate } from "../lib/match";
 
+const noExt = (s: string) => s.replace(/\.[A-Za-z0-9]{1,8}$/, "").trim();
+
+// The document's name is its `title`; an empty one falls back to the source file's name without the extension — never the UUID.
 export function normTemplate(v: unknown): DocTemplate {
   const d = asDict(v);
   return {
     id: asStr(d.id),
-    name: asStr(d.title ?? d.name).trim(),
+    name: asStr(d.title ?? d.name).trim() || noExt(asStr(d.source_file_name)),
     category: asStr(d.category),
     language: asStr(d.language),
     description: asStr(d.description).trim(),
@@ -18,6 +21,7 @@ export function normTemplate(v: unknown): DocTemplate {
     price: asNum(d.price),
     updatedAt: asStr(d.updated_at ?? d.published_at),
     sourceFile: asStr(d.source_file_name),
+    hasSource: d.has_source_file === true || !!asStr(d.source_file_name),
   };
 }
 

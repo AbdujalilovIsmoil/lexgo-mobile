@@ -29,9 +29,12 @@ export async function submitDuty(i: DutyInput): Promise<DutyResult> {
   return normResult(await http(`/services/${id}/document-lawyer/request`, { method: "POST", body }));
 }
 
-// "Check my finished document": a document the client built, handed to the same pool.
-export async function requestReview(docId: string, need: string, requestedType?: string): Promise<DutyResult> {
+// "Check my finished document" / a template's request with no linked service: a document request already started (POST /document-requests)
+// handed to the same duty pool (POST …/lawyer-review, README §11.4). `pageCount` 0 and `urgency` "normal" are what the web sends by default.
+export async function requestReview(docId: string, need: string, requestedType?: string, extra?: { pageCount?: number; urgency?: string }): Promise<DutyResult> {
   const body: Record<string, unknown> = { need };
   if (requestedType) body.requested_document_type = requestedType;
+  if (extra?.pageCount !== undefined) body.page_count = extra.pageCount;
+  if (extra?.urgency) body.urgency = extra.urgency;
   return normResult(await http(`/document-requests/${encodeURIComponent(docId)}/lawyer-review`, { method: "POST", body }));
 }

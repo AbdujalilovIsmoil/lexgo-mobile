@@ -1,5 +1,5 @@
 export * from "./model/types";
-export { useDocSchema, useTemplateMeta, usePreview, docFormKeys, cleanSourcePath } from "./model/queries";
+export { useDocSchema, useTemplateMeta, usePreview, useTemplateRender, docFormKeys, cleanSourcePath } from "./model/queries";
 export { generateDoc, generateAiDoc, getAiQuestions, previewDoc, getDocSchema, type AiInput } from "./api/docFormApi";
 export { useSectionWizard, type Problem } from "./model/useSectionWizard";
 export { useDraftStore, draftKey, type Draft } from "./model/draftStore";
@@ -19,3 +19,4 @@ export { GeneratedCard } from "./ui/GeneratedCard";
 export { ResultView } from "./ui/ResultView";
 export { TemplateButton } from "./ui/TemplateButton";
 export { classify, type Failure } from "./lib/classify";
+export { renderTemplate } from "./api/templateRenderApi";

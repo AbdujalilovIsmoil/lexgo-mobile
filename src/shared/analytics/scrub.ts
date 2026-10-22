@@ -3,7 +3,7 @@
 // spaces, no digits-only runs, no e-mail, URL, UUID or JWT shape. Everything else is dropped.
 export const ALLOWED_PROPS: ReadonlySet<string> = new Set([
   "screen", "action", "step", "flow", "result", "reason", "status", "kind", "event", "source", "target", "role",
-  "bucket", "latency", "size", "quality", "attempt", "count", "online", "platform", "channel", "category", "ok", "ms",
+  "bucket", "latency", "size", "quality", "attempt", "count", "online", "platform", "channel", "category", "ok", "ms", "language", "mode",
 ]);
 
 const TOKEN = /^[A-Za-z0-9_.:/\-[\]()]{1,48}$/;

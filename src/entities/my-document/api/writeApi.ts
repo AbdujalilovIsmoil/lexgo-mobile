@@ -6,6 +6,12 @@ import { normDoc } from "./normDoc";
 
 const base = (id: string) => `/document-requests/${encodeURIComponent(id)}`;
 
+// POST /document-requests — starts a document from a template (README §7.1). An empty questionnaire makes the backend use the template's own
+// fields, so they are never duplicated here. The returned id is the `document_request_id` of everything that follows.
+export async function createRequest(i: { templateId: string; title: string }): Promise<MyDoc> {
+  return normDoc(await http("/document-requests", { method: "POST", body: { template_id: i.templateId, document_type: "document", title: i.title, questionnaire: [], answers: {}, price: 0, currency: "UZS" } }));
+}
+
 export const saveAnswers = async (id: string, answers: Record<string, unknown>): Promise<MyDoc> => normDoc(await http(`${base(id)}/answers`, { method: "PUT", body: { answers } }));
 export const previewAnswers = async (id: string, answers: Record<string, unknown>): Promise<DocPreview> => normPreview(await http(`${base(id)}/preview`, { method: "POST", body: { answers } }));
 // 402 = not paid, 409 = nothing to build yet, 422 = required fields missing — the caller shows the server text.
