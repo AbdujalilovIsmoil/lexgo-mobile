@@ -22,7 +22,8 @@ const SF: Record<string, string> = {
 
 installTabReach();
 
-// The AI tab's slot in the system bar is left empty (a clear image, no caption): AiRaisedButton stands in it, rising above the bar.
+// The AI tab's slot in the system bar is left empty (a clear 8 pt image, no caption): AiRaisedButton stands in it, rising above the bar.
+// The slot must stay narrow: the bar sizes its items by content, and a wide slot squeezes the neighbours' captions into "Xiz…".
 const GAP: TabDef = { route: "gap", icon: "home", labelKey: "" };
 const AI_SLOT = require("../../../assets/tabs/ai-slot.png");
 
