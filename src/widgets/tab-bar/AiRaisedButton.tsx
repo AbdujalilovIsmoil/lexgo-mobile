@@ -15,6 +15,7 @@ type Props = { labelKey: string }; // the button's accessibility label
 const BAR_LIFT = 6; // bar bottom above the safe area
 const BAR_HEIGHT = 62;
 const SIZE = 64;
+const SHIFT = 12; // to the right: the bar's middle slot sits a little right of the screen centre (slot widths follow the captions)
 const RISE = 8; // how far the disc stands above the bar's top edge
 
 const ORB = require("../../../assets/tabs/ai-orb.png");
@@ -42,7 +43,7 @@ export function AiRaisedButton({ labelKey }: Props) {
         scale={0.92}
         accessibilityRole="button"
         accessibilityLabel={t(labelKey)}
-        style={[s.btn, { left: width / 2 - SIZE / 2, bottom }]}
+        style={[s.btn, { left: width / 2 - SIZE / 2 + SHIFT, bottom }]}
       >
         <Animated.View pointerEvents="none" style={[s.ring, { backgroundColor: c.accent }, ring]} />
         <Image source={ORB} style={s.orb} />
