@@ -23,7 +23,7 @@ export function InboxFilterSheet({ visible, onClose, options, value, onChange, t
   return (
     <BottomSheet visible={visible} onClose={onClose} title={t("dm11.filters")} snaps={[0.7, 0.92]}>
       <View style={s.fill}>
-        <SheetScroll>
+        <SheetScroll contentContainerStyle={s.scroll}>
           <View style={s.grid}>
             {top.map((o) => {
               const on = value === o.value;
@@ -55,7 +55,7 @@ export function InboxFilterSheet({ visible, onClose, options, value, onChange, t
             </View>
           ) : null}
         </SheetScroll>
-        <View style={[s.bar, { borderTopColor: c.line, paddingBottom: Math.max(insets.bottom - 14, 12) }]}>
+        <View style={[s.bar, { borderTopColor: c.line, paddingBottom: Math.max(insets.bottom - 18, 12) }]}>
           <IconButton icon="rotate-ccw" size={48} label={t("dm1.reset")} onPress={() => onChange("all")} />
           <Button title={`${t("dm11.fShow")} · ${total}`} variant="gradient" full style={s.flex} onPress={onClose} />
         </View>
@@ -66,6 +66,7 @@ export function InboxFilterSheet({ visible, onClose, options, value, onChange, t
 
 const s = StyleSheet.create({
   fill: { flex: 1 },
+  scroll: { paddingBottom: 12 }, // the pinned bar below already clears the home indicator
   grid: { flexDirection: "row", gap: 10 },
   card: { flex: 1, gap: 6, padding: 14, borderRadius: radius.rl, borderWidth: 1.5 },
   tile: { width: 40, height: 40, borderRadius: 20, alignItems: "center", justifyContent: "center" },

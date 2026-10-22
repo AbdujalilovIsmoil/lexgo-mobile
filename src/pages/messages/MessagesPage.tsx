@@ -26,7 +26,7 @@ export function MessagesPage() {
   const insets = useInsets();
   // Top edge of the tab bar (the iOS bar floats lower than the Android one): the list ends a little above it, the new-chat button sits on it.
   const barTop = insets.bottom + (Platform.OS === "ios" ? 48 : 76);
-  const pad = barTop + 40;
+  const pad = barTop + 16;
   const q = useRooms(useSocketState() === "online", myId);
   const staff = useAccess().staff;
   const locked = !useSellerActions().chat;
