@@ -29,8 +29,7 @@ export function NativeTabsBar({ bar }: { bar: boolean }) {
   const authed = useIsAuthed();
   const role = useTabRole();
   const badges = useBadgeStore((s) => s.badges);
-  // The AI tab leaves the row and becomes iOS 26's detached round glass button at the trailing edge (role "search"): last in the list.
-  const shown = [...useVisibleTabs()].sort((a, b) => Number(!!a.center) - Number(!!b.center));
+  const shown = useVisibleTabs();
   const barKey = shown.map((d) => d.route).join(",");
   useEffect(() => { setBarRoutes(barKey ? barKey.split(",") : []); }, [barKey]); // links to any other tab page open it as a stack screen
   const aurora = useAuroraStyle(); // every tab page sits on the aurora (the pages themselves are transparent)
@@ -44,7 +43,6 @@ export function NativeTabsBar({ bar }: { bar: boolean }) {
           <NativeTabs.Trigger
             key={`${role}-${def.route}`}
             name={def.route}
-            role={def.center ? "search" : undefined}
             contentStyle={AURORA ? aurora : undefined}
             disableAutomaticContentInsets
             disabled={guard} // a visitor's tap on a personal tab never switches it: the (still emitted) press sends them to sign in
