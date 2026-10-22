@@ -1,11 +1,12 @@
 import { useEffect } from "react";
-import { Image, StyleSheet, useWindowDimensions, View } from "react-native";
+import { StyleSheet, useWindowDimensions, View } from "react-native";
 import { useRouter } from "expo-router";
 import Animated, { Easing, useAnimatedStyle, useReducedMotion, useSharedValue, withDelay, withRepeat, withTiming } from "react-native-reanimated";
 import { PressableScale } from "@/shared/ui";
 import { selectHaptic } from "@/shared/lib/haptics";
 import { useInsets } from "@/shared/lib/insets";
 import { useColors } from "@/shared/theme";
+import { AiMark } from "./AiMark";
 import { useT } from "@/shared/i18n";
 
 type Props = { labelKey: string }; // the button's accessibility label
@@ -17,8 +18,6 @@ const BAR_HEIGHT = 62;
 const SIZE = 64;
 const SHIFT = 12; // to the right: the bar's middle slot sits a little right of the screen centre (slot widths follow the captions)
 const RISE = 8; // how far the disc stands above the bar's top edge
-
-const ORB = require("../../../assets/tabs/ai-orb.png");
 
 // iOS: the AI tab's slot in the system bar has no icon (no caption); this button stands over it, rising above the bar. A soft ring breathes out of it
 // every few seconds — the only motion, off with Reduce Motion.
@@ -46,7 +45,8 @@ export function AiRaisedButton({ labelKey }: Props) {
         style={[s.btn, { left: width / 2 - SIZE / 2 + SHIFT, bottom }]}
       >
         <Animated.View pointerEvents="none" style={[s.ring, { backgroundColor: c.accent }, ring]} />
-        <Image source={ORB} style={s.orb} />
+        <View style={s.orb} />
+        <View style={s.mark}><AiMark size={SIZE} calm={calm} /></View>
       </PressableScale>
     </View>
   );
@@ -55,5 +55,6 @@ export function AiRaisedButton({ labelKey }: Props) {
 const s = StyleSheet.create({
   btn: { position: "absolute", width: SIZE, height: SIZE, alignItems: "center", justifyContent: "center" },
   ring: { position: "absolute", width: SIZE - 6, height: SIZE - 6, borderRadius: SIZE / 2 },
-  orb: { width: SIZE, height: SIZE, shadowColor: "#1668F0", shadowOpacity: 0.28, shadowRadius: 12, shadowOffset: { width: 0, height: 5 } },
+  mark: { position: "absolute", width: SIZE, height: SIZE },
+  orb: { width: SIZE - 4, height: SIZE - 4, borderRadius: SIZE / 2, backgroundColor: "#1668F0", shadowColor: "#1668F0", shadowOpacity: 0.28, shadowRadius: 12, shadowOffset: { width: 0, height: 5 } },
 });
