@@ -3,7 +3,7 @@ import { Platform, StyleSheet, View } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { Text } from "@/shared/ui";
 import { useT } from "@/shared/i18n";
-import { circled, layoutDoc, slotCount, type Block, type Seg } from "../lib/docLayout";
+import { circled, isSignatureCell, layoutDoc, signatureCaption, slotCount, type Block, type Seg } from "../lib/docLayout";
 
 // The page: always a light sheet (like a printed document, in the dark theme too), ink-dark serif text, a second sheet peeking out below it for depth.
 const PAPER = "#FFFFFF";
@@ -51,7 +51,7 @@ export function DocPaper({ text, fade, large, slotTotal, kicker }: Props) {
   );
 }
 
-function Inline({ segs, size, line, bold, align }: { segs: Seg[]; size: number; line: number; bold?: boolean; align?: "left" | "center" | "justify" }) {
+function Inline({ segs, size, line, bold, align }: { segs: Seg[]; size: number; line: number; bold?: boolean; align?: "left" | "center" | "right" | "justify" }) {
   // A long field label opens ugly gaps in a justified line: only lines without a spot are justified.
   const a = align === "justify" && segs.some((g) => g.slot) ? "left" : align;
   return (
@@ -80,6 +80,26 @@ function Numbered({ segs, size, line }: { segs: Seg[]; size: number; line: numbe
 function BlockView({ b, size, line }: { b: Block; size: number; line: number }) {
   switch (b.kind) {
     case "gap": return <View style={{ height: Math.round(size * 0.65) }} />;
+    case "recipient":
+      // The block that heads an application: it stands on the right of the page, its lines read from the left.
+      return <View style={s.recipient}>{b.lines.map((l, i) => <Inline key={i} segs={l} size={size} line={line} />)}</View>;
+    case "subtitle": return <View style={s.subtitle}><Inline segs={b.segs} size={size - 1} line={Math.round((size - 1) * 1.5)} align="center" /></View>;
+    case "sign":
+      return (
+        <View style={s.sign}>
+          {b.cells.map((cell, i) => {
+            const last = i === b.cells.length - 1;
+            const align = i === 0 ? "flex-start" : last ? "flex-end" : "center";
+            return (
+              <View key={i} style={[s.cell, { alignItems: align }]}>
+                {isSignatureCell(cell) ? (
+                  <View style={s.sigLine}><View style={s.sigRule} /><Text style={s.sigCaption}>{signatureCaption(cell)}</Text></View>
+                ) : <Inline segs={cell} size={size - 1} line={Math.round((size - 1) * 1.5)} align={i === 0 ? "left" : last ? "right" : "center"} />}
+              </View>
+            );
+          })}
+        </View>
+      );
     case "title":
       return (
         <View style={s.title}>
@@ -117,6 +137,13 @@ const s = StyleSheet.create({
   brand: { fontSize: 9.5, letterSpacing: 2, color: BRAND, fontWeight: "800" },
   headRule: { height: 1, backgroundColor: RULE, marginTop: 8, marginBottom: 18 },
   text: { color: INK },
+  recipient: { alignSelf: "flex-end", width: "62%", gap: 2, paddingBottom: 18 },
+  subtitle: { paddingBottom: 12, paddingHorizontal: 8 },
+  sign: { flexDirection: "row", justifyContent: "space-between", alignItems: "flex-end", gap: 10, paddingTop: 10 },
+  cell: { flex: 1 },
+  sigLine: { alignSelf: "stretch", alignItems: "center", paddingTop: 18 },
+  sigRule: { alignSelf: "stretch", height: 1, backgroundColor: INK },
+  sigCaption: { fontSize: 10, color: SOFT, marginTop: 3, letterSpacing: 0.6 },
   title: { paddingBottom: 14, alignItems: "stretch" },
   ornament: { alignSelf: "center", width: 44, height: 3, borderRadius: 2, backgroundColor: BRAND, marginTop: 12 },
   heading: { paddingTop: 10, paddingBottom: 3 },
