@@ -36,6 +36,7 @@ export function normMarketOrder(v: unknown, clientActions: string[] = []): Marke
     requestedAt: asStr(details.requested_at) || asStr(d.created_at),
     paidAt: asStr(payment.status).toLowerCase() === "paid" ? asStr(payment.updated_at) : "",
     updatedAt: asStr(d.updated_at),
+    secondOpinionUrl: asStr(d.second_opinion_promotion_url) || asStr(asDict(d.actions).second_opinion_promotion),
     ...normOrderExtra(d, details),
   };
 }

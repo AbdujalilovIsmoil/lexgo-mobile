@@ -26,6 +26,7 @@ import { cpC } from "./cpC";
 import { cpD } from "./cpD";
 import { tzCsv } from "./tzCsv";
 import { tgp } from "./tgp";
+import { so1 } from "./so1";
 
 // Namespaces pre-registered per work package (see TZ_STATUS.md for owners).
 export const tzBundle = {
@@ -33,5 +34,5 @@ export const tzBundle = {
   ...tzAx, ...tzSp, ...tzDc, ...tzDm, ...tzAd,
   ...tzAw, ...tzSl, ...tzMk, ...tzUg, ...tzOg,
   ...tzPy, ...tzNt, ...tzCc, ...tzAg, ...rp, ccs, ...tzCx,
-  ...cpA, ...cpB, ...cpC, ...cpD, ...tzCsv, ...tgp,
+  ...cpA, ...cpB, ...cpC, ...cpD, ...tzCsv, ...tgp, ...so1,
 };

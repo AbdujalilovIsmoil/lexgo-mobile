@@ -46,6 +46,7 @@ export type MarketOrder = {
   ratingStars: number; // what the client gave (details.rating), 0 if nothing yet
   ratingComment: string;
   addPay: OrderAddPay | null;
+  secondOpinionUrl: string; // second_opinion_promotion_url / actions.second_opinion_promotion; "" (null) → the promotion is not rendered
 };
 
 // What POST …/purchase-request answers with.
