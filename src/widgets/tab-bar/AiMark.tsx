@@ -1,12 +1,14 @@
 import { useEffect, useMemo } from "react";
+import { View } from "react-native";
 import { BlurMask, Canvas, Circle, Group, LinearGradient, Path, Skia, vec } from "@shopify/react-native-skia";
+import { AiCore3D } from "./AiCore3D";
 import { Easing, useDerivedValue, useSharedValue, withRepeat, withTiming, type SharedValue } from "react-native-reanimated";
 
 type Props = { size: number; calm?: boolean };
 
 // The AI mark, drawn live on a Skia canvas: a constellation of neuron nodes joined into a four-point spark. Every cycle the links are
 // drawn node to node around the spark, the spokes reach the core, the nodes light up, the spark fills with a soft glow, and a pulse of
-// "thought" keeps running around the network until it fades and is drawn again. `calm` (Reduce Motion) shows it finished and still.
+// "thought" keeps running around the network until it fades and is drawn again. A small three.js crystal (AiCore3D) turns in the core. `calm` (Reduce Motion) shows it finished and still.
 // Coordinates are in a 552-unit square, scaled to `size`.
 const U = 552;
 const C = U / 2;
@@ -44,7 +46,8 @@ export function AiMark({ size, calm = false }: Props) {
   const pulseOn = useDerivedValue(() => clamp((t.value - 0.38) / 0.03) * fade.value);
   const k = size / U;
   return (
-    <Canvas style={{ width: size, height: size }} pointerEvents="none">
+    <View style={{ width: size, height: size }} pointerEvents="none">
+    <Canvas style={{ width: size, height: size }}>
       <Group transform={[{ scale: k }]}>
         <Circle cx={C} cy={C} r={C - 12}>
           <LinearGradient start={vec(120, 0)} end={vec(430, U)} colors={["#1668F0", "#00A6E6", "#00CFE8"]} positions={[0, 0.62, 1]} />
@@ -58,6 +61,8 @@ export function AiMark({ size, calm = false }: Props) {
         <Circle c={pulse} r={15} color="white" opacity={pulseOn} />
       </Group>
     </Canvas>
+    <AiCore3D size={size * 0.4} t={t} calm={calm} />
+    </View>
   );
 }
 
