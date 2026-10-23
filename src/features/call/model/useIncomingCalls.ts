@@ -11,15 +11,15 @@ import { callIdOf, isOver, MINE_DONE, NUDGE, parseRing, ringable, ringFrameOf, r
 
 export type { Incoming };
 const POLL_MS = 8000; // while the user socket is down
-const SAFETY_MS = 15_000; // while it is up: a ring the socket did not bring still shows within seconds
+const SAFETY_MS = 6000; // while it is up: a ring the socket did not bring still shows within seconds
 const RING_MS = 45_000; // an unanswered ring stops by itself (still joinable from the meetings list)
 const make = (c: Invited): Incoming => ({ roomId: c.roomId, callId: c.callId, type: c.type, callerName: c.callerName, title: c.title });
 const FRESH_MS = 3 * 60_000;
 const short = (id: string) => id.slice(0, 8);
 // A call I am invited to still rings from the list (as before); one in a newer participant state ("ringing", …) only while it is new,
 // so a long meeting I never joined does not ring at every launch.
-const ringsFromList = (c: Invited): boolean =>
-  ringable(c.callStatus) && !!c.status && !MINE_DONE.includes(c.status) && (c.status === "invited" || !c.startedAt || serverNow() - Date.parse(c.startedAt) < FRESH_MS);
+const ringsFromList = (c: Invited, myId: string): boolean =>
+  ringable(c.callStatus) && !MINE_DONE.includes(c.status) && (!!c.status || (!!c.callerId && c.callerId !== myId)) && (c.status === "invited" || !c.startedAt || serverNow() - Date.parse(c.startedAt) < FRESH_MS);
 
 // Incoming calls / invites, on whatever screen the person is: `call.incoming` on the user socket (bare or wrapped in a
 // notification), a ring handed over by a push while the app is open, and GET /calls/invited — on start, on foreground, after a
@@ -37,7 +37,7 @@ export function useIncomingCalls(inCall: boolean) {
     if (!myId || busy.current || AppState.currentState !== "active") return;
     try {
       const list = await listInvited(5);
-      const hit = list.find((c) => ringsFromList(c) && !seen.current.has(c.callId));
+      const hit = list.find((c) => ringsFromList(c, myId) && !seen.current.has(c.callId));
       const now = list.find((c) => c.callId === cur.current?.callId);
       const settled = !!now && (!ringable(now.callStatus) || MINE_DONE.includes(now.status));
       if (hit && cur.current?.callId !== hit.callId) netLog("call", `poll ${short(hit.callId)} call=${hit.callStatus} me=${hit.status} -> ring`);

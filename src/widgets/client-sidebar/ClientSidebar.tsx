@@ -33,7 +33,7 @@ export function ClientSidebar() {
   const { width } = useWindowDimensions();
   const { show, hide } = useSidebar();
   const w = Math.min(width * 0.84, 340);
-  const { x, p, open } = useDrawer(w);
+  const { x, p, open, driven } = useDrawer(w);
   useEffect(() => {
     if (!open) return;
     const sub = BackHandler.addEventListener("hardwareBackPress", () => { hide(); return true; });
@@ -42,12 +42,14 @@ export function ClientSidebar() {
   const panel = useAnimatedStyle(() => ({ transform: [{ translateX: x.value }] }));
   const scrim = useAnimatedStyle(() => ({ opacity: p.value }));
   /* eslint-disable react-hooks/immutability */
-  // A tap on a row (or on an empty part of the panel) also ends this pan, as "not activated". It must not snap the drawer back open:
-  // the row's own hide() has only just started and x still reads "open", so only a pan that really began may settle the drawer.
+  // A tap on a row can sway sideways by a few points, which starts this pan; the row's own hide() has already begun by then. Once show / hide
+  // has driven the drawer (`driven`, cleared by the next touch) the pan neither moves nor settles it, or it would cancel the closing spring and
+  // snap back open. A pan that was never activated (a plain tap) settles nothing either.
   const dragging = useSharedValue(false);
-  const drag = Gesture.Pan().activeOffsetX(-16).failOffsetY([-14, 14]).onStart(() => { dragging.value = true; }).onUpdate((e) => { x.value = Math.min(0, e.translationX); })
-    .onEnd((e, ok) => { if (!ok) return; if (e.translationX < -w * 0.3 || e.velocityX < -500) scheduleOnRN(hide); else x.value = withSpring(0, SPRING); })
-    .onFinalize((_, ok) => { const was = dragging.value; dragging.value = false; if (!ok && was) { if (x.value < -w * 0.3) scheduleOnRN(hide); else x.value = withSpring(0, SPRING); } }); // a cancelled drag never stays half way
+  const drag = Gesture.Pan().activeOffsetX(-16).failOffsetY([-14, 14]).onBegin(() => { driven.value = false; }).onStart(() => { dragging.value = true; })
+    .onUpdate((e) => { if (!driven.value) x.value = Math.min(0, e.translationX); })
+    .onEnd((e, ok) => { if (!ok || driven.value) return; if (e.translationX < -w * 0.3 || e.velocityX < -500) scheduleOnRN(hide); else x.value = withSpring(0, SPRING); })
+    .onFinalize((_, ok) => { const was = dragging.value; dragging.value = false; if (!ok && was && !driven.value) { if (x.value < -w * 0.3) scheduleOnRN(hide); else x.value = withSpring(0, SPRING); } }); // a cancelled drag never stays half way
   /* eslint-enable react-hooks/immutability */
   const ownSidebar = useOwnSidebar();
   const manage = seg[0] === "manage" && (!ownSidebar || seg[1] === "call" || seg[1] === "chat");
@@ -70,7 +72,7 @@ export function ClientSidebar() {
     going.current = true;
     hide();
     const to = role === "guest" && !GUEST_OPEN.includes(route.split("?")[0]) ? "/auth/login" : route;
-    setTimeout(() => { going.current = false; router.navigate(to as never); }, 180);
+    setTimeout(() => { going.current = false; router.navigate(to as never); if (useSidebar.getState().open) hide(); }, 180); // still out after the spring: close it again
   };
   return (
     <>

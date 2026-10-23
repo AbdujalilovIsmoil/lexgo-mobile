@@ -15,16 +15,18 @@ export function useDrawer(w: number) {
   const mirror = useSidebar((s) => s.mirror);
   const register = useSidebar((s) => s.register);
   const x = useSharedValue(-w);
+  // Set when show / hide moved the drawer: the drag that was under the finger (a tap that swayed) must not take the position back.
+  const driven = useSharedValue(false);
   const p = useDerivedValue(() => 1 + x.value / w);
   useEffect(() => {
     // Reanimated shared values are mutated by design; the compiler rule cannot see that.
      
-    register((o) => { x.value = withSpring(o ? 0 : -w, SPRING); });
+    register((o) => { driven.value = true; x.value = withSpring(o ? 0 : -w, SPRING); });
     return () => register(null);
-  }, [w, x, register]);
+  }, [w, x, driven, register]);
   useAnimatedReaction(
     () => x.value > -w + 2,
     (isOpen, was) => { if (was !== null && isOpen !== was) scheduleOnRN(mirror, isOpen); },
   );
-  return { x, p, open };
+  return { x, p, open, driven };
 }
