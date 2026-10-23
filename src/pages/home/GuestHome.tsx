@@ -1,4 +1,4 @@
-import { HeroScroll } from "@/shared/ui";
+import { HeroScroll, TabletColumn } from "@/shared/ui";
 import { useInsets } from "@/shared/lib/insets";
 import { useColors } from "@/shared/theme";
 import { HomeHero } from "@/widgets/home-hero";
@@ -15,12 +15,14 @@ export function GuestHome() {
   return (
     <HeroScroll style={{ backgroundColor: c.canvas }} contentContainerStyle={{ paddingBottom: insets.bottom + 130 }} showsVerticalScrollIndicator={false}>
       <HomeHero />
-      <StatsRow />
-      <DocBanner />
-      <TopicsSection />
-      <TopLawyersRail />
-      <SubscriptionBanner />
-      <Warranty />
+      <TabletColumn>
+        <StatsRow />
+        <DocBanner />
+        <TopicsSection />
+        <TopLawyersRail />
+        <SubscriptionBanner />
+        <Warranty />
+      </TabletColumn>
     </HeroScroll>
   );
 }

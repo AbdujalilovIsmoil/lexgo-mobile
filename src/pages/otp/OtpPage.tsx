@@ -6,7 +6,7 @@ import { OtpForm, useOtpFlow } from "@/features/auth";
 import { AuthHero } from "@/widgets/auth-hero";
 import { useT } from "@/shared/i18n";
 import { maskPhone } from "@/shared/lib/phone";
-import { HeroScroll } from "@/shared/ui";
+import { HeroScroll, TabletColumn } from "@/shared/ui";
 
 // One screen for every OTP purpose; without a pending flow it bounces to login — or to Home when the person is already signed in
 // (the flow is dropped the moment a session is issued, while this screen is still closing).
@@ -23,9 +23,11 @@ export function OtpPage() {
     <View style={[s.fill, { backgroundColor: c.canvas }]}>
       <HeroScroll keyboardShouldPersistTaps="handled" contentContainerStyle={s.content} showsVerticalScrollIndicator={false}>
         <AuthHero title={title} subtitle={subtitle} />
+        <TabletColumn max={520}>
         <View style={s.body}>
           <OtpForm />
         </View>
+        </TabletColumn>
       </HeroScroll>
     </View>
   );

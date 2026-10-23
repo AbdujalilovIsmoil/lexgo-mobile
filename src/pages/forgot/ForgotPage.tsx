@@ -3,7 +3,7 @@ import { useColors } from "@/shared/theme";
 import { ForgotForm } from "@/features/auth";
 import { AuthHero } from "@/widgets/auth-hero";
 import { useT } from "@/shared/i18n";
-import { HeroScroll } from "@/shared/ui";
+import { HeroScroll, TabletColumn } from "@/shared/ui";
 
 export function ForgotPage() {
   const c = useColors();
@@ -12,9 +12,11 @@ export function ForgotPage() {
     <View style={[s.fill, { backgroundColor: c.canvas }]}>
       <HeroScroll keyboardShouldPersistTaps="handled" contentContainerStyle={s.content} showsVerticalScrollIndicator={false}>
         <AuthHero title={t("auth.forgotTitle")} subtitle={t("auth.forgotSub")} />
+        <TabletColumn max={520}>
         <View style={s.body}>
           <ForgotForm />
         </View>
+        </TabletColumn>
       </HeroScroll>
     </View>
   );

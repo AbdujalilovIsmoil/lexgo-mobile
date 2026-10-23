@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
 import { BackHandler, Pressable, StyleSheet, useWindowDimensions, View } from "react-native";
-import { useRouter, useSegments } from "expo-router";
+import { useRouter } from "expo-router";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import Animated, { useAnimatedStyle, useSharedValue, withSpring } from "react-native-reanimated";
 import { scheduleOnRN } from "react-native-worklets";
@@ -8,17 +8,14 @@ import { useSession } from "@/entities/session";
 import { useT } from "@/shared/i18n";
 import { useColors, useTheme } from "@/shared/theme";
 import { GlassBackdrop, useGlass } from "@/shared/ui";
-import { useOwnSidebar, useTabRole } from "@/widgets/tab-bar/useTabRole";
+import { useTabRole } from "@/widgets/tab-bar/useTabRole";
 import { GUEST_OPEN } from "./navItems";
+import { useSidebarHidden } from "./useSidebarHidden";
+import { useTablet } from "@/shared/lib/useTablet";
 import { SidebarHandle } from "./SidebarHandle";
 import { SidebarPanel } from "./SidebarPanel";
 import { useSidebar } from "./sidebarStore";
 import { SPRING, useDrawer } from "./useDrawer";
-
-// Screens that need the whole width (rooms, calls, auth, the assistant): no sidebar there. Every role has one.
-// The admin area has its own module switcher on the same edge, so it gets no second handle (`manage`, see below) — except for a
-// sales operator or an on-duty call-centre lawyer, whose sidebar rows already include those screens: they keep this sidebar and no module switcher is drawn.
-const HIDE = new Set(["auth", "chat", "call", "lawyer", "assistant", "instructor", "specialist", "sel-dev", "cc-preview"]);
 
 // The sidebar of every role (the client's rows are the web portal's; see navFor for the others). The handle on the left edge (or a drag from it) pulls the
 // drawer out; the page dims as it comes. Tap the dim area, drag the drawer left, or press back to close.
@@ -28,7 +25,6 @@ export function ClientSidebar() {
   const { dark } = useTheme();
   const lens = !!useGlass(true); // the drawer stays glass
   const router = useRouter();
-  const seg = useSegments();
   const role = useTabRole();
   const { width } = useWindowDimensions();
   const { show, hide } = useSidebar();
@@ -51,9 +47,8 @@ export function ClientSidebar() {
     .onEnd((e, ok) => { if (!ok || driven.value) return; if (e.translationX < -w * 0.3 || e.velocityX < -500) scheduleOnRN(hide); else x.value = withSpring(0, SPRING); })
     .onFinalize((_, ok) => { const was = dragging.value; dragging.value = false; if (!ok && was && !driven.value) { if (x.value < -w * 0.3) scheduleOnRN(hide); else x.value = withSpring(0, SPRING); } }); // a cancelled drag never stays half way
   /* eslint-enable react-hooks/immutability */
-  const ownSidebar = useOwnSidebar();
-  const manage = seg[0] === "manage" && (!ownSidebar || seg[1] === "call" || seg[1] === "chat");
-  const hidden = HIDE.has(String(seg[0])) || manage || (seg[0] === "(tabs)" && seg[1] === "ai");
+  const hidden = useSidebarHidden();
+  const { docked } = useTablet(); // a wide tablet keeps the sidebar open beside the page (TabletFrame): no drawer, no handle
   const going = useRef(false);
   const session = useSession();
   const who = session ? `${session.user.id}:${session.user.backendRole}` : "";
@@ -63,7 +58,7 @@ export function ClientSidebar() {
     // eslint-disable-next-line react-hooks/immutability
     x.value = -w;
   }, [hidden, who, w, x]);
-  if (hidden) return null;
+  if (hidden || docked) return null;
   // A visitor may open the public pages; every other row is personal, so it leads to sign-in. The drawer closes first and the page
   // opens once it is out of the way (a heavy page mounting during the closing spring made both stutter); a second tap while that is
   // pending is ignored.

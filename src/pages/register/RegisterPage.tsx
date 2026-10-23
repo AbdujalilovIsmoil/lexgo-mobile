@@ -4,7 +4,7 @@ import { useColors } from "@/shared/theme";
 import { RegisterForm } from "@/features/auth";
 import { AuthHero } from "@/widgets/auth-hero";
 import { useT } from "@/shared/i18n";
-import { HeroScroll } from "@/shared/ui";
+import { HeroScroll, TabletColumn } from "@/shared/ui";
 
 // Sign-up for every account kind. `?ref=CODE` (a referral link) pre-fills the referral field and
 // `?role=advokat` pre-selects the account kind.
@@ -16,9 +16,11 @@ export function RegisterPage() {
     <View style={[s.fill, { backgroundColor: c.canvas }]}>
       <HeroScroll keyboardShouldPersistTaps="handled" contentContainerStyle={s.content} showsVerticalScrollIndicator={false}>
         <AuthHero title={t("auth.registerTitle")} subtitle={t("auth.registerSub")} />
+        <TabletColumn max={520}>
         <View style={s.body}>
           <RegisterForm referral={typeof ref === "string" ? ref : undefined} role={typeof role === "string" ? role : undefined} />
         </View>
+        </TabletColumn>
       </HeroScroll>
     </View>
   );

@@ -4,7 +4,7 @@ import { useColors } from "@/shared/theme";
 import { useSessionStore } from "@/entities/session";
 import { LoginForm } from "@/features/auth";
 import { AuthHero } from "@/widgets/auth-hero";
-import { Text, HeroScroll } from "@/shared/ui";
+import { Text, HeroScroll, TabletColumn } from "@/shared/ui";
 import { useT } from "@/shared/i18n";
 
 export function LoginPage() {
@@ -16,6 +16,7 @@ export function LoginPage() {
     <View style={[s.fill, { backgroundColor: c.canvas }]}>
       <HeroScroll keyboardShouldPersistTaps="handled" contentContainerStyle={s.content} showsVerticalScrollIndicator={false}>
         <AuthHero title={t("auth.loginTitle")} subtitle={t("auth.loginSub")} />
+        <TabletColumn max={520}>
         <View style={s.body}>
           {notice === "sessionExpired" ? (
             <Text variant="small" tone="warn" center>
@@ -24,6 +25,7 @@ export function LoginPage() {
           ) : null}
           <LoginForm />
         </View>
+        </TabletColumn>
       </HeroScroll>
     </View>
   );

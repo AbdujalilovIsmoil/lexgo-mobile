@@ -1,5 +1,5 @@
 import { View } from "react-native";
-import { HeroScroll } from "@/shared/ui";
+import { HeroScroll, TabletColumn } from "@/shared/ui";
 import { useInsets } from "@/shared/lib/insets";
 import { useColors } from "@/shared/theme";
 import { HeaderExtra } from "@/shared/ui/headerExtra";
@@ -16,11 +16,13 @@ export function ClientHome() {
   return (
     <HeroScroll style={{ backgroundColor: c.canvas }} contentContainerStyle={{ paddingBottom: insets.bottom + 130 }} showsVerticalScrollIndicator={false}>
       <DashHero />
-      <View style={{ height: 16 }} />
-      <HeaderExtra />
-      <DashPromo />
-      {authed ? <><DashRequests /><DashReferral /></> : <DashGuest />}
-      <DashAiCard />
+      <TabletColumn>
+        <View style={{ height: 16 }} />
+        <HeaderExtra />
+        <DashPromo />
+        {authed ? <><DashRequests /><DashReferral /></> : <DashGuest />}
+        <DashAiCard />
+      </TabletColumn>
     </HeroScroll>
   );
 }

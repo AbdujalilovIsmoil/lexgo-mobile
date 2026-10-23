@@ -7,7 +7,7 @@ import { KeyboardProvider } from "react-native-keyboard-controller";
 import * as SystemUI from "expo-system-ui";
 import { AURORA, ThemeProvider, useTheme } from "@/shared/theme";
 import { IncomingCallWatcher } from "@/widgets/admin-meetings";
-import { ClientSidebar } from "@/widgets/client-sidebar";
+import { ClientSidebar, TabletFrame } from "@/widgets/client-sidebar";
 import { AuroraBackdrop, RootOverlays } from "@/shared/ui";
 import { useProfileRefresh } from "@/entities/session";
 import { useHostClipboardSync } from "../dev/useHostClipboardSync";
@@ -29,7 +29,7 @@ function Chrome({ children }: { children: ReactNode }) {
       <StatusBar style={dark ? "light" : "dark"} />
       <SystemChrome />
       {Platform.OS === "ios" && AURORA ? <AuroraBackdrop /> : null}
-      {children}
+      <TabletFrame>{children}</TabletFrame>
       <RootOverlays />
       <IncomingCallWatcher />
       <ClientSidebar />
