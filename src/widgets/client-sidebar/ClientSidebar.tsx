@@ -2,7 +2,7 @@ import { useEffect, useRef } from "react";
 import { BackHandler, Pressable, StyleSheet, useWindowDimensions, View } from "react-native";
 import { useRouter, useSegments } from "expo-router";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
-import Animated, { useAnimatedStyle, withSpring } from "react-native-reanimated";
+import Animated, { useAnimatedStyle, useSharedValue, withSpring } from "react-native-reanimated";
 import { scheduleOnRN } from "react-native-worklets";
 import { useSession } from "@/entities/session";
 import { useT } from "@/shared/i18n";
@@ -42,9 +42,12 @@ export function ClientSidebar() {
   const panel = useAnimatedStyle(() => ({ transform: [{ translateX: x.value }] }));
   const scrim = useAnimatedStyle(() => ({ opacity: p.value }));
   /* eslint-disable react-hooks/immutability */
-  const drag = Gesture.Pan().activeOffsetX(-16).failOffsetY([-14, 14]).onUpdate((e) => { x.value = Math.min(0, e.translationX); })
+  // A tap on a row (or on an empty part of the panel) also ends this pan, as "not activated". It must not snap the drawer back open:
+  // the row's own hide() has only just started and x still reads "open", so only a pan that really began may settle the drawer.
+  const dragging = useSharedValue(false);
+  const drag = Gesture.Pan().activeOffsetX(-16).failOffsetY([-14, 14]).onStart(() => { dragging.value = true; }).onUpdate((e) => { x.value = Math.min(0, e.translationX); })
     .onEnd((e, ok) => { if (!ok) return; if (e.translationX < -w * 0.3 || e.velocityX < -500) scheduleOnRN(hide); else x.value = withSpring(0, SPRING); })
-    .onFinalize((_, ok) => { if (!ok) { if (x.value < -w * 0.3) scheduleOnRN(hide); else x.value = withSpring(0, SPRING); } }); // a cancelled drag never stays half way
+    .onFinalize((_, ok) => { const was = dragging.value; dragging.value = false; if (!ok && was) { if (x.value < -w * 0.3) scheduleOnRN(hide); else x.value = withSpring(0, SPRING); } }); // a cancelled drag never stays half way
   /* eslint-enable react-hooks/immutability */
   const ownSidebar = useOwnSidebar();
   const manage = seg[0] === "manage" && (!ownSidebar || seg[1] === "call" || seg[1] === "chat");
