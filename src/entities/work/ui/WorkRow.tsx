@@ -11,13 +11,13 @@ import { WorkStatusPill } from "./WorkStatusPill";
 
 // One work as a card that reads in four glances: the kind (tinted tile + small caps) and the title; the live status with the
 // chat / meeting marks; the next step on a quiet strip; and who has it, its id and when it moved.
-export function WorkRow({ work, onPress }: { work: Work; onPress?: () => void }) {
+export function WorkRow({ work, onPress, enter = true }: { work: Work; onPress?: () => void; enter?: boolean }) {
   const c = useColors();
   const { t, locale } = useT();
   const text = useWorkText();
   const tint = KIND_TINT[work.kind];
   return (
-    <Animated.View entering={FadeInDown.duration(240)}>
+    <Animated.View entering={enter ? FadeInDown.duration(240) : undefined}>
       <PressableScale onPress={onPress} accessibilityRole="button" style={[s.card, { backgroundColor: c.glassFill, borderColor: c.glassLine }]}>
         <View style={s.top}>
           <View style={[s.icon, { backgroundColor: `${tint}22` }]}><Icon name={KIND_ICON[work.kind]} size={22} color={tint} /></View>

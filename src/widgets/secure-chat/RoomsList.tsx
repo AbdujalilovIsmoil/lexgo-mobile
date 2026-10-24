@@ -1,6 +1,7 @@
 import { useTabHeader } from "@/widgets/tab-page";
 import { useMemo, useState, type ReactElement } from "react";
-import { FlatList, View } from "react-native";
+import { View } from "react-native";
+import { FlashList } from "@shopify/flash-list";
 import type { UseQueryResult } from "@tanstack/react-query";
 import { Chip, Divider, EmptyState, ErrorView, Icon, IconButton, Skeleton, Text } from "@/shared/ui";
 import { SearchBox } from "@/shared/ui/admin";
@@ -8,6 +9,8 @@ import { RoomRow, ROOM_AVATAR, byActivity, type Room } from "@/entities/secure-c
 import { useT } from "@/shared/i18n";
 import { InboxFilterSheet } from "./InboxFilterSheet";
 import { filterRooms, kindOptions, type InboxKind } from "./inbox";
+
+const Line = () => <Divider inset={ROOM_AVATAR + 14} />;
 
 type Props = { query: UseQueryResult<Room[]>; rooms: Room[]; myId: string; bottom: number; onOpen: (r: Room) => void; header?: ReactElement | null; action?: { label: string; onPress: () => void }; tagOf?: (r: Room) => string };
 
@@ -28,18 +31,19 @@ export function RoomsList({ query, rooms, myId, bottom, onOpen, header, action, 
     : <EmptyState icon="message-circle" title={t("admChat.empty")} text={t("admChat.emptyText")} actionLabel={action?.label} onAction={action?.onPress} />;
   return (
     <>
-    <FlatList
+    <FlashList // hundreds of rooms for a lawyer: rows are recycled
       data={query.isLoading ? [] : rows}
       keyExtractor={(r) => r.id}
       renderItem={({ item }) => <RoomRow room={item} myId={myId} onPress={() => onOpen(item)} tag={tagOf?.(item)} />}
       ListHeaderComponent={<View>{top}<View style={{ gap: 10, marginBottom: 12 }}>{header}<View style={{ flexDirection: "row", gap: 8, alignItems: "center" }}><Icon name="lock" size={14} tone="gray" /><Text variant="caption" tone="gray" style={{ flex: 1 }}>{t("ms1.lead")}</Text></View>{rooms.length > 0 ? <View style={{ gap: 10, marginHorizontal: -16 }}><View style={{ flexDirection: "row", alignItems: "center", paddingRight: 16 }}><View style={{ flex: 1 }}><SearchBox value={search} onChangeText={setSearch} placeholder={t("admChat.search")} /></View><IconButton icon="sliders" label={t("dm11.filters")} badge={kind !== "all"} onPress={() => setSheet(true)} /></View>{kind !== "all" ? <View style={{ flexDirection: "row", paddingHorizontal: 16 }}><Chip label={options.find((o) => o.value === kind)?.label ?? kind} active icon="x" onPress={() => setKind("all")} /></View> : null}</View> : null}</View></View>}
       ListEmptyComponent={empty}
-      ItemSeparatorComponent={() => <Divider inset={ROOM_AVATAR + 14} />}
+      ItemSeparatorComponent={Line}
       contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: bottom, flexGrow: 1 }}
       refreshing={pulling}
       onRefresh={() => { setPulling(true); void query.refetch().finally(() => setPulling(false)); }}
       keyboardShouldPersistTaps="handled"
       showsVerticalScrollIndicator={false}
+      maintainVisibleContentPosition={{ disabled: true }} // a room with a new message moves to the top and is seen there
     />
     <InboxFilterSheet visible={sheet} onClose={() => setSheet(false)} options={options} value={kind} onChange={setKind} total={rows.length} />
     </>

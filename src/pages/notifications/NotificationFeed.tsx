@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { FlatList } from "react-native";
+import { FlashList } from "@shopify/flash-list";
 import { linkInputOf, useMarkRead, type Notification } from "@/entities/notification";
 import { useOpenLink } from "@/features/open-link";
 import { NotificationSheet } from "@/widgets/notification-sheet";
@@ -12,6 +12,7 @@ import { Button, EmptyState, ErrorView, ListRowSkeleton } from "@/shared/ui";
 import { NotificationCell } from "./NotificationCell";
 import { NotificationFilters } from "./NotificationFilters";
 import type { useFeed } from "./useFeed";
+import { usePullRefresh } from "@/shared/lib/usePullRefresh";
 
 // The list: filters on top, one card per event under day headings, detail sheet, pull-to-refresh, paging.
 export function NotificationFeed({ feed, bottomPad }: { feed: ReturnType<typeof useFeed>; bottomPad?: number }) {
@@ -23,6 +24,7 @@ export function NotificationFeed({ feed, bottomPad }: { feed: ReturnType<typeof 
   const online = useIsOnline();
   const [sheet, setSheet] = useState<Notification | null>(null);
   const { list, items } = feed;
+  const pull = usePullRefresh(() => list.refetch());
   const read = (n: Notification) => !n.read && markOne.mutate(n);
   const header = (
     <>
@@ -43,7 +45,7 @@ export function NotificationFeed({ feed, bottomPad }: { feed: ReturnType<typeof 
   );
   return (
     <>
-      <FlatList
+      <FlashList // recycles the rows: hundreds of events scroll without building a view per row
         data={items}
         keyExtractor={(n) => n.id}
         ListHeaderComponent={header}
@@ -58,11 +60,12 @@ export function NotificationFeed({ feed, bottomPad }: { feed: ReturnType<typeof 
         ListEmptyComponent={empty}
         ListFooterComponent={feed.more ? <Button title={t("nt1.loadMore")} variant="soft" full loading={list.isFetchingNextPage} onPress={() => void list.fetchNextPage()} style={{ margin: 16 }} /> : null}
         contentContainerStyle={{ paddingBottom: bottomPad ?? insets.bottom + 24, flexGrow: 1 }}
-        refreshing={list.isRefetching && !list.isFetchingNextPage}
-        onRefresh={() => void list.refetch()}
+        refreshing={pull.refreshing}
+        onRefresh={pull.onRefresh}
         onEndReachedThreshold={0.5}
         onEndReached={() => feed.more && !list.isFetchingNextPage && void list.fetchNextPage()}
         keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false}
+        maintainVisibleContentPosition={{ disabled: true }} // a new event at the top shows at the top, as before
       />
       <NotificationSheet item={sheet} onClose={() => setSheet(null)} />
     </>
