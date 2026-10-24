@@ -18,7 +18,8 @@ export function CallRoomView({ roomId, callId }: { roomId: string; callId: strin
   useRosterToasts(s.call?.participants, s.myId);
   const { ended, leave, phase } = s;
   useUnansweredHangUp(phase, roomId, callId, s.lk.room, s.signal);
-  useGuardWarnings(useCaptureMute(s.lk.room));
+  const captured = useCaptureMute(s.lk.room);
+  useGuardWarnings(captured);
   const closing = ended || shouldHangUp(phase);
   useEffect(() => {
     if (!closing) return;
@@ -31,5 +32,5 @@ export function CallRoomView({ roomId, callId }: { roomId: string; callId: strin
   if (phase === "declined" || phase === "missed") return <CallStatusView kind={phase} onBack={leave} />;
   if (ended) return <CallStatusView kind="ended" onBack={leave} />;
   if (!s.creds.call) return <CallStatusView kind="connecting" onBack={leave} />;
-  return <LiveCall s={s} act={act} chat={chat} rec={rec} transfer={work ? transfer : null} />;
+  return <LiveCall s={s} act={act} chat={chat} rec={rec} transfer={work ? transfer : null} captured={captured} />;
 }

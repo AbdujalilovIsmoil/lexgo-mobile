@@ -70,4 +70,5 @@ export const admMeet: Messages["admMeet"] = {
   guardShotTitle: "Скриншот недоступен",
   guardShotText: "Звонок конфиденциален: снимок экрана сделать нельзя, он получится чёрным.",
   guardOk: "Понятно",
+  guardMicLocked: "Пока идёт запись экрана, микрофон включить нельзя",
 };

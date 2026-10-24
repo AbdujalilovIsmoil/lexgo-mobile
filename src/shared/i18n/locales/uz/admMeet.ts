@@ -68,4 +68,5 @@ export const admMeet = {
   guardShotTitle: "Skrinshot olib bo'lmaydi",
   guardShotText: "Qo'ng'iroq maxfiy: ekranni rasmga olib bo'lmaydi, olingan rasm qora chiqadi.",
   guardOk: "Tushunarli",
+  guardMicLocked: "Ekran yozib olinayotganda mikrofonni yoqib bo'lmaydi",
 };

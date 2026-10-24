@@ -70,4 +70,5 @@ export const admMeet: Messages["admMeet"] = {
   guardShotTitle: "Screenshots are blocked",
   guardShotText: "The call is confidential: a screenshot cannot be taken and comes out black.",
   guardOk: "Got it",
+  guardMicLocked: "The microphone stays off while the screen is being recorded",
 };

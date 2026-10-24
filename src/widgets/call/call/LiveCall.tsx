@@ -14,11 +14,11 @@ import { ExtensionBar } from "./ExtensionBar";
 import { RecordingBar } from "./RecordingBar";
 import { buildTiles } from "./tiles";
 
-type Props = { s: ReturnType<typeof useCallScreen>; act: ReturnType<typeof useCallActions>; chat: ReturnType<typeof useCallChat>; rec: Recording; transfer: ReturnType<typeof useTransfer> | null };
+type Props = { s: ReturnType<typeof useCallScreen>; act: ReturnType<typeof useCallActions>; chat: ReturnType<typeof useCallChat>; rec: Recording; transfer: ReturnType<typeof useTransfer> | null; captured?: boolean };
 
 // The live call: video tiles, header, banners, controls and the drawers they open. The screen stays awake, and the
 // caller hears a quiet ringback until somebody joins.
-export function LiveCall({ s, act, chat, rec, transfer }: Props) {
+export function LiveCall({ s, act, chat, rec, transfer, captured = false }: Props) {
   const { t } = useT();
   useKeepAwake();
   const [mode, setMode] = useState<StageMode>("grid");
@@ -47,7 +47,7 @@ export function LiveCall({ s, act, chat, rec, transfer }: Props) {
       <RecordingBar rec={rec} />
       <View style={st.stage}><CallStage tiles={tiles} mode={mode} pinned={pinned} onPin={(id) => { setPinned(id); if (id) setMode("speaker"); }} mirror={s.media.facing === "user"} waiting={t("admMeetB.waiting")} /></View>
       <CallControls mic={mic} cam={cam} showCam={s.videoAllowed || upgrade} camLabel={upgrade ? t("admMeetB.toVideo") : t("admMeet.camera")} showFlip={s.videoAllowed && cam} speaker={s.media.speaker} unread={chat.unread} busy={s.media.busy} locked={s.locked} labels={labels}
-        onMic={() => (s.locked && !mic ? toast(t("admMeetB.mutedByHost"), "info") : void s.media.toggleMic())} onCam={() => void s.media.toggleCam()} onFlip={() => void s.media.flip()} onSpeaker={s.media.toggleSpeaker} onMore={() => setSheet("more")} onEnd={() => setSheet("end")} />
+        onMic={() => (captured && !mic ? toast(t("admMeet.guardMicLocked"), "info") : s.locked && !mic ? toast(t("admMeetB.mutedByHost"), "info") : void s.media.toggleMic())} onCam={() => void s.media.toggleCam()} onFlip={() => void s.media.flip()} onSpeaker={s.media.toggleSpeaker} onMore={() => setSheet("more")} onEnd={() => setSheet("end")} />
       <CallSheets s={s} act={act} chat={chat} rec={rec} transfer={transfer} sheet={sheet} open={setSheet} tiles={tiles} mode={mode} toggleMode={toggleMode} />
     </View>
   );
