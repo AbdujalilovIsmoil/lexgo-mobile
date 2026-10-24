@@ -5,11 +5,11 @@ import { isAiPlan, isClientPlan, isGiftPlan, orderPlans, PlanCardSkeleton, termP
 import { useClientProfile } from "@/entities/profile-extras";
 import { useIsAuthed } from "@/entities/session";
 import { useChoosePlan } from "@/features/choose-plan";
-import { AiPlansSection, AutopayPanel, Benefits, BillingHistory, CompareTable, FaqList, OtherPlansSection, PendingRequests, TelegramRequestSheet, TopCards } from "@/widgets/subscription";
+import { AiPlansSection, AutopayPanel, Benefits, BillingHistory, CompareTable, FaqList, MyPlanCard, OtherPlansSection, PendingRequests, TelegramRequestSheet, TopCards } from "@/widgets/subscription";
 import { EmptyState, ErrorView, Header, Screen } from "@/shared/ui";
 import { useT } from "@/shared/i18n";
 
-// Client tariffs, in the order of the web page: current state, auto-pay, LexGo.AI, benefits,
+// Client tariffs, in the order of the web page: current state and "my plan" (TZ §12), auto-pay, LexGo.AI, benefits,
 // comparison, FAQ, other tariffs + gift, billing history. Checkout (pay / Telegram) is a sheet.
 export function SubscriptionPage() {
   const c = useColors();
@@ -32,6 +32,7 @@ export function SubscriptionPage() {
       <Header title={t("profile.subscription")} />
       <Screen topInset={false} refreshing={isRefetching} onRefresh={refresh} contentContainerStyle={s.content}>
         {signedIn ? <TopCards /> : null}
+        {signedIn ? <MyPlanCard /> : null}
         {signedIn && ent.data ? <PendingRequests items={ent.data.pending} /> : null}
         {signedIn ? <AutopayPanel /> : null}
         {error ? <ErrorView error={error} onRetry={() => void refetch()} /> : isLoading ? [0, 1].map((i) => <PlanCardSkeleton key={i} />) : (

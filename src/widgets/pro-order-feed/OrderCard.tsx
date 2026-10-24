@@ -1,6 +1,8 @@
 import { StyleSheet, View } from "react-native";
 import Animated, { FadeIn } from "react-native-reanimated";
 import { hintOf, OrderStatusPill, stageOf, type ProOrder } from "@/entities/pro-order";
+import { answerState, clock, msUntil } from "@/entities/market-flow";
+import { useNow } from "@/shared/lib/pay/useNow";
 import { useT } from "@/shared/i18n";
 import { fmtDateTime } from "@/shared/lib/format";
 import { fmtMoney } from "@/shared/lib/money";
@@ -33,10 +35,26 @@ export function OrderCard({ order: o, onPress }: { order: ProOrder; onPress: () 
             </View>
             {o.createdAt ? <View style={s.chip}><Icon name="clock" size={13} tone="gray" /><Text variant="caption" tone="gray">{fmtDateTime(o.createdAt, locale)}</Text></View> : null}
           </View>
+          {o.flow.acceptanceDeadlineAt && stage === "new" ? <AnswerTimer deadlineAt={o.flow.acceptanceDeadlineAt} /> : null}
           {hint ? <View style={[s.hint, { backgroundColor: hint === "paused" ? c.warnBg : c.tint2 }]}><Icon name={hint === "paused" ? "pause-circle" : "zap"} size={14} color={hint === "paused" ? c.warn : c.accent} /><Text variant="small" weight="semibold" style={[s.flex, { color: hint === "paused" ? c.warn : c.accentStrong }]}>{t(`pof.hint${hint[0].toUpperCase()}${hint.slice(1)}`)}</Text></View> : null}
         </View>
       </PressableScale>
     </Animated.View>
+  );
+}
+
+// TZ §5: the seller's answer window, counted down once a second to the backend's absolute deadline (only this row re-renders).
+function AnswerTimer({ deadlineAt }: { deadlineAt: string }) {
+  const c = useColors();
+  const { t } = useT();
+  const now = useNow(true, 1000);
+  const open = answerState(deadlineAt, now) === "open";
+  const tone = open ? c.warn : c.gray;
+  return (
+    <View style={[s.hint, { backgroundColor: open ? c.warnBg : c.surface2 }]}>
+      <Icon name="clock" size={14} color={tone} />
+      <Text variant="small" weight="semibold" style={[s.flex, { color: tone }]}>{open ? t("mf.asg.left", { time: clock(msUntil(deadlineAt, now)) }) : t("mf.asg.over")}</Text>
+    </View>
   );
 }
 

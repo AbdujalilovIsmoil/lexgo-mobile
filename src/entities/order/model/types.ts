@@ -10,6 +10,7 @@ export type Order = {
   createdAt: string;
   lawyerName?: string;
   source?: string;
+  acceptanceDeadlineAt?: string; // an assignment to a seller: the backend's absolute answer deadline (TZ.md §5)
 };
 
 export const ORDER_STATUS_TONE: Record<string, "ok" | "warn" | "gray" | "blue" | "err"> = {

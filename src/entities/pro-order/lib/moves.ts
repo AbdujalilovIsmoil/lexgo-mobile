@@ -13,17 +13,26 @@ const NEXT: Record<string, string[]> = {
   quality_check: ["delivered", "in_progress"],
 };
 
-export type OrderActions = { accept: boolean; decline: boolean; moves: string[]; complete: boolean; chat: boolean; extra: boolean; paused: boolean };
+export type OrderActions = { accept: boolean; decline: boolean; start: boolean; moves: string[]; complete: boolean; chat: boolean; extra: boolean; paused: boolean };
 
+// An assignment with a backend answer deadline (TZ.md §5) is answered on its own card (countdown, expiry), not from this bar. When the
+// backend offers `start_url` the work is started with it (TZ §9) and the plain "started / in progress" moves are not offered next to it.
 export function actionsOf(o: ProOrder, acceptAllowed = true): OrderActions {
   const stage = stageOf(o);
   const open = stage === "new" || stage === "active";
   const paused = isPaused(o);
+  const assignment = !!o.flow?.acceptanceDeadlineAt;
+  // Accepted but the client's advance is not confirmed yet (contact still locked): nothing to start or move (TZ §6).
+  const waitingAdvance = o.flow?.contactUnlocked === false;
+  const start = acceptAllowed && !paused && open && !waitingAdvance && !!o.flow?.canStart;
+  const moves = open && acceptAllowed && !paused && !waitingAdvance ? (NEXT[o.status] ?? []) : [];
   return {
-    accept: acceptAllowed && (o.status === "sent_to_seller" || o.status === "paid"),
-    decline: acceptAllowed && o.status === "sent_to_seller",
-    moves: open && acceptAllowed && !paused ? (NEXT[o.status] ?? []) : [],
-    complete: acceptAllowed && stage === "active" && !paused && o.canComplete,
+    accept: acceptAllowed && !assignment && (o.status === "sent_to_seller" || o.status === "paid"),
+    decline: acceptAllowed && !assignment && o.status === "sent_to_seller",
+    start,
+    moves: start ? moves.filter((m) => m !== "started" && m !== "in_progress") : moves,
+    // The backend's can_complete decides when it is sent; complete_url alone only when the flag is missing (normFlow).
+    complete: acceptAllowed && stage === "active" && !paused && (o.flow ? o.flow.canComplete : o.canComplete),
     extra: acceptAllowed && !paused && (stage === "active" || stage === "new") && !!(o.serviceId || o.packageId),
     paused,
     chat: o.canChat && (open || stage === "completed"),

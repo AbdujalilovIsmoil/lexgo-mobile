@@ -1,4 +1,4 @@
-import { http } from "@/shared/api";
+import { ApiError, http } from "@/shared/api";
 import { asArr, asDict, asStr } from "@/shared/lib/json";
 import { normMarketOrder } from "./marketNorm";
 import type { MarketOrder, StatusEntry } from "../model/marketTypes";
@@ -12,6 +12,22 @@ export async function listMarketOrders(): Promise<MarketOrder[]> {
 }
 
 const base = (id: string) => `/marketplace/me/orders/${encodeURIComponent(id)}`;
+const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
+// One purchase, read fresh (TZ §4, §14: always refetch before rendering): by its id from GET /marketplace/me/orders/{id}; an ADV-… number
+// from the list. null when it is not this client's marketplace order.
+export async function getMarketOrder(key: string): Promise<MarketOrder | null> {
+  if (!UUID.test(key)) return (await listMarketOrders()).find((o) => o.id === key || o.workId === key) ?? null;
+  try {
+    const d = asDict(await http(base(key)));
+    const actions = Object.entries(asDict(d.actions)).filter(([, v]) => !!v).map(([k]) => k);
+    const o = normMarketOrder(d, actions);
+    return o.id ? o : null;
+  } catch (e) {
+    if (e instanceof ApiError && (e.status === 404 || e.status === 403)) return null;
+    throw e;
+  }
+}
 
 // POST …/cancel — only when the backend offered it (cancel_url). Returns the new status.
 export async function cancelMarketOrder(id: string, reason: string): Promise<string> {

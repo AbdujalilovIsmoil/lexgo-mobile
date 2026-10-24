@@ -12,7 +12,7 @@ const ALLOWED: RegExp[] = [
   /^\/(support|urgent)\/new$/,
   /^\/profile\/(family|methods|consents|referral|gifts)$/,
   /^\/settings\/(notifications|storage|security-lock)$/,
-  new RegExp(`^/pro/(docs(/pool)?|cases|calendar|tasks|files|scan|templates|market|stats|referrals|onboarding|profile|services|packages|availability|orders|promotions|promotions/new|urgent)(/${ID})?$`),
+  new RegExp(`^/pro/(docs(/pool)?|cases|calendar|tasks|files|scan|templates|market|stats|referrals|onboarding|profile|services|packages|availability|experience|orders|promotions|promotions/new|urgent)(/${ID})?$`),
   new RegExp(`^/pro/docs/${ID}/editor$`),
   new RegExp(`^/(cc/(clients|assist|urgent)|org/workload|pro/urgent)(/${ID})?$`),
   /^\/cc\/(complaints|calls|notify|urgent)$/,

@@ -1,3 +1,4 @@
+import { normFlow } from "@/entities/market-flow";
 import { asArr, asDict, asNum, asStr, uzs } from "@/shared/lib/json";
 import { normAdditional, normPackSnap, normQuoteSnap, normRating, normResult } from "./normExtra";
 import type { Milestone, OrderStep, ProOrder } from "../model/types";
@@ -27,9 +28,10 @@ export function normOrder(v: unknown): ProOrder {
     buyerPublicId: asStr(client.lexgo_id),
     buyerUserId: asStr(d.client_user_id ?? client.id),
     roomId,
-    canChat: d.can_start_chat === true && !!roomId,
+    // TZ §6: the buyer is reachable only once the backend unlocked contact (after the advance payment).
+    canChat: d.can_start_chat === true && d.contact_unlocked !== false && !!roomId,
     canComplete: !!asStr(d.complete_url),
-    canCall: d.can_create_call === true && !!roomId,
+    canCall: d.can_create_call === true && d.contact_unlocked !== false && !!roomId,
     packageId: asStr(d.package_id ?? details.package_id),
     optionIds,
     quote,
@@ -39,6 +41,7 @@ export function normOrder(v: unknown): ProOrder {
     additional: normAdditional(d),
     createdAt: asStr(d.created_at),
     updatedAt: asStr(d.updated_at),
+    flow: normFlow(d),
   };
 }
 

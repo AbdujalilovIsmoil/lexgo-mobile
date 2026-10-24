@@ -13,3 +13,4 @@ export { FaqList } from "./FaqList";
 export { OtherPlansSection } from "./OtherPlansSection";
 export { BillingHistory } from "./BillingHistory";
 export { TelegramRequestSheet } from "./TelegramRequestSheet";
+export { MyPlanCard } from "./MyPlanCard";

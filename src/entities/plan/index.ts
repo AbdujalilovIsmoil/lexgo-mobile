@@ -1,7 +1,7 @@
 export * from "./model/types";
 export * from "./model/period";
 export type { ActiveSub, SharedMember, PlanRequestRow } from "./model/entitlement";
-export { usePlans, usePlan, useEntitlements, planKeys, entitlementKeys } from "./model/queries";
+export { usePlans, usePlan, useEntitlements, useMyFeatures, useContract, planKeys, entitlementKeys, featureKeys } from "./model/queries";
 export { useIsFreeAiTier } from "./model/useAiTier";
 export { useAutoRenewStore } from "./model/autoRenewStore";
 export { listPlans, getPlan } from "./api/planApi";
@@ -15,3 +15,4 @@ export { PlanPrice, PERIOD_KEY } from "./ui/PlanPrice";
 export { PlanCardSkeleton } from "./ui/PlanCardSkeleton";
 export { CurrentPlan } from "./ui/CurrentPlan";
 export * from "./lib/pricing";
+export { getMyFeatures, getContract, acceptRenewal, consumeFeature, normFeatures, normContract, type PlanFeature, type FeatureMode, type MyFeatures, type PlanContract } from "./api/featuresApi";

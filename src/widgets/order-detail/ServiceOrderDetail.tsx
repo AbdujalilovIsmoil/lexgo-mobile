@@ -16,7 +16,7 @@ export function ServiceOrderDetail({ order, onDone }: { order: Order; onDone: ()
   return (
     <ScrollView contentContainerStyle={[s.content, { paddingBottom: insets.bottom + 24 }]} showsVerticalScrollIndicator={false}>
       <OrderInfo order={order} />
-      {seller ? (isOpenOrder(order) ? <SellerActions orderId={order.id} onDone={onDone} /> : null) : order.paymentStatus === "paid" ? <Text variant="small" tone="ok">{t("ord.paid")}</Text> : serviceStageOf(order) === "cancelled" ? null : <PayBlock orderId={order.id} />}
+      {seller ? (isOpenOrder(order) ? <SellerActions orderId={order.id} onDone={onDone} deadlineAt={order.acceptanceDeadlineAt} /> : null) : order.paymentStatus === "paid" ? <Text variant="small" tone="ok">{t("ord.paid")}</Text> : serviceStageOf(order) === "cancelled" ? null : <PayBlock orderId={order.id} />}
     </ScrollView>
   );
 }

@@ -9,5 +9,5 @@ export function hintOf(o: ProOrder): OrderHint | null {
   if (a.paused) return "paused";
   if (a.accept) return "accept";
   if (a.complete) return "complete";
-  return a.moves.length ? "work" : null;
+  return a.start || a.moves.length ? "work" : null;
 }

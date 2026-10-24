@@ -36,6 +36,11 @@ describe("appHref", () => {
     expect(appHref("/index")).toBe("/");
     expect(appHref("/chat/abc", { id: "1", evil: "2" })).toBe("/chat/abc?id=1");
   });
+  it("opens the seller's experience page (TZ.md §13), only for sellers", () => {
+    expect(appHref("/pro/experience")).toBe("/pro/experience");
+    expect(mayOpen("/pro/experience", v("client"))).toBe(false);
+    expect(mayOpen("/pro/experience", v("seller"))).toBe(true);
+  });
   it("opens the scanner (no outside parameters), only for sellers", () => {
     expect(appHref("/pro/scan", { folder: "f1" })).toBe("/pro/scan"); // outside links never choose the folder
     expect(mayOpen("/pro/scan", v("client"))).toBe(false);

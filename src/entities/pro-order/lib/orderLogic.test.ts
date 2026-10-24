@@ -55,3 +55,30 @@ describe("supplemental payment pause (TZ 11)", () => {
     expect(stageOf({ status: "pending_payment", paymentStatus: "pending", additional: null })).toBe("unpaid");
   });
 });
+
+describe("seller actions of the marketplace flow (TZ.md §5, §6, §9)", () => {
+  const { actionsOf } = jest.requireActual("./moves") as typeof import("./moves");
+  const { normFlow } = jest.requireActual("@/entities/market-flow") as typeof import("@/entities/market-flow");
+  const order = (raw: Record<string, unknown>) =>
+    ({ id: "o1", workId: "ADV-1", status: String(raw.status), paymentStatus: String(raw.payment_status ?? "paid"), serviceId: "s1", packageId: "", canComplete: !!raw.complete_url, canChat: false, canCall: false, roomId: "", additional: null, flow: normFlow(raw) }) as unknown as import("../model/types").ProOrder;
+  it("an assignment is answered on its own card, not from the bar", () => {
+    const a = actionsOf(order({ status: "sent_to_seller", payment_status: "pending", acceptance_deadline_at: "2026-10-24T10:30:00Z" }));
+    expect(a.accept).toBe(false);
+    expect(a.decline).toBe(false);
+  });
+  it("nothing to start before the advance unlocked contact", () => {
+    const a = actionsOf(order({ status: "accepted", payment_status: "pending", contact_unlocked: false, can_start: true, start_url: "/marketplace/orders/o1/start" }));
+    expect(a.start).toBe(false);
+    expect(a.moves).toEqual([]);
+  });
+  it("start_url replaces the plain start moves", () => {
+    const a = actionsOf(order({ status: "paid", payment_status: "paid", contact_unlocked: true, can_start: true, start_url: "/marketplace/orders/o1/start" }));
+    expect(a.start).toBe(true);
+    expect(a.moves).toEqual([]);
+  });
+  it("can_complete=false wins over a complete_url", () => {
+    expect(actionsOf(order({ status: "in_progress", can_complete: false, complete_url: "/x" })).complete).toBe(false);
+    expect(actionsOf(order({ status: "in_progress", can_complete: true, complete_url: "/x" })).complete).toBe(true);
+    expect(actionsOf(order({ status: "in_progress", complete_url: "/x" })).complete).toBe(true);
+  });
+});

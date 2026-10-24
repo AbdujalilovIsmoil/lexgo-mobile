@@ -16,6 +16,9 @@ export function OrderFactsCard({ order: o }: { order: ProOrder }) {
         { label: t("sl9.f.channel"), value: channel },
         { label: t("sl9.f.time"), value: o.preferredTime },
         { label: t("sl9.f.created"), value: fmtDateTime(o.createdAt, locale) },
+        { label: t("mf.due.started"), value: o.flow.startedAt ? fmtDateTime(o.flow.startedAt, locale) : undefined },
+        { label: t("mf.due.due"), value: o.flow.expectedCompletedAt ? fmtDateTime(o.flow.expectedCompletedAt, locale) : undefined },
+        { label: t("mf.due.completed"), value: o.flow.completedAt ? fmtDateTime(o.flow.completedAt, locale) : undefined },
         { label: t("sl9.f.updated"), value: o.updatedAt !== o.createdAt ? fmtDateTime(o.updatedAt, locale) : undefined },
       ]} />
       {o.note ? <><Text variant="caption" tone="gray">{t("sl9.clientNote")}</Text><Text variant="small">{o.note}</Text></> : null}

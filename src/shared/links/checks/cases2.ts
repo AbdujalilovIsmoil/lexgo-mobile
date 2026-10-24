@@ -23,4 +23,16 @@ export const MORE_CASES: Case[] = [
   ["deep_link: hostile host ignored", "client", { deepLink: "https://evil.example/portal/client/documents", event: "payment_paid", data: { payment_id: "p1" } }, { href: "/payments/p1" }],
   ["deep_link: seller-only path, client", "client", { deepLink: "lexgo://pro/docs" }, { kind: "none" }],
   ["guard: seller event for a client", "client", ev("document_request.pool_created"), { href: "/documents" }],
+  // TZ.md §14: marketplace events open the order by id, for the side that receives them.
+  ["assignment received, seller", "seller", ev("marketplace.assignment_received", { order_id: "o1" }), { href: "/pro/orders/o1", fallback: "/pro/orders" }],
+  ["assignment expired, seller", "seller", ev("marketplace.assignment_expired", { order_id: "o1" }), { href: "/pro/orders/o1" }],
+  ["seller accepted, client", "client", ev("order_accepted", { order_id: "o1" }), { href: "/orders/o1" }],
+  ["advance paid, seller", "seller", ev("marketplace.advance_paid", { order_id: "o1" }), { href: "/pro/orders/o1" }],
+  ["final paid, client", "client", ev("marketplace.final_paid", { order_id: "o1" }), { href: "/orders/o1" }],
+  ["additional payment approved (dot event)", "seller", ev("marketplace.additional_payment_approved", { order_id: "o2" }), { href: "/pro/orders/o2" }],
+  ["order completed, client", "client", ev("marketplace.order_completed", { marketplace_order_id: "o3" }), { href: "/orders/o3" }],
+  ["order complaint update, client", "client", ev("marketplace.complaint_resolved", { order_id: "o4" }), { href: "/orders/o4" }],
+  ["warranty update, client", "client", ev("marketplace.warranty_resolved", { order_id: "o5" }), { href: "/orders/o5" }],
+  ["renewal consent, client", "client", ev("subscription.renewal_consent_required"), { href: "/subscription" }],
+  ["renewal consent, seller", "seller", ev("subscription_renewal_consent_required"), { href: "/subscription" }],
 ];

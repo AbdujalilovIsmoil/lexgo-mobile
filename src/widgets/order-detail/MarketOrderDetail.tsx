@@ -1,7 +1,8 @@
 import { useRef, useState } from "react";
 import { RefreshControl, ScrollView, StyleSheet, View } from "react-native";
 import type { MarketOrder } from "@/entities/order";
-import { marketStageOf } from "@/entities/order";
+import { phaseOf, useFlowLive } from "@/entities/market-flow";
+import { ChecklistCard, ComplaintCard, FlowLead, PaymentRequestCard, PaymentsCard, WarrantyCard } from "@/widgets/market-order";
 import { useInsets } from "@/shared/lib/insets";
 import { DetailHeader } from "./DetailHeader";
 import { OrderFacts } from "./OrderFacts";
@@ -17,9 +18,13 @@ import { SellerCard } from "./SellerCard";
 
 type Props = { order: MarketOrder; refreshing: boolean; onRefresh: () => void };
 
-// Body of /orders/[id] for a marketplace purchase.
+// Body of /orders/[id] for a marketplace purchase: where it stands, what to pay (advance / final), the specialist, the 15-minute rating
+// and complaint window, the result, the checklist the specialist works through, the payments, the warranty, then what was bought.
 export function MarketOrderDetail({ order, refreshing, onRefresh }: Props) {
   const insets = useInsets();
+  useFlowLive();
+  const phase = phaseOf({ status: order.status, paymentStatus: order.paymentStatus, flow: order.flow, rated: order.ratingStars > 0 });
+  const f = order.flow;
   // Bumped while the page scrolls (and when it settles): the second-opinion card asks again whether it is on screen.
   const [tick, setTick] = useState(0);
   const last = useRef(0);
@@ -35,11 +40,16 @@ export function MarketOrderDetail({ order, refreshing, onRefresh }: Props) {
       showsVerticalScrollIndicator={false}
     >
       <DetailHeader order={order} />
-      {marketStageOf(order) === "pending" ? <PendingNote onCheck={onRefresh} checking={refreshing} /> : null}
+      {phase === "pending" ? <PendingNote onCheck={onRefresh} checking={refreshing} /> : <FlowLead phase={phase} role="client" lead={phase === "completed" && !order.rating?.available ? "completedClosed" : undefined} />}
+      <PaymentRequestCard orderId={order.id} flow={f} phase={phase} />
       <AddPayNote order={order} />
       <SellerCard order={order} />
       <RatingBanner order={order} />
+      <ComplaintCard orderId={order.id} flow={f} />
       <ResultCard order={order} />
+      <ChecklistCard orderId={order.id} url={f.checklistUrl} role="client" enabled={phase === "in_progress" || phase === "review" || phase === "completed" || phase === "rated" || (phase === "paid" && !!f.checklistProgress)} />
+      <PaymentsCard orderId={order.id} url={f.financialsUrl} role="client" enabled={phase !== "cancelled" || order.paymentStatus === "paid"} />
+      <WarrantyCard orderId={order.id} flow={f} phase={phase} />
       <SecondOpinionCard order={order} tick={tick} />
       <PackageCard order={order} />
       <OptionsCard order={order} />

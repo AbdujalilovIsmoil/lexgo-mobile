@@ -5,7 +5,7 @@ import { FactRows } from "@/shared/ui/admin";
 import { useT } from "@/shared/i18n";
 import { fmtDateTime } from "@/shared/lib/format";
 
-// Payment, contact preferences, dates and the client's own note.
+// Payment, contact preferences, dates (ordered, work started, due by, completed — the backend's) and the client's own note.
 export function OrderFacts({ order: o }: { order: MarketOrder }) {
   const { t, locale } = useT();
   const paid = o.paymentStatus === "paid";
@@ -17,6 +17,9 @@ export function OrderFacts({ order: o }: { order: MarketOrder }) {
         { label: t("mk3.channelShort"), value: channel },
         { label: t("mk3.timeShort"), value: o.preferredTime },
         { label: t("ord.created"), value: fmtDateTime(o.requestedAt || o.createdAt, locale) },
+        { label: t("mf.due.started"), value: o.flow.startedAt ? fmtDateTime(o.flow.startedAt, locale) : undefined },
+        { label: t("mf.due.due"), value: o.flow.expectedCompletedAt ? fmtDateTime(o.flow.expectedCompletedAt, locale) : undefined },
+        { label: t("mf.due.completed"), value: o.flow.completedAt ? fmtDateTime(o.flow.completedAt, locale) : undefined },
       ]} />
       {o.note ? <Card tinted style={s.note}><Text variant="caption" tone="gray" weight="bold">{t("mk4.yourNote")}</Text><Text variant="small">{o.note}</Text></Card> : null}
     </View>

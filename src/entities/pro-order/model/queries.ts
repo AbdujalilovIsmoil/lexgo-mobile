@@ -1,10 +1,11 @@
 import { useQuery } from "@tanstack/react-query";
 import { useAdminMutation } from "@/shared/lib/useAdminMutation";
-import { acceptOrder, declineOrder, getHistory, getMilestones, listOrders, moveOrder } from "../api/orderApi";
+import { acceptOrder, declineOrder, getHistory, getMilestones, getOrder, listOrders, moveOrder } from "../api/orderApi";
 
 export const orderKeys = { all: ["pro-order"] as const };
 
 export const useProOrders = () => useQuery({ queryKey: [...orderKeys.all, "list"], queryFn: listOrders });
+export const useProOrder = (id: string) => useQuery({ queryKey: [...orderKeys.all, "one", id], queryFn: () => getOrder(id), enabled: !!id, staleTime: 10 * 1000 });
 export const useOrderHistory = (id: string) => useQuery({ queryKey: [...orderKeys.all, "history", id], queryFn: () => getHistory(id), enabled: !!id });
 export const useOrderMilestones = (id: string) => useQuery({ queryKey: [...orderKeys.all, "milestones", id], queryFn: () => getMilestones(id), enabled: !!id, retry: false });
 

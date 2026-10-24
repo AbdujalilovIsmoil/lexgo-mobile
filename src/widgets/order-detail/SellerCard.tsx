@@ -6,7 +6,7 @@ import { Avatar, Card, Icon, Text } from "@/shared/ui";
 import { useColors } from "@/shared/theme";
 import { useT } from "@/shared/i18n";
 
-// The specialist on this purchase: public profile data only (no phone), tap opens the profile drawer.
+// The specialist on this purchase: public profile data only (no phone, TZ §6), tap opens the profile drawer. An unrated one says so.
 export function SellerCard({ order: o }: { order: MarketOrder }) {
   const c = useColors();
   const { t } = useT();
@@ -25,7 +25,7 @@ export function SellerCard({ order: o }: { order: MarketOrder }) {
           <Text variant="body" weight="bold" numberOfLines={1} style={s.flex}>{name}</Text>
           {l?.verified ? <Icon name="check-circle" size={16} color={c.accent} /> : null}
         </View>
-        <Text variant="caption" tone="gray2" numberOfLines={1}>{[kind, l?.publicId || o.lawyerPublicId, l?.rated ? `★ ${l.rating.toFixed(1)}` : ""].filter(Boolean).join(" · ")}</Text>
+        <Text variant="caption" tone="gray2" numberOfLines={1}>{[kind, l?.publicId || o.lawyerPublicId, l ? (l.rated ? `★ ${l.rating.toFixed(1)}` : t("lawyers.card.unrated")) : ""].filter(Boolean).join(" · ")}</Text>
       </View>
       {l ? <Icon name="chevron-right" size={18} tone="gray" /> : null}
     </Card>

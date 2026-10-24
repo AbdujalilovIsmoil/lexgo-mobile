@@ -1,3 +1,4 @@
+import { normFlow } from "@/entities/market-flow";
 import { asDict, asStr, uzs } from "@/shared/lib/json";
 import type { MarketOrder } from "../model/marketTypes";
 import { normOrderExtra } from "./marketExtra";
@@ -28,8 +29,9 @@ export function normMarketOrder(v: unknown, clientActions: string[] = []): Marke
     lawyerPublicId: asStr(lawyer.public_id ?? d.lawyer_public_id),
     lawyerUserId: asStr(d.lawyer_user_id ?? lawyer.id),
     roomId,
-    canStartChat: d.can_start_chat === true && !!roomId,
-    canCreateCall: d.can_create_call === true && !!roomId,
+    // TZ §6: no chat or call before the backend unlocked contact (contact_unlocked=true after the advance).
+    canStartChat: d.can_start_chat === true && d.contact_unlocked !== false && !!roomId,
+    canCreateCall: d.can_create_call === true && d.contact_unlocked !== false && !!roomId,
     cancelOffered: !!asStr(d.cancel_url),
     completeOffered: clientActions.includes("complete") && !!asStr(d.complete_url),
     createdAt: asStr(d.created_at),
@@ -38,5 +40,6 @@ export function normMarketOrder(v: unknown, clientActions: string[] = []): Marke
     updatedAt: asStr(d.updated_at),
     secondOpinionUrl: asStr(d.second_opinion_promotion_url) || asStr(asDict(d.actions).second_opinion_promotion),
     ...normOrderExtra(d, details),
+    flow: normFlow(d),
   };
 }

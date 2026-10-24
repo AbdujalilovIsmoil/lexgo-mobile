@@ -20,7 +20,7 @@ export function TopicLawyers({ area, onOpen }: Props) {
           <Avatar name={l.name} size={42} square />
           <View style={s.info}>
             <Text variant="body" weight="semibold" numberOfLines={1}>{l.name}</Text>
-            <Text variant="caption" tone="gray">{l.rated ? `★ ${l.rating.toFixed(1)} · ` : ""}{t("lawyers.card.reviews", { count: l.reviews, years: l.experienceYears })}</Text>
+            <Text variant="caption" tone="gray">{l.rated ? `★ ${l.rating.toFixed(1)} · ` : `${t("lawyers.card.unrated")} · `}{t("lawyers.card.reviews", { count: l.reviews, years: l.experienceYears })}</Text>
           </View>
         </PressableScale>
       ))}

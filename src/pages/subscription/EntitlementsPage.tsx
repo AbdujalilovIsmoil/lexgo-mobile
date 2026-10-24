@@ -1,12 +1,12 @@
 import { useRouter } from "expo-router";
 import { useEntitlements, usePlans } from "@/entities/plan";
-import { ActiveSubCard, DocsAccess, PendingRequests, SharedMembers } from "@/widgets/subscription";
+import { ActiveSubCard, DocsAccess, MyPlanCard, PendingRequests, SharedMembers } from "@/widgets/subscription";
 import { AdminPage, QueryBoundary, SectionCard } from "@/shared/ui/admin";
 import { PayScroll } from "@/shared/ui/pay/PayScroll";
 import { Button, EmptyState } from "@/shared/ui";
 import { useT } from "@/shared/i18n";
 
-// "What my plan gives": active subscriptions with their functions and limits, document access,
+// "What my plan gives": the current period's features (TZ §12, with the renewal consent), active subscriptions with their functions and limits, document access,
 // family members who share it, and tariff requests still waiting for an operator.
 export function EntitlementsPage() {
   const { t } = useT();
@@ -19,6 +19,7 @@ export function EntitlementsPage() {
     <AdminPage title={t("py4.title")}>
       <QueryBoundary query={q}>
         <PayScroll refreshing={q.isRefetching} onRefresh={() => void q.refetch()}>
+          <MyPlanCard onUpgrade={() => router.push("/subscription")} />
           {e && e.subs.length ? e.subs.map((s) => <ActiveSubCard key={s.id} sub={s} plan={byId.get(s.planId)} />) : (
             <SectionCard><EmptyState compact icon="credit-card" title={t("py4.none.title")} text={t("py4.none.text")} /></SectionCard>
           )}

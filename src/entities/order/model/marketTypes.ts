@@ -1,4 +1,5 @@
 import type { Quote } from "@/entities/price-option";
+import type { FlowOrder } from "@/entities/market-flow";
 // pending = waiting for the payment approval, active = paid and in work.
 export type MarketStage = "pending" | "active" | "completed" | "cancelled";
 export type PreferredChannel = "chat" | "audio" | "video" | "meeting";
@@ -47,6 +48,7 @@ export type MarketOrder = {
   ratingComment: string;
   addPay: OrderAddPay | null;
   secondOpinionUrl: string; // second_opinion_promotion_url / actions.second_opinion_promotion; "" (null) → the promotion is not rendered
+  flow: FlowOrder; // TZ.md: contact gate, payment plan, checklist / financials / warranty links, complaint window, assignment deadline
 };
 
 // What POST …/purchase-request answers with.

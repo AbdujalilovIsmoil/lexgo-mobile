@@ -1,3 +1,4 @@
+import type { FlowOrder } from "@/entities/market-flow";
 import type { AdditionalPay, OrderRating, OrderResult, PackSnap, QuoteSnap } from "./extraTypes";
 
 // A marketplace order as its seller sees it (GET /marketplace/me/orders?role_view=seller).
@@ -30,6 +31,7 @@ export type ProOrder = {
   additional: AdditionalPay | null;
   createdAt: string;
   updatedAt: string;
+  flow: FlowOrder; // TZ.md: assignment deadline, start / checklist / financials links, contact gate, payment plan
 };
 
 // new = paid and waiting for the seller · active = being worked on · done · closed.

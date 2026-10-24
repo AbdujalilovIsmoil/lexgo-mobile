@@ -19,6 +19,7 @@ export function normOrder(v: unknown): Order {
     createdAt: asStr(d.created_at ?? d.createdAt),
     lawyerName: asStr(d.lawyer_name ?? asDict(d.lawyer).name) || undefined,
     source: asStr(d.source) || undefined,
+    acceptanceDeadlineAt: asStr(d.acceptance_deadline_at ?? details.acceptance_deadline_at ?? d.confirmation_deadline_at ?? details.confirmation_deadline_at) || undefined,
   };
 }
 
@@ -28,9 +29,17 @@ export async function listOrders(): Promise<Order[]> {
     .sort((a, b) => (b.createdAt > a.createdAt ? 1 : -1));
 }
 
-// POST /orders — the client picks a service and a specialist; the backend prices it.
-export async function createOrder(input: { serviceId: string; lawyerUserId: string; note?: string; title?: string; packageId?: string }): Promise<Order> {
-  const details = { ...(input.note ? { question: input.note } : {}), ...(input.title ? { service_title: input.title } : {}) };
-  const body = { source: "mobile", service_id: input.serviceId, lawyer_user_id: input.lawyerUserId, ...(input.packageId ? { package_id: input.packageId } : {}), details };
+export type NewOrder = { serviceId: string; lawyerUserId?: string; packageId?: string; region?: string; problem?: string; optionIds?: string[]; title?: string };
+
+// POST /orders (TZ.md §3): a marketplace order for the chosen specialist — or, without `lawyerUserId`, for the one the platform assigns.
+// The backend prices it and runs the flow (assignment → advance → work); the client is shown the status it answers with.
+export async function createOrder(input: NewOrder): Promise<Order> {
+  const details = {
+    region: input.region ?? "",
+    problem: input.problem?.trim() ?? "",
+    selected_option_ids: input.optionIds ?? [],
+    ...(input.title ? { service_title: input.title } : {}),
+  };
+  const body = { service_id: input.serviceId, package_id: input.packageId || null, ...(input.lawyerUserId ? { lawyer_user_id: input.lawyerUserId } : {}), source: "marketplace", details };
   return normOrder(await http("/orders", { method: "POST", body }));
 }

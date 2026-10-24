@@ -18,7 +18,7 @@ export function OrderSheet({ order: current, onClose }: { order: Order | null; o
         {order ? (
           <>
             <OrderInfo order={order} />
-            {seller ? (isOpenOrder(order) ? <SellerActions orderId={order.id} onDone={onClose} /> : null) : order.paymentStatus !== "paid" ? <PayBlock orderId={order.id} /> : <Text variant="small" tone="ok">{t("ord.paid")}</Text>}
+            {seller ? (isOpenOrder(order) ? <SellerActions orderId={order.id} onDone={onClose} deadlineAt={order.acceptanceDeadlineAt} /> : null) : order.paymentStatus !== "paid" ? <PayBlock orderId={order.id} /> : <Text variant="small" tone="ok">{t("ord.paid")}</Text>}
           </>
         ) : null}
       </SheetScroll>

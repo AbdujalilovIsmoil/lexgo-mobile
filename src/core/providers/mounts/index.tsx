@@ -2,6 +2,7 @@ import { AiMounts } from "./AiMounts";
 import { AuthMounts } from "./AuthMounts";
 import { CcMounts } from "./CcMounts";
 import { InfraMounts } from "./InfraMounts";
+import { MarketMounts } from "./MarketMounts";
 import { MsgMounts } from "./MsgMounts";
 import { PayMounts } from "./PayMounts";
 import { SupMounts } from "./SupMounts";
@@ -19,6 +20,7 @@ export function PackageMounts() {
       <SupMounts />
       <UrgMounts />
       <CcMounts />
+      <MarketMounts />
     </>
   );
 }
