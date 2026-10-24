@@ -10,9 +10,13 @@ export const DAY = 24 * 60 * 60 * 1000;
 // so a launch neither downloads nor parses it again. The heavy per-template queries (detail, render) are not listed on purpose.
 const PUBLIC_ROOTS = ["doc-templates", "doc-template-categories", "doc-template-linked", "service-categories", "services", "services-pages", "service-passport", "plans", "market-meta", "promo-active", "lawyers", "lawyers-pages", "lawyer"];
 
-export const persister = createAsyncStoragePersister({ storage: AsyncStorage, key: "lexgo_query_cache", throttleTime: 2000 });
+// The whole public cache is serialised on the JS thread at each write: at most every 15 s (a burst of page opens writes once, not every 2 s).
+export const persister = createAsyncStoragePersister({ storage: AsyncStorage, key: "lexgo_query_cache", throttleTime: 15_000 });
 
-export const shouldPersist = (q: Query): boolean => q.state.status === "success" && PUBLIC_ROOTS.includes(String(q.queryKey[0]));
+/** Public catalogue data (templates, services, plans, lawyers): the same for everybody and never changed by a socket event. */
+export const isPublicQuery = (q: Query): boolean => PUBLIC_ROOTS.includes(String(q.queryKey[0]));
+
+export const shouldPersist = (q: Query): boolean => q.state.status === "success" && isPublicQuery(q);
 
 /** Persisted queries must outlive the in-memory default, otherwise they are dropped before they are written. */
 export function keepPublicQueries(client: QueryClient): void {

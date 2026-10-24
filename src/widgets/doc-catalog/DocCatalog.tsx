@@ -13,6 +13,7 @@ import { CatalogFilterSheet } from "./CatalogFilterSheet";
 import { CatalogRow } from "./CatalogRow";
 import { CatalogSearch } from "./CatalogSearch";
 import { boilerplate, categoryLabel, languageLabel } from "./labels";
+import { usePullRefresh } from "@/shared/lib/usePullRefresh";
 
 const SEARCH = { kind: "search" } as const;
 type Item = typeof SEARCH | DocTemplate;
@@ -30,6 +31,7 @@ export function DocCatalog({ top: cards, footer, onOpen }: { top?: ReactElement 
   const [text, setText] = useState("");
   const [sheet, setSheet] = useState(false);
   const list = useCatalogTemplates(cat);
+  const pull = usePullRefresh(list.refetch);
   const needle = useDebounced(text, 300);
   const info = useMemo(() => cats.data ?? [], [cats.data]);
   const languages = useMemo(() => [...new Set([...info.flatMap((c) => c.languages), ...list.rows.map((r) => r.language)].filter(Boolean))], [info, list.rows]);
@@ -88,8 +90,8 @@ export function DocCatalog({ top: cards, footer, onOpen }: { top?: ReactElement 
         ListFooterComponent={foot}
         ItemSeparatorComponent={Sep}
         contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: clearance }}
-        refreshing={list.refetching}
-        onRefresh={list.refetch}
+        refreshing={pull.refreshing}
+        onRefresh={pull.onRefresh}
         onEndReachedThreshold={0.4}
         onEndReached={more}
         keyboardShouldPersistTaps="handled"

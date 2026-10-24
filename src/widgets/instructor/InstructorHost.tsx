@@ -51,7 +51,7 @@ export function InstructorHost() {
   const hidden = launcherHidden(pathname) || keyboard || open || guiding;
   return (
     <>
-      {hidden ? null : <InstructorLauncher base={insets.bottom + (hasTabBar(pathname) ? 104 : 24)} />}
+      <InstructorLauncher base={insets.bottom + (hasTabBar(pathname) ? 104 : 24)} hidden={hidden} />
       <InstructorSheet />
       <HighlightOverlay />
     </>

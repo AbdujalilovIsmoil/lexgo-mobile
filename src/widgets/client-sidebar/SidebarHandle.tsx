@@ -1,10 +1,11 @@
 import { useEffect } from "react";
 import { StyleSheet, useWindowDimensions, View } from "react-native";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
-import Animated, { Extrapolation, interpolate, useAnimatedStyle, useSharedValue, withDelay, withSequence, withTiming, type SharedValue } from "react-native-reanimated";
+import Animated, { Extrapolation, interpolate, useAnimatedStyle, useReducedMotion, useSharedValue, withDelay, withSequence, withTiming, type SharedValue } from "react-native-reanimated";
 import { scheduleOnRN } from "react-native-worklets";
 import { Icon, Text } from "@/shared/ui";
 import { useSheetsOpen } from "@/shared/lib/sheetsOpen";
+import { useAppActive } from "@/shared/lib/useAppActive";
 import { useT } from "@/shared/i18n";
 
 type Props = { x: SharedValue<number>; p: SharedValue<number>; w: number; onOpen: () => void; onClose: () => void };
@@ -18,9 +19,13 @@ export function SidebarHandle({ x, p, w, onOpen, onClose }: Props) {
   const { t } = useT();
   const { height } = useWindowDimensions();
   const covered = useSheetsOpen((st) => st.n > 0);
+  const front = useAppActive();
+  const calm = useReducedMotion();
+  const awake = front && !calm; // no tease timer while the app is in the background or motion is reduced
   const tease = useSharedValue(0);
   const label = useSharedValue(0);
   useEffect(() => {
+    if (!awake) return;
     const nudge = () => { if (!covered) tease.value = withSequence(withTiming(12, { duration: 280 }), withDelay(220, withTiming(0, { duration: 340 }))); };
     const first = setTimeout(() => {
       nudge();
@@ -28,7 +33,7 @@ export function SidebarHandle({ x, p, w, onOpen, onClose }: Props) {
     }, 1200);
     const loop = setInterval(nudge, 8000);
     return () => { clearTimeout(first); clearInterval(loop); };
-  }, [tease, label, covered]);
+  }, [tease, label, covered, awake]);
   // The pan reports where the drawer was when it began, so it also works if the (invisible) handle is touched while the drawer is
   // open. A cancelled pan (the system's edge swipe, an interruption) settles by where the drawer is — it never stays half way.
   const from = useSharedValue(-w);

@@ -35,7 +35,7 @@ export function useCatalogTemplates(branch: string) {
     loading: !rows.length && act.some((x) => x.q.isLoading) && !failed,
     loadingMore: act.some((x) => x.q.isLoading),
     error: !rows.length && failed ? failed.q.error : null,
-    refetch: () => { act.forEach((x) => void x.q.refetch()); void cats.refetch(); },
+    refetch: () => Promise.all([...act.map((x) => x.q.refetch()), cats.refetch()]),
     refetching: act.some((x) => x.q.isRefetching),
   };
 }

@@ -4,6 +4,7 @@ import Animated, { Easing, useAnimatedStyle, useSharedValue, withSequence, withT
 import { Icon, PressableScale } from "@/shared/ui";
 import { useColors } from "@/shared/theme";
 import { useSheetsOpen } from "@/shared/lib/sheetsOpen";
+import { useMotionOn } from "@/shared/lib/useMotionOn";
 
 const EVERY = 7000;
 
@@ -18,22 +19,24 @@ function Wave({ p, color }: { p: { value: number }; color: string }) {
 export function SupportButton({ onPress, label, glass, active }: { onPress: () => void; label: string; glass?: boolean; active?: boolean }) {
   const c = useColors();
   const covered = useSheetsOpen((st) => st.n > 0);
+  const motion = useMotionOn(); // only on the page in view (each tab page has its own header button)
   const a = useSharedValue(0);
   const b = useSharedValue(1);
   const w = useSharedValue(0);
   useEffect(() => {
-    if (active || covered) return;
+    if (active || covered || !motion) return;
+    let inner: ReturnType<typeof setTimeout> | undefined;
     const play = () => {
        
       a.value = 0; a.value = withTiming(1, { duration: 1800, easing: Easing.out(Easing.quad) });
-      b.value = 0; setTimeout(() => { b.value = withTiming(1, { duration: 1800, easing: Easing.out(Easing.quad) }); }, 700);
+      b.value = 0; inner = setTimeout(() => { b.value = withTiming(1, { duration: 1800, easing: Easing.out(Easing.quad) }); }, 700);
       w.value = withSequence(withTiming(1, { duration: 150 }), withTiming(-1, { duration: 300 }), withTiming(0, { duration: 150 }));
        
     };
     const first = setTimeout(play, 2000);
     const id = setInterval(play, EVERY);
-    return () => { clearTimeout(first); clearInterval(id); };
-  }, [active, covered, a, b, w]);
+    return () => { clearTimeout(first); clearInterval(id); clearTimeout(inner); };
+  }, [active, covered, motion, a, b, w]);
   const icon = useAnimatedStyle(() => ({ transform: [{ rotate: `${w.value * 10}deg` }] }));
   const ring = glass ? "rgba(255,255,255,0.6)" : "rgba(22,104,240,0.55)";
   return (

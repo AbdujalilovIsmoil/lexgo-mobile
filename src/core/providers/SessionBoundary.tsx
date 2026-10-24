@@ -4,6 +4,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useSession } from "@/entities/session";
 import { runSessionReset } from "@/shared/lib";
 import { connectUserSocket, disconnectUserSocket, kickUserSocket, onResync } from "@/shared/realtime";
+import { isPublicQuery } from "./queryPersist";
 
 // Owns the per-session plumbing: the user WebSocket follows the access token,
 // everything cached is dropped when the user/role context changes, and a
@@ -29,11 +30,13 @@ export function SessionBoundary() {
 
   useEffect(() => {
     const sub = AppState.addEventListener("change", (s) => s === "active" && kickUserSocket());
-    // One debounced, active-only refetch: a reconnect right after resume must not stack on the focus refetch storm.
+    // One debounced, active-only refetch: a reconnect right after resume must not stack on the focus refetch storm (requests already
+    // running are kept, not restarted). Public catalogue data is left alone: no socket event changes it, and the template catalogue alone
+    // is a 14 MB download.
     let timer: ReturnType<typeof setTimeout> | undefined;
     const off = onResync(() => {
       clearTimeout(timer);
-      timer = setTimeout(() => void qc.invalidateQueries({ refetchType: "active" }), 1500);
+      timer = setTimeout(() => void qc.invalidateQueries({ refetchType: "active", predicate: (q) => !isPublicQuery(q) }, { cancelRefetch: false }), 1500);
     });
     return () => {
       clearTimeout(timer);

@@ -31,12 +31,13 @@ export function QueryProvider({ children }: { children: ReactNode }) {
   });
   useEffect(() => {
     const sub = AppState.addEventListener("change", (st) => {
-      if (Platform.OS !== "web") focusManager.setFocused(st === "active");
+      // Only a real trip to the background counts as leaving: Control Center, a system alert or Face ID ("inactive") must not refetch everything.
+      if (Platform.OS !== "web") focusManager.setFocused(st !== "background");
     });
     return () => sub.remove();
   }, []);
   return (
-    <PersistQueryClientProvider client={client} persistOptions={{ persister, maxAge: DAY, buster: BUSTER, dehydrateOptions: { shouldDehydrateQuery: shouldPersist } }}>
+    <PersistQueryClientProvider client={client} persistOptions={{ persister, maxAge: DAY, buster: BUSTER, dehydrateOptions: { shouldDehydrateQuery: shouldPersist, shouldDehydrateMutation: () => false } }}>
       {children}
     </PersistQueryClientProvider>
   );

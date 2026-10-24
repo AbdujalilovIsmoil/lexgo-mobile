@@ -1,11 +1,11 @@
 import { type ReactNode } from "react";
-import { Platform } from "react-native";
+import { Platform, useColorScheme } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { SafeAreaProvider, initialWindowMetrics } from "react-native-safe-area-context";
 import { StatusBar } from "expo-status-bar";
 import { KeyboardProvider } from "react-native-keyboard-controller";
 import * as SystemUI from "expo-system-ui";
-import { AURORA, ThemeProvider, useTheme } from "@/shared/theme";
+import { AURORA, ThemeProvider, darkColors, lightColors, useTheme, useThemeStore } from "@/shared/theme";
 import { IncomingCallWatcher } from "@/widgets/admin-meetings";
 import { ClientSidebar, TabletFrame } from "@/widgets/client-sidebar";
 import { AuroraBackdrop, RootOverlays, TabletStatusStrip } from "@/shared/ui";
@@ -41,12 +41,20 @@ function Chrome({ children }: { children: ReactNode }) {
   );
 }
 
+// The root view sits under everything (above ThemeProvider, so it reads the theme the same way): the page colour of the current theme,
+// not the splash's near-black, which showed through as a black flash in the light theme.
+function useRootBg(): string {
+  const system = useColorScheme();
+  const mode = useThemeStore((s) => s.mode);
+  return (mode === "system" ? system === "dark" : mode === "dark") ? darkColors.bg : lightColors.bg;
+}
+
 // Order: gestures → keyboard → safe area → theme → data → fonts/session gate → navigation chrome.
 export function AppProviders({ children }: { children: ReactNode }) {
   useHostClipboardSync();
   useProfileRefresh();
   return (
-    <GestureHandlerRootView style={{ flex: 1, backgroundColor: "#03102B" }}>
+    <GestureHandlerRootView style={{ flex: 1, backgroundColor: useRootBg() }}>
       <KeyboardProvider>
         <SafeAreaProvider initialMetrics={initialWindowMetrics}>
           <ThemeProvider>

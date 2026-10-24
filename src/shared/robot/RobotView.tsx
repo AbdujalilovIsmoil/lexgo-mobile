@@ -27,11 +27,12 @@ export const RobotView = forwardRef<RobotHandle, Props>(function RobotView({ wid
     loadRobotHtml().then((h) => alive && setHtml(h)).catch(() => { if (alive) timer = setTimeout(() => setAttempt((n) => n + 1), 3000); });
     return () => { alive = false; if (timer) clearTimeout(timer); };
   }, [attempt]);
-  // A WebGL surface is lost when the app sleeps; rebuild the scene on return instead of showing a blank view.
+  // A WebGL surface is lost when the app sleeps in the background; rebuild the scene on return instead of showing a blank view. Only a
+  // return from the background: Control Center, a system alert or Face ID make the app "inactive" for a moment and leave the scene intact.
   useEffect(() => {
     let prev = AppState.currentState;
     const sub = AppState.addEventListener("change", (st) => {
-      if (prev !== "active" && st === "active") { setShown(false); setGen((n) => n + 1); }
+      if (prev === "background" && st === "active") { setShown(false); setGen((n) => n + 1); }
       prev = st;
     });
     return () => sub.remove();
@@ -47,7 +48,9 @@ export const RobotView = forwardRef<RobotHandle, Props>(function RobotView({ wid
     crashes.current.push(now);
     setGen((n) => n + 1);
   };
-  useEffect(() => { run(`window.__robot&&window.__robot.pause(${!!paused || !active})`); });
+  const still = !!paused || !active;
+  // Sent when it changes and again once a new scene is up (`shown`), not on every render.
+  useEffect(() => { run(`window.__robot&&window.__robot.pause(${still})`); }, [still, shown, gen]);
   useEffect(() => { if (every) run(`window.__robot&&window.__robot.rhythm(${every})`); }, [every]);
   useImperativeHandle(ref, () => ({ play: (g) => run(`window.__robot&&window.__robot.play(${JSON.stringify(g)})`) }));
   const onMessage = (e: WebViewMessageEvent) => {

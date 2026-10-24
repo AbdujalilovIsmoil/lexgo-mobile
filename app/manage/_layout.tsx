@@ -6,7 +6,7 @@ import { AdminDrawerHost } from "@/widgets/admin-drawer";
 export default function ManageLayout() {
   return (
     <AdminDrawerHost>
-      <Stack screenOptions={{ headerShown: false, animation: "slide_from_right" }} />
+      <Stack screenOptions={{ headerShown: false, animation: "slide_from_right", freezeOnBlur: true }} />
     </AdminDrawerHost>
   );
 }

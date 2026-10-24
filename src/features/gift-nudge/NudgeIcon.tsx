@@ -2,17 +2,21 @@ import { useEffect } from "react";
 import { StyleSheet, Text as RNText, View } from "react-native";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import { LinearGradient } from "expo-linear-gradient";
-import Animated, { Easing, useAnimatedStyle, useSharedValue, withRepeat, withSequence, withTiming } from "react-native-reanimated";
+import Animated, { Easing, cancelAnimation, useAnimatedStyle, useSharedValue, withRepeat, withSequence, withTiming } from "react-native-reanimated";
+import { useMotionOn } from "@/shared/lib/useMotionOn";
 import type { NudgeVariant } from "./variants";
 
 // .giftn__ic: 46px gradient tile, the glyph wiggles and a small ✦ twinkles on the corner.
 export function NudgeIcon({ v }: { v: NudgeVariant }) {
   const w = useSharedValue(0);
   const tw = useSharedValue(0.35);
+  const motion = useMotionOn();
   useEffect(() => {
+    if (!motion) return;
     w.value = withRepeat(withSequence(withTiming(1, { duration: 900, easing: Easing.inOut(Easing.quad) }), withTiming(-1, { duration: 900, easing: Easing.inOut(Easing.quad) }), withTiming(0, { duration: 1800 })), -1);
     tw.value = withRepeat(withSequence(withTiming(1, { duration: 1000 }), withTiming(0.35, { duration: 1000 })), -1);
-  }, [w, tw]);
+    return () => { cancelAnimation(w); cancelAnimation(tw); w.value = 0; tw.value = 0.35; };
+  }, [w, tw, motion]);
   const wiggle = useAnimatedStyle(() => ({ transform: [{ rotate: `${w.value * 8}deg` }] }));
   const spark = useAnimatedStyle(() => ({ opacity: tw.value, transform: [{ scale: 0.8 + tw.value * 0.3 }] }));
   const dark = v.key === "pro" ? "#7A4B00" : "#FFFFFF";

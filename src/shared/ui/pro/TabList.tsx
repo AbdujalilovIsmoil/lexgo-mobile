@@ -6,6 +6,7 @@ import { EmptyState } from "../EmptyState";
 import { ErrorView } from "../ErrorView";
 import { Skeleton } from "../Skeleton";
 import type { IconName } from "../Icon";
+import { usePullRefresh } from "@/shared/lib/usePullRefresh";
 
 type Q = { isLoading: boolean; isError: boolean; error: unknown; refetch: () => unknown; isRefetching: boolean; hasNextPage?: boolean; fetchNextPage?: () => unknown; isFetchingNextPage?: boolean };
 type Props<T> = {
@@ -23,10 +24,11 @@ type Props<T> = {
 // with a bottom padding that clears the floating tab bar.
 export function TabList<T>({ data, query, renderItem, keyExtractor, header, empty, bottomPad, skeletonHeight = 84 }: Props<T>) {
   const { t } = useT();
+  const pull = usePullRefresh(() => query.refetch());
   const pending = query.isLoading ? <View style={{ gap: 12 }}>{[0, 1, 2, 3].map((i) => <Skeleton key={i} height={skeletonHeight} round={20} />)}</View> : null;
   return (
     <FlatList
-      data={query.isLoading || query.isError ? [] : data}
+      data={query.isLoading || (query.isError && !data.length) ? [] : data} // a failed background refetch keeps the rows already shown
       keyExtractor={keyExtractor}
       renderItem={({ item, index }) => renderItem(item, index)}
       ListHeaderComponent={header}
@@ -34,8 +36,8 @@ export function TabList<T>({ data, query, renderItem, keyExtractor, header, empt
       ListFooterComponent={query.hasNextPage ? <Button title={t("adm.loadMore")} variant="soft" full loading={query.isFetchingNextPage} onPress={() => void query.fetchNextPage?.()} style={{ marginTop: 12 }} /> : null}
       ItemSeparatorComponent={() => <View style={{ height: 10 }} />}
       contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: bottomPad, flexGrow: 1 }}
-      refreshing={query.isRefetching && !query.isFetchingNextPage}
-      onRefresh={() => void query.refetch()}
+      refreshing={pull.refreshing}
+      onRefresh={pull.onRefresh}
       onEndReachedThreshold={0.4}
       onEndReached={() => query.hasNextPage && !query.isFetchingNextPage && void query.fetchNextPage?.()}
       keyboardShouldPersistTaps="handled"

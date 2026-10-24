@@ -4,7 +4,8 @@ import { AppProviders } from "@/core";
 export default function RootLayout() {
   return (
     <AppProviders>
-      <Stack screenOptions={{ headerShown: false, animation: "slide_from_right" }}>
+      {/* freezeOnBlur: a screen covered by another one stops re-rendering until it is back on top (the whole tab group under a pushed page). */}
+      <Stack screenOptions={{ headerShown: false, animation: "slide_from_right", freezeOnBlur: true }}>
         <Stack.Screen name="(tabs)" />
         <Stack.Screen name="auth/login" options={{ presentation: "modal", animation: "slide_from_bottom" }} />
         <Stack.Screen name="auth/register" options={{ presentation: "modal", animation: "slide_from_bottom" }} />

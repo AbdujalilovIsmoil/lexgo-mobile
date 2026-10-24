@@ -10,6 +10,7 @@ import { SearchBox } from "@/shared/ui/admin";
 import { JobCard } from "./JobCard";
 import { MarketFilterSheet } from "./MarketFilterSheet";
 import { useMarketFilters } from "./useMarketFilters";
+import { usePullRefresh } from "@/shared/lib/usePullRefresh";
 
 // "Ishlar bozori": the live feed of open orders. Search and one filter button (with a badge) in a single row, the active choices as
 // removable chips, the count with a live dot, then the cards; pull to refresh, skeleton, error and two kinds of empty state.
@@ -18,6 +19,7 @@ export function MarketFeed() {
   const c = useColors();
   const insets = useInsets();
   const q = useJobs();
+  const pull = usePullRefresh(() => q.refetch());
   const limited = !!useCabinet().data?.limitedAccess;
   const m = useMarketFilters();
   const [sheet, setSheet] = useState(false);
@@ -59,8 +61,8 @@ export function MarketFeed() {
         ListEmptyComponent={empty}
         ItemSeparatorComponent={() => <View style={s.gap} />}
         contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: insets.bottom + 28, flexGrow: 1 }}
-        refreshing={q.isRefetching}
-        onRefresh={() => void q.refetch()}
+        refreshing={pull.refreshing}
+        onRefresh={pull.onRefresh}
         keyboardShouldPersistTaps="handled"
         showsVerticalScrollIndicator={false}
       />

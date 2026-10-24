@@ -11,7 +11,7 @@ import { callIdOf, isOver, MINE_DONE, NUDGE, parseRing, ringable, ringFrameOf, r
 
 export type { Incoming };
 const POLL_MS = 8000; // while the user socket is down
-const SAFETY_MS = 6000; // while it is up: a ring the socket did not bring still shows within seconds
+const SAFETY_MS = 30_000; // while it is up: the socket rings at once; this only catches a ring it lost (every 6 s kept the radio awake for good)
 const RING_MS = 45_000; // an unanswered ring stops by itself (still joinable from the meetings list)
 const make = (c: Invited): Incoming => ({ roomId: c.roomId, callId: c.callId, type: c.type, callerName: c.callerName, title: c.title });
 const FRESH_MS = 3 * 60_000;

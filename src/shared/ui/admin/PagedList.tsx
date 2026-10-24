@@ -9,6 +9,7 @@ import { ErrorView } from "../ErrorView";
 import { ApiError } from "@/shared/api/errors";
 import { Skeleton } from "../Skeleton";
 import type { IconName } from "../Icon";
+import { usePullRefresh } from "@/shared/lib/usePullRefresh";
 
 type Q = { isLoading: boolean; isError: boolean; error: unknown; refetch: () => unknown; isRefetching: boolean; hasNextPage?: boolean; fetchNextPage?: () => unknown; isFetchingNextPage?: boolean };
 type Props<T> = {
@@ -28,6 +29,7 @@ type Props<T> = {
 // Infinite admin list: skeleton → error/403 (404 = module off when `off` is given) → rows, pull to refresh, "show more".
 export function PagedList<T>({ data, query, renderItem, keyExtractor, header, empty, skeletonHeight = 84, off, flat, columns = 1, bottomPad = 0 }: Props<T>) {
   const { t } = useT();
+  const pull = usePullRefresh(() => query.refetch());
   const insets = useInsets();
   const pending = query.isLoading ? <View style={{ gap: 12 }}>{[0, 1, 2, 3, 4].map((i) => <Skeleton key={i} height={skeletonHeight} round={20} />)}</View> : null;
   return (
@@ -35,7 +37,7 @@ export function PagedList<T>({ data, query, renderItem, keyExtractor, header, em
       key={columns}
       numColumns={columns}
       columnWrapperStyle={columns > 1 ? { gap: 14, justifyContent: columns > 2 ? "flex-start" : "space-between" } : undefined}
-      data={query.isLoading || query.isError ? [] : data}
+      data={query.isLoading || (query.isError && !data.length) ? [] : data} // a failed background refetch keeps the rows already shown
       keyExtractor={keyExtractor}
       renderItem={({ item, index }) => renderItem(item, index)}
       ListHeaderComponent={header}
@@ -43,8 +45,8 @@ export function PagedList<T>({ data, query, renderItem, keyExtractor, header, em
       ListFooterComponent={query.hasNextPage ? <Button title={t("adm.loadMore")} variant="soft" full loading={query.isFetchingNextPage} onPress={() => void query.fetchNextPage?.()} style={{ marginTop: 12 }} /> : null}
       ItemSeparatorComponent={() => (flat ? <Divider inset={56} /> : <View style={{ height: columns > 1 ? 20 : 10 }} />)}
       contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: insets.bottom + 24 + bottomPad, flexGrow: 1 }}
-      refreshing={query.isRefetching && !query.isFetchingNextPage}
-      onRefresh={() => void query.refetch()}
+      refreshing={pull.refreshing}
+      onRefresh={pull.onRefresh}
       onEndReachedThreshold={0.4}
       onEndReached={() => query.hasNextPage && !query.isFetchingNextPage && void query.fetchNextPage?.()}
       keyboardShouldPersistTaps="handled"

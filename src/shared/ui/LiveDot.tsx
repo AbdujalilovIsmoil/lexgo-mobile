@@ -1,14 +1,18 @@
 import { useEffect } from "react";
 import { StyleSheet, View } from "react-native";
-import Animated, { Easing, useAnimatedStyle, useSharedValue, withRepeat, withSequence, withTiming } from "react-native-reanimated";
+import Animated, { Easing, cancelAnimation, useAnimatedStyle, useSharedValue, withRepeat, withSequence, withTiming } from "react-native-reanimated";
+import { useMotionOn } from "@/shared/lib/useMotionOn";
 
 // A "this is happening now" light: the core fades on and off while a ring spreads out from it and vanishes.
 // Used in front of status labels whose process is still running (in progress, waiting for the other side).
 export function LiveDot({ color, size = 8 }: { color: string; size?: number }) {
   const t = useSharedValue(0);
+  const motion = useMotionOn(); // a row on a page out of view (or the app in the background) keeps a still light
   useEffect(() => {
+    if (!motion) return;
     t.value = withRepeat(withSequence(withTiming(1, { duration: 900, easing: Easing.inOut(Easing.quad) }), withTiming(0, { duration: 900, easing: Easing.inOut(Easing.quad) })), -1);
-  }, [t]);
+    return () => { cancelAnimation(t); t.value = 0; };
+  }, [t, motion]);
   const core = useAnimatedStyle(() => ({ opacity: 0.25 + 0.75 * (1 - t.value) }));
   const ring = useAnimatedStyle(() => ({ opacity: 0.55 * (1 - t.value), transform: [{ scale: 1 + t.value * 1.6 }] }));
   return (
