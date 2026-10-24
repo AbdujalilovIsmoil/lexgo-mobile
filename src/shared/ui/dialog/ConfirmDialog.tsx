@@ -63,7 +63,8 @@ export function ConfirmDialog() {
 
 const s = StyleSheet.create({
   root: { flex: 1, alignItems: "center", justifyContent: "center", padding: 24 },
-  card: { alignSelf: "stretch", maxWidth: 380, borderRadius: radius.rx, borderWidth: 1, padding: 22, paddingTop: 26, gap: 10, alignItems: "center" },
+  // Full width on a phone, 380 at most and centred on a tablet (with "stretch" the capped card stuck to the left edge).
+  card: { width: "100%", maxWidth: 380, alignSelf: "center", borderRadius: radius.rx, borderWidth: 1, padding: 22, paddingTop: 26, gap: 10, alignItems: "center" },
   ring: { width: 84, height: 84, borderRadius: 42, alignItems: "center", justifyContent: "center", marginBottom: 6, opacity: 0.9 },
   badge: { width: 58, height: 58, borderRadius: 29, borderWidth: 1.5, alignItems: "center", justifyContent: "center" },
   msg: { marginBottom: 12, paddingHorizontal: 6 },
