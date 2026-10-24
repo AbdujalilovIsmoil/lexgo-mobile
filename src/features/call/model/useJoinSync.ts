@@ -10,6 +10,10 @@ import { deviceId } from "@/shared/push";
 export function useJoinSync(roomId: string, callId: string, connected: boolean, onEnded: () => void): void {
   const sent = useRef("");
   const me = useSession()?.user.id ?? "";
+  // The retry is dropped when the call screen goes away (not when the effect below re-runs): a join sent after hanging up would put the
+  // person back into the call's roster.
+  const mounted = useRef(true);
+  const retryTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
   useEffect(() => {
     const key = `${roomId}:${callId}`;
     if (!connected || sent.current === key) return;
@@ -20,9 +24,17 @@ export function useJoinSync(roomId: string, callId: string, connected: boolean, 
       if (d && me) await patchParticipant(roomId, callId, me, { status: "joined", answered_device_id: d }).catch(() => undefined);
     };
     const run = (retry: boolean) => answer().then(() => joinCall(roomId, callId)).catch((e: unknown) => {
+      if (!mounted.current) return;
       if (e instanceof ApiError && e.status === 409) onEnded();
-      else if (retry) setTimeout(() => void run(false), 2500);
+      else if (retry) retryTimer.current = setTimeout(() => void run(false), 2500);
     });
     void run(true);
   }, [roomId, callId, connected, onEnded, me]);
+  useEffect(() => {
+    mounted.current = true;
+    return () => {
+      mounted.current = false;
+      clearTimeout(retryTimer.current);
+    };
+  }, []);
 }
