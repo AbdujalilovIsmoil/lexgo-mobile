@@ -1,5 +1,5 @@
 import { FocusStatusBar } from "@/shared/ui";
-import { useEffect, useRef } from "react";
+import { useCallback, useEffect, useRef } from "react";
 import { StyleSheet, View } from "react-native";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { KeyboardAvoidingView } from "react-native-keyboard-controller";
@@ -27,6 +27,10 @@ export function AiChatPage() {
     router.setParams({ q: "" });
   }, [q, chat, router]);
 
+  const { send, retry } = chat;
+  const { submit, askWhy } = fb;
+  const pick = useCallback((text: string) => void send(text), [send]);
+  const like = useCallback((id: string) => void submit(id, true), [submit]);
   const remaining = chat.limit ? chat.limit.remainingToday : null;
   const blocked = !chat.clientId || (!!chat.limitErr && chat.limitErr.kind !== "rate");
   return (
@@ -40,13 +44,13 @@ export function AiChatPage() {
           sending={chat.sending}
           limitErr={chat.limitErr}
           limit={chat.limit}
-          onPick={(text) => void chat.send(text)}
-          onRetry={chat.retry}
-          onLike={(id) => void fb.submit(id, true)}
-          onDislike={fb.askWhy}
+          onPick={pick}
+          onRetry={retry}
+          onLike={like}
+          onDislike={askWhy}
         />
         <PiiNote />
-        <Composer onSend={(text) => void chat.send(text)} disabled={blocked} sending={chat.sending} />
+        <Composer onSend={pick} disabled={blocked} sending={chat.sending} />
       </KeyboardAvoidingView>
       <FeedbackSheet visible={!!fb.target} busy={fb.busy} onClose={fb.close} onSubmit={(c) => fb.target && void fb.submit(fb.target, false, c)} />
     </View>

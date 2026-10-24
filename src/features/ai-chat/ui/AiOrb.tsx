@@ -1,5 +1,5 @@
 import { useEffect, useMemo } from "react";
-import { BlurMask, Canvas, Circle, Group, RadialGradient, Skia, vec } from "@shopify/react-native-skia";
+import { Canvas, Circle, Group, RadialGradient, Skia, vec } from "@shopify/react-native-skia";
 import { useDerivedValue, useFrameCallback, useSharedValue, withTiming } from "react-native-reanimated";
 import { useIsFocused } from "expo-router";
 import { OrbBlob } from "./OrbBlob";
@@ -14,8 +14,13 @@ export function AiOrb({ size, busy = false }: Props) {
   const focused = useIsFocused();
   const phase = useSharedValue(0);
   const speed = useSharedValue(1);
+  const idle = useSharedValue(0);
+  // ~30 fps is plenty for a slow swirl and halves the work of redrawing the canvas.
   const frame = useFrameCallback((f) => {
-    phase.value += ((f.timeSincePreviousFrame ?? 16) / 1000) * speed.value;
+    idle.value += f.timeSincePreviousFrame ?? 16;
+    if (idle.value < 30) return;
+    phase.value += (idle.value / 1000) * speed.value;
+    idle.value = 0;
   }, false);
   useEffect(() => {
     frame.setActive(focused);
@@ -43,9 +48,7 @@ export function AiOrb({ size, busy = false }: Props) {
           <OrbBlob key={i} phase={phase} size={size} i={i} color={color} />
         ))}
       </Group>
-      <Circle cx={c} cy={c} r={core} style="stroke" strokeWidth={1.5} color="rgba(255,255,255,0.3)">
-        <BlurMask blur={0.6} style="solid" />
-      </Circle>
+      <Circle cx={c} cy={c} r={core} style="stroke" strokeWidth={1.5} color="rgba(255,255,255,0.3)" />
     </Canvas>
   );
 }

@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import { StyleSheet, View } from "react-native";
 import { Text } from "@/shared/ui";
 import { Inline } from "./Inline";
@@ -10,7 +11,7 @@ type Props = { text: string; color: string; linkColor: string; mutedColor: strin
 
 // Markdown of an assistant answer as real blocks: paragraphs, hanging list items, quote bars.
 export function AiMarkdown({ text, color, linkColor, mutedColor, agent }: Props) {
-  const blocks = agentBlocks(parseBlocks(text));
+  const blocks = useMemo(() => agentBlocks(parseBlocks(text)), [text]);
   const inline = (t: string) => <Inline text={t} linkColor={linkColor} codeBg="rgba(127,127,127,0.18)" />;
   return (
     <View style={s.root}>
