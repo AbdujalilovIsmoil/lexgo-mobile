@@ -2,9 +2,9 @@ import { useEffect, useMemo } from "react";
 import { View } from "react-native";
 import { BlurMask, Canvas, Circle, Group, LinearGradient, Path, Skia, vec } from "@shopify/react-native-skia";
 import { AiCore3D } from "./AiCore3D";
-import { Easing, useDerivedValue, useSharedValue, withRepeat, withTiming, type SharedValue } from "react-native-reanimated";
+import { Easing, cancelAnimation, useDerivedValue, useSharedValue, withRepeat, withTiming, type SharedValue } from "react-native-reanimated";
 
-type Props = { size: number; calm?: boolean };
+type Props = { size: number; calm?: boolean; paused?: boolean }; // paused: kept alive (canvas and GL context stay) but not animating
 
 // The AI mark, drawn live on a Skia canvas: a constellation of neuron nodes joined into a four-point spark. Every cycle the links are
 // drawn node to node around the spark, the spokes reach the core, the nodes light up, the spark fills with a soft glow, and a pulse of
@@ -24,12 +24,15 @@ const V = Array.from({ length: 8 }, (_, k) => {
 const clamp = (v: number) => { "worklet"; return Math.min(1, Math.max(0, v)); };
 const seg = (x1: number, y1: number, x2: number, y2: number) => Skia.Path.Make().moveTo(x1, y1).lineTo(x2, y2);
 
-export function AiMark({ size, calm = false }: Props) {
+export function AiMark({ size, calm = false, paused = false }: Props) {
   const t = useSharedValue(calm ? 0.6 : 0);
   useEffect(() => {
     if (calm) { t.value = 0.6; return; }
+    if (paused) { cancelAnimation(t); return; }
+    t.value = 0; // drawn afresh each time it comes back into view
     t.value = withRepeat(withTiming(1, { duration: CYCLE, easing: Easing.linear }), -1);
-  }, [calm, t]);
+    return () => cancelAnimation(t);
+  }, [calm, paused, t]);
 
   const star = useMemo(() => { const p = Skia.Path.Make().moveTo(V[0].x, V[0].y); V.slice(1).forEach((v) => p.lineTo(v.x, v.y)); return p.close(); }, []);
   const edges = useMemo(() => V.map((v, i) => seg(v.x, v.y, V[(i + 1) % 8].x, V[(i + 1) % 8].y)), []);
@@ -61,7 +64,7 @@ export function AiMark({ size, calm = false }: Props) {
         <Circle c={pulse} r={15} color="white" opacity={pulseOn} />
       </Group>
     </Canvas>
-    <AiCore3D size={size * 0.6} t={t} calm={calm} />
+    <AiCore3D size={size * 0.6} t={t} calm={calm} paused={paused} />
     </View>
   );
 }

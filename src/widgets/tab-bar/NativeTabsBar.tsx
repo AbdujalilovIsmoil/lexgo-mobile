@@ -92,7 +92,7 @@ export const NativeTabsBar = memo(function NativeTabsBar({ bar }: { bar: boolean
       })}
       {rest.map((name) => <NativeTabs.Trigger key={`hidden-${name}`} name={name} contentStyle={AURORA ? aurora : undefined} hidden />)}
     </NativeTabs>
-    {bar && centerAt >= 0 ? <AiRaisedButton labelKey={shown[centerAt].labelKey} /> : null}
+    {centerAt >= 0 ? <AiRaisedButton labelKey={shown[centerAt].labelKey} hidden={!bar} /> : null}
     </View>
   );
 });

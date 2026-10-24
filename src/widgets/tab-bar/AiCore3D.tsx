@@ -5,7 +5,7 @@ import type { ExpoWebGLRenderingContext } from "expo-gl";
 import * as THREE from "three";
 import Animated, { useAnimatedStyle, type SharedValue } from "react-native-reanimated";
 
-type Props = { size: number; t: SharedValue<number>; calm?: boolean };
+type Props = { size: number; t: SharedValue<number>; calm?: boolean; paused?: boolean };
 
 // expo-gl is a native module: a build made before it was added does not have it, and importing it up front would crash every screen that
 // reaches this file. Ask the module registry first, load it on use, and draw no crystal when it is missing.
@@ -26,8 +26,10 @@ const clamp = (v: number) => { "worklet"; return Math.min(1, Math.max(0, v)); };
 
 // The three.js part of the AI mark: a lit 3D gem (a stretched bipyramid with a ring and orbiting points) turning in front of the neuron web. It is drawn on a transparent GL surface above the Skia canvas, appears with the core and fades with the
 // mark. `t` is the mark's timeline. `calm` renders one still frame.
-export function AiCore3D({ size, t, calm = false }: Props) {
+export function AiCore3D({ size, t, calm = false, paused = false }: Props) {
   const stop = useRef<(() => void) | null>(null);
+  const idle = useRef(paused); // while true the loop draws nothing, and the GL context stays: coming back needs no new context or shaders
+  useEffect(() => { idle.current = paused; }, [paused]);
   useEffect(() => () => stop.current?.(), []);
 
   const style = useAnimatedStyle(() => {
@@ -92,7 +94,7 @@ export function AiCore3D({ size, t, calm = false }: Props) {
     const loop = (time: number) => {
       if (!alive) return;
       raf = requestAnimationFrame(loop);
-      if (time - last < 33) return; // ~30 fps is plenty for a 24 pt crystal
+      if (idle.current || time - last < 33) return; // ~30 fps is plenty for a 24 pt crystal
       last = time;
       draw(time);
     };
