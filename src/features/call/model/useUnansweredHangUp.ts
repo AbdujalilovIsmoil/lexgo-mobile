@@ -9,8 +9,8 @@ export function useUnansweredHangUp(phase: Phase, roomId: string, callId: string
   useEffect(() => {
     if (!shouldHangUp(phase)) return;
     signal("call.end");
+    void room?.disconnect(); // first: the mic stops at once, whatever the REST end takes
     void endCall(roomId, callId).catch(() => undefined);
-    void room?.disconnect();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [phase]);
 }
