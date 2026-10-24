@@ -32,6 +32,8 @@ Please check on your side:
    builds register `"production"` tokens.
 2. Each invite currently creates the `meeting_invite` notification **twice** (same `call_id`, same second).
 3. Its title is "Video uchrashuvga taklif" also for an audio call (`call_type: "audio"`).
+4. The web portal's chat (`/portal/chat/[roomId]`) still starts calls without `participant_user_ids`, so a call placed from the web chat
+   rings nobody either. Safest fix on the backend: when `participant_user_ids` is empty, invite the other members of the room.
 
 Things that block remote push on our side, independent of the backend:
 
