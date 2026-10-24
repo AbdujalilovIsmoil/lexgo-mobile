@@ -15,6 +15,34 @@ task alerts. The only reliable way to reach a phone in that state is a **remote 
 
 Verified on 2026-10-20 against `https://lexgo.api.cognilabs.org/openapi.json`: there is no device-registration or push endpoint.
 
+## Status on 2026-10-24 (tested with two test accounts: an advokat on an iPad simulator calling a client on an iPhone simulator)
+
+| What | Result |
+| --- | --- |
+| `POST /devices` | Exists. The app registers its token after sign-in (iOS: `apns`, Android: `fcm`); `GET /devices` lists it as `active`. |
+| A call started from a secure chat | Fixed in the app: it now sends `participant_user_ids` (the other members of the room). Before, a call started from the chat header invited nobody, so the client got no `call.incoming`, no `/calls/invited` row, no notification — they only saw the call after opening that chat. |
+| Client app open on any screen | Rings at once (user socket `call.incoming`, `GET /calls/invited` as a safety net). |
+| Client app in the background (still alive) | The app posts its own local "incoming call" notification with Join / Decline. |
+| Client app closed (killed) | **Nothing arrives.** The backend does create the in-app notification (`meeting_invite`), but no remote push reached the device. |
+
+Please check on your side:
+
+1. Is a remote push sent at all when a user is invited to a call (and for other notifications)? To which gateway — the simulator /
+   development builds register `environment: "development"` tokens, which only the APNs **sandbox** accepts; store / TestFlight / EAS
+   builds register `"production"` tokens.
+2. Each invite currently creates the `meeting_invite` notification **twice** (same `call_id`, same second).
+3. Its title is "Video uchrashuvga taklif" also for an audio call (`call_type: "audio"`).
+
+Things that block remote push on our side, independent of the backend:
+
+- iOS builds signed with a free Apple "Personal Team" (the USB test phone) have no Push capability: they can never receive a remote push.
+  Test with an EAS / TestFlight build of the paid team.
+- Android: the repository has no Firebase `google-services.json`, so Android builds get no FCM token today (see section 5).
+
+For a Telegram-like ringing screen while the phone is locked or the app is closed, sections 2 and 3 still apply (VoIP push + CallKit on
+iOS, high-priority FCM data message + full-screen notification on Android). The mobile side will register an `apns_voip` token and add
+CallKit / the Android full-screen call once the backend confirms it sends those pushes.
+
 ## 1. Register a device
 
 `POST /devices` (auth: bearer token)

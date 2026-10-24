@@ -5,9 +5,11 @@ import { ApiError } from "@/shared/api";
 import { useT } from "@/shared/i18n";
 import { toast } from "@/shared/ui";
 
-// Starts a call in the room — or joins the one already running — and opens the call screen. A client reaches the
-// advocate of a document request through `docRequestId` (POST /document-requests/{id}/calls/audio, 3 times at most).
-export function useRoomCall(roomId: string, roomTitle: string, docRequestId = "") {
+// Starts a call in the room — or joins the one already running — and opens the call screen. The other members of the room are invited
+// with it (participant_user_ids): without the invitation the backend neither rings them (user socket call.incoming, /calls/invited) nor
+// pushes to their phones, and they only learn about the call by opening this chat. A client reaches the advocate of a document request
+// through `docRequestId` (POST /document-requests/{id}/calls/audio, 3 times at most; that endpoint invites by itself).
+export function useRoomCall(roomId: string, roomTitle: string, docRequestId = "", inviteIds: string[] = []) {
   const router = useRouter();
   const { t } = useT();
   const [busy, setBusy] = useState(false);
@@ -23,7 +25,7 @@ export function useRoomCall(roomId: string, roomTitle: string, docRequestId = ""
   };
   const begin = (type: CallType) => guard(async () => {
     const live = (await listCalls(roomId)).find((c) => isLive(c.status));
-    open(live ? live.id : (await startCall(roomId, type, roomTitle || t(type === "video" ? "admChat.videoCall" : "admChat.audioCall"))).id);
+    open(live ? live.id : (await startCall(roomId, type, roomTitle || t(type === "video" ? "admChat.videoCall" : "admChat.audioCall"), inviteIds)).id);
   });
   const docAudio = () => guard(async () => {
     const live = (await listCalls(roomId)).find((c) => isLive(c.status));
