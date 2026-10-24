@@ -1,17 +1,20 @@
 import { create } from "zustand";
+import { isOnline } from "@/shared/network/netStore";
 
 type Native = typeof import("expo-updates");
-export type UpdateStatus = "idle" | "checking" | "downloading" | "ready" | "latest" | "error" | "off";
+export type UpdateStatus = "idle" | "checking" | "downloading" | "ready" | "latest" | "error" | "offline" | "off";
 
 // expo-updates has a native part. A build made before it was added does not contain it, and importing it up front would crash the app at
-// start-up: load it on first use; "not there" (or a development build) simply means updates are off.
+// start-up: load it on first use; "not there" (or a development build) simply means updates are off. So does a build without an update
+// channel — one installed straight from Xcode or Gradle, not built by EAS: the update server has nothing for it and every check failed,
+// which the profile reported as "check your internet".
 let cached: Native | null | undefined;
 function native(): Native | null {
   if (cached !== undefined) return cached;
   try {
     // eslint-disable-next-line @typescript-eslint/no-require-imports
     const m = require("expo-updates") as Native;
-    cached = m.isEnabled ? m : null;
+    cached = m.isEnabled && !!m.channel ? m : null;
   } catch {
     cached = null;
   }
@@ -43,8 +46,10 @@ export async function checkForUpdate(): Promise<UpdateStatus> {
     set(out);
     return out;
   } catch {
-    set("error");
-    return "error";
+    // Only a phone without a connection is told to check the internet; otherwise the update server did not answer.
+    const out: UpdateStatus = isOnline() ? "error" : "offline";
+    set(out);
+    return out;
   } finally {
     busy = false;
   }

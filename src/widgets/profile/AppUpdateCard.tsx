@@ -17,6 +17,7 @@ export function AppUpdateCard() {
     const s = await checkForUpdate();
     if (s === "latest") toast(t("upd.latest"), "ok");
     if (s === "error") toast(t("upd.error"), "err");
+    if (s === "offline") toast(t("upd.offline"), "err");
   };
   return (
     <Card style={s.card}>
