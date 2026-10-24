@@ -6,6 +6,7 @@ import { useT } from "@/shared/i18n";
 import { fmtDate, fmtDateTime } from "@/shared/lib/format";
 import { fmtMoney } from "@/shared/lib/money";
 import type { Fact } from "@/entities/my-document";
+import Animated from "react-native-reanimated";
 
 // The key-facts grid of the detail sheet: two tiles per row, a small label over a short value.
 export function DocFacts({ facts }: { facts: Fact[] }) {
@@ -24,12 +25,12 @@ export function DocFacts({ facts }: { facts: Fact[] }) {
   };
   return (
     <View style={s.grid} onLayout={grid.onLayout}>
-      {facts.map((f) => (
-        <View key={f.key} style={[s.tile, { borderColor: c.line }, fixedCell(grid.cell)]} accessible accessibilityLabel={`${t(`docSheet.fact.${f.key}`)}: ${value(f)}`}>
+      {grid.ready ? facts.map((f) => (
+        <Animated.View key={f.key} layout={grid.move} style={[s.tile, { borderColor: c.line }, fixedCell(grid.cell)]} accessible accessibilityLabel={`${t(`docSheet.fact.${f.key}`)}: ${value(f)}`}>
           <Text variant="caption" tone="gray" numberOfLines={1}>{t(`docSheet.fact.${f.key}`)}</Text>
           <Text variant="small" weight="semibold" numberOfLines={2}>{value(f)}</Text>
-        </View>
-      ))}
+        </Animated.View>
+      )) : null}
     </View>
   );
 }

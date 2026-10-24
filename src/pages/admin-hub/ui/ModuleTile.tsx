@@ -7,15 +7,16 @@ import { Icon, PressableScale, Text } from "@/shared/ui";
 import { lighten } from "@/shared/lib/color";
 import { useColors } from "@/shared/theme";
 import { useT } from "@/shared/i18n";
+import type { Grid } from "@/shared/lib/useGrid";
 
 // One admin section as an app-launcher tile: glossy gradient icon, two-line name. Opening it is remembered.
-export function ModuleTile({ mod, index, width }: { mod: AdminModule; index: number; width: number }) {
+export function ModuleTile({ mod, index, width, move }: { mod: AdminModule; index: number; width: number; move?: Grid["move"] }) {
   const { t } = useT();
   const c = useColors();
   const openModule = useOpenModule();
   const open = () => openModule(mod.key);
   return (
-    <Animated.View entering={FadeInUp.delay(Math.min(index, 8) * 40).duration(320)} style={{ width }}>
+    <Animated.View entering={FadeInUp.delay(Math.min(index, 8) * 40).duration(320)} layout={move} style={{ width }}>
       <PressableScale onPress={open} scale={0.93} accessibilityRole="button" accessibilityLabel={t(`admHub.mod.${mod.key}.title`)} style={[s.tile, { backgroundColor: c.glassFill, borderColor: c.glassLine }]}>
         <LinearGradient colors={[mod.color, lighten(mod.color)]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={s.icon}>
           <View style={s.shine} pointerEvents="none" />

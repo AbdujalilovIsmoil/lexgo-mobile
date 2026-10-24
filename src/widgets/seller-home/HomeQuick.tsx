@@ -11,6 +11,7 @@ import { Icon, PressableScale, Text, type IconName } from "@/shared/ui";
 import { useT } from "@/shared/i18n";
 import { useGrid } from "@/shared/lib/useGrid";
 import { Fade } from "./Fade";
+import Animated from "react-native-reanimated";
 
 type Sheet = "case" | "client" | "event" | null;
 const TONES: readonly (readonly [string, string])[] = [["#1668F0", "#00CFE8"], ["#7A5CFF", "#B197FC"], ["#00A870", "#5EDDB0"], ["#E0457F", "#FF9AB8"]];
@@ -32,8 +33,8 @@ export function HomeQuick() {
     <View style={s.col}>
       <Text variant="h4">{t("shm.dash.quickActions")}</Text>
       <View style={s.grid} onLayout={g.onLayout}>
-        {items.map((x, i) => (
-          <View key={x.key} style={[s.cell, g.cell]}>
+        {g.ready ? items.map((x, i) => (
+          <Animated.View key={x.key} layout={g.move} style={[s.cell, g.cell]}>
             <Fade i={i}>
               <PressableScale onPress={x.on} accessibilityRole="button" accessibilityLabel={t(`shm.dash.${x.key}`)}>
                 <LinearGradient colors={[...TONES[i]]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={[s.tile, shadows.s1]}>
@@ -43,8 +44,8 @@ export function HomeQuick() {
                 </LinearGradient>
               </PressableScale>
             </Fade>
-          </View>
-        ))}
+          </Animated.View>
+        )) : null}
       </View>
       <CaseFormSheet visible={open === "case"} onClose={() => setOpen(null)} item={null} />
       <ClientFormSheet visible={open === "client"} onClose={() => setOpen(null)} />

@@ -7,6 +7,7 @@ import { GradientBox, Icon, PressableScale, Text, type IconName, FocusStatusBar 
 import { useT } from "@/shared/i18n";
 import { useGrid } from "@/shared/lib/useGrid";
 import { Fade } from "./Fade";
+import Animated from "react-native-reanimated";
 
 export type HeroStat = { key: string; icon: IconName; tint: string; value: string; label: string; to: string };
 
@@ -40,8 +41,8 @@ export function SellerHero({ name, stats, tasks, meetings, advocate, license }: 
       <Text variant="lead" style={s.sub}>{t("shm.dash.heroSub")}</Text>
       <View style={s.plan}><Icon name="clock" size={15} color={a.main} /><Text variant="small" style={s.planTx}>{t("shm.dash.greetSub", { meetings, tasks })}</Text></View>
       <View style={s.grid} onLayout={g.onLayout}>
-        {stats.map((x, i) => (
-          <View key={x.key} style={[s.cell, g.cell]}><Fade i={i}>
+        {g.ready ? stats.map((x, i) => (
+          <Animated.View key={x.key} layout={g.move} style={[s.cell, g.cell]}><Fade i={i}>
             <PressableScale onPress={() => router.push(x.to as never)} accessibilityRole="button" accessibilityLabel={`${x.label}: ${x.value}`}>
               <LinearGradient colors={[...(TONES[i % TONES.length])]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={s.tile}>
                 <View style={s.ring} pointerEvents="none" />
@@ -52,8 +53,8 @@ export function SellerHero({ name, stats, tasks, meetings, advocate, license }: 
                 </View>
               </LinearGradient>
             </PressableScale>
-          </Fade></View>
-        ))}
+          </Fade></Animated.View>
+        )) : null}
       </View>
     </GradientBox>
   );

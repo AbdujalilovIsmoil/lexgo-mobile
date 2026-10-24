@@ -26,7 +26,7 @@ export function ServicesHub({ hub, onOpen }: { hub: Hub; onOpen: (s: Service) =>
           <Text variant="small" tone="gray">{t("svh.servicesN", { n: hub.rows.length })}</Text>
           {hub.rows.length ? (
             <Animated.View key={key} entering={FadeIn.duration(220)} exiting={FadeOut.duration(120)} style={[s.grid, g.cell && s.gridWide]} onLayout={g.onLayout}>
-              {hub.visible.map((sv, i) => <ServiceCard key={sv.id} service={sv} index={i} cell={g.cell} onPress={() => onOpen(sv)} />)}
+              {g.ready ? hub.visible.map((sv, i) => <ServiceCard key={sv.id} service={sv} index={i} cell={g.cell} move={g.move} onPress={() => onOpen(sv)} />) : null}
             </Animated.View>
           ) : <EmptyState icon="search" title={t("svh.noMatch")} text={t("svh.noMatchText")} compact />}
           {hub.left ? <Button title={`${t("svh.more")} · ${hub.left}`} variant="soft" full onPress={hub.more} /> : null}

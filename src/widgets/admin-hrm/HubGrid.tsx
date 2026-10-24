@@ -24,7 +24,7 @@ export function HubGrid() {
       {groups.map((g) => (
         <View key={g.key} style={{ gap: 10 }}>
           <Text variant="kicker" tone="gray2" style={{ marginLeft: 4 }}>{t(`admHrm.groups.${g.key}`).toUpperCase()}</Text>
-          <View style={{ flexDirection: "row", flexWrap: "wrap", gap: GAP }} onLayout={grid.onLayout}>{g.items.map((i) => <HubTile key={i.key} item={i} badge={badges[i.key]} index={n++} width={tile} />)}</View>
+          <View style={{ flexDirection: "row", flexWrap: "wrap", gap: GAP }} onLayout={grid.onLayout}>{grid.ready ? g.items.map((i) => <HubTile key={i.key} item={i} badge={badges[i.key]} index={n++} width={tile} move={grid.move} />) : null}</View>
         </View>
       ))}
     </View>

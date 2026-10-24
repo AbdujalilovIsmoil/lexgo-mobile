@@ -21,7 +21,7 @@ export function GroupSection({ group, offset }: { group: ModuleGroup; offset: nu
         <Text variant="kicker" tone="gray2" style={s.fill}>{t(`admHub.groups.${group.key}`).toUpperCase()} · {group.mods.length}</Text>
         <Icon name={open ? "chevron-up" : "chevron-down"} size={16} tone="gray" />
       </PressableScale>
-      {open ? <View style={s.grid} onLayout={grid.onLayout}>{group.mods.map((m, i) => <ModuleTile key={m.key} mod={m} index={offset + i} width={tile} />)}</View> : null}
+      {open ? <View style={s.grid} onLayout={grid.onLayout}>{grid.ready ? group.mods.map((m, i) => <ModuleTile key={m.key} mod={m} index={offset + i} width={tile} move={grid.move} />) : null}</View> : null}
     </View>
   );
 }

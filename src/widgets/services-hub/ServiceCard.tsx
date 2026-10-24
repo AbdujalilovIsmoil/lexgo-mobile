@@ -5,17 +5,18 @@ import { serviceTone, subcatImage, usePriceLabel, type Service } from "@/entitie
 import { radius, useColors } from "@/shared/theme";
 import { Icon, PressableScale, Text } from "@/shared/ui";
 import { useT } from "@/shared/i18n";
+import type { Grid } from "@/shared/lib/useGrid";
 
 // A service as a tall card for a two-column grid: a coloured art area (the direction's picture or an icon, kind badge and the
 // "advocate" shield on it), the name, the direction, and the price at the bottom. Cards rise in one after another.
-export function ServiceCard({ service: sv, index, cell, onPress }: { service: Service; index: number; cell?: ViewStyle; onPress: () => void }) {
+export function ServiceCard({ service: sv, index, cell, move, onPress }: { service: Service; index: number; cell?: ViewStyle; move?: Grid["move"]; onPress: () => void }) {
   const c = useColors();
   const { t } = useT();
   const price = usePriceLabel();
   const doc = !!sv.documentTemplateId;
   const art = subcatImage(sv.subcategory ?? "");
   return (
-    <Animated.View entering={FadeInDown.delay(Math.min(index, 8) * 45).duration(300)} style={[s.cell, cell]}>
+    <Animated.View entering={FadeInDown.delay(Math.min(index, 8) * 45).duration(300)} layout={move} style={[s.cell, cell]}>
       <PressableScale onPress={onPress} scale={0.97} accessibilityRole="button" accessibilityLabel={`${sv.name}. ${price(sv)}`} style={[s.card, { backgroundColor: c.glassFill, borderColor: c.glassLine }]}>
         <LinearGradient colors={[...serviceTone(sv.categoryId ?? sv.id)]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={s.art}>
           <View style={s.ring} pointerEvents="none" />
