@@ -7,6 +7,8 @@ import { useT } from "@/shared/i18n";
 import { useInstructorTarget } from "@/shared/instructor";
 import { AiBackdrop, Composer, FeedbackSheet, PiiNote, useAiChat, useFeedback } from "@/features/ai-chat";
 import { ChatHeader, MessageList } from "@/widgets/chat";
+import { homeRoute } from "@/widgets/tab-bar/tabConfig";
+import { useTabRole } from "@/widgets/tab-bar/useTabRole";
 
 // LexGo.AI. Always dark. The tab bar is hidden here, so the header has an exit
 // (✕) back to Home. A question typed on the Home hero arrives as `?q=`.
@@ -27,6 +29,13 @@ export function AiChatPage() {
     router.setParams({ q: "" });
   }, [q, chat, router]);
 
+  // The way out is the role's own first tab: for a lawyer or a manager the home tab "/" is not in the system bar, and the bar cannot
+  // be sent to a tab it hides — the ✕ did nothing there.
+  const role = useTabRole();
+  const close = useCallback(() => {
+    const first = homeRoute(role);
+    router.navigate(first === "index" ? "/" : (`/(tabs)/${first}` as never));
+  }, [role, router]);
   const { send, retry } = chat;
   const { submit, askWhy } = fb;
   const pick = useCallback((text: string) => void send(text), [send]);
@@ -37,7 +46,7 @@ export function AiChatPage() {
     <View {...screen} style={s.fill}>
       <FocusStatusBar style="light" />
       <AiBackdrop />
-      <ChatHeader onClose={() => router.navigate("/")} onNew={chat.newChat} onHistory={() => router.push("/chats")} remaining={remaining} />
+      <ChatHeader onClose={close} onNew={chat.newChat} onHistory={() => router.push("/chats")} remaining={remaining} />
       <KeyboardAvoidingView behavior="padding" style={s.flex}>
         <MessageList
           messages={chat.messages}
