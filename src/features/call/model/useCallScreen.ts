@@ -58,11 +58,6 @@ export function useCallScreen(roomId: string, callId: string, onData: (payload: 
   const locked = useHostMute(lk.room, me?.mic);
   const gone = !!me && (me.status === "removed" || me.status === "left");
   const ended = over || (!!call && OVER.includes(call.status)) || gone;
-  // The meeting is over (ended by somebody else, I was removed): leave LiveKit now, so the mic and camera stop at once, not when the screen closes.
-  const lkRoom = lk.room;
-  useEffect(() => {
-    if (ended) void lkRoom?.disconnect();
-  }, [ended, lkRoom]);
   // LiveKit gave up on the connection but the meeting itself goes on: offer to rejoin instead of "ended".
   const dropped = lk.status === "ended" && !ended;
   // Caller side: ring for at most RING_TIMEOUT_MS, then the phase turns "missed" (the screen hangs the call up).

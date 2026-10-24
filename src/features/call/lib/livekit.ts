@@ -12,8 +12,9 @@ setLogLevel(LogLevel.warn);
 try { (require("@livekit/react-native-webrtc/node_modules/debug") as { disable: () => string }).disable(); } catch { /* flat install: nothing to silence */ }
 // LiveKit logs the first at error level when the phone camera reports no size yet; it falls back to 320x180 and the video works.
 // The same for a data channel closing while the call is torn down or renegotiated; the app only sends on the reliable channel (call chat).
-// And for the signal socket dropping (React Native reports the server closing it as a socket error): LiveKit reconnects by itself, and
-// when the call is over — the other side declined or ended it, so the backend closed the room — the screen already shows that.
-LogBox.ignoreLogs([/could not determine track dimensions/, /data channel '\w+' closed unexpectedly/, /error reading from signal stream/]);
+// And for the two that come with the end of a call: the signal socket dropping (React Native reports the server closing it as a socket
+// error; LiveKit reconnects by itself, and when the call is over the screen already shows that), and "PC manager is closed" (the server's
+// media-sections message arriving just after this side closed its connection: LiveKit tries to renegotiate a connection that is gone).
+LogBox.ignoreLogs([/could not determine track dimensions/, /data channel '\w+' closed unexpectedly/, /error reading from signal stream/, /PC manager is closed/]);
 
 export { AudioSession, VideoTrack } from "@livekit/react-native";

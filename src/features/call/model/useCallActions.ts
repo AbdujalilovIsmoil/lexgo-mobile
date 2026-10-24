@@ -15,12 +15,10 @@ export function useCallActions({ roomId, callId, call, room, signal, refetch, le
   const pause = useM(() => (call?.paused ? resumeCall(roomId, callId) : pauseCall(roomId, callId)), call?.paused ? "admMeet.resumedToast" : "admMeet.pausedToast");
   const free = useM(() => freeExtend(roomId, callId, call?.freeMax || 3), "admMeet.extendedToast");
   const paid = useM((minutes: number) => requestPaidExtension(roomId, callId, minutes), "admMeet.paidAskedToast");
-  // LiveKit is left first, so the mic and camera stop the moment the person hangs up (the REST end / leave can take a moment).
   const close = async (all: boolean) => {
     signal(all ? "call.end" : "call.leave");
-    const off = room?.disconnect();
     await (all ? endCall(roomId, callId) : leaveCall(roomId, callId)).catch(() => undefined);
-    await off?.catch(() => undefined);
+    void room?.disconnect();
     leave();
   };
   return { mute, kick, invite, pause, free, paid, leaveCall: () => close(false), endAll: () => close(true) };
