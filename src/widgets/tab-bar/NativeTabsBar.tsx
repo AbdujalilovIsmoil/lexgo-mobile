@@ -3,6 +3,7 @@ import { useWindowDimensions, View } from "react-native";
 import { NativeTabs } from "expo-router/unstable-native-tabs";
 import { useRouter } from "expo-router";
 import { useIsAuthed } from "@/entities/session";
+import { loadGlass } from "@/shared/lib/glass";
 import { useTablet } from "@/shared/lib/useTablet";
 import { useBadgeStore } from "@/shared/lib/badgeStore";
 import { useT } from "@/shared/i18n";
@@ -10,7 +11,7 @@ import { AURORA, useColors } from "@/shared/theme";
 import { useAuroraStyle } from "@/shared/ui";
 import { AiRaisedButton } from "./AiRaisedButton";
 import { CaptionMeter, ReturnWatcher } from "./BarHelpers";
-import { AI_SLOT as AI_WIDTH, GAP_SLOT, captionFit, shortCaption } from "./captionFit";
+import { AI_SLOT as AI_WIDTH, GAP_SLOT, ITEM_MIN, ITEM_PAD, captionFit, shortCaption, slotShift } from "./captionFit";
 import { installTabReach, setBarRoutes } from "./tabReach";
 import { TABS, type TabDef } from "./tabConfig";
 import { useTabRole } from "./useTabRole";
@@ -29,6 +30,7 @@ installTabReach();
 // The slot must stay narrow: the bar sizes its items by content, and a wide slot squeezes the neighbours' captions into "Xiz…".
 const GAP: TabDef = { route: "gap", icon: "home", labelKey: "" };
 const AI_SLOT = require("../../../assets/tabs/ai-slot.png");
+const GLASS = !!loadGlass(); // iOS 26 sizes the items by their captions; the classic bar (iOS 18 and older) gives every item the same width
 
 // The system tab bar (UITabBar): Liquid Glass on iOS 26 with no custom drawing. Every route is declared, in the role's order first;
 // the ones outside the role or not allowed right now are hidden. `bar` is false on screens that ask for no bar (the AI chat).
@@ -67,6 +69,10 @@ export const NativeTabsBar = memo(function NativeTabsBar({ bar }: { bar: boolean
   const fit = captionFit(width, fulls.map(w10), shorts.map(w10), extra);
   const [nudge, setNudge] = useState(0); // see ReturnWatcher
   const caption = (x: string) => (fit.mode === "short" ? shortCaption(x) : x);
+  // The raised button stands over the AI slot, which is off the screen centre when the captions on its two sides differ in width
+  // ("Bosh sahifa" + "Hujjatlar" vs "Ishlar" + "Xabarlar"); shorter captions on a narrow phone move it back towards the centre.
+  const itemW = (d: TabDef) => (d.route === GAP.route ? GAP_SLOT : Math.max(ITEM_MIN, fit.mode === "hidden" ? 0 : (w10(caption(t(d.labelKey))) * fit.size) / 10) + ITEM_PAD);
+  const shift = GLASS && centerAt >= 0 ? slotShift(shown.slice(0, centerAt).map(itemW), shown.slice(centerAt + 1).map(itemW)) : 0;
   return (
     <View style={{ flex: 1 }}>
     <CaptionMeter texts={[...new Set([...fulls, ...shorts])]} onWidths={(w) => setMeasured((m) => ({ ...m, ...w }))} />
@@ -92,7 +98,7 @@ export const NativeTabsBar = memo(function NativeTabsBar({ bar }: { bar: boolean
       })}
       {rest.map((name) => <NativeTabs.Trigger key={`hidden-${name}`} name={name} contentStyle={AURORA ? aurora : undefined} hidden />)}
     </NativeTabs>
-    {centerAt >= 0 ? <AiRaisedButton labelKey={shown[centerAt].labelKey} hidden={!bar} /> : null}
+    {centerAt >= 0 ? <AiRaisedButton labelKey={shown[centerAt].labelKey} hidden={!bar} shift={shift} /> : null}
     </View>
   );
 });

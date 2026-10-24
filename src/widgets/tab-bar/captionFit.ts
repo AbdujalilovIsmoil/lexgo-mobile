@@ -29,3 +29,11 @@ export function captionFit(width: number, full10: number[], short10: number[], e
 }
 
 export const shortCaption = (s: string): string => s.trim().split(/\s+/)[0] ?? s;
+
+// An item is never narrower than this before its padding (measured: iPhone 11 Pro, short captions → five items of equal width; iPhone 17 Pro,
+// full captions → only "Bosh sahifa" is wider), so only captions longer than it move the AI slot off the centre.
+export const ITEM_MIN = 40;
+
+// Where the AI slot sits: the bar sizes its items by content and centres the row, so the slot is right of the screen centre by half of
+// (left side − right side). `left` / `right`: the widths of the items on each side of the slot.
+export const slotShift = (left: number[], right: number[]): number => (left.reduce((a, b) => a + b, 0) - right.reduce((a, b) => a + b, 0)) / 2;

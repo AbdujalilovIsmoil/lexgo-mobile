@@ -28,8 +28,12 @@ const clamp = (v: number) => { "worklet"; return Math.min(1, Math.max(0, v)); };
 // mark. `t` is the mark's timeline. `calm` renders one still frame.
 export function AiCore3D({ size, t, calm = false, paused = false }: Props) {
   const stop = useRef<(() => void) | null>(null);
-  const idle = useRef(paused); // while true the loop draws nothing, and the GL context stays: coming back needs no new context or shaders
-  useEffect(() => { idle.current = paused; }, [paused]);
+  const wake = useRef<(() => void) | null>(null);
+  const idle = useRef(paused); // while true no frame is asked for at all, and the GL context stays: coming back needs no new context or shaders
+  useEffect(() => {
+    idle.current = paused;
+    if (!paused) wake.current?.();
+  }, [paused]);
   useEffect(() => () => stop.current?.(), []);
 
   const style = useAnimatedStyle(() => {
@@ -91,15 +95,18 @@ export function AiCore3D({ size, t, calm = false, paused = false }: Props) {
     };
     if (calm) { draw(900); return; }
     let raf = 0, last = 0, alive = true;
+    // The loop runs on the JS thread: paused, it stops asking for frames (no wake-up 60 times a second), and `wake` starts it again.
     const loop = (time: number) => {
-      if (!alive) return;
+      raf = 0;
+      if (!alive || idle.current) return;
       raf = requestAnimationFrame(loop);
-      if (idle.current || time - last < 33) return; // ~30 fps is plenty for a 24 pt crystal
+      if (time - last < 33) return; // ~30 fps is plenty for a 24 pt crystal
       last = time;
       draw(time);
     };
-    raf = requestAnimationFrame(loop);
-    stop.current = () => { alive = false; cancelAnimationFrame(raf); renderer.dispose(); geo.dispose(); ring.geometry.dispose(); bead.dispose(); };
+    wake.current = () => { if (alive && !raf) raf = requestAnimationFrame(loop); };
+    if (!idle.current) raf = requestAnimationFrame(loop);
+    stop.current = () => { alive = false; if (raf) cancelAnimationFrame(raf); renderer.dispose(); geo.dispose(); ring.geometry.dispose(); bead.dispose(); };
   };
 
   const GL = loadGL();

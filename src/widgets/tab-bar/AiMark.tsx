@@ -1,6 +1,6 @@
 import { useEffect, useMemo } from "react";
 import { View } from "react-native";
-import { BlurMask, Canvas, Circle, Group, LinearGradient, Path, Skia, vec } from "@shopify/react-native-skia";
+import { Canvas, Circle, Group, LinearGradient, Path, RadialGradient, Skia, vec } from "@shopify/react-native-skia";
 import { AiCore3D } from "./AiCore3D";
 import { Easing, cancelAnimation, useDerivedValue, useSharedValue, withRepeat, withTiming, type SharedValue } from "react-native-reanimated";
 
@@ -60,7 +60,7 @@ export function AiMark({ size, calm = false, paused = false }: Props) {
         {spokes.map((p, i) => <Link key={`s${i}`} path={p} width={7} at={0.2 + i * 0.016} win={0.08} t={t} fade={fade} soft />)}
         {V.map((v, i) => <Node key={`n${i}`} x={v.x} y={v.y} r={v.tip ? 27 : 17} at={i * SEG + 0.03} t={t} fade={fade} />)}
         <Node x={C} y={C} r={36} at={0.26} t={t} fade={fade} />
-        <Circle c={pulse} r={34} color="white" opacity={pulseOn}><BlurMask blur={18} style="normal" /></Circle>
+        <Circle c={pulse} r={44} opacity={pulseOn}><RadialGradient c={pulse} r={44} colors={["rgba(255,255,255,0.85)", "rgba(255,255,255,0)"]} /></Circle>
         <Circle c={pulse} r={15} color="white" opacity={pulseOn} />
       </Group>
     </Canvas>
