@@ -42,6 +42,8 @@ export function NetworkMount() {
     void probeHealth();
     // Items waiting out a retry delay are picked up by this slow tick (a flush with nothing due is one cheap query).
     const tick = setInterval(() => void flushOutbox(), 30_000);
+    // While the banner says "server not answering", look again every few seconds so it goes away by itself.
+    const heal = setInterval(() => { if (useNetStore.getState().serverDown) void probeHealth(); }, 8_000);
     const sub = AppState.addEventListener("change", (s) => {
       if (s !== "active") return;
       void recheckNetwork();
@@ -56,6 +58,7 @@ export function NetworkMount() {
       off();
       sub.remove();
       clearInterval(tick);
+      clearInterval(heal);
     };
   }, [qc]);
   useDeniedNotice();

@@ -2,11 +2,32 @@ import { http } from "@/shared/api";
 import { asDict, asStr } from "@/shared/lib/json";
 import { noteApiUnreachable } from "./NetworkMonitor";
 import { netLog } from "./netLog";
+import { reachedWithin } from "./reach";
 import { useNetStore } from "./netStore";
 
 // GET /health (public): tells "no internet" from "server down" and measures the clock skew
 // between the device and the backend (the response carries a naive UTC timestamp).
-export async function probeHealth(): Promise<boolean> {
+// One probe at a time (a burst of failing screens used to start a dozen), and "server down" only after two failures a moment apart
+// with no other API answer in between: one dropped request on a mobile link is not a dead server.
+let running: Promise<boolean> | null = null;
+export function probeHealth(): Promise<boolean> {
+  running ??= (async () => {
+    try {
+      if (await probeOnce()) return true;
+      await new Promise((r) => setTimeout(r, 1500));
+      if (reachedWithin(20_000)) return true;
+      if (await probeOnce()) return true;
+      if (reachedWithin(20_000)) return true;
+      useNetStore.setState({ serverDown: useNetStore.getState().online });
+      return false;
+    } finally {
+      running = null;
+    }
+  })();
+  return running;
+}
+
+async function probeOnce(): Promise<boolean> {
   const t0 = Date.now();
   const ctl = new AbortController();
   const timer = setTimeout(() => ctl.abort(), 5000);
@@ -22,7 +43,6 @@ export async function probeHealth(): Promise<boolean> {
     const why = e instanceof Error ? e.message : "error";
     netLog("health", `fail ${Date.now() - t0} ms: ${why}`);
     if (await noteApiUnreachable(why)) return false; // LexGo is blocked on this phone: not the server's fault
-    useNetStore.setState({ serverDown: useNetStore.getState().online });
     return false;
   } finally {
     clearTimeout(timer);

@@ -3,6 +3,7 @@ import { onlineManager } from "@tanstack/react-query";
 import { addNetworkStateListener, getNetworkStateAsync, NetworkStateType, type NetworkState } from "expo-network";
 import { onReached } from "@/shared/api";
 import { netLog } from "./netLog";
+import { noteReached } from "./reach";
 import { useNetStore, type NetKind, type OfflineCause } from "./netStore";
 import { describeOsPath, isDenied, readOsPath } from "./osPath";
 import { probeApi, type Probe } from "./probe";
@@ -139,6 +140,8 @@ export function startNetworkMonitor(): () => void {
   const sub = addNetworkStateListener((s) => applyNetworkState(s));
   // A real answer from the API beats any OS flag: if the banner says offline but a request just succeeded, we are online.
   onReached(() => {
+    noteReached();
+    if (useNetStore.getState().serverDown) useNetStore.setState({ serverDown: false }); // the API just answered: it is not down
     if (!useNetStore.getState().online) {
       generation += 1;
       netLog("reached", "an API request succeeded");
