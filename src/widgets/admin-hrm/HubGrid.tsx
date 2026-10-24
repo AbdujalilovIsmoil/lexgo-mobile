@@ -3,6 +3,7 @@ import { useAccess } from "@/entities/access";
 import { HRM_NAV } from "@/entities/admin-hrm";
 import { Text } from "@/shared/ui";
 import { useT } from "@/shared/i18n";
+import { useGrid } from "@/shared/lib/useGrid";
 import { HubTile } from "./HubTile";
 import { useHubBadges } from "./useHubBadges";
 
@@ -14,7 +15,8 @@ export function HubGrid() {
   const a = useAccess();
   const badges = useHubBadges();
   const { width } = useWindowDimensions();
-  const tile = Math.floor((width - 32 - GAP * 2) / 3);
+  const grid = useGrid({ gap: GAP, min: 150, minCols: 3 });
+  const tile = grid.cell?.width ?? Math.floor((width - 32 - GAP * 2) / 3);
   let n = 0;
   const groups = HRM_NAV.map((g) => ({ ...g, items: g.items.filter((i) => !i.perm || a.canInternal(i.perm)) })).filter((g) => g.items.length);
   return (
@@ -22,7 +24,7 @@ export function HubGrid() {
       {groups.map((g) => (
         <View key={g.key} style={{ gap: 10 }}>
           <Text variant="kicker" tone="gray2" style={{ marginLeft: 4 }}>{t(`admHrm.groups.${g.key}`).toUpperCase()}</Text>
-          <View style={{ flexDirection: "row", flexWrap: "wrap", gap: GAP }}>{g.items.map((i) => <HubTile key={i.key} item={i} badge={badges[i.key]} index={n++} width={tile} />)}</View>
+          <View style={{ flexDirection: "row", flexWrap: "wrap", gap: GAP }} onLayout={grid.onLayout}>{g.items.map((i) => <HubTile key={i.key} item={i} badge={badges[i.key]} index={n++} width={tile} />)}</View>
         </View>
       ))}
     </View>

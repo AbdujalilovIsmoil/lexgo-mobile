@@ -1,5 +1,6 @@
 import { useMemo, useState } from "react";
-import { ScrollView, useWindowDimensions } from "react-native";
+import { ScrollView, View, useWindowDimensions } from "react-native";
+import { useGrid } from "@/shared/lib/useGrid";
 import { useRouter } from "expo-router";
 import { FileRow, FolderRow, cardKind, kindIcon, typeCounts, useTree, viewOf, type Section } from "@/entities/pro-files";
 import { useCabinet } from "@/entities/pro-workspace";
@@ -36,7 +37,9 @@ export function FileBrowser() {
   const [grid, setGrid] = useState(true);
   const [sheet, setSheet] = useState(false);
   const flt = useFileFilters();
-  const cell = (useWindowDimensions().width - 32 - 14) / 2;
+  const g = useGrid({ gap: 14, min: 200, inset: 32 });
+  const { width: winW } = useWindowDimensions();
+  const cell = g.cell?.width ?? (winW - 32 - 14) / 2;
   const needle = useDebounced(q, 250);
   const opener = useOpenFile();
   const up = useUpload({ folderId: folderId || undefined }, tree?.quota);
@@ -57,16 +60,18 @@ export function FileBrowser() {
       {section === "requests" ? (
         <ScrollView contentContainerStyle={{ padding: 16, gap: 10 }}>{header}<RequestRows onPreview={opener.show} /></ScrollView>
       ) : (
+        <View style={{ flex: 1 }} onLayout={g.onLayout}>
         <PagedList
           data={shown}
           query={paged}
           keyExtractor={(r) => `${r.k}-${r.f.id}`}
           header={header}
-          columns={grid ? 2 : 1}
+          columns={grid ? g.columns : 1}
           renderItem={(r) => grid ? card(r) : r.k === "folder" ? <FolderRow folder={r.f} onOpen={() => go(r.f.id)} onMore={() => setTarget({ kind: "folder", folder: r.f })} /> : <FileRow file={r.f} onOpen={() => void opener.open(r.f)} onMore={() => setTarget({ kind: "file", file: r.f })} />}
           empty={empty}
           skeletonHeight={70}
         />
+        </View>
       )}
       <ItemActions target={target} onClose={() => setTarget(null)} folders={tree?.folders ?? []} opener={opener} onEnter={go} />
       {tree ? <FileFilterSheet f={flt} section={section} sections={SECTIONS} onSection={(x) => { setSection(x); setQ(""); }} counts={typeCounts(tree, section, folderId, needle)} visible={sheet} onClose={() => setSheet(false)} /> : null}

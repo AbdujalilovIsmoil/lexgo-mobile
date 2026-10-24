@@ -1,4 +1,5 @@
 import { StyleSheet, View } from "react-native";
+import { fixedCell, useGrid } from "@/shared/lib/useGrid";
 import { Text } from "@/shared/ui";
 import { radius, useColors } from "@/shared/theme";
 import { useT } from "@/shared/i18n";
@@ -8,6 +9,7 @@ import type { Fact } from "@/entities/my-document";
 
 // The key-facts grid of the detail sheet: two tiles per row, a small label over a short value.
 export function DocFacts({ facts }: { facts: Fact[] }) {
+  const grid = useGrid({ min: 220 });
   const { t, locale } = useT();
   const c = useColors();
   const value = (f: Fact): string => {
@@ -21,9 +23,9 @@ export function DocFacts({ facts }: { facts: Fact[] }) {
     return f.n !== undefined ? String(f.n) : f.text ?? "";
   };
   return (
-    <View style={s.grid}>
+    <View style={s.grid} onLayout={grid.onLayout}>
       {facts.map((f) => (
-        <View key={f.key} style={[s.tile, { borderColor: c.line }]} accessible accessibilityLabel={`${t(`docSheet.fact.${f.key}`)}: ${value(f)}`}>
+        <View key={f.key} style={[s.tile, { borderColor: c.line }, fixedCell(grid.cell)]} accessible accessibilityLabel={`${t(`docSheet.fact.${f.key}`)}: ${value(f)}`}>
           <Text variant="caption" tone="gray" numberOfLines={1}>{t(`docSheet.fact.${f.key}`)}</Text>
           <Text variant="small" weight="semibold" numberOfLines={2}>{value(f)}</Text>
         </View>

@@ -15,5 +15,6 @@ export function Tile({ icon, value, label, tone, bar }: { icon: IconName; value:
   );
 }
 
+// Tiles in a panel: `useGrid` in the panel gives `grid.onLayout` / `grid.cell`; on a phone they are empty and `half` is the old two-up width.
 export const tilesStyle = StyleSheet.create({ grid: { flexDirection: "row", flexWrap: "wrap", gap: 10 }, half: { width: "48.5%" } });
 const s = StyleSheet.create({ tile: { height: 124, gap: 4, padding: 12, borderRadius: 14 }, ico: { width: 30, height: 30, borderRadius: 10, alignItems: "center", justifyContent: "center", marginBottom: 2 }, track: { height: 4, borderRadius: 2, overflow: "hidden" }, fill: { height: 4, borderRadius: 2 } });

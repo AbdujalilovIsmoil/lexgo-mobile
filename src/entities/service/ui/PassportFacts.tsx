@@ -1,4 +1,5 @@
 import { StyleSheet, View } from "react-native";
+import { fixedCell, useGrid } from "@/shared/lib/useGrid";
 import Animated, { FadeInDown } from "react-native-reanimated";
 import { Icon, Pill, Text, type IconName } from "@/shared/ui";
 import { useT } from "@/shared/i18n";
@@ -27,10 +28,11 @@ function Section({ i, icon, title, children }: { i: number; icon: IconName; titl
 // Label over value, two to a row; empty values are left out so a section never shows a blank.
 function Grid({ rows }: { rows: Row[] }) {
   const c = useColors();
+  const grid = useGrid({ gap: 8, min: 220 });
   return (
-    <View style={s.grid}>
+    <View style={s.grid} onLayout={grid.onLayout}>
       {rows.filter((r) => real(r.value)).map((r) => (
-        <View key={r.label} style={[s.cell, { backgroundColor: c.surface2 }]}>
+        <View key={r.label} style={[s.cell, { backgroundColor: c.surface2 }, fixedCell(grid.cell)]}>
           <Text variant="caption" tone="gray" numberOfLines={1}>{r.label}</Text>
           <Text variant="small" weight="bold" selectable={r.mono} numberOfLines={3} style={r.mono ? s.mono : undefined}>{real(r.value)}</Text>
         </View>

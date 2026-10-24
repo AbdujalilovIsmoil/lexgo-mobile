@@ -65,6 +65,6 @@ const s = StyleSheet.create({
   fill: { flex: 1 },
   padded: { paddingHorizontal: 16 },
   // A tablet reads a page as one centred column, not as a phone page stretched over 1000+ dp.
-  column: { width: "100%", maxWidth: 860, alignSelf: "center" },
+  column: { width: "100%", maxWidth: 1200, alignSelf: "center" },
   mask: { position: "absolute", top: 0, left: 0, right: 0 },
 });

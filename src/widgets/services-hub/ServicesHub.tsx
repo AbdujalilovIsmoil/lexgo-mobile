@@ -5,6 +5,7 @@ import { ServiceCardSkeleton, type Service } from "@/entities/service";
 import { Button, EmptyState, ErrorView, Text } from "@/shared/ui";
 import { useT } from "@/shared/i18n";
 import { SearchRow } from "./SearchRow";
+import { useGrid } from "@/shared/lib/useGrid";
 import { ServiceCard } from "./ServiceCard";
 import { ServicesFilterSheet } from "./ServicesFilterSheet";
 import type { Hub } from "./useServicesHub";
@@ -15,6 +16,7 @@ import type { Hub } from "./useServicesHub";
 export function ServicesHub({ hub, onOpen }: { hub: Hub; onOpen: (s: Service) => void }) {
   const { t } = useT();
   const [sheet, setSheet] = useState(false);
+  const g = useGrid({ gap: 12 });
   const key = `${hub.q.trim()}|${JSON.stringify(hub.f)}`;
   return (
     <View style={s.col}>
@@ -23,8 +25,8 @@ export function ServicesHub({ hub, onOpen }: { hub: Hub; onOpen: (s: Service) =>
         <>
           <Text variant="small" tone="gray">{t("svh.servicesN", { n: hub.rows.length })}</Text>
           {hub.rows.length ? (
-            <Animated.View key={key} entering={FadeIn.duration(220)} exiting={FadeOut.duration(120)} style={s.grid}>
-              {hub.visible.map((sv, i) => <ServiceCard key={sv.id} service={sv} index={i} onPress={() => onOpen(sv)} />)}
+            <Animated.View key={key} entering={FadeIn.duration(220)} exiting={FadeOut.duration(120)} style={[s.grid, g.cell && s.gridWide]} onLayout={g.onLayout}>
+              {hub.visible.map((sv, i) => <ServiceCard key={sv.id} service={sv} index={i} cell={g.cell} onPress={() => onOpen(sv)} />)}
             </Animated.View>
           ) : <EmptyState icon="search" title={t("svh.noMatch")} text={t("svh.noMatchText")} compact />}
           {hub.left ? <Button title={`${t("svh.more")} · ${hub.left}`} variant="soft" full onPress={hub.more} /> : null}
@@ -35,4 +37,4 @@ export function ServicesHub({ hub, onOpen }: { hub: Hub; onOpen: (s: Service) =>
   );
 }
 
-const s = StyleSheet.create({ col: { gap: 12 }, grid: { flexDirection: "row", flexWrap: "wrap", justifyContent: "space-between", rowGap: 12 } });
+const s = StyleSheet.create({ col: { gap: 12 }, grid: { flexDirection: "row", flexWrap: "wrap", justifyContent: "space-between", rowGap: 12 }, gridWide: { justifyContent: "flex-start", columnGap: 12 } });

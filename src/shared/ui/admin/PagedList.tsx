@@ -34,7 +34,7 @@ export function PagedList<T>({ data, query, renderItem, keyExtractor, header, em
     <FlatList
       key={columns}
       numColumns={columns}
-      columnWrapperStyle={columns > 1 ? { gap: 14, justifyContent: "space-between" } : undefined}
+      columnWrapperStyle={columns > 1 ? { gap: 14, justifyContent: columns > 2 ? "flex-start" : "space-between" } : undefined}
       data={query.isLoading || query.isError ? [] : data}
       keyExtractor={keyExtractor}
       renderItem={({ item, index }) => renderItem(item, index)}

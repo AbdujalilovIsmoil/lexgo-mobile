@@ -9,6 +9,7 @@ import { todayKey } from "@/shared/lib/pro/dates";
 import { radius, shadows } from "@/shared/theme";
 import { Icon, PressableScale, Text, type IconName } from "@/shared/ui";
 import { useT } from "@/shared/i18n";
+import { useGrid } from "@/shared/lib/useGrid";
 import { Fade } from "./Fade";
 
 type Sheet = "case" | "client" | "event" | null;
@@ -19,6 +20,7 @@ const TONES: readonly (readonly [string, string])[] = [["#1668F0", "#00CFE8"], [
 export function HomeQuick() {
   const { t } = useT();
   const router = useRouter();
+  const g = useGrid({ count: 4 });
   const [open, setOpen] = useState<Sheet>(null);
   const items: { key: string; icon: IconName; on: () => void }[] = [
     { key: "quickClient", icon: "user-plus", on: () => setOpen("client") },
@@ -29,9 +31,9 @@ export function HomeQuick() {
   return (
     <View style={s.col}>
       <Text variant="h4">{t("shm.dash.quickActions")}</Text>
-      <View style={s.grid}>
+      <View style={s.grid} onLayout={g.onLayout}>
         {items.map((x, i) => (
-          <View key={x.key} style={s.cell}>
+          <View key={x.key} style={[s.cell, g.cell]}>
             <Fade i={i}>
               <PressableScale onPress={x.on} accessibilityRole="button" accessibilityLabel={t(`shm.dash.${x.key}`)}>
                 <LinearGradient colors={[...TONES[i]]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={[s.tile, shadows.s1]}>

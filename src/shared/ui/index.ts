@@ -10,6 +10,7 @@ export { Avatar } from "./Avatar";
 export { BrandLogo } from "./BrandLogo";
 export { Screen } from "./Screen";
 export { TabletColumn } from "./TabletColumn";
+export { TabletStatusStrip } from "./TabletStatusStrip";
 export { Skeleton } from "./Skeleton";
 export { SkeletonCard } from "./SkeletonCard";
 export { ListRowSkeleton } from "./ListRowSkeleton";

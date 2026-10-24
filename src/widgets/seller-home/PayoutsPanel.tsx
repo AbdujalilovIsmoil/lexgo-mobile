@@ -7,6 +7,7 @@ import { Divider, Pill, Skeleton, Text } from "@/shared/ui";
 import { useT } from "@/shared/i18n";
 import { Panel } from "./Panel";
 import { Tile, tilesStyle } from "./Tile";
+import { useGrid } from "@/shared/lib/useGrid";
 
 const MIN_PAYOUT = 100_000; // so'm (S-30)
 const PAID = new Set(["paid", "released", "completed", "done"]);
@@ -21,6 +22,7 @@ function nextThursday(from = new Date()): Date {
 // "Hisob-kitob (payout)": what waits for the weekly payout, what was paid, how many records, the rule (minimum amount) and the
 // latest twelve payouts as rows.
 export function PayoutsPanel({ i }: { i: number }) {
+  const grid = useGrid({ count: 2 });
   const { t, locale } = useT();
   const c = useColors();
   const q = usePayouts();
@@ -33,9 +35,9 @@ export function PayoutsPanel({ i }: { i: number }) {
     <Panel i={i} icon="credit-card" tint="#F59E0B" title={t("shm.sd.payouts.title")} fold={`${fmtMoney(pending)} ${som} · ${t("shm.sd.payouts.nextPayout", { date: fmtDate(nextThursday().toISOString(), locale) })}`} sub={t("shm.sd.payouts.nextPayout", { date: fmtDate(nextThursday().toISOString(), locale) })}>
       {q.isLoading ? <Skeleton height={120} round={16} /> : (
         <>
-          <View style={tilesStyle.grid}>
-            <View style={tilesStyle.half}><Tile icon="clock" tone={c.warn} value={`${fmtMoney(pending)} ${som}`} label={t("shm.sd.payouts.pending")} /></View>
-            <View style={tilesStyle.half}><Tile icon="check" tone={c.ok} value={`${fmtMoney(paid)} ${som}`} label={t("shm.sd.payouts.paid")} /></View>
+          <View style={tilesStyle.grid} onLayout={grid.onLayout}>
+            <View style={[tilesStyle.half, grid.cell]}><Tile icon="clock" tone={c.warn} value={`${fmtMoney(pending)} ${som}`} label={t("shm.sd.payouts.pending")} /></View>
+            <View style={[tilesStyle.half, grid.cell]}><Tile icon="check" tone={c.ok} value={`${fmtMoney(paid)} ${som}`} label={t("shm.sd.payouts.paid")} /></View>
           </View>
           <Text variant="caption" tone="gray">{pending > 0 && pending < MIN_PAYOUT ? t("shm.sd.payouts.belowMin", { min: fmtMoney(MIN_PAYOUT) }) : t("shm.sd.payouts.rule", { min: fmtMoney(MIN_PAYOUT) })}</Text>
           {rows.length ? rows.slice(0, 12).map((p, k) => (

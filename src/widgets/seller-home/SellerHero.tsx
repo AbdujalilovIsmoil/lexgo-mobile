@@ -5,6 +5,7 @@ import { HEADER_GAP, useInsets } from "@/shared/lib/insets";
 import { LinearGradient } from "expo-linear-gradient";
 import { GradientBox, Icon, PressableScale, Text, type IconName, FocusStatusBar } from "@/shared/ui";
 import { useT } from "@/shared/i18n";
+import { useGrid } from "@/shared/lib/useGrid";
 import { Fade } from "./Fade";
 
 export type HeroStat = { key: string; icon: IconName; tint: string; value: string; label: string; to: string };
@@ -20,6 +21,7 @@ export function SellerHero({ name, stats, tasks, meetings, advocate, license }: 
   const { t } = useT();
   const insets = useInsets();
   const router = useRouter();
+  const g = useGrid({ count: stats.length });
   const a = ACCENT[advocate ? "advocate" : "lawyer"];
   const badge = `${t(advocate ? "au1.role.advokat" : "au1.role.yurist")}${advocate && license ? ` · ${license}` : ""}`;
   return (
@@ -37,9 +39,9 @@ export function SellerHero({ name, stats, tasks, meetings, advocate, license }: 
       <Text variant="hx" tone="white">{t("shm.dash.heroTitle")}</Text>
       <Text variant="lead" style={s.sub}>{t("shm.dash.heroSub")}</Text>
       <View style={s.plan}><Icon name="clock" size={15} color={a.main} /><Text variant="small" style={s.planTx}>{t("shm.dash.greetSub", { meetings, tasks })}</Text></View>
-      <View style={s.grid}>
+      <View style={s.grid} onLayout={g.onLayout}>
         {stats.map((x, i) => (
-          <View key={x.key} style={s.cell}><Fade i={i}>
+          <View key={x.key} style={[s.cell, g.cell]}><Fade i={i}>
             <PressableScale onPress={() => router.push(x.to as never)} accessibilityRole="button" accessibilityLabel={`${x.label}: ${x.value}`}>
               <LinearGradient colors={[...(TONES[i % TONES.length])]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={s.tile}>
                 <View style={s.ring} pointerEvents="none" />

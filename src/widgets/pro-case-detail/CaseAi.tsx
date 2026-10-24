@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useGrid } from "@/shared/lib/useGrid";
 import * as Clipboard from "expo-clipboard";
 import { StyleSheet, View } from "react-native";
 import { AI_TOOLS, useCaseAi, type CaseAiTool } from "@/entities/pro-cases";
@@ -10,6 +11,7 @@ const ICON: Record<CaseAiTool, IconName> = { summary: "align-left", chronology: 
 
 // AI helpers over the case as four tiles (summary, chronology, missing documents, client questions); the answer appears below, with copy.
 export function CaseAi({ caseId }: { caseId: string }) {
+  const grid = useGrid({ min: 220 });
   const { t } = useT();
   const c = useColors();
   const ai = useCaseAi();
@@ -23,11 +25,11 @@ export function CaseAi({ caseId }: { caseId: string }) {
   return (
     <View style={s.col}>
       <Text variant="small" tone="gray">{t("aw5.aiLead")}</Text>
-      <View style={s.grid}>
+      <View style={s.grid} onLayout={grid.onLayout}>
         {AI_TOOLS.map((k) => {
           const on = tool === k;
           return (
-            <PressableScale key={k} disabled={ai.isPending} onPress={() => run(k)} style={[s.tile, { backgroundColor: on ? c.tint2 : c.surface, borderColor: on ? brand.b600 : c.line }]}>
+            <PressableScale key={k} disabled={ai.isPending} onPress={() => run(k)} style={[s.tile, { backgroundColor: on ? c.tint2 : c.surface, borderColor: on ? brand.b600 : c.line }, grid.cell]}>
               <View style={[s.ico, { backgroundColor: on ? brand.b600 : c.tint2 }]}><Icon name={ICON[k]} size={18} color={on ? "#FFFFFF" : c.accent} /></View>
               <Text variant="small" weight="bold" numberOfLines={2}>{t(`aw5.tool.${k}`)}</Text>
             </PressableScale>

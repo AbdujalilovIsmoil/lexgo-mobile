@@ -1,3 +1,4 @@
+import { TurboModuleRegistry } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import { resyncStatusBarSoon } from "@/shared/lib/statusBarSync";
 import type { ScanPage } from "./types";
@@ -10,9 +11,12 @@ const toPage = (a: ImagePicker.ImagePickerAsset): ScanPage => newPage(a.uri, Num
 const asUri = (path: string) => (/^[a-z]+:\/\//i.test(path) ? path : `file://${path}`);
 
 // The scanner is a native module: a build made before it was added does not have it, and importing it up front would
-// crash every screen that reaches this file. Load it on use and fall back to the plain camera when it is missing.
+// crash every screen that reaches this file. Ask the module registry first (requiring the plugin without its native part
+// throws an Invariant Violation and logs a red error), load it on use, and fall back to the plain camera when it is missing.
 type Scanner = typeof import("react-native-document-scanner-plugin");
+export const scannerAvailable = (): boolean => TurboModuleRegistry.get("DocumentScanner") != null;
 function loadScanner(): Scanner | null {
+  if (!scannerAvailable()) return null;
   try {
     // eslint-disable-next-line @typescript-eslint/no-require-imports
     return require("react-native-document-scanner-plugin") as Scanner;

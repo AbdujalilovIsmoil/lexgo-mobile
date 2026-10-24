@@ -8,7 +8,7 @@ import * as SystemUI from "expo-system-ui";
 import { AURORA, ThemeProvider, useTheme } from "@/shared/theme";
 import { IncomingCallWatcher } from "@/widgets/admin-meetings";
 import { ClientSidebar, TabletFrame } from "@/widgets/client-sidebar";
-import { AuroraBackdrop, RootOverlays } from "@/shared/ui";
+import { AuroraBackdrop, RootOverlays, TabletStatusStrip } from "@/shared/ui";
 import { useProfileRefresh } from "@/entities/session";
 import { useHostClipboardSync } from "../dev/useHostClipboardSync";
 import { QueryProvider } from "./QueryProvider";
@@ -30,6 +30,7 @@ function Chrome({ children }: { children: ReactNode }) {
       <SystemChrome />
       {Platform.OS === "ios" && AURORA ? <AuroraBackdrop /> : null}
       <TabletFrame>{children}</TabletFrame>
+      <TabletStatusStrip />
       <RootOverlays />
       <IncomingCallWatcher />
       <ClientSidebar />
