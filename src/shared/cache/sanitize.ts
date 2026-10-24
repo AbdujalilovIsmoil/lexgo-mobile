@@ -1,12 +1,17 @@
 // What may never reach local storage (TZ 38): OTP/TOTP secrets, tokens, full payment requisites.
 const SECRET_KEY = /(^|[_\-.])(otp|totp|secret|token|password|passwd|pin|cvv|cvc|card|pan|iban|requisites?|authorization|api_?key)([_\-.]|$)/i;
 const MAX_BYTES = 400_000;
+// Phone numbers are kept as "" (the screens still get a string): a cached list must not become a phone book of the account's contacts.
+const PHONE_KEY = /(^|[_\-.])(phone|phone_?number|tel)$/i;
 
 export function scrub(value: unknown, depth = 0): unknown {
   if (depth > 10 || value === null || typeof value !== "object") return typeof value === "function" ? undefined : value;
   if (Array.isArray(value)) return value.map((v) => scrub(v, depth + 1));
   const out: Record<string, unknown> = {};
-  for (const [k, v] of Object.entries(value as Record<string, unknown>)) if (!SECRET_KEY.test(k)) out[k] = scrub(v, depth + 1);
+  for (const [k, v] of Object.entries(value as Record<string, unknown>)) {
+    if (SECRET_KEY.test(k)) continue;
+    out[k] = PHONE_KEY.test(k) && typeof v === "string" ? "" : scrub(v, depth + 1);
+  }
   return out;
 }
 

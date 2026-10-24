@@ -4,6 +4,7 @@ import * as Crypto from "expo-crypto";
 import { create } from "zustand";
 import { http } from "@/shared/api";
 import { readSecret, writeSecret } from "@/shared/lib/storage";
+import { registerSessionReset } from "@/shared/lib/sessionReset";
 
 // POST /devices (README "Remote Push"): the device's push token, so the backend can reach the app when it is in the background or closed.
 export type DeviceRegistration = {
@@ -76,3 +77,11 @@ export async function removeRegistration(token: string): Promise<void> {
   await writeSecret(SENT_KEY, null);
   useRemoteRegistered.setState({ on: false });
 }
+
+// Any sign-out or account switch — also one the server forced, which skips DELETE /devices — forgets that this token was sent, so the
+// account that signs in next registers it again instead of the backend keeping it on the previous account.
+registerSessionReset(() => {
+  void writeSecret(SENT_KEY, null);
+  void writeSecret(DEVICE_KEY, null);
+  useRemoteRegistered.setState({ on: false });
+});

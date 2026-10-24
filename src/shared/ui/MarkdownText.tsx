@@ -1,6 +1,7 @@
 import { Fragment } from "react";
-import { Linking, Text as RNText } from "react-native";
+import { Text as RNText } from "react-native";
 import { Text } from "./Text";
+import { openUrl } from "@/shared/lib/links";
 
 const INLINE = /(\*\*[^*]+\*\*|\[[^\]]+\]\([^)]+\))/g;
 const LINK = /^\[([^\]]+)\]\(([^)]+)\)$/;
@@ -23,7 +24,7 @@ export function MarkdownText({ text, color, linkColor, mutedColor }: Props) {
               const link = part.match(LINK);
               if (link) {
                 return (
-                  <RNText key={j} onPress={() => void Linking.openURL(link[2]).catch(() => {})} style={{ color: linkColor, textDecorationLine: "underline" }}>
+                  <RNText key={j} onPress={() => openUrl(link[2])} style={{ color: linkColor, textDecorationLine: "underline" }}>
                     {link[1]}
                   </RNText>
                 );

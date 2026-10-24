@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { File } from "expo-file-system";
-import { API_BASE } from "@/shared/config/env";
+import { API_BASE, isApiUrl } from "@/shared/config/env";
 import { accessToken } from "@/shared/api";
 import { filesDir } from "./cache";
 import { safeName } from "./fileName";
@@ -22,7 +22,7 @@ export function useDownload() {
     abort.current = ctl;
     setState({ phase: "loading", progress: 0 });
     try {
-      const own = !/^https?:/i.test(src.path) || src.path.startsWith(API_BASE);
+      const own = !/^https?:/i.test(src.path) || isApiUrl(src.path);
       const url = /^https?:/i.test(src.path) ? src.path : `${API_BASE}${src.path.startsWith("/") ? "" : "/"}${src.path}`;
       const token = accessToken();
       const dir = filesDir();

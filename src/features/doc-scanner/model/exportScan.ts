@@ -9,6 +9,7 @@ import { buildZip } from "@/shared/lib/scan/zip";
 import { recognizePage } from "./recognize";
 import { renderPage, type Rendered } from "./render";
 import type { ScanPage } from "./types";
+import { filesDir } from "@/shared/lib/download/cache";
 
 export type ScanFile = { uri: string; name: string; mime: string; size: number; textFailed?: boolean };
 const MAX_SIDE = 2000;
@@ -51,7 +52,9 @@ export async function exportScan(pages: ScanPage[], filter: ScanFilter, format: 
     : out.length > 1 ? buildZip(out.map((r, i) => ({ name: safeUploadName(`${o.name.replace(/\.zip$/, "")}-${i + 1}.${ext}`), data: r.bytes })))
     : out[0].bytes;
   const name = safeUploadName(o.name); // plain letters only: the server stores the name exactly as it is sent
-  const file = new File(Paths.cache, name);
+  const dir = filesDir(); // wiped on sign-out with the other confidential files
+  if (!dir.exists) dir.create({ intermediates: true });
+  const file = new File(dir, name);
   file.create({ overwrite: true });
   file.write(bytes);
   return { uri: file.uri, name, mime: o.mime, size: bytes.length, textFailed };
