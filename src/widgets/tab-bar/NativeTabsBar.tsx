@@ -3,6 +3,7 @@ import { useWindowDimensions, View } from "react-native";
 import { NativeTabs } from "expo-router/unstable-native-tabs";
 import { useRouter } from "expo-router";
 import { useIsAuthed } from "@/entities/session";
+import { useTablet } from "@/shared/lib/useTablet";
 import { useBadgeStore } from "@/shared/lib/badgeStore";
 import { useT } from "@/shared/i18n";
 import { AURORA, useColors } from "@/shared/theme";
@@ -37,6 +38,7 @@ export const NativeTabsBar = memo(function NativeTabsBar({ bar }: { bar: boolean
   const router = useRouter();
   const authed = useIsAuthed();
   const role = useTabRole();
+  const { tablet } = useTablet(); // a tablet has the sidebar instead of a tab bar (no bar on top, none at the bottom): only the AI button stays
   const badges = useBadgeStore((s) => s.badges);
   // The AI tab always takes the middle slot, so the raised button sits at the exact centre of the bar: with an even number of tabs an
   // empty disabled slot (`gap`) beside it makes the count odd.
@@ -69,7 +71,7 @@ export const NativeTabsBar = memo(function NativeTabsBar({ bar }: { bar: boolean
     <View style={{ flex: 1 }}>
     <CaptionMeter texts={[...new Set([...fulls, ...shorts])]} onWidths={(w) => setMeasured((m) => ({ ...m, ...w }))} />
     <ReturnWatcher onSettled={() => setNudge((n) => n + 1)} />
-    <NativeTabs hidden={!bar} tintColor={c.accent} labelStyle={{ fontSize: fit.size + (nudge % 2) * 0.01 }}>
+    <NativeTabs hidden={!bar || tablet} tintColor={c.accent} labelStyle={{ fontSize: fit.size + (nudge % 2) * 0.01 }}>
       {shown.map((def) => {
         const n = def.badge ? (badges[def.badge] ?? 0) : 0;
         const guard = (def.auth && !authed) || def.route === GAP.route;
