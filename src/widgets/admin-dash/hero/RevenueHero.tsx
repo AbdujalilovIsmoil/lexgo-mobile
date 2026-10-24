@@ -2,10 +2,10 @@ import { useState } from "react";
 import { StyleSheet, View } from "react-native";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import { runOnJS } from "react-native-reanimated";
-import * as Haptics from "expo-haptics";
 import { GradientBox, PressableScale, Text } from "@/shared/ui";
 import type { DashCtx } from "../lib/useDashCtx";
 import { Sparkline } from "./Sparkline";
+import { selectHaptic } from "@/shared/lib/haptics";
 
 type HeroCtx = Pick<DashCtx, "fmt" | "c" | "trend" | "t">;
 const W_PAD = 20;
@@ -17,7 +17,7 @@ export function RevenueHero({ x, onOpen, width, tall }: { x: HeroCtx; onOpen?: (
   const w = Math.max(width - W_PAD * 2, 1);
   const pick = (px: number) => {
     const i = Math.round((Math.min(Math.max(px, 0), w) / w) * Math.max(trend.length - 1, 0));
-    setIdx((p) => { if (p !== i) void Haptics.selectionAsync().catch(() => {}); return i; });
+    setIdx((p) => { if (p !== i) selectHaptic(); return i; });
   };
   const pan = Gesture.Pan().activeOffsetX([-6, 6]).onStart((e) => runOnJS(pick)(e.x)).onUpdate((e) => runOnJS(pick)(e.x)).onEnd(() => runOnJS(setIdx)(null));
   const p = idx != null ? trend[idx] : null;

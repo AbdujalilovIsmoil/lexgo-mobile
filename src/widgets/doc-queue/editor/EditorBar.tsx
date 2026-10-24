@@ -1,5 +1,5 @@
 import { View } from "react-native";
-import { Button, IconButton, Text } from "@/shared/ui";
+import { Button, IconButton, Text, backIcon } from "@/shared/ui";
 import { useT } from "@/shared/i18n";
 import { useInsets } from "@/shared/lib/insets";
 import { useColors } from "@/shared/theme";
@@ -15,7 +15,7 @@ export function EditorBar({ doc, save, canSend, onBack, onMenu, onSend }: Props)
   const c = useColors();
   return (
     <View style={{ paddingTop: insets.top + 4, paddingHorizontal: 12, paddingBottom: 8, flexDirection: "row", alignItems: "center", gap: 8, borderBottomWidth: 1, borderBottomColor: c.line, backgroundColor: c.bg }}>
-      <IconButton icon="chevron-left" size={40} onPress={onBack} label={t("common.back")} />
+      <IconButton icon={backIcon} size={40} onPress={onBack} label={t("common.back")} />
       <View style={{ flex: 1, gap: 4 }}>
         <Text variant="small" weight="bold" numberOfLines={1}>{doc.title || doc.clientName}</Text>
         <View style={{ flexDirection: "row", gap: 6, flexWrap: "wrap" }}>

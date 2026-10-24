@@ -1,7 +1,7 @@
 import { StyleSheet, View } from "react-native";
 import { HEADER_GAP, useInsets } from "@/shared/lib/insets";
 import { useRouter } from "expo-router";
-import { GradientBox, IconButton, Text, FocusStatusBar, BrandLogo } from "@/shared/ui";
+import { GradientBox, IconButton, Text, FocusStatusBar, BrandLogo, backIcon } from "@/shared/ui";
 
 type Props = { title: string; subtitle: string; back?: boolean };
 
@@ -14,7 +14,7 @@ export function AuthHero({ title, subtitle, back = true }: Props) {
       <FocusStatusBar style="light" />
       <View style={s.top}>
         {back ? (
-          <IconButton icon="chevron-left" tone="glass" onPress={() => (router.canGoBack() ? router.back() : router.replace("/(tabs)/profile"))} />
+          <IconButton icon={backIcon} tone="glass" onPress={() => (router.canGoBack() ? router.back() : router.replace("/(tabs)/profile"))} />
         ) : (
           <View style={s.spacer} />
         )}

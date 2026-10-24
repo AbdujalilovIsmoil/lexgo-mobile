@@ -4,6 +4,7 @@ import { useRouter } from "expo-router";
 import { HEADER_GAP, useInsets } from "@/shared/lib/insets";
 import { useColors } from "@/shared/theme";
 import { ChromeFrame } from "../ChromeFrame";
+import { backIcon } from "../Icon";
 import { IconButton } from "../IconButton";
 import { Text } from "../Text";
 import { HeaderExtra, HeaderRight } from "../headerExtra";
@@ -21,7 +22,7 @@ export function AdminPage({ hideBack, title, subtitle, onBack, right, footer, ch
     <View style={[s.fill, { backgroundColor: c.canvas }]}>
       <ChromeFrame>
       <View style={[s.bar, { paddingTop: insets.top + HEADER_GAP }]}>
-        {hideBack ? null : <IconButton icon="chevron-left" onPress={back} />}
+        {hideBack ? null : <IconButton icon={backIcon} onPress={back} />}
         <View style={s.titles}>
           <Text variant="h4" numberOfLines={1}>{title}</Text>
           {subtitle ? <Text variant="caption" tone="gray" numberOfLines={1}>{subtitle}</Text> : null}

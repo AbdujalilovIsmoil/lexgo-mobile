@@ -4,13 +4,14 @@ import { HEADER_GAP, useInsets } from "@/shared/lib/insets";
 import { useRouter } from "expo-router";
 import { useColors } from "@/shared/theme";
 import { ChromeFrame } from "./ChromeFrame";
+import { backIcon } from "./Icon";
 import { IconButton } from "./IconButton";
 import { Text } from "./Text";
 import { HeaderExtra, HeaderRight } from "./headerExtra";
 
 type Props = { title?: string; right?: ReactNode; onBack?: () => void; transparent?: boolean; light?: boolean };
 
-// Stack-screen header: 44px back button chip (the web's .burg size) + title.
+// Stack-screen header: 44px back button chip (the web's .burg size) + title — centred on iOS, beside the back arrow on Android (Material).
 export function Header({ title, right, onBack, transparent, light }: Props) {
   const c = useColors();
   const insets = useInsets();
@@ -20,7 +21,7 @@ export function Header({ title, right, onBack, transparent, light }: Props) {
   return (
     <ChromeFrame off={plain}>
     <View style={[s.bar, { paddingTop: insets.top + HEADER_GAP, backgroundColor: plain || Platform.OS === "ios" ? "transparent" : c.canvas }]}>
-      <IconButton icon="chevron-left" tone={light ? "glass" : "tint"} onPress={onBack ?? (() => (router.canGoBack() ? router.back() : router.replace("/")))} />
+      <IconButton icon={backIcon} tone={light ? "glass" : "tint"} onPress={onBack ?? (() => (router.canGoBack() ? router.back() : router.replace("/")))} />
       {title ? (
         <Text variant="h4" numberOfLines={1} style={[s.title, { color: fg }]}>
           {title}
@@ -37,6 +38,6 @@ export function Header({ title, right, onBack, transparent, light }: Props) {
 
 const s = StyleSheet.create({
   bar: { flexDirection: "row", alignItems: "center", gap: 12, paddingHorizontal: 16, paddingBottom: 12 },
-  title: { flex: 1, textAlign: "center" },
+  title: { flex: 1, textAlign: Platform.OS === "android" ? "left" : "center" },
   right: { width: 44, alignItems: "flex-end" },
 });

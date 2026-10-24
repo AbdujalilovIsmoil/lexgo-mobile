@@ -1,6 +1,6 @@
 export { Text, type TextProps, type TextTone } from "./Text";
 export { PressableScale } from "./PressableScale";
-export { Icon, type IconName } from "./Icon";
+export { Icon, backIcon, type IconName } from "./Icon";
 export { Button, type ButtonVariant } from "./Button";
 export { Card } from "./Card";
 export { Pill, type PillTone } from "./Pill";
