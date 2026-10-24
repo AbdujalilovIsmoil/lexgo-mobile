@@ -5,40 +5,38 @@ import { Icon, PressableScale, Text, type IconName } from "@/shared/ui";
 
 type Props = { kind: CardKind; icon: IconName; tag?: string; name: string; meta: string; starred: boolean; width: number; onPress: () => void; onMore: () => void };
 
-// A file as a compact tile: a small sheet of paper in its type colour (folded corner, icon, type badge) beside the name and
-// size, with the actions button at the end. No cover and no tinted backdrop, so it never reads as a folder.
+// A file at the same size as a folder card: a plain bordered tile (no tinted backdrop) with a sheet of paper in its type colour
+// (folded corner, icon, type badge) in the middle; name and size sit underneath exactly like a folder's. No opening cover.
 export function FileCard({ kind, icon, tag, name, meta, starred, width, onPress, onMore }: Props) {
   const tone = cardTone(kind);
   const c = useColors();
   return (
-    <View style={[s.card, { width, backgroundColor: c.surface, borderColor: c.line }]}>
-      <PressableScale scale={0.98} onPress={onPress} accessibilityLabel={name} style={s.main}>
-        <View style={[s.page, { borderColor: tone.front }]}>
-          <View style={[s.fold, { backgroundColor: tone.front2 }]} />
-          <Icon name={icon} size={18} color={tone.front} />
-          {tag ? <View style={[s.badge, { backgroundColor: tone.front }]}><Text variant="caption" weight="bold" tone="white" style={s.tagTx}>{tag}</Text></View> : null}
-        </View>
-        <View style={s.text}>
-          <Text variant="small" weight="bold" numberOfLines={2}>{name}</Text>
-          <View style={s.metaRow}>
-            {starred ? <Icon name="star" size={11} color="#F5A623" /> : null}
-            <Text variant="caption" tone="gray" numberOfLines={1}>{meta}</Text>
+    <View style={{ width }}>
+      <PressableScale scale={0.97} onPress={onPress} accessibilityLabel={name} style={s.hit}>
+        <View style={[s.box, { backgroundColor: c.surface, borderColor: c.line }]}>
+          <View style={[s.page, { borderColor: tone.front }]}>
+            <View style={[s.fold, { backgroundColor: tone.front2 }]} />
+            <Icon name={icon} size={26} color={tone.front} />
+            {tag ? <View style={[s.badge, { backgroundColor: tone.front }]}><Text variant="caption" weight="bold" tone="white" style={s.tagTx}>{tag}</Text></View> : null}
           </View>
         </View>
       </PressableScale>
-      <PressableScale onPress={onMore} hitSlop={8} accessibilityLabel={name} style={s.more}><Icon name="more-horizontal" size={18} color={c.gray} /></PressableScale>
+      {starred ? <View style={s.star}><Icon name="star" size={10} color="#FFFFFF" /></View> : null}
+      <PressableScale onPress={onMore} hitSlop={8} accessibilityLabel={name} style={[s.more, { backgroundColor: c.surface2 }]}><Icon name="more-horizontal" size={16} color={c.gray} /></PressableScale>
+      <Text variant="small" weight="bold" numberOfLines={1} center style={s.name}>{name}</Text>
+      <Text variant="caption" tone="gray" numberOfLines={1} center>{meta}</Text>
     </View>
   );
 }
 
 const s = StyleSheet.create({
-  card: { flexDirection: "row", alignItems: "center", alignSelf: "flex-start", marginTop: 14, borderRadius: radius.r, borderWidth: 1, minHeight: 68 },
-  main: { flex: 1, flexDirection: "row", alignItems: "center", gap: 11, paddingVertical: 9, paddingLeft: 11 },
-  page: { width: 40, height: 50, borderRadius: 6, borderTopRightRadius: 0, borderWidth: 1.5, alignItems: "center", justifyContent: "center", backgroundColor: "#FFFFFF" },
-  fold: { position: "absolute", top: -1.5, right: -1.5, width: 13, height: 13, borderBottomLeftRadius: 5 },
-  badge: { position: "absolute", bottom: -6, paddingHorizontal: 5, paddingVertical: 1, borderRadius: 999 },
-  tagTx: { fontSize: 8, letterSpacing: 0.3 },
-  text: { flex: 1, gap: 2 },
-  metaRow: { flexDirection: "row", alignItems: "center", gap: 4 },
-  more: { width: 40, alignSelf: "stretch", alignItems: "center", justifyContent: "center" },
+  hit: { paddingTop: 14, paddingBottom: 4 },
+  box: { aspectRatio: 1.5, borderRadius: radius.rl, borderWidth: 1, alignItems: "center", justifyContent: "center" },
+  page: { height: "68%", aspectRatio: 0.8, borderRadius: 8, borderTopRightRadius: 0, borderWidth: 2, alignItems: "center", justifyContent: "center", backgroundColor: "#FFFFFF" },
+  fold: { position: "absolute", top: -2, right: -2, width: 18, height: 18, borderBottomLeftRadius: 7 },
+  badge: { position: "absolute", bottom: -8, paddingHorizontal: 7, paddingVertical: 2, borderRadius: 999 },
+  tagTx: { fontSize: 9, letterSpacing: 0.4 },
+  star: { position: "absolute", top: 18, left: 6, width: 18, height: 18, borderRadius: 9, backgroundColor: "#F5A623", alignItems: "center", justifyContent: "center" },
+  more: { position: "absolute", top: 18, right: 6, width: 28, height: 28, borderRadius: 9, alignItems: "center", justifyContent: "center" },
+  name: { marginTop: 2 },
 });
