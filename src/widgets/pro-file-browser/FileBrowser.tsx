@@ -15,6 +15,7 @@ import { PagedList } from "@/shared/ui/admin";
 import { fmtBytes } from "@/shared/lib/pro/bytes";
 import { BrowserHeader } from "./BrowserHeader";
 import { FileFilterSheet } from "./FileFilterSheet";
+import { FileCard } from "./FileCard";
 import { FolderCard } from "./FolderCard";
 import { useFileFilters } from "./useFileFilters";
 import { PendingState } from "./PendingState";
@@ -51,7 +52,8 @@ export function FileBrowser() {
   const card = (r: Row) => {
     const folder = r.k === "folder";
     const ext = folder ? null : r.f.ext;
-    return <FolderCard kind={cardKind(ext)} icon={folder ? "folder" : kindIcon(r.f.ext, r.f.mime).icon} tag={ext ? ext.toUpperCase().slice(0, 4) : undefined} name={r.f.name} meta={folder ? t("aw8.items", { n: r.f.fileCount + r.f.folderCount }) : fmtBytes(r.f.size)} starred={r.f.starred} width={cell}
+    const Card = folder ? FolderCard : FileCard;
+    return <Card kind={cardKind(ext)} icon={folder ? "folder" : kindIcon(r.f.ext, r.f.mime).icon} tag={ext ? ext.toUpperCase().slice(0, 4) : undefined} name={r.f.name} meta={folder ? t("aw8.items", { n: r.f.fileCount + r.f.folderCount }) : fmtBytes(r.f.size)} starred={r.f.starred} width={cell}
       onPress={() => (folder ? go(r.f.id) : void opener.open(r.f))} onMore={() => setTarget(folder ? { kind: "folder", folder: r.f } : { kind: "file", file: r.f })} />;
   };
   const empty = { icon: "folder" as const, title: section === "starred" ? t("aw8.emptyStarred") : section === "recent" ? t("aw8.emptyRecent") : t("aw8.empty"), text: section === "all" ? t("aw8.emptyText") : undefined };
