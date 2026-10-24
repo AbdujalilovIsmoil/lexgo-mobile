@@ -1,6 +1,5 @@
 import { View } from "react-native";
 import { useLocalSearchParams } from "expo-router";
-import { usePreventScreenCapture } from "expo-screen-capture";
 import { ErrorView, IconButton } from "@/shared/ui";
 import { ChatHeader, ChatRoomView, ChatSheets } from "@/widgets/secure-chat";
 import { useAccess } from "@/entities/access";
@@ -8,10 +7,11 @@ import { useSellerActions } from "@/features/secure-chat";
 import { useT } from "@/shared/i18n";
 import { useColors } from "@/shared/theme";
 import { useChatRoom } from "./useChatRoom";
+import { useScreenGuard } from "@/shared/guard";
 
 // One secure chat. Screenshots / screen recording are blocked while it is open (TZ 40).
 export default function ChatRoomPage() {
-  // TEMP-SHOTS usePreventScreenCapture();
+  useScreenGuard();
   const { t } = useT();
   const c = useColors();
   const a = useAccess();

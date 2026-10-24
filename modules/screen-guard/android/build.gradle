@@ -1,0 +1,15 @@
+plugins {
+  id 'com.android.library'
+  id 'expo-module-gradle-plugin'
+}
+
+group = 'org.cognilabs.screenguard'
+version = '1.0.0'
+
+android {
+  namespace "org.cognilabs.screenguard"
+  defaultConfig {
+    versionCode 1
+    versionName '1.0.0'
+  }
+}

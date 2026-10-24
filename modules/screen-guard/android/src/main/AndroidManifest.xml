@@ -1,0 +1,4 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+  <!-- Android 15+: tells the app when its window is visible in a screen recording (WindowManager.addScreenRecordingCallback). -->
+  <uses-permission android:name="android.permission.DETECT_SCREEN_RECORDING" />
+</manifest>

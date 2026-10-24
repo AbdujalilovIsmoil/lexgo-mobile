@@ -6,4 +6,6 @@ export { useCallActions } from "./model/useCallActions";
 export { VideoTrack } from "./lib/livekit";
 export type { RoomStatus } from "./model/useLiveKitRoom";
 export { useUnansweredHangUp } from "./model/useUnansweredHangUp";
+export { useCaptureMute } from "./model/useCaptureMute";
+export { useGuardWarnings } from "./model/useGuardWarnings";
 export { shouldHangUp, type Phase } from "./lib/callPhase";

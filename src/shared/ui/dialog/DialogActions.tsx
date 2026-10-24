@@ -6,7 +6,7 @@ import { Text } from "../Text";
 
 type Props = { cancelLabel: string; confirmLabel: string; icon?: IconName; danger?: boolean; busy: boolean; onCancel: () => void; onConfirm: () => void };
 
-// Two equal pill buttons: a quiet cancel and the (red when destructive) confirm.
+// Two equal pill buttons: a quiet cancel and the (red when destructive) confirm. No cancel label = a notice with its one button.
 export function DialogActions({ cancelLabel, confirmLabel, icon, danger, busy, onCancel, onConfirm }: Props) {
   const c = useColors();
   const main = danger ? "#E5484D" : c.accentStrong;
@@ -14,9 +14,11 @@ export function DialogActions({ cancelLabel, confirmLabel, icon, danger, busy, o
     // Material 3 dialog actions: two text buttons at the end, the confirm in the brand (or error) colour
     return (
       <View style={s.end}>
-        <PressableScale onPress={onCancel} disabled={busy} style={[s.text, { opacity: busy ? 0.5 : 1 }]}>
-          <Text style={{ color: c.accentStrong, fontFamily: "Inter_600SemiBold", fontSize: 15 }}>{cancelLabel}</Text>
-        </PressableScale>
+        {cancelLabel ? (
+          <PressableScale onPress={onCancel} disabled={busy} style={[s.text, { opacity: busy ? 0.5 : 1 }]}>
+            <Text style={{ color: c.accentStrong, fontFamily: "Inter_600SemiBold", fontSize: 15 }}>{cancelLabel}</Text>
+          </PressableScale>
+        ) : null}
         <PressableScale onPress={onConfirm} disabled={busy} style={s.text}>
           {busy ? <ActivityIndicator color={main} /> : null}
           <Text style={{ color: danger ? "#D92D20" : c.accentStrong, fontFamily: "Inter_700Bold", fontSize: 15 }}>{confirmLabel}</Text>
@@ -26,9 +28,11 @@ export function DialogActions({ cancelLabel, confirmLabel, icon, danger, busy, o
   }
   return (
     <View style={s.row}>
-      <PressableScale onPress={onCancel} disabled={busy} style={[s.btn, { backgroundColor: c.tint2, opacity: busy ? 0.5 : 1 }]}>
-        <Text style={{ color: c.ink, fontFamily: "Inter_600SemiBold", fontSize: 15 }}>{cancelLabel}</Text>
-      </PressableScale>
+      {cancelLabel ? (
+        <PressableScale onPress={onCancel} disabled={busy} style={[s.btn, { backgroundColor: c.tint2, opacity: busy ? 0.5 : 1 }]}>
+          <Text style={{ color: c.ink, fontFamily: "Inter_600SemiBold", fontSize: 15 }}>{cancelLabel}</Text>
+        </PressableScale>
+      ) : null}
       <PressableScale onPress={onConfirm} disabled={busy} style={[s.btn, shadows.s2, { backgroundColor: main }]}>
         {busy ? <ActivityIndicator color="#FFFFFF" /> : icon ? <Icon name={icon} size={17} color="#FFFFFF" /> : null}
         <Text style={s.confirm}>{confirmLabel}</Text>

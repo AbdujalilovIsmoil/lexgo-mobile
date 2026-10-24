@@ -63,4 +63,9 @@ export const admMeet = {
   errEnded: "Bu uchrashuv allaqachon tugagan.",
   errForbidden: "Bu uchrashuvga qo'shilishga ruxsatingiz yo'q.",
   errGeneric: "Uchrashuvga ulanib bo'lmadi. Qayta urining.",
+  guardRecTitle: "Ekran yozib olinmoqda",
+  guardRecText: "Qo'ng'iroq paytida ekranni yozib olish yoki boshqa qurilmaga uzatish mumkin emas. Yozuv to'xtaguncha ekran qora bo'ladi va suhbatdoshning ovozi eshitilmaydi.",
+  guardShotTitle: "Skrinshot olib bo'lmaydi",
+  guardShotText: "Qo'ng'iroq maxfiy: ekranni rasmga olib bo'lmaydi, olingan rasm qora chiqadi.",
+  guardOk: "Tushunarli",
 };

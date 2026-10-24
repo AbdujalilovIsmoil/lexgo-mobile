@@ -65,4 +65,9 @@ export const admMeet: Messages["admMeet"] = {
   errEnded: "This meeting has already ended.",
   errForbidden: "You may not join this meeting.",
   errGeneric: "Could not connect. Try again.",
+  guardRecTitle: "The screen is being recorded",
+  guardRecText: "During a call the screen may not be recorded or shown on another device. Until the recording stops the screen stays black and the other side's voice is muted.",
+  guardShotTitle: "Screenshots are blocked",
+  guardShotText: "The call is confidential: a screenshot cannot be taken and comes out black.",
+  guardOk: "Got it",
 };

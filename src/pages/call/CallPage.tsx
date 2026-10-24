@@ -1,15 +1,15 @@
 import "@/features/call/call"; // first: registers the LiveKit / WebRTC globals before anything uses them
 import { Stack, useLocalSearchParams, useRouter } from "expo-router";
-import { usePreventScreenCapture } from "expo-screen-capture";
 import { useQuery } from "@tanstack/react-query";
 import { isLive, listCalls } from "@/entities/call";
 import { CallRoomView, CallStatusView } from "@/widgets/call/call";
 import { useT } from "@/shared/i18n";
+import { useScreenGuard } from "@/shared/guard";
 
 // /call/<roomId>?callId=<id> — the in-app LiveKit call (audio / video / meeting). Without `callId` the room's running
 // call is joined. Screenshots and screen recording are blocked while it is open (TZ 40).
 export default function CallPage() {
-  // TEMP-SHOTS usePreventScreenCapture();
+  useScreenGuard();
   const { t } = useT();
   const router = useRouter();
   const { roomId, callId } = useLocalSearchParams<{ roomId: string; callId?: string }>();

@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { shouldHangUp, useCallActions, useCallChat, useCallScreen, useUnansweredHangUp } from "@/features/call/call";
+import { shouldHangUp, useCallActions, useCallChat, useCallScreen, useCaptureMute, useGuardWarnings, useUnansweredHangUp } from "@/features/call/call";
 import { useRecording, useRosterToasts, useTransfer, useWork } from "@/features/call";
 import { useSession } from "@/entities/session";
 import { useT } from "@/shared/i18n";
@@ -18,6 +18,7 @@ export function CallRoomView({ roomId, callId }: { roomId: string; callId: strin
   useRosterToasts(s.call?.participants, s.myId);
   const { ended, leave, phase } = s;
   useUnansweredHangUp(phase, roomId, callId, s.lk.room, s.signal);
+  useGuardWarnings(useCaptureMute(s.lk.room));
   const closing = ended || shouldHangUp(phase);
   useEffect(() => {
     if (!closing) return;
