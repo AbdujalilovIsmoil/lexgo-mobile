@@ -24,7 +24,7 @@ export function Welcome() {
       </View>
       <View style={[s.legal, { backgroundColor: c.tint, borderColor: c.line }]}>
         <Text variant="caption" tone="gray" center>{t("ax2.legalNote")}</Text>
-        <Button title={t("ax2.toLegal")} icon="zap" variant="gradient" size="sm" onPress={() => { closeInstructor(); router.navigate("/ai"); }} />
+        <Button title={t("ax2.toLegal")} icon="zap" variant="gradient" size="sm" style={s.center} onPress={() => { closeInstructor(); router.navigate("/ai"); }} />
       </View>
     </View>
   );
@@ -34,5 +34,6 @@ const s = StyleSheet.create({
   wrap: { alignItems: "center", gap: 12, paddingVertical: 8 },
   icon: { width: 60, height: 60, alignItems: "center", justifyContent: "center" },
   legal: { alignSelf: "stretch", alignItems: "center", gap: 10, padding: 14, marginTop: 8, borderRadius: radius.rl, borderWidth: 1 },
+  center: { alignSelf: "center" }, // Button is flex-start on its own; the note above it is centred
   chips: { flexDirection: "row", flexWrap: "wrap", gap: 8, justifyContent: "center", marginTop: 4 },
 });
