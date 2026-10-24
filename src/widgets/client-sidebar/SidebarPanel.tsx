@@ -16,7 +16,7 @@ import { useAccess, visibleModules, webSidebarOnly } from "@/entities/access";
 import { useCabinet } from "@/entities/pro-workspace";
 
 // The drawer content: brand + role, the web sidebar rows in the web order, the mobile-only account rows, and sign out.
-export function SidebarPanel({ p, onGo }: { p: SharedValue<number>; onGo: (route: string) => void }) {
+export function SidebarPanel({ p, onGo, compact }: { p: SharedValue<number>; onGo: (route: string) => void; compact?: boolean }) {
   const { t } = useT();
   const c = useColors();
   const insets = useInsets();
@@ -37,19 +37,23 @@ export function SidebarPanel({ p, onGo }: { p: SharedValue<number>; onGo: (route
   const badges = { notifications: useUnreadCount(), support: useBadge("support") };
   return (
     <View style={[s.fill, { paddingTop: insets.top + 12, paddingBottom: insets.bottom + 8 }]}>
-      <View style={s.brand}>
+      <View style={[s.brand, compact && s.brandRail]}>
         <BrandLogo size={40} />
-        <View style={s.fill}>
+        {compact ? null : <View style={s.fill}>
           <Text variant="h4">LexGo</Text>
           <Text variant="caption" tone="gray" numberOfLines={1}>{user ? `${displayName(user) || t("ntd.sbTitle")} ·${t(role === "client" ? "profile.roleClient" : role === "sales" ? "salesOp.role" : user.role === "advocate" ? "profile.roleAdvocate" : user.role === "lawyer" ? "profile.roleLawyer" : "tabs.admin")}` : t("home.guest")}</Text>
-        </View>
+        </View>}
       </View>
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={s.list}>
-        {nav.map((it, i) => <SidebarItem key={it.key} p={p} index={i} item={it} label={t(it.label ?? `cpd.menu.${it.key}`)} active={isActive(it.route, path)} badge={it.badge ? badges[it.badge] : undefined} onPress={() => onGo(it.route)} />)}
-        {client ? <Text variant="kicker" tone="gray2" style={s.kick}>{t("ntd.sbMore").toUpperCase()}</Text> : null}
-        {(client ? EXTRA : []).map((it, i) => <SidebarItem key={it.key} p={p} index={nav.length + i} item={it} label={t(`nav1.menu.${it.key}`)} active={isActive(it.route, path)} onPress={() => onGo(it.route)} />)}
+        {nav.map((it, i) => <SidebarItem key={it.key} p={p} index={i} item={it} label={t(it.label ?? `cpd.menu.${it.key}`)} active={isActive(it.route, path)} badge={it.badge ? badges[it.badge] : undefined} compact={compact} onPress={() => onGo(it.route)} />)}
+        {client && !compact ? <Text variant="kicker" tone="gray2" style={s.kick}>{t("ntd.sbMore").toUpperCase()}</Text> : null}
+        {(client ? EXTRA : []).map((it, i) => <SidebarItem key={it.key} p={p} index={nav.length + i} item={it} label={t(`nav1.menu.${it.key}`)} active={isActive(it.route, path)} compact={compact} onPress={() => onGo(it.route)} />)}
       </ScrollView>
-      {user ? (
+      {compact ? (
+        <PressableScale onPress={user ? confirm : () => onGo("/auth/login")} style={[s.outRail, { borderColor: user ? c.line : c.accent }]} accessibilityRole="button" accessibilityLabel={t(user ? "profile.logout" : "guest.login")}>
+          <Icon name={user ? "log-out" : "log-in"} size={18} tone={user ? "gray" : "accent"} />
+        </PressableScale>
+      ) : user ? (
         <PressableScale onPress={confirm} style={[s.out, { borderColor: c.line }]} accessibilityRole="button">
           <Icon name="log-out" size={17} tone="gray" /><Text variant="small" weight="semibold" tone="gray">{t("profile.logout")}</Text>
         </PressableScale>
@@ -66,6 +70,8 @@ const s = StyleSheet.create({
   fill: { flex: 1 },
   brand: { flexDirection: "row", alignItems: "center", gap: 10, paddingHorizontal: 16, paddingBottom: 12 },
   list: { paddingHorizontal: 10, gap: 2, paddingBottom: 8 },
+  brandRail: { justifyContent: "center", paddingHorizontal: 0 },
+  outRail: { alignSelf: "center", width: 46, height: 46, borderRadius: 23, borderWidth: 1, alignItems: "center", justifyContent: "center" },
   kick: { marginTop: 12, marginLeft: 8, marginBottom: 4 },
   out: { flexDirection: "row", alignItems: "center", justifyContent: "center", gap: 8, marginHorizontal: 14, minHeight: 46, borderRadius: 23, borderWidth: 1 },
 });

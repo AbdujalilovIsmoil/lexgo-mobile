@@ -13,9 +13,10 @@ import { SidebarPanel } from "./SidebarPanel";
 import { useSidebarHidden } from "./useSidebarHidden";
 
 const DOCK_W = 288;
+const RAIL_W = 76; // closed: the icons only
 
 // The sidebar kept open beside the page on a wide tablet (the phone's drawer is not drawn there, see ClientSidebar). Same rows as the drawer.
-function Dock() {
+function Dock({ compact }: { compact: boolean }) {
   const c = useColors();
   const router = useRouter();
   const role = useTabRole();
@@ -23,12 +24,12 @@ function Dock() {
   const go = (route: string) => router.navigate((role === "guest" && !GUEST_OPEN.includes(route.split("?")[0]) ? "/auth/login" : route) as never);
   return (
     <View style={[s.dock, { backgroundColor: c.surface, borderColor: c.line }]}>
-      <SidebarPanel p={p} onGo={go} />
+      <SidebarPanel p={p} onGo={go} compact={compact} />
     </View>
   );
 }
 
-// The tab on the dock's edge: closes the sidebar (a page then uses the whole width) and, when it is closed, opens it again.
+// The tab on the dock's edge: closes the sidebar (it shrinks to a rail of icons) and, when it is closed, opens it again.
 function DockTab({ open }: { open: boolean }) {
   const { t } = useT();
   const { height } = useTablet();
@@ -45,15 +46,15 @@ export function TabletFrame({ children }: { children: ReactNode }) {
   const { docked } = useTablet();
   const hidden = useSidebarHidden();
   const open = useDock((st) => st.open);
-  const w = useSharedValue(open ? DOCK_W : 0);
+  const w = useSharedValue(open ? DOCK_W : RAIL_W);
   useEffect(() => {
-    w.value = withTiming(open ? DOCK_W : 0, { duration: 220 });
+    w.value = withTiming(open ? DOCK_W : RAIL_W, { duration: 220 });
   }, [open, w]);
   const dock = useAnimatedStyle(() => ({ width: w.value }));
   if (!docked) return <>{children}</>;
   return (
     <View style={s.row}>
-      {hidden ? null : <Animated.View style={[s.wrap, dock]}><Dock /></Animated.View>}
+      {hidden ? null : <Animated.View style={[s.wrap, dock]}><Dock compact={!open} /></Animated.View>}
       <View style={s.page}>
         {children}
         {hidden ? null : <DockTab open={open} />}
@@ -66,6 +67,6 @@ const s = StyleSheet.create({
   row: { flex: 1, flexDirection: "row" },
   page: { flex: 1 },
   wrap: { overflow: "hidden" },
-  dock: { width: DOCK_W, flex: 1, borderRightWidth: StyleSheet.hairlineWidth },
+  dock: { flex: 1, borderRightWidth: StyleSheet.hairlineWidth },
   tab: { position: "absolute", left: 0, width: 26, height: 84, borderTopRightRadius: 16, borderBottomRightRadius: 16, backgroundColor: "#1668F0", alignItems: "center", justifyContent: "center", zIndex: 5, shadowColor: "#1668F0", shadowOpacity: 0.5, shadowRadius: 8, shadowOffset: { width: 0, height: 0 } },
 });
