@@ -4,6 +4,7 @@ import { useRouter } from "expo-router";
 import Animated, { Easing, useAnimatedStyle, useDerivedValue, useSharedValue, withTiming, type SharedValue } from "react-native-reanimated";
 import { scheduleOnRN, scheduleOnUI } from "react-native-worklets";
 import { useT } from "@/shared/i18n";
+import { dockChanged } from "@/shared/lib/dockEpoch";
 import { useTablet } from "@/shared/lib/useTablet";
 import { useColors } from "@/shared/theme";
 import { Icon, PressableScale } from "@/shared/ui";
@@ -52,14 +53,14 @@ function DockTab({ open, w, reveal, onToggle }: { open: boolean; w: SharedValue<
 
 // Wraps the app's pages. On a phone it is the page itself, untouched. On a tablet the page always sits in the same views (turning the tablet
 // only changes a margin, so the app is not mounted again), and on a wide one the sidebar is docked to its left.
-// Opening or closing, the page travels with the sidebar's edge by a translation, so nothing is laid out on the slide's frames, and its width
-// changes once, on the right, where the extra part is past the screen's edge: closing, it is laid out wider first and slides left after it;
-// opening, it slides right as it is and is laid out narrower once there. Its left edge never jumps, and the grids' tiles glide to their new
-// columns (useGrid's `move`). All of it runs on the UI thread, which draws a new layout at once, before the next frame: drawing a whole page
-// again takes a moment (~100 ms on a debug build in the simulator), so the closing slide waits two frames for it instead of freezing on its
-// first frames, and a tap renders nothing in React (a React commit in flight would hold that layout back until after the slide had begun);
-// the store follows when the slide is over. Without the sidebar (a chat, a call, a narrow tablet) the outer view's margin cancels the
-// translation, so a route that hides or shows the sidebar changes the page in the same frame as the sidebar.
+// Opening or closing, the page first takes its new width (laid out once, on the right), then travels with the sidebar's edge by a
+// translation: nothing is laid out on the slide's frames and nothing moves after it. Its left edge never jumps; closing, the extra width is
+// past the screen's edge and comes in as the page slides left, opening, the narrower page slides right until it meets the edge. The grids
+// keep their columns (useGrid): their cards only get wider or narrower. The width is set on the UI thread, which draws the new layout at
+// once, before the next frame; drawing a whole page again takes a moment (~100 ms on a debug build in the simulator), so the slide waits
+// two frames for it instead of freezing on its first frames, and a tap renders nothing in React (a React commit in flight would hold that
+// layout back until after the slide had begun); the store follows when the slide is over. Without the sidebar (a chat, a call, a narrow
+// tablet) the outer view's margin cancels the translation, so a route that hides or shows the sidebar changes the page in the same frame.
 export function TabletFrame({ children }: { children: ReactNode }) {
   const { tablet, docked } = useTablet();
   const hidden = useSidebarHidden();
@@ -92,18 +93,18 @@ export function TabletFrame({ children }: { children: ReactNode }) {
       if (turn.get() !== mine) return;
       w.set(withTiming(opening ? DOCK_W : RAIL_W, SLIDE));
       x.set(withTiming(opening ? GROW : 0, SLIDE, (done) => {
-        if (!done) return;
-        if (opening) r.set(GROW); // there: laid out narrower
-        scheduleOnRN(settle, opening, tap);
+        if (done) scheduleOnRN(settle, opening, tap);
       }));
     };
-    if (opening || r.get() === 0) return go();
-    r.set(0); // laid out wider first; the slide starts once that layout is drawn
+    const margin = opening ? GROW : 0;
+    if (r.get() === margin) return go();
+    r.set(margin); // the page's new width first; the slide starts once that layout is drawn
     requestAnimationFrame(() => requestAnimationFrame(go));
   };
   const onToggle = () => {
     want.current = !want.current;
     taps.current += 1;
+    dockChanged(); // the grids keep their columns through this change of width
     scheduleOnUI(slide, want.current, taps.current);
   };
   const width = useAnimatedStyle(() => ({ marginRight: r.value }));

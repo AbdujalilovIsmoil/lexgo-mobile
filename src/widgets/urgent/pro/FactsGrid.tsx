@@ -8,7 +8,6 @@ import { useColors } from "@/shared/theme";
 import { Icon, Text, type IconName } from "@/shared/ui";
 import { PaymentNote } from "../PaymentNote";
 import { Card } from "./Card";
-import Animated from "react-native-reanimated";
 
 type Fact = { icon: IconName; label: string; value: string };
 
@@ -32,13 +31,13 @@ export function FactsGrid({ req }: { req: UrgentRequest }) {
   ] as Fact[]).filter((f) => f.value);
   return (
     <Card icon="grid" title={t("ugx.facts")}>
-      <View style={s.grid} onLayout={grid.onLayout}>
+      <View style={[s.grid, grid.row]} onLayout={grid.onLayout}>
         {grid.ready ? facts.map((f) => (
-          <Animated.View key={f.label} layout={grid.move} style={[s.tile, { backgroundColor: c.surface2 }, fixedCell(grid.cell)]}>
+          <View key={f.label} style={[s.tile, { backgroundColor: c.surface2 }, fixedCell(grid.tile)]}>
             <Icon name={f.icon} size={16} tone="accent" />
             <Text variant="caption" tone="gray" numberOfLines={1}>{f.label}</Text>
             <Text variant="small" weight="bold" numberOfLines={2} selectable>{f.value}</Text>
-          </Animated.View>
+          </View>
         )) : null}
       </View>
       <PaymentNote req={req} />

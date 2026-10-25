@@ -10,7 +10,6 @@ import { useT } from "@/shared/i18n";
 import { Panel } from "./Panel";
 import { Tile, tilesStyle } from "./Tile";
 import { useGrid } from "@/shared/lib/useGrid";
-import Animated from "react-native-reanimated";
 
 // "Ko'rsatkichlarim": response and acceptance rate, average answer time and rating (a "new" badge under five reviews), the
 // vacation switch (kept on the phone until the backend stores availability), a coaching tip and the four "Super advokat" steps.
@@ -44,13 +43,13 @@ export function MetricsPanel({ cabinet, i }: { cabinet: Cabinet; i: number }) {
         <Toggle value={vac} onChange={flip} label={t("shm.sd.metrics.vacationOff")} />
       </View>
       {vac ? <View style={s.note}><Icon name="sun" size={16} color={c.warn} /><Text variant="small" style={[s.flex, { color: c.warn }]}>{t("shm.sd.metrics.vacationNote")}</Text></View> : null}
-      <View style={tilesStyle.grid} onLayout={grid.onLayout}>
+      <View style={[tilesStyle.grid, grid.row]} onLayout={grid.onLayout}>
         {grid.ready ? (
           <>
-            <Animated.View layout={grid.move} style={[tilesStyle.half, grid.cell]}><Tile icon="trending-up" tone="#00A870" bar={pct(response)} value={`${pct(response)}%`} label={t("shm.sd.metrics.responseRate")} /></Animated.View>
-            <Animated.View layout={grid.move} style={[tilesStyle.half, grid.cell]}><Tile icon="check-circle" tone="#1668F0" bar={acceptance == null ? undefined : pct(acceptance)} value={acceptance == null ? "—" : `${pct(acceptance)}%`} label={t("shm.sd.metrics.acceptanceRate")} /></Animated.View>
-            <Animated.View layout={grid.move} style={[tilesStyle.half, grid.cell]}><Tile icon="clock" tone="#7A5CFF" value={avg ? t("shm.sd.metrics.minutes", { n: avg }) : "—"} label={t("shm.sd.metrics.avgResponse")} /></Animated.View>
-            <Animated.View layout={grid.move} style={[tilesStyle.half, grid.cell]}><Tile icon="star" tone="#F5B301" value={isNew ? t("shm.sd.metrics.newBadge") : rating ? fmtRating(rating, locale) : "—"} label={t("shm.sd.metrics.rating")} /></Animated.View>
+            <View style={[tilesStyle.half, grid.tile]}><Tile icon="trending-up" tone="#00A870" bar={pct(response)} value={`${pct(response)}%`} label={t("shm.sd.metrics.responseRate")} /></View>
+            <View style={[tilesStyle.half, grid.tile]}><Tile icon="check-circle" tone="#1668F0" bar={acceptance == null ? undefined : pct(acceptance)} value={acceptance == null ? "—" : `${pct(acceptance)}%`} label={t("shm.sd.metrics.acceptanceRate")} /></View>
+            <View style={[tilesStyle.half, grid.tile]}><Tile icon="clock" tone="#7A5CFF" value={avg ? t("shm.sd.metrics.minutes", { n: avg }) : "—"} label={t("shm.sd.metrics.avgResponse")} /></View>
+            <View style={[tilesStyle.half, grid.tile]}><Tile icon="star" tone="#F5B301" value={isNew ? t("shm.sd.metrics.newBadge") : rating ? fmtRating(rating, locale) : "—"} label={t("shm.sd.metrics.rating")} /></View>
           </>
         ) : null}
       </View>

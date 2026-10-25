@@ -30,12 +30,12 @@ function Grid({ rows }: { rows: Row[] }) {
   const c = useColors();
   const grid = useGrid({ gap: 8, min: 220 });
   return (
-    <View style={s.grid} onLayout={grid.onLayout}>
+    <View style={[s.grid, grid.row]} onLayout={grid.onLayout}>
       {grid.ready ? rows.filter((r) => real(r.value)).map((r) => (
-        <Animated.View key={r.label} layout={grid.move} style={[s.cell, { backgroundColor: c.surface2 }, fixedCell(grid.cell)]}>
+        <View key={r.label} style={[s.cell, { backgroundColor: c.surface2 }, fixedCell(grid.tile)]}>
           <Text variant="caption" tone="gray" numberOfLines={1}>{r.label}</Text>
           <Text variant="small" weight="bold" selectable={r.mono} numberOfLines={3} style={r.mono ? s.mono : undefined}>{real(r.value)}</Text>
-        </Animated.View>
+        </View>
       )) : null}
     </View>
   );

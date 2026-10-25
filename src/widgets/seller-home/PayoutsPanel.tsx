@@ -8,7 +8,6 @@ import { useT } from "@/shared/i18n";
 import { Panel } from "./Panel";
 import { Tile, tilesStyle } from "./Tile";
 import { useGrid } from "@/shared/lib/useGrid";
-import Animated from "react-native-reanimated";
 
 const MIN_PAYOUT = 100_000; // so'm (S-30)
 const PAID = new Set(["paid", "released", "completed", "done"]);
@@ -36,11 +35,11 @@ export function PayoutsPanel({ i }: { i: number }) {
     <Panel i={i} icon="credit-card" tint="#F59E0B" title={t("shm.sd.payouts.title")} fold={`${fmtMoney(pending)} ${som} · ${t("shm.sd.payouts.nextPayout", { date: fmtDate(nextThursday().toISOString(), locale) })}`} sub={t("shm.sd.payouts.nextPayout", { date: fmtDate(nextThursday().toISOString(), locale) })}>
       {q.isLoading ? <Skeleton height={120} round={16} /> : (
         <>
-          <View style={tilesStyle.grid} onLayout={grid.onLayout}>
+          <View style={[tilesStyle.grid, grid.row]} onLayout={grid.onLayout}>
             {grid.ready ? (
               <>
-                <Animated.View layout={grid.move} style={[tilesStyle.half, grid.cell]}><Tile icon="clock" tone={c.warn} value={`${fmtMoney(pending)} ${som}`} label={t("shm.sd.payouts.pending")} /></Animated.View>
-                <Animated.View layout={grid.move} style={[tilesStyle.half, grid.cell]}><Tile icon="check" tone={c.ok} value={`${fmtMoney(paid)} ${som}`} label={t("shm.sd.payouts.paid")} /></Animated.View>
+                <View style={[tilesStyle.half, grid.tile]}><Tile icon="clock" tone={c.warn} value={`${fmtMoney(pending)} ${som}`} label={t("shm.sd.payouts.pending")} /></View>
+                <View style={[tilesStyle.half, grid.tile]}><Tile icon="check" tone={c.ok} value={`${fmtMoney(paid)} ${som}`} label={t("shm.sd.payouts.paid")} /></View>
               </>
             ) : null}
           </View>
