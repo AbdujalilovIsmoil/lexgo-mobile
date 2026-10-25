@@ -21,13 +21,24 @@ export function ExperiencePage() {
   const [sheet, setSheet] = useState<{ group: ExpGroup | null } | null>(null);
   const title = (id: string) => cats.data?.find((c) => c.id === id)?.title ?? "";
   const groups = q.data ?? [];
+  // Above the list; with nothing added yet, under the "no experience yet" note.
+  const add = <Button title={t("mf.exp.add")} icon="plus" variant="gradient" onPress={() => setSheet({ group: null })} style={s.center} />;
   return (
     <AdminPage title={t("mf.exp.title")} subtitle={t("mf.exp.menu")}>
       <QueryBoundary query={q}>
         <PageScroll onRefresh={() => void q.refetch()} refreshing={q.isRefetching}>
           <Text variant="small" tone="gray">{t("mf.exp.lead")}</Text>
-          <Button title={t("mf.exp.add")} icon="plus" variant="gradient" onPress={() => setSheet({ group: null })} style={s.center} />
-          {groups.length ? groups.map((g) => <EntryCard key={g.rootId} g={g} category={title} onEdit={() => setSheet({ group: g })} />) : <EmptyState icon="briefcase" title={t("mf.exp.empty")} />}
+          {groups.length ? (
+            <>
+              {add}
+              {groups.map((g) => <EntryCard key={g.rootId} g={g} category={title} onEdit={() => setSheet({ group: g })} />)}
+            </>
+          ) : (
+            <>
+              <EmptyState icon="briefcase" title={t("mf.exp.empty")} compact />
+              {add}
+            </>
+          )}
         </PageScroll>
       </QueryBoundary>
       <ExperienceSheet visible={!!sheet} onClose={() => setSheet(null)} group={sheet?.group ?? null} />
