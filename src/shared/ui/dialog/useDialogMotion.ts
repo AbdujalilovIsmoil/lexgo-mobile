@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
-import { useAnimatedStyle, useSharedValue, withSpring, withTiming } from "react-native-reanimated";
+import { Easing, useAnimatedStyle, useSharedValue, withTiming } from "react-native-reanimated";
 import { scheduleOnRN } from "react-native-worklets";
 import { tapHaptic } from "@/shared/lib/haptics";
 
-// Opening mounts at once (state derived while rendering); closing fades out first.
+// Opening mounts at once (state derived while rendering) and eases in without overshooting: with a spring the card and the dimming went
+// past their end and came back. Closing fades out first.
 export function useDialogMotion(open: boolean) {
   const [shown, setShown] = useState(false);
   const p = useSharedValue(0);
@@ -11,7 +12,7 @@ export function useDialogMotion(open: boolean) {
   useEffect(() => {
     if (open) {
       tapHaptic();
-      p.value = withSpring(1, { damping: 17, stiffness: 240 });
+      p.value = withTiming(1, { duration: 220, easing: Easing.out(Easing.cubic) });
     } else if (shown) {
       p.value = withTiming(0, { duration: 160 }, (done) => done && scheduleOnRN(setShown, false));
     }
