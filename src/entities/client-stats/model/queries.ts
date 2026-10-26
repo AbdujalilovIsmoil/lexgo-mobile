@@ -7,9 +7,6 @@ import type { ChatRoom } from "./types";
 
 export const statsKeys = {
   all: ["client-stats"] as const,
-  docTotals: ["client-stats", "docs-total"] as const,
-  docs: (status: string) => ["client-stats", "docs", status] as const,
-  docsRecent: ["client-stats", "docs-recent"] as const,
   payments: ["client-stats", "payments"] as const,
 };
 
