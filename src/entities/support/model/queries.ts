@@ -38,13 +38,13 @@ export function useLatestActive(enabled = true) {
   return useQuery({ queryKey: [...supKeys.lists, "head"], queryFn: async () => (await listMyTickets("active", { limit: 1, offset: 0 })).items[0] ?? null, enabled });
 }
 
-/** Unread operator messages over all ongoing chats. */
+/** Unread operator messages over all ongoing chats. Support events re-read it (useSupportLive), so a return to the app does not. */
 export function useUnreadTotal(enabled: boolean) {
   return useQuery({
     queryKey: supKeys.unread,
     queryFn: async () => (await listMyTickets("active", { limit: 50, offset: 0 })).items.reduce((n, tk) => n + tk.unreadCount, 0),
     enabled,
-    staleTime: 30_000,
+    staleTime: 5 * 60_000,
   });
 }
 

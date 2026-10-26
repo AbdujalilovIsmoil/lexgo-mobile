@@ -1,4 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
+import { useAccess } from "@/entities/access";
 import { useIsAuthed } from "@/entities/session";
 import { getComplaintDetail, getWorkRef, listComplaints, listComplaintTargets } from "../api/complaintApi";
 import { listMyReviews, listPendingReviews } from "../api/reviewApi";
@@ -26,9 +27,12 @@ export const useWorkRef = (ref: string) => useQuery({ queryKey: ["rate-workref",
 
 export const useComplaintTargets = (enabled: boolean) => useQuery({ queryKey: ["rate-targets"], queryFn: listComplaintTargets, enabled, staleTime: 2 * 60 * 1000 });
 
+// A client's finished works with an open rating window (a yurist / advokat has no client works to rate). The user socket re-reads it
+// when work finishes (features/rating useRatingSync), so it is not reloaded on every return to the app.
 export const useOpenWindows = () => {
   const authed = useIsAuthed();
-  return useQuery({ queryKey: ratingKeys.open, queryFn: scanOpenWindows, enabled: authed, staleTime: 20 * 1000, retry: false });
+  const { seller } = useAccess();
+  return useQuery({ queryKey: ratingKeys.open, queryFn: scanOpenWindows, enabled: authed && !seller, staleTime: 5 * 60 * 1000, retry: false });
 };
 
 export const useMyReviews = () => {
@@ -38,7 +42,7 @@ export const useMyReviews = () => {
 
 export const usePendingReviews = () => {
   const authed = useIsAuthed();
-  return useQuery({ queryKey: ["rate-pending"], queryFn: listPendingReviews, enabled: authed, staleTime: 60 * 1000 });
+  return useQuery({ queryKey: ["rate-pending"], queryFn: listPendingReviews, enabled: authed, staleTime: 5 * 60 * 1000 });
 };
 
 export const useWarranty = () => {

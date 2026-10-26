@@ -10,10 +10,13 @@ export function disconnectUserSocket(): void {
   setSocketState("offline");
 }
 
-// A new token (refresh) replaces the connection; no token closes it.
+// A new token (refresh) replaces the connection; no token closes it. A token refresh while the socket is alive is not a reconnect:
+// the screens are not all re-read for it (only a socket that was down or silent may have missed events).
 export function connectUserSocket(tok: string): void {
   if (!tok) return disconnectUserSocket();
   if (tok === conn.token && conn.ws) return;
+  const live = !!conn.token && conn.ws?.readyState === WebSocket.OPEN && Date.now() - conn.lastRx < PING_MS * 1.5;
+  conn.swapAt = live ? Date.now() : 0;
   conn.token = tok;
   conn.attempt = 0;
   drop();

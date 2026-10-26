@@ -1,7 +1,6 @@
 import { useEffect, useRef } from "react";
-import { AppState } from "react-native";
 import { useQuery, useQueryClient, type QueryClient } from "@tanstack/react-query";
-import { useResync, useUserEvents } from "@/shared/realtime";
+import { useUserEvents } from "@/shared/realtime";
 import { asDict, asStr } from "@/shared/lib/json";
 import { getChecklist, getFinancials, getRuntimeCaps, getTimeline } from "../api/flowApi";
 
@@ -29,8 +28,9 @@ const INNER = /^(order_|marketplace|payment_paid|checklist)/;
 
 export const refreshFlow = (qc: QueryClient) => void qc.invalidateQueries({ queryKey: flowKeys.all });
 
-// Keeps the open order's sub-resources fresh (TZ §2, §15): a socket event about orders / payments, a reconnect or the app coming back to the
-// foreground re-reads financials, checklist and timeline — a missed push never leaves them stale.
+// Keeps the open order's sub-resources fresh (TZ §2, §15): a socket event about orders / payments re-reads financials, checklist and
+// timeline. A reconnect and a return to the foreground re-read them through core MarketMounts (doing it here too cancelled that request
+// and sent it again).
 export function useFlowLive(): void {
   const qc = useQueryClient();
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -41,13 +41,7 @@ export function useFlowLive(): void {
   useUserEvents(WATCH, (e) => {
     if (e.event !== "notification.created" || INNER.test(asStr(asDict(asDict(e.notification).data).event))) soon();
   });
-  useResync(soon);
-  useEffect(() => {
-    const sub = AppState.addEventListener("change", (s) => s === "active" && soon());
-    return () => {
-      sub.remove();
-      if (timer.current) clearTimeout(timer.current);
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+  useEffect(() => () => {
+    if (timer.current) clearTimeout(timer.current);
   }, []);
 }

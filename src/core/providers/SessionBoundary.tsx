@@ -31,12 +31,13 @@ export function SessionBoundary() {
   useEffect(() => {
     const sub = AppState.addEventListener("change", (s) => s === "active" && kickUserSocket());
     // One debounced, active-only refetch: a reconnect right after resume must not stack on the focus refetch storm (requests already
-    // running are kept, not restarted). Public catalogue data is left alone: no socket event changes it, and the template catalogue alone
-    // is a 14 MB download.
+    // running are kept, not restarted), and what a feature's own resync handler has re-read since the reconnect is not read twice. Public
+    // catalogue data is left alone: no socket event changes it, and the template catalogue alone is a 14 MB download.
     let timer: ReturnType<typeof setTimeout> | undefined;
     const off = onResync(() => {
+      const at = Date.now();
       clearTimeout(timer);
-      timer = setTimeout(() => void qc.invalidateQueries({ refetchType: "active", predicate: (q) => !isPublicQuery(q) }, { cancelRefetch: false }), 1500);
+      timer = setTimeout(() => void qc.invalidateQueries({ refetchType: "active", predicate: (q) => !isPublicQuery(q) && q.state.dataUpdatedAt < at }, { cancelRefetch: false }), 1500);
     });
     return () => {
       clearTimeout(timer);

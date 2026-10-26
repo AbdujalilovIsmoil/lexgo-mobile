@@ -6,9 +6,10 @@ export const conn: {
   everOnline: boolean;
   lastRx: number; // when any frame (pong included) last arrived
   pongs: boolean; // the server has answered a ping at least once, so silence can be trusted as a dead link
+  swapAt: number; // when a live socket was replaced only for a new token: its successor has missed nothing and re-reads nothing
   retry?: ReturnType<typeof setTimeout>;
   ping?: ReturnType<typeof setInterval>;
-} = { ws: null, token: "", attempt: 0, everOnline: false, lastRx: 0, pongs: false };
+} = { ws: null, token: "", attempt: 0, everOnline: false, lastRx: 0, pongs: false, swapAt: 0 };
 
 // Close the current socket and stop its timers (a replacement may follow).
 export function drop(): void {

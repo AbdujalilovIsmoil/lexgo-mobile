@@ -27,7 +27,8 @@ export function openSocket(): void {
   conn.ws = sock;
   sock.onopen = () => {
     if (conn.ws !== sock) return;
-    const again = conn.everOnline;
+    const again = conn.everOnline && !(conn.swapAt && Date.now() - conn.swapAt < 10_000);
+    conn.swapAt = 0;
     conn.everOnline = true;
     conn.attempt = 0;
     setSocketState("online");
