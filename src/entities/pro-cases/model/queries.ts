@@ -1,8 +1,10 @@
+import { useCallback } from "react";
 import { useQuery } from "@tanstack/react-query";
+import { chatKeys, listRooms, type Room } from "@/entities/secure-chat";
 import { useIsAuthed } from "@/entities/session";
 import { useAdminMutation } from "@/shared/lib/useAdminMutation";
 import { archiveCase, createCase, getCase, listCases, updateCase } from "../api/caseApi";
-import { caseRoom, caseTimeline, listCaseDocs, runCaseAi } from "../api/extraApi";
+import { caseTimeline, listCaseDocs, runCaseAi } from "../api/extraApi";
 import type { CaseAiTool, CaseInput } from "./types";
 
 export const caseKeys = { all: ["pro-cases"] as const };
@@ -13,7 +15,11 @@ export const useCases = () => {
 };
 export const useCase = (id: string) => useQuery({ queryKey: [...caseKeys.all, "one", id], queryFn: () => getCase(id), enabled: !!id });
 export const useCaseTimeline = (id: string) => useQuery({ queryKey: [...caseKeys.all, "timeline", id], queryFn: () => caseTimeline(id), enabled: !!id });
-export const useCaseRoom = (id: string, orderId: string) => useQuery({ queryKey: [...caseKeys.all, "room", id], queryFn: () => caseRoom(id, orderId), enabled: !!id });
+// The private room of this case (or of its order), "" when there is none: looked up in the app's one chat list, not fetched again.
+export function useCaseRoom(id: string, orderId: string) {
+  const select = useCallback((rooms: Room[]) => (rooms.find((r) => r.caseId === id) ?? (orderId ? rooms.find((r) => r.orderId === orderId) : undefined))?.id ?? "", [id, orderId]);
+  return useQuery({ queryKey: chatKeys.rooms, queryFn: listRooms, enabled: !!id, select });
+}
 export const useCaseDocs = (id: string) => useQuery({ queryKey: [...caseKeys.all, "docs", id], queryFn: () => listCaseDocs(id), enabled: !!id });
 
 const inv = [caseKeys.all];

@@ -1,4 +1,4 @@
-import { http } from "@/shared/api";
+import { getPolicies } from "@/shared/api";
 import { asDict } from "@/shared/lib/json";
 import type { ServiceCategory } from "../model/types";
 
@@ -8,8 +8,7 @@ type Override = { hidden?: boolean; title?: string };
 // (GET /platform/policies → order.catalog.categories[id]); the web applies the same overlay.
 async function overrides(): Promise<Record<string, Override>> {
   try {
-    const d = asDict(await http("/platform/policies"));
-    const order = asDict(asDict(d.items ?? d.sections ?? d).order);
+    const order = asDict((await getPolicies()).order);
     return asDict(asDict(order.catalog).categories) as Record<string, Override>;
   } catch {
     return {};

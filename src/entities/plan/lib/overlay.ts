@@ -1,4 +1,4 @@
-import { http } from "@/shared/api";
+import { getPolicies } from "@/shared/api";
 import { asArr, asDict, asNum, asStr } from "@/shared/lib/json";
 import type { Plan } from "../model/types";
 
@@ -29,7 +29,7 @@ function one(v: unknown): Override {
 /** GET /platform/policies → the per-slug overrides; a failure (guest, offline) means "no overrides". */
 export async function getPlanOverrides(): Promise<Record<string, Override>> {
   try {
-    const items = asDict(asDict(await http("/platform/policies")).items);
+    const items = await getPolicies();
     const raw = asDict(asDict(asDict(items.payment).plans).overrides);
     return Object.fromEntries(Object.entries(raw).map(([slug, v]) => [slug, one(v)]));
   } catch {

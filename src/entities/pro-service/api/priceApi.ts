@@ -1,4 +1,4 @@
-import { http } from "@/shared/api";
+import { getPolicies, http } from "@/shared/api";
 import { asDict, asNum, asStr, uzs } from "@/shared/lib/json";
 import { normModifiers } from "./normBand";
 import type { PriceBand } from "../model/types";
@@ -6,7 +6,7 @@ import type { PriceBand } from "../model/types";
 // Platform corridor (percent of the recommended price); 70–100 unless admins changed it.
 export async function getPercents(): Promise<{ min: number; max: number }> {
   try {
-    const raw = asDict(asDict(asDict(await http("/platform/policies")).items).marketplace_pricing);
+    const raw = asDict((await getPolicies()).marketplace_pricing);
     const min = asNum(raw.default_min_percent, 70);
     const max = asNum(raw.default_max_percent, 100);
     return min > 0 && min <= max ? { min, max } : { min: 70, max: 100 };

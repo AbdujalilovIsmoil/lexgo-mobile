@@ -29,9 +29,3 @@ export async function runCaseAi(caseId: string, tool: CaseAiTool): Promise<strin
   return asStr(d.result);
 }
 
-// GET /secure-chats → the private room of this case (or of its order), if one exists.
-export async function caseRoom(caseId: string, orderId: string): Promise<string> {
-  const rooms = listFrom(await http("/secure-chats"), "items", "data", "rooms").map(asDict);
-  const hit = rooms.find((r) => asStr(r.case_id) === caseId) ?? (orderId ? rooms.find((r) => asStr(r.order_id) === orderId) : undefined);
-  return hit ? asStr(hit.id) : "";
-}

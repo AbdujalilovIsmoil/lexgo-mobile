@@ -1,4 +1,4 @@
-import { http } from "@/shared/api";
+import { getPolicies } from "@/shared/api";
 import { asArr, asDict, asNum } from "@/shared/lib/json";
 
 export type PricingPolicy = {
@@ -14,7 +14,7 @@ export type PricingPolicy = {
 // GET /platform/policies → items.marketplace_pricing: the public rules the
 // backend applies to a seller's price (read-only; admins edit them on the web).
 export async function getPricingPolicy(): Promise<PricingPolicy | null> {
-  const p = asDict(asDict(asDict(await http("/platform/policies")).items).marketplace_pricing);
+  const p = asDict((await getPolicies()).marketplace_pricing);
   if (!Object.keys(p).length) return null;
   const client = asDict(p.client_rating_premium);
   return {

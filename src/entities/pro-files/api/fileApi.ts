@@ -1,4 +1,4 @@
-import { http } from "@/shared/api";
+import { getPolicies, http } from "@/shared/api";
 import { appendFile } from "@/shared/lib/upload";
 import { asDict, asNum, asStr, listFrom } from "@/shared/lib/json";
 import type { DocRequest, FileComment, FileVersion, Limits, WFile } from "../model/types";
@@ -36,7 +36,7 @@ export const addComment = (id: string, text: string) => http(`/workspace/files/$
 
 // GET /platform/policies (public) → upload limits come from the server, never hard-coded.
 export async function getLimits(): Promise<Limits> {
-  const ws = asDict(asDict(asDict(await http("/platform/policies", { auth: false })).items).workspace);
+  const ws = asDict((await getPolicies()).workspace);
   const ext = (v: unknown) => (Array.isArray(v) ? v.map((x) => asStr(x).toLowerCase()) : []);
   return { fileMaxMb: asNum(ws.file_max_mb), videoMaxMb: asNum(ws.video_max_mb), allowed: ext(ws.allowed_extensions), blocked: ext(ws.blocked_extensions) };
 }
