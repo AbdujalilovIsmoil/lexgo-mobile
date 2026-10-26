@@ -15,7 +15,7 @@ const MORE: Record<ReqKind, string> = { docs: "/pro/docs", urgent: "/pro/urgent"
 export function RequestsInbox({ bottomPad }: { bottomPad: number }) {
   const { t } = useT();
   const router = useRouter();
-  const { counts } = useRequestCounts(true);
+  const { counts } = useRequestCounts(); // kept live (and the tab badge set) by core ReqMounts
   const [kind, setKind] = useState<ReqKind>("docs");
   const [scope, setScope] = useState<"active" | "all">("active");
   const query = useRequests(kind);

@@ -1,3 +1,4 @@
 import { WorkspacePage } from "@/pages/workspace/WorkspacePage";
+import { lazyTab } from "@/widgets/tab-page";
 
-export default WorkspacePage;
+export default lazyTab(WorkspacePage);

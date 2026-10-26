@@ -1,3 +1,4 @@
-import { ServicesPage } from "@/pages";
+import { ServicesPage } from "@/pages/services/ServicesPage";
+import { lazyTab } from "@/widgets/tab-page";
 
-export default ServicesPage;
+export default lazyTab(ServicesPage);

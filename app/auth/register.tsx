@@ -1,4 +1,4 @@
-import { RegisterPage } from "@/pages";
+import { RegisterPage } from "@/pages/register/RegisterPage";
 import { OverlayHost } from "@/shared/ui";
 
 // A native modal on iOS: the toasts and the confirm dialog are drawn inside it while it is up (behind it otherwise).

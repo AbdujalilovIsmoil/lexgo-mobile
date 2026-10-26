@@ -1,3 +1,3 @@
-import { SubscriptionPage } from "@/pages";
+import { SubscriptionPage } from "@/pages/subscription/SubscriptionPage";
 
 export default SubscriptionPage;

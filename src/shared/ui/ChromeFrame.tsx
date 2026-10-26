@@ -14,8 +14,11 @@ export function ChromeFrame({ children, off }: { children: ReactNode; off?: bool
   const chrome = usePageChrome();
   const live = Platform.OS === "ios" && !off;
   useEffect(() => { if (!live) return; return () => setHeaderHeight(chrome, 0); }, [live, chrome]);
-  const canvas = useAnimatedStyle(() => ({ opacity: 1 - Math.min(1, Math.max(0, chrome.y.value / 14)) }));
-  const glass = useAnimatedStyle(() => ({ opacity: Math.min(1, Math.max(0, chrome.y.value / 14)) }));
+  // Only the shared value goes into the worklets: capturing `chrome` would freeze the whole record (its height and listeners) on the UI
+  // thread, and the next header height written to it would be refused.
+  const y = chrome.y;
+  const canvas = useAnimatedStyle(() => ({ opacity: 1 - Math.min(1, Math.max(0, y.value / 14)) }));
+  const glass = useAnimatedStyle(() => ({ opacity: Math.min(1, Math.max(0, y.value / 14)) }));
   if (!live) return <>{children}</>;
   return (
     <View style={s.live} onLayout={(e) => setHeaderHeight(chrome, e.nativeEvent.layout.height)}>

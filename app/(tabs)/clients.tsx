@@ -1,3 +1,4 @@
 import { ClientsPage } from "@/pages/clients/ClientsPage";
+import { lazyTab } from "@/widgets/tab-page";
 
-export default ClientsPage;
+export default lazyTab(ClientsPage);

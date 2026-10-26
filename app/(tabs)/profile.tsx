@@ -1,3 +1,4 @@
-import { ProfilePage } from "@/pages";
+import { ProfilePage } from "@/pages/profile/ProfilePage";
+import { lazyTab } from "@/widgets/tab-page";
 
-export default ProfilePage;
+export default lazyTab(ProfilePage);

@@ -15,6 +15,8 @@ const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: false, powerP
 renderer.setPixelRatio(1);
 renderer.setClearColor(0x000000, 0);
 document.body.appendChild(renderer.domElement);
+// The app rebuilds the scene only when its WebGL context is gone (it asks with check() after a return from the background).
+renderer.domElement.addEventListener("webglcontextlost", () => post({ type: "lost" }));
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(CAMERA.fov, 1, 0.1, 10);
 camera.position.set(...CAMERA.position);
@@ -138,5 +140,5 @@ function wake() {
 }
 document.addEventListener("visibilitychange", wake);
 
-window.__robot = { load, play, pause: (v) => { paused = !!v; wake(); }, rhythm: (sec) => { every = sec; } };
+window.__robot = { load, play, pause: (v) => { paused = !!v; wake(); }, rhythm: (sec) => { every = sec; }, check: () => post({ type: "alive", lost: renderer.getContext().isContextLost() }) };
 post({ type: "boot" });

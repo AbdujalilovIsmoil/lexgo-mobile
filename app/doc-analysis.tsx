@@ -1,3 +1,3 @@
-import { DocAnalysisPage } from "@/pages";
+import { DocAnalysisPage } from "@/pages/doc-analysis/DocAnalysisPage";
 
 export default DocAnalysisPage;

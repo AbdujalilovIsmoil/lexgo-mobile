@@ -1,3 +1,4 @@
 import { RequestsPage } from "@/pages/requests/RequestsPage";
+import { lazyTab } from "@/widgets/tab-page";
 
-export default RequestsPage;
+export default lazyTab(RequestsPage);

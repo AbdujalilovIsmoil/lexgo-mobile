@@ -1,3 +1,4 @@
-import { AiChatPage } from "@/pages";
+import { AiChatPage } from "@/pages/ai-chat/AiChatPage";
+import { lazyTab } from "@/widgets/tab-page";
 
-export default AiChatPage;
+export default lazyTab(AiChatPage);

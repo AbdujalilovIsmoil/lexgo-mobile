@@ -1,4 +1,4 @@
-import { forwardRef, useEffect, useImperativeHandle, useRef, useState } from "react";
+import { forwardRef, useCallback, useEffect, useImperativeHandle, useRef, useState } from "react";
 import { AppState, View } from "react-native";
 import WebView, { type WebViewMessageEvent } from "react-native-webview";
 import { loadRobotHtml, loadRobotModel } from "./assets";
@@ -18,7 +18,7 @@ export const RobotView = forwardRef<RobotHandle, Props>(function RobotView({ wid
   const active = useRobotActive() && sheets === 0;
   const [html, setHtml] = useState<string | null>(null);
   const [shown, setShown] = useState(false); // the model is on screen; until then (or if it never loads) a glowing orb stands in
-  const [gen, setGen] = useState(0); // bumped to build a fresh WebView (and WebGL context) after a crash or a return from background
+  const [gen, setGen] = useState(0); // bumped to build a fresh WebView (and WebGL context) after a crash or a lost context
   const [attempt, setAttempt] = useState(0);
   const run = (js: string) => web.current?.injectJavaScript(`${js};true;`);
   useEffect(() => {
@@ -27,26 +27,38 @@ export const RobotView = forwardRef<RobotHandle, Props>(function RobotView({ wid
     loadRobotHtml().then((h) => alive && setHtml(h)).catch(() => { if (alive) timer = setTimeout(() => setAttempt((n) => n + 1), 3000); });
     return () => { alive = false; if (timer) clearTimeout(timer); };
   }, [attempt]);
-  // A WebGL surface is lost when the app sleeps in the background; rebuild the scene on return instead of showing a blank view. Only a
-  // return from the background: Control Center, a system alert or Face ID make the app "inactive" for a moment and leave the scene intact.
+  // The WebGL surface can be lost while the app sleeps in the background. On return the page is asked whether its context survived: the
+  // scene is rebuilt (a new WebView, three.js and the 3.5 MB model parsed again) only when it was lost or the page does not answer within
+  // 3 s — not on every return. Only a return from the background: Control Center, a system alert or Face ID make the app "inactive" for a
+  // moment and leave the scene intact.
+  const checking = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+  const fresh = useCallback(() => {
+    clearTimeout(checking.current);
+    checking.current = undefined;
+    setShown(false); // the orb stands in until the new scene is up
+    setGen((n) => n + 1);
+  }, []);
   useEffect(() => {
     let prev = AppState.currentState;
     const sub = AppState.addEventListener("change", (st) => {
-      if (prev === "background" && st === "active") { setShown(false); setGen((n) => n + 1); }
+      if (prev === "background" && st === "active") {
+        clearTimeout(checking.current);
+        checking.current = setTimeout(fresh, 3000);
+        web.current?.injectJavaScript("window.__robot&&window.__robot.check&&window.__robot.check();true;");
+      }
       prev = st;
     });
-    return () => sub.remove();
-  }, []);
+    return () => { sub.remove(); clearTimeout(checking.current); };
+  }, [fresh]);
   // A crashed/failed scene is rebuilt, but at most 3 times in 30 s: a WebView that fails at once would otherwise be
   // rebuilt in a loop and keep the JS thread busy. The orb stays in its place meanwhile.
   const crashes = useRef<number[]>([]);
   const rebuild = () => {
     const now = Date.now();
     crashes.current = crashes.current.filter((t) => now - t < 30_000);
-    setShown(false);
-    if (crashes.current.length >= 3) return;
+    if (crashes.current.length >= 3) return setShown(false);
     crashes.current.push(now);
-    setGen((n) => n + 1);
+    fresh();
   };
   const still = !!paused || !active;
   // Sent when it changes and again once a new scene is up (`shown`), not on every render.
@@ -55,9 +67,11 @@ export const RobotView = forwardRef<RobotHandle, Props>(function RobotView({ wid
   useImperativeHandle(ref, () => ({ play: (g) => run(`window.__robot&&window.__robot.play(${JSON.stringify(g)})`) }));
   const onMessage = (e: WebViewMessageEvent) => {
     try {
-      const m = JSON.parse(e.nativeEvent.data) as { type: string };
+      const m = JSON.parse(e.nativeEvent.data) as { type: string; lost?: boolean };
       if (m.type === "boot") void loadRobotModel().then((b64) => run(`window.__robot.load(${JSON.stringify(b64)})`)).catch(() => {});
       if (m.type === "ready") { if (every) run(`window.__robot.rhythm(${every})`); setShown(true); onReady?.(); }
+      if (m.type === "alive") { if (m.lost) fresh(); else { clearTimeout(checking.current); checking.current = undefined; } }
+      if (m.type === "lost" && AppState.currentState === "active") fresh(); // in the background the check on return decides
     } catch {
       /* not ours */
     }

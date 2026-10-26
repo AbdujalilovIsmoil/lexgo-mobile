@@ -4,6 +4,7 @@ import { InfraMounts } from "./InfraMounts";
 import { MarketMounts } from "./MarketMounts";
 import { MsgMounts } from "./MsgMounts";
 import { PayMounts } from "./PayMounts";
+import { ReqMounts } from "./ReqMounts";
 import { SupMounts } from "./SupMounts";
 import { UrgMounts } from "./UrgMounts";
 
@@ -19,6 +20,7 @@ export function PackageMounts() {
       <SupMounts />
       <UrgMounts />
       <MarketMounts />
+      <ReqMounts />
     </>
   );
 }

@@ -1,3 +1,4 @@
-import { OrdersPage } from "@/pages";
+import { OrdersPage } from "@/pages/orders/OrdersPage";
+import { lazyTab } from "@/widgets/tab-page";
 
-export default OrdersPage;
+export default lazyTab(OrdersPage);

@@ -1,3 +1,3 @@
-import { OtpPage } from "@/pages";
+import { OtpPage } from "@/pages/otp/OtpPage";
 
 export default OtpPage;

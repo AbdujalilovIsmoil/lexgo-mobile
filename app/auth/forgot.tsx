@@ -1,3 +1,3 @@
-import { ForgotPage } from "@/pages";
+import { ForgotPage } from "@/pages/forgot/ForgotPage";
 
 export default ForgotPage;
