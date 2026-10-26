@@ -1,11 +1,21 @@
 import { useCallback } from "react";
 import { uz, type Messages } from "./locales/uz";
-import { ru } from "./locales/ru";
-import { en } from "./locales/en";
 import { useLocaleStore, type Locale } from "./localeStore";
 import { applyPlural } from "./plural";
 
-const dictionaries: Record<Locale, Messages> = { uz, ru, en };
+// uz is the default and every key's fallback, so it is always loaded. ru / en (about 240 modules each) are evaluated only once chosen:
+// a start in Uzbek — and every headless background run — skips two thirds of the texts.
+const dictionaries: Partial<Record<Locale, Messages>> = { uz };
+function dictionary(locale: Locale): Messages {
+  let d = dictionaries[locale];
+  if (!d) {
+    /* eslint-disable @typescript-eslint/no-require-imports */
+    d = locale === "ru" ? (require("./locales/ru") as { ru: Messages }).ru : (require("./locales/en") as { en: Messages }).en;
+    /* eslint-enable @typescript-eslint/no-require-imports */
+    dictionaries[locale] = d;
+  }
+  return d;
+}
 
 type Params = Record<string, string | number>;
 
@@ -19,7 +29,7 @@ function interpolate(s: string, params: Params | undefined, locale: Locale): str
 }
 
 export function translate(locale: Locale, key: string, params?: Params): string {
-  const v = lookup(dictionaries[locale], key) ?? lookup(uz, key);
+  const v = lookup(dictionary(locale), key) ?? lookup(uz, key);
   return typeof v === "string" ? interpolate(v, params, locale) : key;
 }
 
@@ -29,7 +39,7 @@ export function useT() {
   const t = useCallback((key: string, params?: Params) => translate(locale, key, params), [locale]);
   const tList = useCallback(
     <T = string>(key: string): T[] => {
-      const v = lookup(dictionaries[locale], key) ?? lookup(uz, key);
+      const v = lookup(dictionary(locale), key) ?? lookup(uz, key);
       return Array.isArray(v) ? (v as T[]) : [];
     },
     [locale],
