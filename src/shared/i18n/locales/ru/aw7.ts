@@ -15,6 +15,7 @@ export const aw7: Messages["aw7"] = {
   empty: "Задач нет",
   emptyText: "Новые задачи появятся здесь.",
   emptyFilter: "На этом этапе задач нет",
+  mode: { board: "Канбан", list: "Список" },
   add: "Добавить задачу",
   edit: "Редактировать задачу",
   taskTitle: "Задача",

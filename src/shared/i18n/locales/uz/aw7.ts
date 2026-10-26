@@ -13,6 +13,7 @@ export const aw7 = {
   empty: "Vazifa yo'q",
   emptyText: "Yangi vazifalar shu yerda ko'rinadi.",
   emptyFilter: "Bu bosqichda vazifa yo'q",
+  mode: { board: "Kanban", list: "Ro'yxat" },
   add: "Vazifa qo'shish",
   edit: "Vazifani tahrirlash",
   taskTitle: "Vazifa",

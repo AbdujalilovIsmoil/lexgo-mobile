@@ -15,6 +15,7 @@ export const aw7: Messages["aw7"] = {
   empty: "No tasks",
   emptyText: "New tasks will appear here.",
   emptyFilter: "No tasks at this stage",
+  mode: { board: "Board", list: "List" },
   add: "Add task",
   edit: "Edit task",
   taskTitle: "Task",

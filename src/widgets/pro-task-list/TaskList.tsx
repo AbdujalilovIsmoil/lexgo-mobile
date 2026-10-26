@@ -68,7 +68,7 @@ export function TaskList({ onOpen }: { onOpen: (t: ProTask) => void }) {
         <StaleNote updatedAt={query.dataUpdatedAt} hasData={query.data !== undefined} />
         <SearchBox value={q} onChangeText={setQ} placeholder={t("aw7.search")} />
         <View style={{ paddingHorizontal: 16 }}>
-          <Segmented options={[{ value: "board", label: t("admLeadsV.board"), icon: "layers" }, { value: "list", label: t("admLeadsV.list"), icon: "list" }]} value={mode} onChange={setMode} />
+          <Segmented options={[{ value: "board", label: t("aw7.mode.board"), icon: "layers" }, { value: "list", label: t("aw7.mode.list"), icon: "list" }]} value={mode} onChange={setMode} />
         </View>
         {mode === "list" ? (
           <ChipBar

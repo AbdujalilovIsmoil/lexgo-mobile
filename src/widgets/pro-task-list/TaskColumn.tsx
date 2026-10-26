@@ -21,7 +21,7 @@ export function TaskColumn({ stage, tasks, total, filtered, onOpen, onMove, onPi
         <View style={[s.count, { backgroundColor: c.surface }]}><Text variant="caption" weight="bold">{filtered ? tasks.length : total}</Text></View>
       </View>
       {tasks.length ? tasks.map((x) => <TaskCard key={x.id} task={x} onOpen={() => onOpen(x)} onMove={(st) => onMove(x, st)} onPickStage={() => onPick(x)} />)
-        : <Text variant="small" tone="gray2" center style={s.empty}>{t(filtered ? "aw7.emptyFilter" : "admLeadsV.none")}</Text>}
+        : <Text variant="small" tone="gray2" center style={s.empty}>{t("aw7.emptyFilter")}</Text>}
     </View>
   );
 }
