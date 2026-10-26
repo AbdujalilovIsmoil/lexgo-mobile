@@ -47,4 +47,4 @@ export const useSaveAccount = (onDone?: () => void) =>
   });
 
 export const useRequestVerification = () =>
-  useAdminMutation({ mutationFn: requestVerification, invalidate: [proProfileKeys.all, ["pro-onboarding"]], success: "sl4.verify.sent" });
+  useAdminMutation({ mutationFn: requestVerification, invalidate: [proProfileKeys.all, ["pro-onboarding"], ["pro-workspace", "cabinet"]], success: "sl4.verify.sent" });

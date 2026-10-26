@@ -1,9 +1,8 @@
 import { http } from "@/shared/api";
 import { appendFile } from "@/shared/lib/upload";
 import { listFrom } from "@/shared/lib/json";
-import { normCabinet, normDocs, normProgress } from "./normalize";
+import { normDocs, normProgress } from "./normalize";
 
-export const getCabinet = async () => normCabinet(await http("/lawyers/me/cabinet"));
 export const getProgress = async () => normProgress(await http("/seller-onboarding/progress"));
 export const listDocs = async () => normDocs(listFrom(await http("/seller-onboarding"), "items", "data"));
 

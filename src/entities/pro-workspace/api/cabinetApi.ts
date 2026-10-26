@@ -32,18 +32,20 @@ const normNote = (v: unknown): CabinetNote => {
   return { id: asStr(d.id), title: asStr(d.title), body: asStr(d.body), createdAt: asStr(d.created_at) };
 };
 
+// GET /lawyers/me/cabinet — the app's only reader of it: the onboarding and the chat take their slice (useCabinetSlice). Flags count only
+// when they are `true`; an action the backend does not list follows the overall access level.
 export async function getCabinet(): Promise<Cabinet> {
   const d = asDict(await http("/lawyers/me/cabinet"));
-  const limited = Boolean(d.limited_access);
+  const limited = d.limited_access === true;
   const a = asDict(d.available_actions);
-  const allowed = (k: string) => (a[k] == null ? !limited : Boolean(a[k]));
+  const allowed = (k: string) => (a[k] == null ? !limited : a[k] === true);
   const profile = asDict(d.profile);
   const v = asDict(d.verification);
   const stats = asDict(d.stats);
   const workload = asDict(stats.workload);
   return {
     accountStatus: asStr(d.account_status), limited, limitedReason: asStr(d.limited_reason),
-    verified: Boolean(v.is_verified ?? v.verified ?? profile.is_verified),
+    verified: v.is_verified === true || v.verified === true || profile.is_verified === true,
     verification: typeof d.verification === "string" ? d.verification : asStr(v.status ?? v.verification_status ?? profile.verification_status),
     sellerType: asStr(d.seller_type ?? profile.seller_type),
     actions: { acceptOrders: allowed("accept_orders"), secureChat: allowed("secure_chat"), calls: allowed("calls") },

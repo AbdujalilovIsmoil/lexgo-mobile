@@ -1,25 +1,5 @@
 import { asArr, asDict, asNum, asStr } from "@/shared/lib/json";
-import type { OnbDoc, OnbProgress, ProCabinet } from "../model/types";
-
-export function normCabinet(v: unknown): ProCabinet {
-  const d = asDict(v);
-  const profile = asDict(d.profile);
-  const ver = asDict(d.verification);
-  const limited = d.limited_access === true;
-  const a = asDict(d.available_actions);
-  // An action the backend does not list follows the overall access level.
-  const allowed = (k: string) => (a[k] == null ? !limited : a[k] === true);
-  const status = typeof d.verification === "string" ? d.verification : asStr(ver.status ?? ver.verification_status ?? profile.verification_status);
-  return {
-    accountStatus: asStr(d.account_status).toLowerCase(),
-    sellerType: asStr(d.seller_type ?? profile.seller_type).toLowerCase(),
-    limitedAccess: limited,
-    limitedReason: asStr(d.limited_reason),
-    actions: { acceptOrders: allowed("accept_orders"), secureChat: allowed("secure_chat"), calls: allowed("calls") },
-    verificationStatus: status.toLowerCase(),
-    verified: ver.is_verified === true || ver.verified === true || profile.is_verified === true,
-  };
-}
+import type { OnbDoc, OnbProgress } from "../model/types";
 
 export function normProgress(v: unknown): OnbProgress {
   const d = asDict(v);
