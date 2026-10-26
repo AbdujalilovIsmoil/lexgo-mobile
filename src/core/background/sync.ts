@@ -3,23 +3,26 @@ import { chatKeys, listRooms } from "@/entities/secure-chat";
 import { useSessionStore } from "@/entities/session";
 import { listTasks, taskKeys } from "@/entities/pro-tasks";
 import { flushOutbox, setCacheScope } from "@/shared/cache";
-import { saveSnapshot } from "@/shared/cache/persister";
+import { saveSnapshot, snapshotSavedAt } from "@/shared/cache/persister";
 import "@/entities/pro-tasks/model/offline"; // registers the outbox handlers: a headless start imports no screens
 
 // Budget of one background run. The OS gives about 30 s (Android WorkManager / iOS BGTaskScheduler) and kills the
 // job after that, so nothing starts once 20 s are used.
 const BUDGET_MS = 20_000;
+// The OS may run the job every 15 minutes all day. The alert poll and the outbox go every time; a list copy younger than this (written
+// by the job or by a screen) is not downloaded again — it only makes the next cold start / offline open faster.
+const SNAPSHOT_EVERY_MS = 2 * 60 * 60_000;
 
 export type SyncResult = { flushed: number; dropped: number; refreshed: string[] };
 
-type Job = { name: string; roles?: string[]; run: () => Promise<void> };
+type Job = { name: string; key: readonly unknown[]; roles?: string[]; run: () => Promise<void> };
 
 // Only data with a plain, known cache shape is refreshed here: the saved snapshot is exactly what the screen's query
 // would hold, so the next cold start / offline open paints it at once. Chat message history is NOT cached or prefetched.
 const JOBS: Job[] = [
-  { name: "notifications", run: async () => saveSnapshot(notificationKeys.list, { pages: [await listRows({ offset: 0 })], pageParams: [0] }) },
-  { name: "messages", run: async () => saveSnapshot(chatKeys.rooms, await listRooms()) },
-  { name: "tasks", roles: ["lawyer", "advocate"], run: async () => saveSnapshot(taskKeys.all, await listTasks()) },
+  { name: "notifications", key: notificationKeys.list, run: async () => saveSnapshot(notificationKeys.list, { pages: [await listRows({ offset: 0 })], pageParams: [0] }) },
+  { name: "messages", key: chatKeys.rooms, run: async () => saveSnapshot(chatKeys.rooms, await listRooms()) },
+  { name: "tasks", key: taskKeys.all, roles: ["lawyer", "advocate"], run: async () => saveSnapshot(taskKeys.all, await listTasks()) },
 ];
 
 /** Sends the queued offline writes, then refreshes the key lists on disk. Never throws; stops at the time budget. */
@@ -41,6 +44,7 @@ export async function backgroundSync(now: () => number = Date.now): Promise<Sync
     if (now() > deadline) break;
     if (job.roles && !job.roles.includes(user.role)) continue;
     try {
+      if (now() - (await snapshotSavedAt(job.key)) < SNAPSHOT_EVERY_MS) continue;
       await job.run();
       out.refreshed.push(job.name);
     } catch {

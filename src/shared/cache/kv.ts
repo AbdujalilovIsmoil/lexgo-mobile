@@ -35,6 +35,13 @@ export async function cacheRow<T>(key: string): Promise<Row<T> | null> {
   });
 }
 
+/** When the row was last written (0: none), without reading its value. */
+export async function cacheUpdatedAt(key: string): Promise<number> {
+  const scope = cacheScope();
+  if (!scope) return 0;
+  return safely(0, async (d) => (await d.getFirstAsync<{ updated_at: number }>("SELECT updated_at FROM kv WHERE scope = ? AND key = ? AND expires_at > ?", scope, key, Date.now()))?.updated_at ?? 0);
+}
+
 /** Every live row whose key starts with `prefix`, newest first. */
 export async function cacheList<T>(prefix: string): Promise<Row<T>[]> {
   const scope = cacheScope();

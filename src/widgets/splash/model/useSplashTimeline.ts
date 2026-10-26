@@ -1,8 +1,10 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Easing, useSharedValue, withDelay, withRepeat, withSequence, withSpring, withTiming } from "react-native-reanimated";
+import { useSplash } from "@/shared/lib/splash";
 
 const out = Easing.out(Easing.cubic);
-const SHOW_MS = 3800;
+const SHOW_MS = 3050; // the tagline is in: the intro has played
+const QUICK_MS = 600; // opened by a link or a notification: just long enough not to flash
 
 // One shared timeline (UI thread) that drives every layer of the splash:
 // outline draw → fill → pop → shine sweep → wordmark → tagline → exit.
@@ -22,6 +24,8 @@ export function useSplashTimeline(onDone: () => void, ready: boolean) {
   const exit = useSharedValue(0);
   const left = useRef(false);
   const [elapsed, setElapsed] = useState(false);
+  const [brief, setBrief] = useState(false);
+  const quick = useSplash((s) => s.quick);
 
   const leave = useCallback(() => {
     if (left.current) return;
@@ -46,13 +50,14 @@ export function useSplashTimeline(onDone: () => void, ready: boolean) {
     tag.value = withDelay(2250, withTiming(1, { duration: 800 }));
     time.value = withRepeat(withSequence(withTiming(1, { duration: 16000, easing: Easing.linear })), -1, false);
     const id = setTimeout(() => setElapsed(true), SHOW_MS);
-    return () => clearTimeout(id);
+    const short = setTimeout(() => setBrief(true), QUICK_MS);
+    return () => { clearTimeout(id); clearTimeout(short); };
   }, [bg, d0, d1, d2, d3, fill, pop, shine, strokeOp, tag, time, word]);
 
-  // Never reveal a half-loaded app: wait for both the animation and readiness.
+  // Never reveal a half-loaded app: wait for both the animation (or its short form) and readiness.
   useEffect(() => {
-    if (elapsed && ready) leave();
-  }, [elapsed, ready, leave]);
+    if (ready && (elapsed || (quick && brief))) leave();
+  }, [elapsed, brief, quick, ready, leave]);
 
   return { draws: [d0, d1, d2, d3], strokeOp, fill, shine, pop, word, tag, bg, time, exit, leave };
 }

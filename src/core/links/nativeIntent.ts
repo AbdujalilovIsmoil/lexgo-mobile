@@ -1,5 +1,6 @@
 import { usePendingLink } from "@/features/open-link";
 import { parseExternal } from "@/shared/links";
+import { useSplash } from "@/shared/lib/splash";
 
 // The dev-client launcher's own links (development builds only). Anchored: an unanchored "expo-development-client" let any link that
 // merely contained the words — `lexgo://manage/x?a=expo-development-client` — skip the allow list, the role guard and the sign-in queue.
@@ -19,5 +20,6 @@ export function redirectSystemPath({ path, initial }: { path: string; initial: b
   // expo-router asks while it renders the navigator: storing the link right now would update LinkMount in the middle
   // of that render (React: "Cannot update a component while rendering a different component"). Queue it a tick later.
   setTimeout(() => usePendingLink.getState().set({ url: path }), 0);
+  if (initial) useSplash.getState().hurry(); // the app was opened for this link: no full intro before it
   return initial ? "/" : null;
 }

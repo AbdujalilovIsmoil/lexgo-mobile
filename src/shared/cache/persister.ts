@@ -1,6 +1,6 @@
 import type { Query, QueryClient } from "@tanstack/react-query";
 import { yieldToUi } from "@/shared/lib/yieldWork";
-import { cacheKeys, cacheSet, cacheTexts } from "./kv";
+import { cacheKeys, cacheSet, cacheTexts, cacheUpdatedAt } from "./kv";
 import { ruleFor } from "./persistRules";
 import { planRestore } from "./restorePlan";
 import { cacheEpoch, cacheScope, sameCacheEpoch } from "./scope";
@@ -21,6 +21,9 @@ function snapshotData(q: Query, firstPageOnly: boolean): unknown {
   if (firstPageOnly && data && Array.isArray(data.pages)) return { pages: data.pages.slice(0, 1), pageParams: (data.pageParams ?? []).slice(0, 1) };
   return data;
 }
+
+/** When the query's snapshot was last written (0: none) — by a screen's fetch or the background job. */
+export const snapshotSavedAt = (key: readonly unknown[]): Promise<number> => cacheUpdatedAt(rowKey(key));
 
 /** Writes one snapshot immediately (used by the background job, which has no QueryClient to subscribe to). */
 export async function saveSnapshot(key: readonly unknown[], data: unknown, updatedAt = Date.now()): Promise<void> {
