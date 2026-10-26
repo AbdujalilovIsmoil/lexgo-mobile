@@ -5,6 +5,8 @@ export { useLawyers, useLawyerPage, useLawyerPages, useLawyerCount, useLawyer, u
 export { useAiSearch, useAiRows, MIN_AI_CHARS, type AiRow } from "./model/aiQueries";
 export { useMarketMeta, useLawyerServices, useMyMatches, usePricingPolicy, usePromoActive } from "./model/metaQueries";
 export { useServiceSellers, useOfferedServiceIds, useCandidates } from "./model/sellerQueries";
+export { useMyRating, useSellerRating } from "./model/ratingQueries";
+export { normRatingBreakdown, type RatingBreakdown, type RatingFactor, type RatingPenalties } from "./api/ratingApi";
 export type { MatchCandidate } from "./api/sellerApi";
 export { listLawyers, type LawyerPage } from "./api/lawyerApi";
 export { getMyMatches } from "./api/matchApi";

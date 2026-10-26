@@ -28,6 +28,12 @@ describe("dates", () => {
   it("formats a time with leading zeros", () => {
     expect(fmtTime(new Date(2026, 0, 5, 7, 3).toISOString())).toBe("07:03");
   });
+  it("writes the month in the app's language on every phone (Hermes has no Uzbek calendar data)", () => {
+    const iso = new Date(2026, 9, 6, 12).toISOString();
+    expect(fmtDate(iso, "uz")).toBe("06 okt 2026");
+    expect(fmtDate(iso, "ru")).toBe("06 окт. 2026");
+    expect(fmtDate(iso, "en")).toBe("06 Oct 2026");
+  });
   it("isoDay is the local calendar day, daysAgo steps back", () => {
     expect(isoDay(new Date(2026, 9, 5, 23, 59))).toBe("2026-10-05");
     expect(daysAgo(0)).toBe(isoDay());

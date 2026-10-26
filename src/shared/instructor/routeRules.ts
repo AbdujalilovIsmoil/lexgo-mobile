@@ -39,5 +39,6 @@ export const RULES: Rule[] = [
   [new RegExp(`^/portal/${S}/(?:opportunities|marketplace)$`), "/pro/market"],
   [new RegExp(`^/portal/${S}/urgent$`), "/pro/urgent"],
   [new RegExp(`^/portal/${S}/(subscription|support|notifications)$`), "/$1"],
-  [new RegExp(`^/portal/${S}/(?:ai|assistant)$`), "/ai"],
+  [new RegExp(`^/portal/${S}/ai$`), "/ai"],
+  [new RegExp(`^/portal/${S}/assistant$`), "/pro/assistant"],
 ];

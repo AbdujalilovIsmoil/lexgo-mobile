@@ -1,4 +1,5 @@
 import { useMemo } from "react";
+import { monthLong } from "@/shared/lib/calendarNames";
 import { StyleSheet, View } from "react-native";
 import { IconButton, PressableScale, Text } from "@/shared/ui";
 import { fmtDate } from "@/shared/lib/format";
@@ -15,8 +16,7 @@ export function WeekStrip({ anchor, counts, value, onChange, onShift }: Props) {
   const c = useColors();
   const days = useMemo(() => weekDays(anchor, new Date()), [anchor]);
   const mid = days[3].date;
-  const tag = locale === "ru" ? "ru-RU" : locale === "en" ? "en-GB" : "uz-UZ";
-  const month = mid.toLocaleDateString(tag, { month: "long", year: "numeric" });
+  const month = `${monthLong(mid.getMonth(), locale)} ${mid.getFullYear()}`;
   return (
     <View style={s.wrap}>
       <View style={s.head}>

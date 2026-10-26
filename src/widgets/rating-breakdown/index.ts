@@ -1,0 +1,1 @@
+export { RatingBreakdownView } from "./RatingBreakdownView";

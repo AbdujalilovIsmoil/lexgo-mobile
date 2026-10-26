@@ -1,3 +1,4 @@
+import { weekdayShort } from "@/shared/lib/calendarNames";
 import type { BusinessHours } from "../api/hoursApi";
 
 export type HoursState = "open" | "closed" | "dayOff";
@@ -22,8 +23,7 @@ export function hoursState(bh: BusinessHours, nowMs = Date.now()): HoursState {
 
 // "Du–Sha" for a consecutive run of ISO days, otherwise a comma list.
 export function daysLabel(days: number[], locale: string): string {
-  const tag = locale === "ru" ? "ru-RU" : locale === "en" ? "en-GB" : "uz-UZ";
-  const name = (d: number) => new Date(Date.UTC(2024, 0, d)).toLocaleDateString(tag, { weekday: "short", timeZone: "UTC" });
+  const name = (d: number) => weekdayShort(d, locale);
   const run = days.length > 1 && days.every((d, i) => i === 0 || d === days[i - 1] + 1);
   return run ? `${name(days[0])}–${name(days[days.length - 1])}` : days.map(name).join(", ");
 }

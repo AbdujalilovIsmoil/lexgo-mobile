@@ -4,8 +4,9 @@ import { AiOrb, GradientBox, Icon, PressableScale, Text } from "@/shared/ui";
 import { useT } from "@/shared/i18n";
 import { Fade } from "./Fade";
 
-// LexGo AI on the dark gradient: the glowing orb, the title with a "Beta" chip, what it does, and a white button into the assistant.
-export function AiCard({ i }: { i: number }) {
+// LexGo AI on the dark gradient: the glowing orb, the title with a "Beta" chip, what it does, and a white button into the assistant — the
+// case tool for an advokat (/pro/assistant), the AI chat for a yurist, as on the web dashboard.
+export function AiCard({ i, advocate }: { i: number; advocate: boolean }) {
   const { t } = useT();
   const router = useRouter();
   return (
@@ -19,7 +20,7 @@ export function AiCard({ i }: { i: number }) {
             <Text variant="small" style={s.sub}>{t("shm.dash.aiSub")}</Text>
           </View>
         </View>
-        <PressableScale onPress={() => router.push("/(tabs)/ai" as never)} accessibilityRole="button" style={s.btn}>
+        <PressableScale onPress={() => router.push((advocate ? "/pro/assistant" : "/(tabs)/ai") as never)} accessibilityRole="button" style={s.btn}>
           <Text variant="small" weight="bold" style={s.btnTx}>{t("shm.dash.aiCta")}</Text>
           <Icon name="arrow-right" size={16} color="#0B1F45" />
         </PressableScale>

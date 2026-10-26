@@ -1,3 +1,5 @@
+import { monthShort } from "./calendarNames";
+
 export function initials(name: string): string {
   return name
     .trim()
@@ -17,12 +19,12 @@ export function humanizeSlug(s: string): string {
   return cleaned ? cleaned.charAt(0).toUpperCase() + cleaned.slice(1) : s;
 }
 
+// "26 okt 2026" / "26 окт. 2026" / "26 Oct 2026" in the device's time zone (calendarNames: Hermes has no Uzbek calendar data).
 export function fmtDate(iso: string | undefined, locale = "uz"): string {
   if (!iso) return "";
   const d = new Date(iso);
   if (Number.isNaN(d.getTime())) return "";
-  const tag = locale === "ru" ? "ru-RU" : locale === "en" ? "en-GB" : "uz-UZ";
-  return d.toLocaleDateString(tag, { day: "2-digit", month: "short", year: "numeric" });
+  return `${String(d.getDate()).padStart(2, "0")} ${monthShort(d.getMonth(), locale)} ${d.getFullYear()}`;
 }
 
 export function fmtTime(iso: string | undefined): string {

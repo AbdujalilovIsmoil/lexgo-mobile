@@ -9,6 +9,7 @@ import { useInsets } from "@/shared/lib/insets";
 import { todayKey } from "@/shared/lib/pro/dates";
 import { InfoCards, StatusBanner } from "@/widgets/pro-dashboard";
 import { useT } from "@/shared/i18n";
+import { ActivityPanel } from "./ActivityPanel";
 import { AiCard } from "./AiCard";
 import { BoostCard } from "./BoostCard";
 import { HomeQuick } from "./HomeQuick";
@@ -17,16 +18,18 @@ import { NewAlert } from "./NewAlert";
 import { NewCases } from "./NewCases";
 import { PayoutsPanel } from "./PayoutsPanel";
 import { ProfileStrengthCard } from "./ProfileStrengthCard";
+import { RatingPanel } from "./RatingPanel";
 import { ReferralProgress } from "./ReferralProgress";
 import { SecurityFold } from "./SecurityFold";
 import { SellerHero, type HeroStat } from "./SellerHero";
 import { TasksPanel } from "./TasksPanel";
+import { UpcomingPanel } from "./UpcomingPanel";
 
-const KEYS = ["pro-workspace", "pro-profile", "pro-requests", "pro-calendar", "pro-tasks", "pro-cases", "pro-clients", "pro-referral", "pay-referral"];
+const KEYS = ["pro-workspace", "pro-profile", "seller-rating", "pro-requests", "pro-calendar", "pro-tasks", "pro-cases", "pro-clients", "pro-referral", "pay-referral"];
 
 // The professional's home, built like the client's: one dark hero holding the header row, the greeting and the three counters;
-// then the profile's completeness ring → quick actions → my tasks → referral ladder → LexGo AI → new cases → metrics → payouts → account
-// security (advocate: the promotion card in its place). Everything comes from the backend (the cabinet, payouts, referral). A pending
+// then the profile's completeness ring → quick actions → my tasks → the next calendar items → recent activity → referral ladder → LexGo AI
+// → new cases → metrics → the rating breakdown → payouts → account security (advocate: the promotion card in its place). Everything comes from the backend (the cabinet, payouts, referral). A pending
 // seller sees the verification state and the completeness ring.
 export function SellerHome({ bottomPad }: { bottomPad: number }) {
   const { t } = useT();
@@ -69,10 +72,13 @@ export function SellerHome({ bottomPad }: { bottomPad: number }) {
         <ProfileStrengthCard i={k++} />
         <HomeQuick />
         <View style={{ marginBottom: 6 }}><TasksPanel cases={c.cases} i={k++} /></View>
+        <UpcomingPanel i={k++} />
+        <ActivityPanel notes={c.notes} i={k++} />
         <ReferralProgress i={k++} />
-        <AiCard i={k++} />
+        <AiCard i={k++} advocate={advocate} />
         <NewCases orders={c.orders} i={k++} />
         <MetricsPanel cabinet={c} i={k++} />
+        <RatingPanel i={k++} />
         <PayoutsPanel i={k++} />
         {advocate ? <BoostCard i={k++} /> : <SecurityFold i={k++} />}
       </View>

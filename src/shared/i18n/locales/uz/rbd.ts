@@ -1,0 +1,45 @@
+// The seller rating breakdown (the web's marketplace.ratingBreakdown).
+export const rbd = {
+  "title": "Reyting qanday hisoblangan",
+  "titleMine": "Reytingingiz",
+  "lead": "Faqat to'langan va yakunlangan xizmatlar hisobga olinadi; har bir omil 100 balldan.",
+  "leadMine": "Reyting faqat real, to'langan va yakunlangan xizmatlardan hisoblanadi. Past omillarni yaxshilasangiz, ro'yxatda yuqoriroq chiqasiz.",
+  "reviews": "{n} ta baho",
+  "unrated": "Hali baholanmagan",
+  "unratedWhy": "Real baholar yetarli emas",
+  "ranking": "Ro'yxatdagi o'rin bali",
+  "factor": {
+    "client_reviews": "Mijoz baholari",
+    "completion_rate": "Yakunlangan buyurtmalar",
+    "acceptance_rate": "Qabul qilish darajasi",
+    "response_score": "Javob tezligi",
+    "verified_experience": "Tasdiqlangan tajriba",
+    "sla": "Muddatlarga rioya",
+    "complaints": "Asosli shikoyatlar",
+    "cancellations": "Bekor qilish va javobsizlik"
+  },
+  "hint": {
+    "client_reviews": "To'langan xizmatlardan keyingi mijoz baholari",
+    "completion_rate": "Boshlangan buyurtmalardan nechtasi yakunlangan",
+    "acceptance_rate": "Sizga yuborilgan buyurtmalardan nechtasini qabul qilgansiz",
+    "response_score": "Yangi buyurtmaga qanchalik tez javob berasiz",
+    "verified_experience": "Call-center tasdiqlagan kategoriya tajribasi"
+  },
+  "completed": "Yakunlangan buyurtmalar",
+  "ofN": "{n} / {of}",
+  "response": "O'rtacha javob vaqti",
+  "minutes": "{n} daqiqa",
+  "hours": "{n} soat",
+  "experience": "Tasdiqlangan tajriba",
+  "years": "{n} yil",
+  "noExperience": "Hali tasdiqlanmagan",
+  "calculatedAt": "Hisoblangan: {date}",
+  "policy": "Reyting qoidalari v{n}",
+  "weight": "ulushi {n}%",
+  "coldStart": "Baholar yetarli bo'lmaguncha «Mijoz baholari» ulushi boshqa omillar bo'yicha hisoblanadi — birinchi buyurtmalaringizni vaqtida va sifatli bajaring.",
+  "penalties": "Jarimalar",
+  "noPenalties": "Jarima yo'q — asosli shikoyat va qaytarishlar bo'lmagan.",
+  "penComplaints": "Asosli shikoyatlar: {n}",
+  "penRefunds": "Pul qaytarishlar: {n}",
+  "fold": "{score} ball · {reviews}"
+};
