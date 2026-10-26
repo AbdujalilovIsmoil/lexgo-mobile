@@ -1,13 +1,20 @@
 import { useEffect } from "react";
 import { StyleSheet, View } from "react-native";
-import Animated, { Easing, useAnimatedStyle, useSharedValue, withRepeat, withTiming } from "react-native-reanimated";
+import Animated, { Easing, cancelAnimation, useAnimatedStyle, useSharedValue, withRepeat, withTiming } from "react-native-reanimated";
 import { LinearGradient } from "expo-linear-gradient";
+import { useMotionOn } from "@/shared/lib/useMotionOn";
 import { Icon, type IconName } from "./Icon";
 
-// Glowing AI orb: a gradient core with two soft rings that keep expanding and fading.
-export function AiOrb({ size = 52, icon = "zap" }: { size?: number; icon?: IconName }) {
+// Glowing AI orb: a gradient core with two soft rings that keep expanding and fading — only while its screen is on view, the app is in
+// front, Reduce Motion is off and the caller lets it (`live`): the home tab stays mounted under every page pushed over it.
+export function AiOrb({ size = 52, icon = "zap", live = true }: { size?: number; icon?: IconName; live?: boolean }) {
   const p = useSharedValue(0);
-  useEffect(() => { p.value = withRepeat(withTiming(1, { duration: 2400, easing: Easing.out(Easing.quad) }), -1); }, [p]);
+  const on = useMotionOn() && live;
+  useEffect(() => {
+    if (!on) return;
+    p.value = withRepeat(withTiming(1, { duration: 2400, easing: Easing.out(Easing.quad) }), -1);
+    return () => cancelAnimation(p);
+  }, [p, on]);
   const ring = (delay: number) => useAnimatedStyle(() => { // eslint-disable-line react-hooks/rules-of-hooks
     const v = (p.value + delay) % 1;
     return { opacity: 0.5 * (1 - v), transform: [{ scale: 1 + v * 0.9 }] };

@@ -1,7 +1,7 @@
 import { useEffect, useMemo } from "react";
 import { Canvas, Circle, Group, RadialGradient, Skia, vec } from "@shopify/react-native-skia";
 import { useDerivedValue, useFrameCallback, useSharedValue, withTiming } from "react-native-reanimated";
-import { useIsFocused } from "expo-router";
+import { useMotionOn } from "@/shared/lib/useMotionOn";
 import { OrbBlob } from "./OrbBlob";
 
 type Props = { size: number; busy?: boolean };
@@ -9,9 +9,9 @@ type Props = { size: number; busy?: boolean };
 const BLOBS = ["rgba(0,207,232,0.95)", "rgba(46,139,255,0.95)", "rgba(190,240,255,0.8)"];
 
 // The assistant's living orb: a glowing sphere with light swirling inside.
-// Spins up while the assistant is answering; sleeps when the tab is hidden.
+// Spins up while the assistant is answering; sleeps when the tab is hidden, the app is in the background or Reduce Motion is on.
 export function AiOrb({ size, busy = false }: Props) {
-  const focused = useIsFocused();
+  const on = useMotionOn();
   const phase = useSharedValue(0);
   const speed = useSharedValue(1);
   const idle = useSharedValue(0);
@@ -23,8 +23,8 @@ export function AiOrb({ size, busy = false }: Props) {
     idle.value = 0;
   }, false);
   useEffect(() => {
-    frame.setActive(focused);
-  }, [focused, frame]);
+    frame.setActive(on);
+  }, [on, frame]);
   useEffect(() => {
     // eslint-disable-next-line react-hooks/immutability
     speed.value = withTiming(busy ? 3.2 : 1, { duration: 500 });

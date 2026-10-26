@@ -5,7 +5,7 @@ import type { ExpoWebGLRenderingContext } from "expo-gl";
 import * as THREE from "three";
 import Animated, { useAnimatedStyle, type SharedValue } from "react-native-reanimated";
 
-type Props = { size: number; t: SharedValue<number>; calm?: boolean; paused?: boolean };
+type Props = { size: number; t: SharedValue<number>; calm?: boolean; paused?: boolean; playMs?: number }; // playMs: how long it turns after each wake
 
 // expo-gl is a native module: a build made before it was added does not have it, and importing it up front would crash every screen that
 // reaches this file. Ask the module registry first, load it on use, and draw no crystal when it is missing.
@@ -25,8 +25,9 @@ function loadGL(): GL | null {
 const clamp = (v: number) => { "worklet"; return Math.min(1, Math.max(0, v)); };
 
 // The three.js part of the AI mark: a lit 3D gem (a stretched bipyramid with a ring and orbiting points) turning in front of the neuron web. It is drawn on a transparent GL surface above the Skia canvas, appears with the core and fades with the
-// mark. `t` is the mark's timeline. `calm` renders one still frame.
-export function AiCore3D({ size, t, calm = false, paused = false }: Props) {
+// mark. `t` is the mark's timeline. `calm` renders one still frame. After `playMs` of turning it stops asking for frames and the last one
+// stays on screen, until it is paused and woken again.
+export function AiCore3D({ size, t, calm = false, paused = false, playMs = Infinity }: Props) {
   const stop = useRef<(() => void) | null>(null);
   const wake = useRef<(() => void) | null>(null);
   const idle = useRef(paused); // while true no frame is asked for at all, and the GL context stays: coming back needs no new context or shaders
@@ -94,17 +95,20 @@ export function AiCore3D({ size, t, calm = false, paused = false }: Props) {
       gl.endFrameEXP();
     };
     if (calm) { draw(900); return; }
-    let raf = 0, last = 0, alive = true;
-    // The loop runs on the JS thread: paused, it stops asking for frames (no wake-up 60 times a second), and `wake` starts it again.
+    let raf = 0, last = 0, from = 0, alive = true;
+    // The loop runs on the JS thread: paused or played out, it stops asking for frames (no wake-up 60–120 times a second), and `wake`
+    // starts it again.
     const loop = (time: number) => {
       raf = 0;
       if (!alive || idle.current) return;
+      from ||= time;
+      if (time - from > playMs) return;
       raf = requestAnimationFrame(loop);
       if (time - last < 33) return; // ~30 fps is plenty for a 24 pt crystal
       last = time;
       draw(time);
     };
-    wake.current = () => { if (alive && !raf) raf = requestAnimationFrame(loop); };
+    wake.current = () => { if (alive && !raf) { from = 0; raf = requestAnimationFrame(loop); } };
     if (!idle.current) raf = requestAnimationFrame(loop);
     stop.current = () => { alive = false; if (raf) cancelAnimationFrame(raf); renderer.dispose(); geo.dispose(); ring.geometry.dispose(); bead.dispose(); };
   };

@@ -64,7 +64,7 @@ export const RobotView = forwardRef<RobotHandle, Props>(function RobotView({ wid
   };
   return (
     <View pointerEvents="none" style={{ width, height }}>
-      {shown ? null : <View pointerEvents="none" style={{ position: "absolute", left: 0, right: 0, top: 0, bottom: 0, alignItems: "center", justifyContent: "center" }}><AiOrb size={Math.round(Math.min(width, height) * 0.4)} icon="star" /></View>}
+      {shown ? null : <View pointerEvents="none" style={{ position: "absolute", left: 0, right: 0, top: 0, bottom: 0, alignItems: "center", justifyContent: "center" }}><AiOrb size={Math.round(Math.min(width, height) * 0.4)} icon="star" live={!still} /></View>}
       {html ? (
         <WebView
           key={gen} ref={web} onRenderProcessGone={rebuild} onContentProcessDidTerminate={rebuild} onError={rebuild} source={{ html }} originWhitelist={["*"]} onMessage={onMessage} javaScriptEnabled scrollEnabled={false} bounces={false}

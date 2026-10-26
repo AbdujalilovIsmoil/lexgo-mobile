@@ -10,8 +10,9 @@ const CLIPS = { wave: "wave_goodbye_01.001", swagger: "swagger.001", box: "box_0
 const RANDOM = ["wave", "wave", "swagger"];
 const post = (m) => window.ReactNativeWebView && window.ReactNativeWebView.postMessage(JSON.stringify(m));
 
-const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
-renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.5)); // 1.5 keeps it crisp but ~45% cheaper than 2x on phones
+// A small figure in a corner: no antialiasing, 1x pixels and the low-power GPU are plenty, and cheap on the battery.
+const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: false, powerPreference: "low-power" });
+renderer.setPixelRatio(1);
 renderer.setClearColor(0x000000, 0);
 document.body.appendChild(renderer.domElement);
 const scene = new THREE.Scene();
@@ -107,17 +108,20 @@ function load(base64) {
       head = gltf.scene.getObjectByName("mixamorigHead");
       if (head) { removeEars(gltf.scene, head); faceTick = makeFace(head); }
       mixer = new THREE.AnimationMixer(gltf.scene); mixer._clips = gltf.animations;
-      ready = true; post({ type: "ready" }); play("wave");
+      ready = true; post({ type: "ready" }); play("wave"); wake();
     }, (e) => post({ type: "error", message: String(e && e.message || e) }));
   } catch (e) { post({ type: "error", message: String(e && e.message || e) }); }
 }
 
-let acc = 0;
+// 15 frames a second on a timer, not requestAnimationFrame: rAF wakes the page 60–120 times a second even for frames it skips. Paused,
+// hidden or not loaded yet, no frame is asked for at all; pause(false), the load and a return to view start it again.
+const FRAME_MS = 1000 / 15;
+let timer = 0;
 function frame() {
-  requestAnimationFrame(frame);
-  const dt = Math.min(clock.getDelta(), 0.1); acc += dt;
-  if (paused || document.hidden || !ready || acc < 1 / 30) return;
-  const step = acc; acc = 0; const t = clock.elapsedTime;
+  timer = 0;
+  if (paused || document.hidden || !ready) return;
+  timer = setTimeout(frame, FRAME_MS);
+  const step = Math.min(clock.getDelta(), 0.1), t = clock.elapsedTime;
   mixer.update(step);
   if (!current) {
     root.position.y = Math.sin((t / 4.2) * Math.PI * 2) * 0.006;
@@ -127,7 +131,12 @@ function frame() {
   if (faceTick) faceTick(step);
   renderer.render(scene, camera);
 }
-frame();
+function wake() {
+  if (timer || paused || document.hidden || !ready) return;
+  clock.getDelta(); // the time spent asleep is not one long step
+  frame();
+}
+document.addEventListener("visibilitychange", wake);
 
-window.__robot = { load, play, pause: (v) => { paused = !!v; }, rhythm: (sec) => { every = sec; } };
+window.__robot = { load, play, pause: (v) => { paused = !!v; wake(); }, rhythm: (sec) => { every = sec; } };
 post({ type: "boot" });

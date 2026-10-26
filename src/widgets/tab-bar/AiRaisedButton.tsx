@@ -8,7 +8,7 @@ import { useAppActive } from "@/shared/lib/useAppActive";
 import { useInsets } from "@/shared/lib/insets";
 import { useTablet } from "@/shared/lib/useTablet";
 import { useColors } from "@/shared/theme";
-import { AiMark } from "./AiMark";
+import { AiMark, MARK_PLAY_MS } from "./AiMark";
 import { useT } from "@/shared/i18n";
 
 type Props = { labelKey: string; hidden?: boolean; shift?: number }; // labelKey: the button's accessibility label; hidden: the AI screen is up, so the button rests unseen (never unmounted); shift: how far right of the screen centre the bar's AI slot is
@@ -20,9 +20,12 @@ const BAR_HEIGHT = 62;
 const SIZE_MAX = 64; // on a narrow screen the disc shrinks (16% of the width, 52–64 pt) so it never crowds the neighbouring captions
 const TABLET_BOTTOM = 20; // a tablet: the button's distance above the bottom safe area
 const RISE = 8; // how far the disc stands above the bar's top edge
+const BREATH_MS = 3300; // one breath: a 900 ms pause and a 2.4 s ring
+const BREATHS = Math.round(MARK_PLAY_MS / BREATH_MS); // as long as the mark plays
 
-// iOS: the AI tab's slot in the system bar has no icon (no caption); this button stands over it, rising above the bar. A soft ring breathes out of it
-// every few seconds — the only motion, off with Reduce Motion.
+// iOS: the AI tab's slot in the system bar has no icon (no caption); this button stands over it, rising above the bar. Each time it comes
+// into view the mark plays once and a soft ring breathes out of it a few times, then everything rests (a loop held the display at 120 Hz on
+// every tab page). Off with Reduce Motion.
 export function AiRaisedButton({ labelKey, hidden = false, shift = 0 }: Props) {
   const c = useColors();
   const { t } = useT();
@@ -40,7 +43,8 @@ export function AiRaisedButton({ labelKey, hidden = false, shift = 0 }: Props) {
   const breath = useSharedValue(0);
   useEffect(() => {
     if (calm || still) return;
-    breath.value = withRepeat(withDelay(900, withTiming(1, { duration: 2400, easing: Easing.out(Easing.cubic) })), -1);
+    breath.value = 0;
+    breath.value = withRepeat(withDelay(900, withTiming(1, { duration: BREATH_MS - 900, easing: Easing.out(Easing.cubic) })), BREATHS, false);
     return () => cancelAnimation(breath);
   }, [breath, calm, still]);
   const ring = useAnimatedStyle(() => ({ opacity: 0.38 * (1 - breath.value), transform: [{ scale: 1 + breath.value * 0.42 }] }));
