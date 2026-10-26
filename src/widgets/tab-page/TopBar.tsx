@@ -2,11 +2,12 @@ import type { ReactNode } from "react";
 import { StyleSheet, View } from "react-native";
 import { displayName, useSession } from "@/entities/session";
 import { HEADER_GAP, HEADER_ROW, useInsets } from "@/shared/lib/insets";
-import { Text, BrandLogo } from "@/shared/ui";
+import { Text } from "@/shared/ui";
 import { useT } from "@/shared/i18n";
+import { MenuButton } from "@/widgets/client-sidebar/MenuButton";
 import { HeaderActions } from "./HeaderActions";
 
-// The row of every page header (same as Home): logo + greeting + name, page tools + support, bell, avatar.
+// The row of every page header (same as Home): menu button + greeting + name, page tools + support, bell, avatar.
 export function TopBar({ right, noActions }: { right?: ReactNode; noActions?: boolean }) {
   const { t } = useT();
   const insets = useInsets();
@@ -14,7 +15,7 @@ export function TopBar({ right, noActions }: { right?: ReactNode; noActions?: bo
   return (
     <View style={[s.bar, { paddingTop: insets.top + HEADER_GAP, minHeight: insets.top + HEADER_GAP + HEADER_ROW + 12 }]}>
       <View style={s.brand}>
-        <BrandLogo size={40} />
+        <MenuButton />
         <View style={s.who}>
           <Text variant="caption" tone="gray" numberOfLines={1}>{t("home.greeting")}</Text>
           <Text variant="h4" numberOfLines={1}>{name || t("home.guest")}</Text>

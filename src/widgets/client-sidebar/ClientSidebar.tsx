@@ -12,13 +12,13 @@ import { useTabRole } from "@/widgets/tab-bar/useTabRole";
 import { GUEST_OPEN } from "./navItems";
 import { useSidebarHidden } from "./useSidebarHidden";
 import { useTablet } from "@/shared/lib/useTablet";
-import { SidebarHandle } from "./SidebarHandle";
 import { SidebarPanel } from "./SidebarPanel";
 import { useSidebar } from "./sidebarStore";
 import { SPRING, useDrawer } from "./useDrawer";
 
-// The sidebar of every role (the client's rows are the web portal's; see navFor for the others). The handle on the left edge (or a drag from it) pulls the
-// drawer out; the page dims as it comes. Tap the dim area, drag the drawer left, or press back to close.
+// The sidebar of every role (the client's rows are the web portal's; see navFor for the others). The menu button of the page header (MenuButton)
+// opens it; the page dims as it comes and takes no touch, no screen-reader focus and no typing until the drawer is shut again. Tap the dim
+// area, drag the drawer (or the dim area) to the left, or press back to close.
 export function ClientSidebar() {
   const { t } = useT();
   const c = useColors();
@@ -27,7 +27,7 @@ export function ClientSidebar() {
   const router = useRouter();
   const role = useTabRole();
   const { width } = useWindowDimensions();
-  const { show, hide } = useSidebar();
+  const hide = useSidebar((st) => st.hide);
   const w = Math.min(width * 0.84, 340);
   const { x, p, open, driven } = useDrawer(w);
   useEffect(() => {
@@ -37,16 +37,17 @@ export function ClientSidebar() {
   }, [open, hide]);
   const panel = useAnimatedStyle(() => ({ transform: [{ translateX: x.value }] }));
   const scrim = useAnimatedStyle(() => ({ opacity: p.value }));
-  /* eslint-disable react-hooks/immutability */
   // A tap on a row can sway sideways by a few points, which starts this pan; the row's own hide() has already begun by then. Once show / hide
   // has driven the drawer (`driven`, cleared by the next touch) the pan neither moves nor settles it, or it would cancel the closing spring and
   // snap back open. A pan that was never activated (a plain tap) settles nothing either.
+  // One pan for the panel and one for the dim area (a detector takes its own gesture), both pushing the drawer back under the finger.
   const dragging = useSharedValue(false);
-  const drag = Gesture.Pan().activeOffsetX(-16).failOffsetY([-14, 14]).onBegin(() => { driven.value = false; }).onStart(() => { dragging.value = true; })
+  const pan = () => Gesture.Pan().activeOffsetX(-16).failOffsetY([-14, 14]).onBegin(() => { driven.value = false; }).onStart(() => { dragging.value = true; })
     .onUpdate((e) => { if (!driven.value) x.value = Math.min(0, e.translationX); })
     .onEnd((e, ok) => { if (!ok || driven.value) return; if (e.translationX < -w * 0.3 || e.velocityX < -500) scheduleOnRN(hide); else x.value = withSpring(0, SPRING); })
     .onFinalize((_, ok) => { const was = dragging.value; dragging.value = false; if (!ok && was && !driven.value) { if (x.value < -w * 0.3) scheduleOnRN(hide); else x.value = withSpring(0, SPRING); } }); // a cancelled drag never stays half way
-  /* eslint-enable react-hooks/immutability */
+  const drag = pan();
+  const dimDrag = pan();
   const hidden = useSidebarHidden();
   const { docked } = useTablet(); // a wide tablet keeps the sidebar open beside the page (TabletFrame): no drawer, no handle
   const going = useRef(false);
@@ -71,15 +72,16 @@ export function ClientSidebar() {
   };
   return (
     <>
-      <Animated.View pointerEvents={open ? "auto" : "none"} style={[StyleSheet.absoluteFill, s.scrim, scrim]}><Pressable style={s.fill} onPress={hide} accessibilityRole="button" accessibilityLabel={t("a11y.close")} /></Animated.View>
+      <GestureDetector gesture={dimDrag}>
+        <Animated.View pointerEvents={open ? "auto" : "none"} style={[StyleSheet.absoluteFill, s.scrim, scrim]}><Pressable style={s.fill} onPress={hide} accessibilityRole="button" accessibilityLabel={t("a11y.close")} /></Animated.View>
+      </GestureDetector>
       <GestureDetector gesture={drag}>
-        <Animated.View pointerEvents={open ? "auto" : "none"} style={[s.panel, { width: w, backgroundColor: lens ? "transparent" : c.surface, borderColor: c.line }, panel]}>
+        <Animated.View pointerEvents={open ? "auto" : "none"} accessibilityViewIsModal={open} style={[s.panel, { width: w, backgroundColor: lens ? "transparent" : c.surface, borderColor: c.line }, panel]}>
           {lens ? <GlassBackdrop always radius={0} tint={dark ? "rgba(10,17,32,0.6)" : "rgba(255,255,255,0.68)"} /> : null}
           {/* the panel's empty parts claim the touch too, so it never reaches the page behind (rows and buttons claim theirs first) */}
           <View style={s.fill} onStartShouldSetResponder={() => true}><SidebarPanel p={p} onGo={go} /></View>
         </Animated.View>
       </GestureDetector>
-      <SidebarHandle x={x} p={p} w={w} onOpen={show} onClose={hide} />
     </>
   );
 }

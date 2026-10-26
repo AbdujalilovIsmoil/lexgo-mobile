@@ -6,8 +6,7 @@ import { StatusBar } from "expo-status-bar";
 import { KeyboardProvider } from "react-native-keyboard-controller";
 import * as SystemUI from "expo-system-ui";
 import { AURORA, ThemeProvider, darkColors, lightColors, useTheme, useThemeStore } from "@/shared/theme";
-import { IncomingCallWatcher } from "@/widgets/admin-meetings";
-import { ClientSidebar, TabletFrame } from "@/widgets/client-sidebar";
+import { ClientSidebar, TabletFrame, UnderSidebar } from "@/widgets/client-sidebar";
 import { AuroraBackdrop, RootOverlays, TabletStatusStrip } from "@/shared/ui";
 import { useProfileRefresh } from "@/entities/session";
 import { useHostClipboardSync } from "../dev/useHostClipboardSync";
@@ -29,10 +28,11 @@ function Chrome({ children }: { children: ReactNode }) {
       <StatusBar style={dark ? "light" : "dark"} />
       <SystemChrome />
       {Platform.OS === "ios" && AURORA ? <AuroraBackdrop /> : null}
-      <TabletFrame>{children}</TabletFrame>
+      <TabletFrame>
+        <UnderSidebar>{children}</UnderSidebar>
+      </TabletFrame>
       <TabletStatusStrip />
       <RootOverlays />
-      <IncomingCallWatcher />
       <ClientSidebar />
       <SessionBoundary />
       <PackageMounts />

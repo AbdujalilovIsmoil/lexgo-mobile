@@ -1,16 +1,17 @@
 import { StyleSheet, View } from "react-native";
-import { Text, BrandLogo } from "@/shared/ui";
+import { Text } from "@/shared/ui";
 import { useT } from "@/shared/i18n";
+import { MenuButton } from "@/widgets/client-sidebar/MenuButton";
 import { HeaderActions } from "@/widgets/tab-page";
 
-// Logo + greeting on the left; on the right the very same round buttons as every other page header (demo, support, bell,
+// Menu button + greeting on the left; on the right the very same round buttons as every other page header (demo, support, bell,
 // avatar) with the same sizes and gaps, so nothing moves when you switch between Home and the other tabs.
 export function HeroTopRow({ name }: { name?: string }) {
   const { t } = useT();
   return (
     <View style={s.row}>
       <View style={s.brand}>
-        <BrandLogo size={40} />
+        <MenuButton glass />
         <View style={s.who}>
           <Text variant="caption" style={s.hi} numberOfLines={1}>
             {t("home.greeting")}
