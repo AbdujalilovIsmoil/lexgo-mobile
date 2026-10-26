@@ -25,6 +25,7 @@ export const sl2: Messages["sl2"] = {
     experience: "Experience and directions",
     region: "Region",
     organization: "Organization",
+    photo: "Profile photo",
   },
   sectionDone: "Complete",
   securityTitle: "Security",

@@ -1,7 +1,6 @@
 import { http } from "@/shared/api";
 import { asArr, asDict, asNum, asStr, listFrom, uzs } from "@/shared/lib/json";
 import { fmtMoney } from "@/shared/lib/money";
-import { profileScore } from "../lib/home";
 import type { Cabinet, CabinetCase, CabinetNote, Onboarding, Payout, SellerOrder, Stats } from "../model/types";
 
 const normCase = (v: unknown): CabinetCase => {
@@ -54,7 +53,6 @@ export async function getCabinet(): Promise<Cabinet> {
     cases: asArr(d.active_cases).map(normCase),
     orders: listFrom(d.new_orders, "orders", "items", "data").filter((x) => !unpaid(x)).map(normOrder),
     notes: listFrom(d.notifications, "items", "data").map(normNote),
-    score: profileScore({ ...profile, services: profile.services ?? d.services }, asStr(d.seller_type ?? profile.seller_type).toLowerCase().includes("advokat")),
     clients: new Set(listFrom(d.secure_chats, "rooms", "items", "data").map((r) => asStr(asDict(r).client_user_id)).filter(Boolean)).size,
     profile: { reviews: asNum(profile.reviews_count ?? profile.reviews), experienceYears: asNum(profile.experience_years ?? profile.lawyer_experience_years), totalCases: asNum(profile.total_cases) },
   };

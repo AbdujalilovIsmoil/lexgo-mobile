@@ -66,5 +66,6 @@ export const sl5: Messages["sl5"] = {
     bio: "about",
     region: "region",
     structure: "structure",
+    photo: "photo",
   },
 };

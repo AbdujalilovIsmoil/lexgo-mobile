@@ -64,5 +64,6 @@ export const sl5 = {
     bio: "tavsif",
     region: "hudud",
     structure: "tuzilma",
+    photo: "rasm",
   },
 };

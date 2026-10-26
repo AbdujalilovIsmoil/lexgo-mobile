@@ -1,4 +1,4 @@
-import { commissionLadder, completeness, groupTasks, monthGrid, profileScore } from "./home";
+import { commissionLadder, groupTasks } from "./home";
 import type { CabinetCase } from "../model/types";
 
 const c = (p: Partial<CabinetCase>): CabinetCase => ({ id: "1", number: "", title: "T", stage: "", status: "active", nextAction: "", deadlineAt: "", ...p });
@@ -16,26 +16,6 @@ describe("groupTasks", () => {
   });
 });
 
-describe("completeness", () => {
-  it("whole percent, capped, zero without steps", () => {
-    expect(completeness(3, 5)).toBe(60);
-    expect(completeness(7, 5)).toBe(100);
-    expect(completeness(0, 0)).toBe(0);
-  });
-});
-
-describe("monthGrid", () => {
-  it("Monday first, padded to whole weeks", () => {
-    const g = monthGrid(2026, 9); // October 2026 starts on a Thursday
-    expect(g.slice(0, 4)).toEqual([null, null, null, 1]);
-    expect(g.filter((x) => x).length).toBe(31);
-    expect(g.length % 7).toBe(0);
-  });
-  it("a month starting on Monday has no leading blanks", () => {
-    expect(monthGrid(2026, 5)[0]).toBe(1); // June 2026 starts on a Monday
-  });
-});
-
 describe("commissionLadder (seller referral steps)", () => {
   it("base 18 %, then 16 / 15 / 13 at 5 / 10 / 20 active sellers", () => {
     expect(commissionLadder(0)).toEqual({ now: 18, goal: 5, next: 16 });
@@ -45,14 +25,3 @@ describe("commissionLadder (seller referral steps)", () => {
   });
 });
 
-describe("profileScore", () => {
-  it("lawyer: eight checks", () => {
-    expect(profileScore({}, false)).toBe(0);
-    expect(profileScore({ lawyer_name: "A", region: "tashkent", languages: ["uz"], bio: "x" }, false)).toBe(50);
-    expect(profileScore({ name: "A", avatar_url: "u", region: "r", languages: ["uz"], education: "e", experience_years: 3, bio: "b", services: [{}] }, false)).toBe(100);
-  });
-  it("advocate: nine checks, empty strings and zero count as missing", () => {
-    expect(profileScore({ name: " ", license_number: "", experience_years: 0 }, true)).toBe(0);
-    expect(profileScore({ name: "A", email: "a@b.uz", region: "r" }, true)).toBe(33);
-  });
-});

@@ -4,7 +4,7 @@ import type { Section } from "@/entities/pro-profile";
 import { Card, Pill, Text, ListRow } from "@/shared/ui";
 import { useT } from "@/shared/i18n";
 
-const ICON = { personal: "user", kind: "briefcase", license: "award", experience: "trending-up", region: "map-pin", organization: "home" } as const;
+const ICON = { personal: "user", photo: "camera", kind: "briefcase", license: "award", experience: "trending-up", region: "map-pin", organization: "home" } as const;
 
 // The profile parts TZ 31 asks for (personal data · kind · licence/diploma · experience · region · organization);
 // a compact list, each row opens the matching form on the profile screen.

@@ -40,6 +40,7 @@ export { ConfirmDialog, confirmDialog } from "./dialog";
 export { OverlayHost, RootOverlays, useOverlayHosts } from "./overlay";
 export { AiOrb } from "./AiOrb";
 export { Gauge } from "./Gauge";
+export { ProgressRing } from "./ProgressRing";
 export { Toggle } from "./Toggle";
 export { LiveDot } from "./LiveDot";
 export { Reveal } from "./Reveal";

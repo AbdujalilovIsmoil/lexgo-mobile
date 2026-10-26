@@ -23,6 +23,7 @@ export const sl2 = {
     experience: "Tajriba va yo'nalishlar",
     region: "Hudud",
     organization: "Tashkilot",
+    photo: "Profil rasmi",
   },
   sectionDone: "To'liq",
   securityTitle: "Xavfsizlik",

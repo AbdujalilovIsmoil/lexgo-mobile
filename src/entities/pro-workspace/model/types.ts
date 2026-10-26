@@ -25,7 +25,6 @@ export type Cabinet = {
   cases: CabinetCase[];
   orders: SellerOrder[];
   notes: CabinetNote[];
-  score: number; // profile completeness 0..100, from the profile fields
   clients: number; // distinct clients across the secure chats
   profile: { reviews: number; experienceYears: number; totalCases: number };
 };

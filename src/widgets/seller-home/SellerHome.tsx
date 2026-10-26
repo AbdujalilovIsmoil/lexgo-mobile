@@ -16,17 +16,18 @@ import { MetricsPanel } from "./MetricsPanel";
 import { NewAlert } from "./NewAlert";
 import { NewCases } from "./NewCases";
 import { PayoutsPanel } from "./PayoutsPanel";
+import { ProfileStrengthCard } from "./ProfileStrengthCard";
 import { ReferralProgress } from "./ReferralProgress";
 import { SecurityFold } from "./SecurityFold";
 import { SellerHero, type HeroStat } from "./SellerHero";
 import { TasksPanel } from "./TasksPanel";
 
-const KEYS = ["pro-workspace", "pro-requests", "pro-calendar", "pro-tasks", "pro-cases", "pro-clients", "pro-referral", "pay-referral"];
+const KEYS = ["pro-workspace", "pro-profile", "pro-requests", "pro-calendar", "pro-tasks", "pro-cases", "pro-clients", "pro-referral", "pay-referral"];
 
 // The professional's home, built like the client's: one dark hero holding the header row, the greeting and the three counters;
-// then quick actions → my tasks → referral ladder → LexGo AI → new cases → metrics → payouts → account security (advocate:
-// the promotion card in its place). Everything comes from the backend (the cabinet, payouts, referral). A pending seller sees
-// only the verification state. Profile completeness lives on the profile page.
+// then the profile's completeness ring → quick actions → my tasks → referral ladder → LexGo AI → new cases → metrics → payouts → account
+// security (advocate: the promotion card in its place). Everything comes from the backend (the cabinet, payouts, referral). A pending
+// seller sees the verification state and the completeness ring.
 export function SellerHome({ bottomPad }: { bottomPad: number }) {
   const { t } = useT();
   const qc = useQueryClient();
@@ -44,6 +45,7 @@ export function SellerHome({ bottomPad }: { bottomPad: number }) {
     return (
       <HeroScroll contentContainerStyle={{ ...body, paddingBottom: pad }}>
         <StatusBanner />
+        <ProfileStrengthCard i={0} />
         <InfoCards />
       </HeroScroll>
     );
@@ -64,6 +66,7 @@ export function SellerHome({ bottomPad }: { bottomPad: number }) {
       <HeaderExtra />
       <View style={body}>
         <NewAlert n={c.orders.length} />
+        <ProfileStrengthCard i={k++} />
         <HomeQuick />
         <View style={{ marginBottom: 6 }}><TasksPanel cases={c.cases} i={k++} /></View>
         <ReferralProgress i={k++} />

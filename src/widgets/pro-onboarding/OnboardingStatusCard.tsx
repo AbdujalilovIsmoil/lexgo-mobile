@@ -1,9 +1,8 @@
 import { StyleSheet, View } from "react-native";
 import { heroKind, type HeroKind, type OnbState } from "@/entities/pro-onboarding";
 import { radius, useColors } from "@/shared/theme";
-import { Card, Icon, Pill, Text, type IconName, type PillTone } from "@/shared/ui";
+import { Card, Icon, Pill, ProgressRing, Text, type IconName, type PillTone } from "@/shared/ui";
 import { useT } from "@/shared/i18n";
-import { ProgressRing } from "./ProgressRing";
 
 type Props = { state: OnbState; percent: number; done: number; total: number; reason: string; nextTitle?: string };
 
