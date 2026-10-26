@@ -5,16 +5,16 @@ import { useColors } from "@/shared/theme";
 import { Text } from "@/shared/ui";
 
 type Props = {
-  stage: TaskStage; tasks: ProTask[]; total: number; width: number; filtered: boolean;
+  stage: TaskStage; tasks: ProTask[]; total: number; filtered: boolean;
   onOpen: (t: ProTask) => void; onMove: (t: ProTask, s: TaskStage) => void; onPick: (t: ProTask) => void;
 };
 
-// One kanban column, the same shell as the sales funnel's: colour dot, stage name, task count and its cards.
-export function TaskColumn({ stage, tasks, total, width, filtered, onOpen, onMove, onPick }: Props) {
+// One kanban column (its width comes from the board's carousel): colour dot, stage name, task count and its cards.
+export function TaskColumn({ stage, tasks, total, filtered, onOpen, onMove, onPick }: Props) {
   const { t } = useT();
   const c = useColors();
   return (
-    <View style={[s.col, { width, backgroundColor: c.surface2, borderColor: c.line }]}>
+    <View style={[s.col, { backgroundColor: c.surface2, borderColor: c.line }]}>
       <View style={s.head}>
         <View style={[s.dot, { backgroundColor: c[STAGE_TINT[stage]] }]} />
         <Text variant="body" weight="bold" numberOfLines={1} style={s.fill}>{t(`aw7.tab.${stage}`)}</Text>

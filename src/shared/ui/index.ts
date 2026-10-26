@@ -27,6 +27,7 @@ export { ErrorView, useErrorText } from "./ErrorView";
 export { Toaster } from "./Toaster";
 export { toast, useToastStore } from "./toastStore";
 export { HeroScroll } from "./HeroScroll";
+export { Carousel } from "./Carousel";
 export { IconButton } from "./IconButton";
 export { AuroraBackdrop, useAuroraStyle } from "./AuroraBackdrop";
 export { GlassBackdrop, useGlass } from "./GlassBackdrop";

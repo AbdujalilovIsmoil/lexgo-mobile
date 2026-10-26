@@ -1,12 +1,12 @@
 import { useMemo, useState } from "react";
-import { RefreshControl, ScrollView, View, useWindowDimensions } from "react-native";
+import { RefreshControl, ScrollView, View } from "react-native";
 import { STAGES, isBlocked, sortTasks, stageOf, useTasks, type ProTask, type TaskStage } from "@/entities/pro-tasks";
 import { useT } from "@/shared/i18n";
 import { StaleNote } from "@/shared/network";
 import { useDebounced } from "@/shared/lib/useDebounced";
 import { useInsets } from "@/shared/lib/insets";
 import { useKept } from "@/shared/lib/useKept";
-import { EmptyState, ErrorView, Segmented, Skeleton, type IconName } from "@/shared/ui";
+import { Carousel, EmptyState, ErrorView, Segmented, Skeleton, type IconName } from "@/shared/ui";
 import { ActionList, ChipBar, SearchBox } from "@/shared/ui/admin";
 import { StageColumn } from "./StageColumn";
 import { TaskColumn } from "./TaskColumn";
@@ -16,14 +16,12 @@ import { useTaskMoves } from "./useTaskMoves";
 const ICON: Record<TaskStage, IconName> = { todo: "circle", doing: "play-circle", review: "eye", done: "check-circle" };
 type Mode = "board" | "list";
 
-// Like the sales funnel: a Kanban (every stage a column you swipe through, one column ≈ one screen) or a plain list with stage
-// chips. Status changes need no drag & drop: the stage chip, the arrows, a card swipe or the "Move to…" menu — all through
-// useTaskMoves (optimistic + undo).
+// A Kanban (every stage a column you swipe through, one column ≈ one screen, centred so both neighbours peek out equally) or a plain
+// list with stage chips. Status changes need no drag & drop: the stage chip, the arrows, a card swipe or the "Move to…" menu — all
+// through useTaskMoves (optimistic + undo).
 export function TaskList({ onOpen }: { onOpen: (t: ProTask) => void }) {
   const { t } = useT();
   const insets = useInsets();
-  const { width } = useWindowDimensions();
-  const colW = Math.round(width * 0.86);
   const query = useTasks();
   const { move, toggleBlocked, undo, revert } = useTaskMoves();
   const [mode, setMode] = useState<Mode>("board");
@@ -81,7 +79,7 @@ export function TaskList({ onOpen }: { onOpen: (t: ProTask) => void }) {
         ) : null}
       </View>
       {mode === "list" ? (
-        <StageColumn width={width} stage={filter || "all"} tasks={listed} query={query} filtered={all.length > 0} onOpen={onOpen} onMove={move} onPick={setPicked} />
+        <StageColumn stage={filter || "all"} tasks={listed} query={query} filtered={all.length > 0} onOpen={onOpen} onMove={move} onPick={setPicked} />
       ) : (
         <ScrollView
           refreshControl={<RefreshControl refreshing={query.isRefetching} onRefresh={() => void query.refetch()} />}
@@ -90,11 +88,13 @@ export function TaskList({ onOpen }: { onOpen: (t: ProTask) => void }) {
           keyboardShouldPersistTaps="handled"
         >
           {state ?? (
-            <ScrollView horizontal snapToInterval={colW + 12} decelerationRate="fast" showsHorizontalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 16, gap: 12, alignItems: "flex-start" }}>
-              {STAGES.map((st) => (
-                <TaskColumn key={st} stage={st} tasks={columns[st]} total={totals[st].length} width={colW} filtered={!!needle} onOpen={onOpen} onMove={move} onPick={setPicked} />
-              ))}
-            </ScrollView>
+            <Carousel
+              items={STAGES}
+              keyOf={(st) => st}
+              cardWidth={(rail) => Math.min(rail * 0.86, 440)}
+              align="flex-start"
+              renderItem={(st) => <TaskColumn stage={st} tasks={columns[st]} total={totals[st].length} filtered={!!needle} onOpen={onOpen} onMove={move} onPick={setPicked} />}
+            />
           )}
         </ScrollView>
       )}

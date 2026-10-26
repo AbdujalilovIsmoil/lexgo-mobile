@@ -6,7 +6,6 @@ import { EmptyState, ErrorView, Skeleton } from "@/shared/ui";
 
 type Q = { isLoading: boolean; isError: boolean; error: unknown; refetch: () => unknown; isRefetching: boolean };
 type Props = {
-  width: number;
   /** The stage this page shows; "all" is the list view across stages. */
   stage: TaskStage | "all";
   tasks: ProTask[];
@@ -19,7 +18,7 @@ type Props = {
 };
 
 // One board page (or the whole list): the stage's tasks, a skeleton / error while loading, and an empty state of its own.
-export function StageColumn({ width, stage, tasks, query, filtered, onOpen, onMove, onPick }: Props) {
+export function StageColumn({ stage, tasks, query, filtered, onOpen, onMove, onPick }: Props) {
   const { t } = useT();
   const insets = useInsets();
   const state = query.isLoading ? (
@@ -31,7 +30,7 @@ export function StageColumn({ width, stage, tasks, query, filtered, onOpen, onMo
   );
   return (
     <FlatList
-      style={{ width }}
+      style={{ flex: 1 }}
       data={query.isLoading || query.isError ? [] : tasks}
       keyExtractor={(x) => x.id}
       renderItem={({ item }) => <TaskCard task={item} onOpen={() => onOpen(item)} onMove={(s) => onMove(item, s)} onPickStage={() => onPick(item)} />}
