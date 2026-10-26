@@ -3,7 +3,6 @@ import { View } from "react-native";
 import { ActionList } from "@/shared/ui/admin";
 import { FilePreview } from "@/shared/ui/preview";
 import { useKept } from "@/shared/lib/useKept";
-import { useAccess } from "@/entities/access";
 import { useSession } from "@/entities/session";
 import { docCan, type DocFile, type DocReq } from "@/entities/doc-queue";
 import { FinalizeSheet, FulfillSheet, SourceSheet, useEditorSession, useLiveCall, useSaveState, type EditorMsg } from "@/features/doc-editor";
@@ -20,8 +19,7 @@ type Sheet = "" | "menu" | "info" | "source" | "send" | "transfer" | "upload";
 // The editing screen: header, OnlyOffice WebView and the sheets around it (info, source, send, transfer…).
 export function EditorSession({ doc, onSent }: { doc: DocReq; onSent: () => void }) {
   const me = useSession()?.user.id ?? "";
-  const ccl = useAccess().callCenterLawyer;
-  const can = docCan(doc, me, ccl);
+  const can = docCan(doc, me);
   const { save, onDirty, onError, reset } = useSaveState(doc.id);
   const s = useEditorSession(doc.id, true);
   const [ready, setReady] = useState(false);
@@ -44,7 +42,7 @@ export function EditorSession({ doc, onSent }: { doc: DocReq; onSent: () => void
       <InfoSheet doc={doc} visible={sheet === "info"} onClose={() => setSheet("")} onFile={preview} />
       <SourceSheet id={doc.id} visible={sheet === "source"} onClose={() => setSheet("")} onChanged={reopen} />
       <FinalizeSheet doc={doc} save={save} visible={sheet === "send"} onClose={() => setSheet("")} onSent={onSent} />
-      <TransferSheet doc={sheet === "transfer" ? doc : null} pool={ccl && doc.assignedId !== me} onClose={() => setSheet("")} onDone={leave} />
+      <TransferSheet doc={sheet === "transfer" ? doc : null} onClose={() => setSheet("")} onDone={leave} />
       <FulfillSheet doc={doc} visible={sheet === "upload"} onClose={() => setSheet("")} onSent={onSent} />
       <FilePreview visible={!!file} onClose={() => setFile(null)} file={shown && { path: shown.path, name: shown.name, mime: shown.mime }} />
     </View>

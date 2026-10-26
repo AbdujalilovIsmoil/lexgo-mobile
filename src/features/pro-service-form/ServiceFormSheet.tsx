@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { StyleSheet, View } from "react-native";
-import type { ProSeller, ProService, ServiceScope } from "@/entities/pro-service";
+import type { ProSeller, ProService } from "@/entities/pro-service";
 import { NOTE_MAX, serviceErrorKey } from "@/entities/pro-service";
 import { useColors } from "@/shared/theme";
 import { useInsets } from "@/shared/lib/insets";
@@ -19,16 +19,16 @@ import { StatusCards } from "./StatusCards";
 import { PreviewSheet } from "./preview/PreviewSheet";
 import { useServiceForm } from "./useServiceForm";
 
-type Props = { visible: boolean; onClose: () => void; item: ProService | null; taken: Set<string>; sellerId: string; region: string; yurist: boolean; seller: ProSeller; services?: ProService[]; scope?: ServiceScope };
+type Props = { visible: boolean; onClose: () => void; item: ProService | null; taken: Set<string>; sellerId: string; region: string; yurist: boolean; seller: ProSeller; services?: ProService[] };
 
 // Add or edit one service, laid out as on the web: Xizmat, Narx, Tajriba izohi, Holat, the price policy and a sticky action bar.
 // Fields that need a service stay visible but disabled until one is picked. The price is checked against the server's corridor
 // before and after sending (422 text is shown).
-export function ServiceFormSheet({ visible, onClose, item, taken, sellerId, region, yurist, seller, services = [], scope }: Props) {
+export function ServiceFormSheet({ visible, onClose, item, taken, sellerId, region, yurist, seller, services = [] }: Props) {
   const { t } = useT();
   const c = useColors();
   const insets = useInsets();
-  const f = useServiceForm({ visible, item, sellerId, region, scope, onDone: onClose });
+  const f = useServiceForm({ visible, item, sellerId, region, onDone: onClose });
   const [preview, setPreview] = useState(false);
   useSheetReset(visible, () => setPreview(false));
   const band = f.band;
@@ -36,7 +36,7 @@ export function ServiceFormSheet({ visible, onClose, item, taken, sellerId, regi
   const range = (b: { min: number; max: number }) => ({ min: fmtMoney(b.min), max: fmtMoney(b.max) });
   const issue = f.issue ? t("proSvc.form.priceOut", range(band ?? { min: 0, max: 0 })) : undefined;
   // The server's own words are kept for the generic failures; everything else uses the web's texts.
-  const text = e ? (e.kind === "range" && e.limits ? t("proSvc.errors.range", range(e.limits)) : ["invalid", "unknown"].includes(e.kind) && e.detail ? e.detail : t(serviceErrorKey(e.kind, scope?.kind === "org"))) : "";
+  const text = e ? (e.kind === "range" && e.limits ? t("proSvc.errors.range", range(e.limits)) : ["invalid", "unknown"].includes(e.kind) && e.detail ? e.detail : t(serviceErrorKey(e.kind))) : "";
   const title = t(item ? "proSvc.form.editTitle" : "proSvc.form.addTitle");
   const picked = f.picked;
   const none = !picked;

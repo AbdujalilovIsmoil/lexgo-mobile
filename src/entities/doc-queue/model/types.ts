@@ -35,5 +35,5 @@ export type DocReq = {
 };
 
 export type ClaimResult = { id: string; status: string; chatRoomId: string };
-export type TransferInput = { id: string; targetId: string; reason: string; pool: boolean };
+export type TransferInput = { id: string; targetId: string; reason: string };
 export type Candidate = { id: string; name: string; kind: string; region: string; rating: number; workload: number; callCenter: boolean };

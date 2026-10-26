@@ -16,9 +16,9 @@ import { Timeline } from "./Timeline";
 
 type Q = { isRefetching: boolean; refetch: () => unknown };
 
-function Body({ req, q, pool }: { req: UrgentRequest; q: Q; pool?: boolean }) {
+function Body({ req, q }: { req: UrgentRequest; q: Q }) {
   const label = useUrgentLabels();
-  const a = useRequestActions(req, "pro", pool);
+  const a = useRequestActions(req, "pro");
   return (
     <AdminPage title={label.kind(req.serviceKind, req.serviceTitle)} subtitle={req.workId} footer={a.actions.length ? <ActionDock actions={a.actions} /> : undefined}>
       <Scroll q={q}>
@@ -39,11 +39,11 @@ function Scroll({ q, children }: { q: Q; children: React.ReactNode }) {
 }
 
 // /pro/urgent/[id] for an advocate: hero (status, time since the request, stage track, client), the request, key facts, history and a
-// sticky action bar. Same data and same actions as before (useRequestActions); a pool item opened by a call-center lawyer reads "cc".
-export function ProDetail({ id, pool }: { id: string; pool?: boolean }) {
+// sticky action bar. Same data and same actions as before (useRequestActions).
+export function ProDetail({ id }: { id: string }) {
   const { t } = useT();
-  const q = useRequest(id, pool ? "cc" : "me");
-  if (q.data) return <Body req={q.data} q={q} pool={pool} />;
+  const q = useRequest(id);
+  if (q.data) return <Body req={q.data} q={q} />;
   return (
     <AdminPage title={t("ugx.title")}>
       <Scroll q={q}>

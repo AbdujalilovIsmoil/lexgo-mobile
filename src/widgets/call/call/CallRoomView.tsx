@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { shouldHangUp, useCallActions, useCallChat, useCallScreen, useCaptureMute, useGuardWarnings, useUnansweredHangUp } from "@/features/call/call";
-import { useRecording, useRosterToasts, useTransfer, useWork } from "@/features/call";
+import { useRecording, useRosterToasts, useTransfer, workOf } from "@/features/call";
 import { useSession } from "@/entities/session";
 import { useT } from "@/shared/i18n";
 import { CallStatusView } from "./CallStatusView";
@@ -13,7 +13,7 @@ export function CallRoomView({ roomId, callId }: { roomId: string; callId: strin
   const s = useCallScreen(roomId, callId, chat.onData);
   const act = useCallActions({ roomId, callId, call: s.call, room: s.lk.room, signal: s.signal, refetch: s.refetch, leave: s.leave });
   const rec = useRecording(roomId, callId, s.call, s.refetch);
-  const work = useWork(roomId, s.call);
+  const work = workOf(s.call);
   const transfer = useTransfer(roomId, callId, s.call, work, s.refetch);
   useRosterToasts(s.call?.participants, s.myId);
   const { ended, leave, phase } = s;

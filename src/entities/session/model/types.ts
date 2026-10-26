@@ -1,4 +1,4 @@
-export type BackendRole = "client" | "yurist" | "advokat" | "advokat_tashkiloti" | string;
+export type BackendRole = "client" | "yurist" | "advokat" | string;
 export type Role = "client" | "lawyer" | "advocate";
 
 export type User = {
@@ -13,8 +13,8 @@ export type User = {
   role: Role;
   backendRole: string;
   accountStatus: string;
-  roles: string[]; // assigned roles (superadmin, admin, sales_operator …); `backendRole` is the primary one
-  permissions: string[]; // permission codes (leads.manage …) that gate staff screens
+  roles: string[]; // assigned roles as the backend sends them; `backendRole` is the primary one
+  permissions: string[]; // permission codes (tasks.view …) that open extra sections
   twoFactorEnabled: boolean;
   twoFactorMethod?: string;
   phoneVerified?: boolean;
@@ -52,6 +52,10 @@ export type RegisterVerifyResult =
 
 export const isTwoFactor = (r: LoginResult): r is TwoFactorChallenge => "twoFactorRequired" in r;
 
+// The accounts the mobile app serves: a client and the two professionals (UserRole of the API). Organisation, staff, call-centre and
+// sales accounts (advokat_tashkiloti, admin, manager, call_center, sales) work in the web panel: the app does not sign them in.
+export const MOBILE_ROLES = ["client", "yurist", "advokat"] as const;
+export const isMobileAccount = (backendRole: string): boolean => (MOBILE_ROLES as readonly string[]).includes(backendRole);
+
 // UI role ↔ backend role (lib/auth.tsx on the web).
-export const fromBackendRole = (r: string): Role =>
-  r === "yurist" ? "lawyer" : r === "advokat" || r === "advokat_tashkiloti" ? "advocate" : "client";
+export const fromBackendRole = (r: string): Role => (r === "yurist" ? "lawyer" : r === "advokat" ? "advocate" : "client");

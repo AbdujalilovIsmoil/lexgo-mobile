@@ -1,1 +1,0 @@
-export { InfoButton } from "./InfoButton";

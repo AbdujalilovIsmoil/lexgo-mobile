@@ -16,12 +16,8 @@ export const ratingOpen = (r: UrgentRequest): boolean => r.rating.available && !
 export const joinable = (r: UrgentRequest): boolean => !!r.callId && !!r.roomId && !isFinal(r);
 export const hasMeeting = (r: UrgentRequest): boolean => !!r.scheduledAt && (r.status === "scheduled" || r.status === "meeting_active");
 
-// Claiming: free records, or (admins) taking over a record another operator holds.
-export function claimMode(r: UrgentRequest, meId: string, admin: boolean): "claim" | "takeover" | "" {
-  const open = isOpen(r) || r.nextStatuses.includes("claimed");
-  if (open && r.claimedByUserId && r.claimedByUserId !== meId && admin) return "takeover";
-  return open && !r.claimedByUserId ? "claim" : "";
-}
+// A free record may be claimed (taking over one somebody holds is the call centre's, in the web panel).
+export const canClaim = (r: UrgentRequest): boolean => (isOpen(r) || r.nextStatuses.includes("claimed")) && !r.claimedByUserId;
 
 // Statuses an operator may set by hand: the record's own next_statuses minus the ones with dedicated forms.
 export function statusChoices(r: UrgentRequest, meId: string): string[] {

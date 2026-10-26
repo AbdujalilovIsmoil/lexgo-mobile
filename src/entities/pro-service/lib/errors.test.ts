@@ -2,10 +2,10 @@ import { ApiError } from "@/shared/api";
 import { serviceErrorKey, serviceErrorOf } from "./errors";
 
 describe("service errors", () => {
-  it("uses the owner wording only for account / permission errors", () => {
-    expect(serviceErrorKey("forbidden", true)).toBe("proSvc.errors.forbiddenOwner");
-    expect(serviceErrorKey("pendingAccount", false)).toBe("proSvc.errors.pendingAccount");
-    expect(serviceErrorKey("range", true)).toBe("proSvc.errors.range");
+  it("names the message of each error kind", () => {
+    expect(serviceErrorKey("forbidden")).toBe("proSvc.errors.forbidden");
+    expect(serviceErrorKey("pendingAccount")).toBe("proSvc.errors.pendingAccount");
+    expect(serviceErrorKey("range")).toBe("proSvc.errors.range");
   });
   it("422 with a zero ceiling means the catalogue has no price; with a ceiling it is a range", () => {
     const e = (limits: object) => new ApiError(422, "x", { data: { detail: { pricing_limits: limits } } });

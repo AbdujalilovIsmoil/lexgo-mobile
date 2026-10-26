@@ -17,7 +17,7 @@ function norm(kind: ReqKind, v: unknown): ReqItem {
     when: "",
     status,
     at: asStr(d.updated_at ?? d.created_at),
-    route: kind === "pool" ? `/pro/docs/pool` : `/pro/docs/${id}`,
+    route: `/pro/docs/${id}`,
     action: needsAction(kind, status) || Boolean(d.can_claim),
     active: isActiveStatus(kind, status),
   };
@@ -26,8 +26,4 @@ function norm(kind: ReqKind, v: unknown): ReqItem {
 // GET /lawyers/me/document-requests — requests assigned to this professional.
 export async function listDocs(): Promise<ReqItem[]> {
   return listFrom(await http("/lawyers/me/document-requests"), "items", "data", "requests").map((v) => norm("docs", v));
-}
-// GET /call-center/document-requests/open — the open pool (call_center_lawyer only).
-export async function listPool(): Promise<ReqItem[]> {
-  return listFrom(await http("/call-center/document-requests/open"), "items", "data", "requests").map((v) => norm("pool", v));
 }

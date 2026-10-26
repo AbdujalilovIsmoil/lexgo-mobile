@@ -2,18 +2,18 @@ import { create } from "zustand";
 import { runBeforeSignOut, runSessionReset } from "@/shared/lib/sessionReset";
 import { hydrateLock, useLockStore } from "./lockStore";
 import { readSession, wipeSession, writeSession, writeSid, writeTokens, writeUser } from "./persist";
-import type { Session, User } from "./types";
+import { isMobileAccount, type Session, type User } from "./types";
 
 type SessionState = {
   session: Session | null;
   ready: boolean;
-  notice: "sessionExpired" | null;
+  notice: "sessionExpired" | "webOnly" | null;
   hydrate: () => Promise<void>;
   signIn: (s: Session) => Promise<void>;
   setTokens: (token: string, refreshToken: string) => Promise<void>;
   setUser: (u: User) => Promise<void>;
   setSessionId: (sid: string) => Promise<void>;
-  signOut: (expired?: boolean) => Promise<void>;
+  signOut: (expired?: boolean, why?: "webOnly") => Promise<void>;
   clearNotice: () => void;
 };
 
@@ -32,9 +32,15 @@ export const useSessionStore = create<SessionState>((set, get) => {
     ready: false,
     notice: null,
     hydrate: async () => {
-      const session = await readSession();
+      let session = await readSession();
+      // An account the app no longer serves (organisation, staff, call-centre, sales) signed in on an older version: it starts signed out.
+      const webOnly = !!session && !isMobileAccount(session.user.backendRole);
+      if (webOnly) {
+        await wipeSession();
+        session = null;
+      }
       await hydrateLock(session?.user.id ?? ""); // before `ready`, so the lock is up on the first frame
-      set({ session, ready: true });
+      set({ session, ready: true, notice: webOnly ? "webOnly" : null });
     },
     signIn: async (s) => {
       const lock = useLockStore.getState();
@@ -46,13 +52,14 @@ export const useSessionStore = create<SessionState>((set, get) => {
     setUser: (user) => patch({ user }, () => writeUser(user)),
     setSessionId: (sid) => patch({ sid }, () => writeSid(sid)),
     // `expired`: the server ended the session (the lock setting survives so the next sign-in of the
-    // same account keeps it). A deliberate sign-out also drops the lock.
-    signOut: async (expired) => {
+    // same account keeps it). A deliberate sign-out also drops the lock. `webOnly`: the account turned out to be one the app does not
+    // serve; the sign-in screen says so.
+    signOut: async (expired, why) => {
       if (!expired) await runBeforeSignOut();
       await wipeSession();
       if (!expired) await useLockStore.getState().disable();
       useLockStore.getState().unlock();
-      set({ session: null, notice: expired ? "sessionExpired" : null });
+      set({ session: null, notice: why ?? (expired ? "sessionExpired" : null) });
       runSessionReset();
     },
     clearNotice: () => set({ notice: null }),

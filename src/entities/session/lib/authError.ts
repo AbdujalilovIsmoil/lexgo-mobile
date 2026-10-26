@@ -3,13 +3,21 @@ import { isCodeExpired, retryAfterOf } from "./retryAfter";
 
 // What went wrong, in terms the auth screens branch on. `message` is the server's own wording
 // (may be Uzbek only or empty); `wait` is the server's cooldown / block length in seconds.
-export type AuthErrKind = "offline" | "rate" | "blocked" | "expired" | "wrong" | "exists" | "channel" | "forbidden" | "validation" | "server" | "other";
+export type AuthErrKind = "offline" | "rate" | "blocked" | "expired" | "wrong" | "exists" | "channel" | "forbidden" | "validation" | "server" | "webOnly" | "other";
 export type AuthErr = { kind: AuthErrKind; message: string; wait: number; status: number; fields: Record<string, string> };
+
+// The server signed in an account the mobile app does not serve (organisation, staff, call-centre, sales): see isMobileAccount.
+export class WebOnlyAccountError extends Error {
+  constructor() {
+    super("web_only_account");
+  }
+}
 
 // A wait this long is a block (3 wrong codes → 15 min), shorter ones are a resend cooldown.
 const BLOCK_SEC = 180;
 
 export function describeAuthError(e: unknown): AuthErr {
+  if (e instanceof WebOnlyAccountError) return { kind: "webOnly", message: "", wait: 0, status: -1, fields: {} };
   if (!(e instanceof ApiError)) return { kind: "server", message: "", wait: 0, status: -1, fields: {} };
   const base = { message: e.detail && e.detail !== "network_error" ? e.detail : "", wait: retryAfterOf(e), status: e.status, fields: e.fieldErrors };
   const kind = (k: AuthErrKind): AuthErr => ({ ...base, kind: k });

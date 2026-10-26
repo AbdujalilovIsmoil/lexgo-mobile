@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { priceIssue, serviceErrorOf, useQuoteBand, useSaveService, type PriceBand, type ProService, type ServiceError, type ServiceScope, type ServiceStatus } from "@/entities/pro-service";
+import { priceIssue, serviceErrorOf, useQuoteBand, useSaveService, type PriceBand, type ProService, type ServiceError, type ServiceStatus } from "@/entities/pro-service";
 import { useAppForm } from "@/shared/form";
 import { successHaptic } from "@/shared/lib/haptics";
 import { useSheetReset } from "@/shared/lib/useSheetReset";
@@ -8,7 +8,7 @@ import { useT } from "@/shared/i18n";
 import { serviceSchema } from "./serviceSchema";
 import type { FormValues, PickedService } from "./types";
 
-type Args = { visible: boolean; item: ProService | null; sellerId: string; region: string; scope?: ServiceScope; onDone: () => void };
+type Args = { visible: boolean; item: ProService | null; sellerId: string; region: string; onDone: () => void };
 
 const fromItem = (i: ProService): PickedService => ({ id: i.id, name: i.name, category: [i.categoryTitle, i.subcategory].filter(Boolean).join(" · "), catalogPrice: i.catalogPrice, advokatRequired: i.advokatRequired, slug: "" });
 const blank: FormValues = { price: "", note: "", status: "active" };
@@ -17,7 +17,7 @@ const blank: FormValues = { price: "", note: "", status: "active" };
 const merge = (a: PriceBand | null, b: PriceBand | null): PriceBand | null => (a && b ? { ...a, base: a.base ?? b.base, modifiers: a.modifiers ?? b.modifiers } : (a ?? b));
 
 // State of the add / edit service form: choice, price against the live corridor, server errors (TZ 19).
-export function useServiceForm({ visible, item, sellerId, region, scope, onDone }: Args) {
+export function useServiceForm({ visible, item, sellerId, region, onDone }: Args) {
   const { t } = useT();
   const [picked, setPicked] = useState<PickedService | null>(null);
   const form = useAppForm(serviceSchema, blank);
@@ -25,7 +25,7 @@ export function useServiceForm({ visible, item, sellerId, region, scope, onDone 
   const [err, setErr] = useState<ServiceError | null>(null);
   const [agreed, setAgreed] = useState(false); // price-policy consent, asked on every save
   const [tried, setTried] = useState(false);
-  const save = useSaveService(scope);
+  const save = useSaveService();
   useSheetReset(visible, () => {
     setPicked(item ? fromItem(item) : null);
     form.reset(item ? { price: item.selectedPrice ? String(item.selectedPrice) : "", note: item.note, status: item.status } : blank);

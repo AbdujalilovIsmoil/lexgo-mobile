@@ -27,7 +27,4 @@ export function serviceErrorOf(e: unknown): ServiceError {
 }
 
 // i18n key (namespace proSvc) of the text for a failed write; an org owner editing a member's service gets the "Owner" wording.
-export function serviceErrorKey(kind: ServiceErrorKind, owner: boolean): string {
-  if (kind === "pendingAccount" || kind === "forbidden") return `proSvc.errors.${kind}${owner ? "Owner" : ""}`;
-  return `proSvc.errors.${kind}`;
-}
+export const serviceErrorKey = (kind: ServiceErrorKind): string => `proSvc.errors.${kind}`;

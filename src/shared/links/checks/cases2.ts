@@ -4,13 +4,13 @@ const ev = (event: string, data: Record<string, string> = {}) => ({ event, data 
 
 export const MORE_CASES: Case[] = [
   ["complaint, client", "client", ev("quality_complaint.created", { work_id: "DOC-1" }), { href: "/rate/DOC-1", fallback: "/(tabs)/works" }],
-  ["complaint, call center", "cc", ev("quality_complaint.created", { work_id: "DOC-1" }), { href: "/cc/complaints" }],
   ["complaint, seller", "seller", ev("quality_complaint.created", { work_id: "DOC-1" }), { kind: "none" }],
   ["subscription", "client", ev("subscription_activated"), { href: "/subscription" }],
-  ["subscription, staff", "staff", ev("subscription_activated"), { kind: "none" }],
+  ["subscription, seller", "seller", ev("subscription_activated"), { href: "/subscription" }],
   ["calendar, seller", "seller", ev("calendar_event_created"), { href: "/pro/calendar" }],
   ["calendar, client", "client", ev("calendar_event_created"), { kind: "none" }],
-  ["studio, staff", "staff", ev("studio.object_reviewed", { object_id: "x" }), { href: "/manage/studio/objects" }],
+  ["staff-only event opens nothing", "client", ev("studio.object_reviewed", { object_id: "x" }), { kind: "none" }],
+  ["lead event opens nothing", "seller", ev("lead.assigned", { lead_id: "l1" }), { kind: "none" }],
   ["registration approved, seller", "seller", ev("seller_register_approved"), { href: "/pro/onboarding" }],
   ["category fallback: orders", "client", { event: "something_new", category: "orders" }, { href: "/orders" }],
   ["category fallback: chat", "seller", { category: "chat" }, { href: "/(tabs)/messages" }],

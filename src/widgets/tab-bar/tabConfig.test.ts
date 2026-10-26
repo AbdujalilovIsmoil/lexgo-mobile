@@ -12,11 +12,13 @@ describe("tab bars", () => {
   });
 });
 
-describe("a sales operator's bar is the web's \"Sotuv operatori\" panel", () => {
-  it("lands on the funnel; the duty desk, AI, meetings and call analytics follow", () => {
-    expect(TABS.sales.map((x) => x.route)).toEqual(["pipeline", "duty", "ai", "smeetings", "canalytics"]);
-    expect(homeRoute("sales")).toBe("pipeline");
-    expect(allowedRoutes("sales")).not.toContain("index");
+describe("the mobile app has a visitor, a client and a professional only", () => {
+  it("no other role has a bar", () => {
+    expect(Object.keys(TABS).sort()).toEqual(["client", "guest", "seller"]);
+  });
+  it("a professional lands on the workspace", () => {
+    expect(homeRoute("seller")).toBe("workspace");
+    expect(TABS.seller.map((x) => x.route)).toEqual(["workspace", "requests", "ai", "clients", "messages"]);
   });
 });
 

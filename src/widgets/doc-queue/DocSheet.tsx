@@ -1,7 +1,6 @@
 import { StyleSheet, View } from "react-native";
 import { BottomSheet, ErrorView, Icon, SheetScroll, Skeleton, Text, toast } from "@/shared/ui";
 import { useColors } from "@/shared/theme";
-import { useAccess } from "@/entities/access";
 import { useSession } from "@/entities/session";
 import { useT } from "@/shared/i18n";
 import { actionOf, docCan, factsOf, filesOf, mainFile, useDoc, useDocRating, type DocReq, type SheetAction } from "@/entities/doc-queue";
@@ -30,7 +29,6 @@ type Props = {
 // a claim or a transfer update it while it is open.
 export function DocSheet({ id, row, visible, onClose, onDetail, onEditor, onTransfer }: Props) {
   const { t } = useT();
-  const access = useAccess();
   const me = useSession()?.user.id ?? "";
   const q = useDoc(id);
   const doc = q.data;
@@ -39,7 +37,7 @@ export function DocSheet({ id, row, visible, onClose, onDetail, onEditor, onTran
   const dl = useFileShare();
   const claim = useClaim((cid) => onEditor(cid));
   const c = useColors();
-  const can = doc ? docCan(doc, me, access.callCenterLawyer) : null;
+  const can = doc ? docCan(doc, me) : null;
   const files = doc ? filesOf(doc) : [];
   const main = doc ? mainFile(doc) : null;
   const action = can ? actionOf(can) : null;

@@ -14,9 +14,8 @@ export function accountGate(status: string | undefined): AccountGate {
   return "restricted";
 }
 
-// Sellers (yurist / advokat / advokat tashkiloti) finish a profile before an admin approves them.
-export const isSellerUser = (u: Pick<User, "backendRole" | "roles">): boolean =>
-  [u.backendRole, ...u.roles].some((r) => r === "yurist" || r === "advokat" || r === "advokat_tashkiloti");
+// Sellers (yurist / advokat) finish a profile before an admin approves them.
+export const isSellerUser = (u: Pick<User, "backendRole" | "roles">): boolean => [u.backendRole, ...u.roles].some((r) => r === "yurist" || r === "advokat");
 
 // Fields the server did not send (undefined) never erase what is already stored.
 export function mergeUser(cur: User, next: User): User {

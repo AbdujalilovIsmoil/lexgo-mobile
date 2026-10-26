@@ -2,8 +2,6 @@ import { useState } from "react";
 import { Platform, StyleSheet } from "react-native";
 import { useRouter } from "expo-router";
 import { EmptyState, Icon, PressableScale } from "@/shared/ui";
-import { RowCard } from "@/shared/ui/admin";
-import { useAccess } from "@/entities/access";
 import { TabPage } from "@/widgets/tab-page";
 import { RoomsList } from "@/widgets/secure-chat";
 import { PushPermissionCard } from "@/widgets/push-permission";
@@ -29,7 +27,6 @@ export function MessagesPage() {
   const barTop = Platform.OS === "ios" ? insets.bottom : insets.bottom + 76;
   const pad = barTop + 16;
   const q = useRooms(useSocketState() === "online", myId);
-  const staff = useAccess().staff;
   const locked = !useSellerActions().chat;
   const [creating, setCreating] = useState(false);
   const reqs = useMine().data ?? [];
@@ -40,7 +37,7 @@ export function MessagesPage() {
   if (locked) return <TabPage title={t("tabs.messages")}><EmptyState icon="shield" title={t("ms1.locked")} text={t("ms1.lockedText")} /></TabPage>;
   return (
     <TabPage title={t("tabs.messages")} subtitle={unread ? t("ms1.unreadN", { n: unread }) : t("admChat.count", { n: mine.length })}>
-      <RoomsList tagOf={tagOf} query={q} rooms={mine} myId={myId} bottom={pad} onOpen={(r) => router.push(chatPath(r.id) as never)} header={<>{staff ? <RowCard icon="eye" tint="#8B5CF6" title={t("ms1.monitor")} subtitle={t("ms1.monitorText")} onPress={() => router.push("/manage/chats" as never)} /> : null}<PushPermissionCard /></>} action={{ label: t("ms1.newChat"), onPress: () => setCreating(true) }} />
+      <RoomsList tagOf={tagOf} query={q} rooms={mine} myId={myId} bottom={pad} onOpen={(r) => router.push(chatPath(r.id) as never)} header={<PushPermissionCard />} action={{ label: t("ms1.newChat"), onPress: () => setCreating(true) }} />
       <PressableScale onPress={() => setCreating(true)} accessibilityRole="button" accessibilityLabel={t("ms1.newChat")} style={[styles.fab, shadows.blue, { bottom: barTop + 12 }]}>
         <Icon name="edit-2" size={24} color="#FFFFFF" />
       </PressableScale>

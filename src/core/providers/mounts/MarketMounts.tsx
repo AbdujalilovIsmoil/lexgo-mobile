@@ -20,7 +20,7 @@ export function MarketMounts() {
   const qc = useQueryClient();
   const authed = useIsAuthed();
   const a = useAccess();
-  const scope = !authed || a.staff ? "" : a.seller ? "seller" : "client";
+  const scope = !authed ? "" : a.seller ? "seller" : "client";
   const last = useRef(0);
   const sync = () => {
     if (!scope) return;

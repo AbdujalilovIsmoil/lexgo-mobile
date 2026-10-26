@@ -1,2 +1,0 @@
-export const nt8 = {
-};

@@ -1,1 +1,0 @@
-export { JourneyRow } from "./JourneyRow";

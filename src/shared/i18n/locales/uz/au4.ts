@@ -7,6 +7,7 @@ export const au4 = {
     title: "Hisob bloklangan",
     text: "Hisobingiz administrator tomonidan bloklangan. Batafsil ma'lumot uchun qo'llab-quvvatlashga murojaat qiling.",
   },
+  webOnly: { text: "Bu hisob turi mobil ilovada ishlamaydi. Ilova mijoz, advokat va yurist uchun — veb-portal orqali kiring." },
   deleted: { title: "Hisob o'chirilgan", text: "Bu hisob endi mavjud emas. Yangi hisob yaratishingiz mumkin." },
   rejected: {
     title: "So'rov rad etildi",

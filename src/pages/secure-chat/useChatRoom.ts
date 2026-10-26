@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "expo-router";
-import { isFinished, useCompleteChat, useRevealActions, useRoom, useRoomCall, useRoomMenu, useRoomMessages, useRoomSettings, useSendMessage } from "@/features/secure-chat";
+import { isFinished, useCompleteChat, useRoom, useRoomCall, useRoomMenu, useRoomMessages, useRoomSettings, useSendMessage } from "@/features/secure-chat";
 import { otherMembers, roomTitle } from "@/entities/secure-chat";
 import { useChatSheets } from "@/widgets/secure-chat";
 import { useSession } from "@/entities/session";
@@ -19,7 +19,6 @@ export function useChatRoom(id: string, join?: string, doc?: string) {
   const [forced, setForced] = useState(false);
   const closed = forced || isFinished(room, thread.all);
   const send = useSendMessage(id, myId, thread, sh.reply, () => sh.setReply(null), () => setForced(true));
-  const reveal = useRevealActions(id, thread.reload);
   const settings = useRoomSettings(id);
   const complete = useCompleteChat(id, room, () => { setForced(true); sh.setSheet(""); });
   const invite = room ? otherMembers(room, myId).map((m) => m.userId).filter((u) => u && u !== myId) : [];
@@ -31,5 +30,5 @@ export function useChatRoom(id: string, join?: string, doc?: string) {
     router.setParams({ join: "" });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [join]);
-  return { myId, room, loading, error, title, thread, sh, closed, send, reveal, settings, complete, call, actions };
+  return { myId, room, loading, error, title, thread, sh, closed, send, settings, complete, call, actions };
 }

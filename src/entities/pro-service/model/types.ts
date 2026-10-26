@@ -3,8 +3,6 @@ export const SERVICE_STATUSES: ServiceStatus[] = ["active", "paused", "inactive"
 export type ServiceFilter = "all" | ServiceStatus;
 
 // Whose services: the signed-in seller, or (for an organization owner) one member.
-export type ServiceScope = { kind: "me" } | { kind: "org"; orgId: string; memberId: string };
-
 // One price factor the server applied to the ceiling (region, experience, rating …).
 export type Modifier = { code: string; key: string; label: string; percent: number | null; multiplier: number | null; amount: number | null };
 

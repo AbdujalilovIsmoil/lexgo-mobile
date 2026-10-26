@@ -14,7 +14,7 @@ export const PORTAL: Rule[] = [
   [/^documents$/, (_m, q) => (q.doc ? `/documents/${enc(q.doc)}` : "/documents")],
   [/^document-requests$/, () => "/pro/docs"],
   [/^document-requests\/([^/]+)\/editor$/, (m) => `/pro/docs/${enc(m[1])}/editor`],
-  [/^(opportunities|pool)$/, () => "/pro/docs/pool"],
+  [/^opportunities$/, () => "/pro/market"],
   [/^cases$/, (_m, _q, v) => sel(v, "/cases", "/pro/cases")],
   [/^works$/, () => "/(tabs)/works"],
   [/^payments$/, () => "/payments"],
@@ -42,5 +42,4 @@ export const PORTAL: Rule[] = [
   [/^clients$/, () => "/(tabs)/clients"],
   [/^promotion$/, () => "/pro/promotions"],
   [/^meetings$/, () => "/meetings"],
-  [/^organization$/, () => "/org"],
 ];

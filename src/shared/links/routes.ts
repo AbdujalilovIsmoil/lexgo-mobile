@@ -19,16 +19,14 @@ export function routeFor(s: Subject, v: Viewer): Target | null {
       return call ? tg(`/call/${enc(room)}?callId=${enc(call)}`, `/chat/${enc(room)}`, "call", { path: `/secure-chats/${enc(room)}/calls/${enc(call)}`, closed: CALL_OVER }) : tg(`/chat/${enc(room)}`, "/(tabs)/messages", "chat");
     }
     case "ticket":
-      if (v.kind === "staff") return tg(id ? `/manage/support/ticket?id=${id}` : "/manage/support", "/manage/support", "ticket");
-      if (v.kind === "callcenter") return tg(id && s.event.startsWith("support.assist") ? `/cc/assist/${id}` : "/(tabs)/csupport", "/(tabs)/csupport", "ticket");
       return id ? tg(`/support/${id}`, "/support", "ticket", { path: `/support/tickets/${id}` }) : tg("/support", "/support", "ticket");
     case "urgent": {
-      const base = v.kind === "seller" ? "/pro/urgent" : v.kind === "client" ? "/urgent" : "/cc/urgent";
+      const base = v.kind === "seller" ? "/pro/urgent" : "/urgent";
       return tg(id ? `${base}/${id}` : base, base, "urgent", id && v.kind === "client" ? { path: `/urgent-advokat/requests/${id}` } : undefined);
     }
     case "complaint": {
-      if (v.kind === "client") return str(s.data.work_id) ? tg(`/rate/${enc(str(s.data.work_id))}`, "/(tabs)/works", "complaint") : tg("/(tabs)/works", "/(tabs)/works", "complaint");
-      return v.kind === "seller" ? null : tg("/cc/complaints", "/cc/complaints", "complaint");
+      if (v.kind === "seller") return null;
+      return str(s.data.work_id) ? tg(`/rate/${enc(str(s.data.work_id))}`, "/(tabs)/works", "complaint") : tg("/(tabs)/works", "/(tabs)/works", "complaint");
     }
     default:
       return routesMore(s, v);

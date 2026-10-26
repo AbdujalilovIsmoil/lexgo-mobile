@@ -1,14 +1,11 @@
 import { useMemo } from "react";
-import { buildAccess } from "@/entities/access";
 import { useSession, useSessionStore, type User } from "@/entities/session";
 import type { Viewer } from "@/shared/links";
 
-// Same split as the tab bar (widgets/tab-bar/useTabRole): staff → call-center operator → seller → sales operator (staff) → client.
+// Same split as the tab bar (widgets/tab-bar/useTabRole): an advokat / yurist is a professional, everyone else a client.
 export function viewerOf(user: User | null | undefined): Viewer {
-  if (!user) return { signedIn: false, kind: "client", orgOwner: false, callCenterLawyer: false };
-  const a = buildAccess(user);
-  const kind = a.isFullAdmin ? "staff" : a.roles.includes("call_center") && !a.seller ? "callcenter" : a.seller ? "seller" : a.staff ? "staff" : "client";
-  return { signedIn: true, kind, orgOwner: a.orgOwner, callCenterLawyer: a.callCenterLawyer, sales: kind === "staff" && a.salesOperator };
+  if (!user) return { signedIn: false, kind: "client" };
+  return { signedIn: true, kind: user.role === "client" ? "client" : "seller" };
 }
 
 export function useViewer(): Viewer {

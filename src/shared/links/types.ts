@@ -5,13 +5,13 @@ export type Dict = Record<string, unknown>;
 // What a notification, push payload, `deep_link` string or link carries (TZ 28).
 export type LinkInput = { event?: string; category?: string; entityType?: string; entityId?: string; deepLink?: string; data?: Dict };
 
-export type ViewerKind = "client" | "seller" | "callcenter" | "staff";
-// `sales`: a sales operator (staff whose funnel is a tab of its own, not an admin screen).
-export type Viewer = { signedIn: boolean; kind: ViewerKind; orgOwner: boolean; callCenterLawyer: boolean; sales?: boolean };
+// The app's roles: a client (also a visitor, `signedIn` false) and a professional (advokat / yurist).
+export type ViewerKind = "client" | "seller";
+export type Viewer = { signedIn: boolean; kind: ViewerKind };
 
 export type SubjectKind =
   | "chat" | "call" | "doc" | "order" | "payment" | "ticket" | "urgent" | "complaint" | "subscription" | "calendar"
-  | "promotion" | "gift" | "referral" | "security" | "lead" | "approval" | "registration" | "studio" | "internal" | "case";
+  | "promotion" | "gift" | "referral" | "security" | "registration" | "case";
 export type Subject = { kind: SubjectKind; id: string; event: string; data: Dict };
 
 // GET `path` before opening: 2xx (and a body.status outside `closed`) = open, 403/404/410 = closed.

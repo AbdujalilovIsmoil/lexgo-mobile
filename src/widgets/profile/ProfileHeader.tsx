@@ -4,7 +4,6 @@ import { useInsets } from "@/shared/lib/insets";
 import type { User } from "@/entities/session";
 import { Button, GradientBox, Text, FocusStatusBar } from "@/shared/ui";
 import { useT } from "@/shared/i18n";
-import { useAccess } from "@/entities/access";
 import { ProfileCover } from "./ProfileCover";
 import { ProfileIdentity } from "./ProfileIdentity";
 
@@ -13,8 +12,7 @@ export function ProfileHeader({ user, photo }: { user: User | null; photo?: stri
   const { t } = useT();
   const router = useRouter();
   const insets = useInsets();
-  const a = useAccess();
-  const roleKey = a.isSuper ? "nav2.role.superadmin" : a.isFullAdmin || (a.staff && !a.seller && !a.callCenterOperator) ? "nav2.role.staff" : a.callCenterOperator ? "nav2.role.callCenter" : a.orgOwner ? "nav2.role.orgOwner" : user?.role === "advocate" ? "profile.roleAdvocate" : user?.role === "lawyer" ? "profile.roleLawyer" : "profile.roleClient";
+  const roleKey = user?.role === "advocate" ? "profile.roleAdvocate" : user?.role === "lawyer" ? "profile.roleLawyer" : "profile.roleClient";
   if (user) return <View><ProfileCover /><ProfileIdentity user={user} photo={photo} role={roleKey} /></View>;
   return (
     <GradientBox variant="dark" round={0} style={[s.hero, { paddingTop: insets.top + 20 }]}>

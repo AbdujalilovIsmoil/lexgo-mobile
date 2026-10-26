@@ -8,10 +8,8 @@ import { ug7 } from "./ug7";
 import { ug8 } from "./ug8";
 import { ug9 } from "./ug9";
 import { ug10 } from "./ug10";
-import { ug11 } from "./ug11";
-import { ug12 } from "./ug12";
 import { secUx } from "./secUx";
 
 export const tzUg = {
-  ug1, ug2, ug3, ug4, ug5, ug6, ug7, ug8, ug9, ug10, ug11, ug12, secUx,
+  ug1, ug2, ug3, ug4, ug5, ug6, ug7, ug8, ug9, ug10, secUx,
 };

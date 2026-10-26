@@ -5,7 +5,7 @@ import { useT } from "@/shared/i18n";
 import { selectHaptic } from "@/shared/lib/haptics";
 import { REGISTER_ICONS, REGISTER_ROLES, isSellerRole, type RegisterRole } from "../model/registerRoles";
 
-// Account kind picker: a 2x2 grid; the chosen kind explains itself below (sellers wait for an admin).
+// Account kind picker: one row of three equal tiles; the chosen kind explains itself below (sellers wait for an admin).
 export function RoleTiles({ value, onChange }: { value: RegisterRole; onChange: (r: RegisterRole) => void }) {
   const { t } = useT();
   const c = useColors();
@@ -32,6 +32,6 @@ export function RoleTiles({ value, onChange }: { value: RegisterRole; onChange: 
 const s = StyleSheet.create({
   wrap: { gap: 8 },
   label: { marginLeft: 4 },
-  grid: { flexDirection: "row", flexWrap: "wrap", gap: 10 },
-  tile: { width: "48%", flexGrow: 1, alignItems: "center", gap: 6, paddingVertical: 14, paddingHorizontal: 8, borderRadius: radius.r, borderWidth: 1.5 },
+  grid: { flexDirection: "row", gap: 10 },
+  tile: { flex: 1, alignItems: "center", gap: 6, paddingVertical: 14, paddingHorizontal: 8, borderRadius: radius.r, borderWidth: 1.5 },
 });

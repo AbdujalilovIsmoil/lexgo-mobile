@@ -2,12 +2,13 @@ import type { ConsentDoc } from "../model/types";
 
 // Signed per order, or a website cookie banner: never part of the sign-up set.
 const SKIP = new Set(["client_advocate_contract_template", "client_provider_contract", "cookie"]);
-const SELLERS = ["yurist", "advokat", "advokat_tashkiloti"];
-// Role-specific documents; any other slug applies to everybody (same rule as the web).
+const SELLERS = ["yurist", "advokat"];
+// Role-specific documents; any other slug applies to everybody (same rule as the web). The organisation's agreement belongs to an account
+// kind the app does not sign up.
 const FOR: Record<string, string[]> = {
   lawyer_partnership_offer: SELLERS,
   advocate_partnership: SELLERS,
-  organization_agreement: ["advokat_tashkiloti"],
+  organization_agreement: [],
 };
 const ORDER = ["user_offer", "privacy", "personal_data_consent", "platform_rules", "age_18"];
 

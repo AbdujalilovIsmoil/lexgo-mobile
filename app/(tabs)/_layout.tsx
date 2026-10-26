@@ -8,7 +8,7 @@ import { useTabRole } from "@/widgets/tab-bar/useTabRole";
 
 // Every role's tab routes are declared; the bar shows only those of the current
 // role (tabConfig). The AI tab hides the bar so its composer sits on the edge.
-const ROUTES = ["index", "services", "works", "messages", "workspace", "requests", "clients", "leads", "csupport", "cclients", "cmeetings", "pipeline", "duty", "smeetings", "canalytics", "lawyers", "orders", "admin", "hrm", "notifs", "profile"];
+const ROUTES = ["index", "services", "works", "messages", "workspace", "requests", "clients", "lawyers", "orders", "profile"];
 
 export default function TabsLayout() {
   const role = useTabRole();

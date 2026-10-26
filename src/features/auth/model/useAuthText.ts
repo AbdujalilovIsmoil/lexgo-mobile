@@ -21,6 +21,7 @@ export function useAuthText() {
         case "channel": return t("admSec.channelDown");
         case "validation": return e.fields.password ? t("auth.passwordHint") : e.fields.phone ? t("auth.invalidPhone") : t("au2.invalid");
         case "server": return t("common.serverError");
+        case "webOnly": return t("au4.webOnly.text");
         default: return e.message || t("common.serverError");
       }
     },

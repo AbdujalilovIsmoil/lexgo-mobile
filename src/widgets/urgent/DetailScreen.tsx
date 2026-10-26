@@ -7,15 +7,14 @@ import { useInsets } from "@/shared/lib/insets";
 import { useT } from "@/shared/i18n";
 import { RequestDetail } from "./RequestDetail";
 
-type Props = { id: string; scope: Scope; pool?: boolean };
+type Props = { id: string; scope: Scope };
 
-// A full-page record with pull-to-refresh. The call-center console (and a pool item opened by a call-center lawyer)
-// reads the call-center endpoint; everyone else the participant one.
-export function DetailScreen({ id, scope, pool }: Props) {
+// A full-page record with pull-to-refresh.
+export function DetailScreen({ id, scope }: Props) {
   const { t } = useT();
   const label = useUrgentLabels();
   const insets = useInsets();
-  const q = useRequest(id, scope === "cc" || pool ? "cc" : "me");
+  const q = useRequest(id);
   const req = q.data;
   const own = useMemo(() => (req && scope === "client" ? [req] : []), [req, scope]);
   useSecondOpinionPurchased(own); // a request born from the group second opinion: `purchased` once it shows as paid
@@ -25,7 +24,7 @@ export function DetailScreen({ id, scope, pool }: Props) {
         contentContainerStyle={{ padding: 16, gap: 14, paddingBottom: insets.bottom + 32 }} showsVerticalScrollIndicator={false}
         refreshControl={<RefreshControl refreshing={q.isRefetching} onRefresh={() => void q.refetch()} />}
       >
-        <QueryBoundary query={q}>{req ? <RequestDetail req={req} scope={scope} pool={pool} /> : null}</QueryBoundary>
+        <QueryBoundary query={q}>{req ? <RequestDetail req={req} scope={scope} /> : null}</QueryBoundary>
       </ScrollView>
     </AdminPage>
   );

@@ -1,5 +1,5 @@
 import { http } from "@/shared/api";
-import { asDict, asStr, listFrom } from "@/shared/lib/json";
+import { asDict, asStr } from "@/shared/lib/json";
 import type { GroupInput } from "../model/types";
 import type { UrgentRequest } from "../model/requestTypes";
 import { normUrgent } from "./norm";
@@ -7,16 +7,7 @@ import { normUrgent } from "./norm";
 const path = (id: string, tail = "") => `/call-center/urgent-advokat/requests/${encodeURIComponent(id)}${tail}`;
 const post = async (url: string, body: unknown = {}): Promise<UrgentRequest> => normUrgent(await http(url, { method: "POST", body }));
 
-// GET /call-center/urgent-advokat/requests — the pool as a plain list; status / kind / channel narrow it server-side.
-export async function listQueue(f: { status?: string; kind?: string; channel?: string } = {}): Promise<UrgentRequest[]> {
-  const qs = new URLSearchParams();
-  if (f.status) qs.set("status", f.status);
-  if (f.kind) qs.set("service_kind", f.kind);
-  if (f.channel) qs.set("channel", f.channel);
-  return listFrom(await http(`/call-center/urgent-advokat/requests${qs.size ? `?${qs}` : ""}`), "items", "data", "requests").map(normUrgent);
-}
-
-export const getQueued = async (id: string): Promise<UrgentRequest> => normUrgent(await http(path(id)));
+// The record's managing actions (POST /call-center/urgent-advokat/requests/{id}/…): offered only where the backend marks the viewer can_manage.
 export const claim = (id: string) => post(path(id, "/claim"));
 export const cancel = ({ id, reason }: { id: string; reason: string }) => post(path(id, "/cancel"), { reason });
 export const complete = ({ id, summary, nextAction }: { id: string; summary: string; nextAction: string }) => post(path(id, "/complete"), { summary, files: [], next_action: nextAction });

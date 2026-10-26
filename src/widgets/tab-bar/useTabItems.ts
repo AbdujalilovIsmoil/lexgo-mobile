@@ -1,6 +1,5 @@
 import type { BottomTabBarProps } from "expo-router/build/layouts/Tabs";
 import { useRouter } from "expo-router";
-import { moduleByKey, useAccess } from "@/entities/access";
 import { useCabinet } from "@/entities/pro-workspace";
 import { useIsAuthed, useSession } from "@/entities/session";
 import { selectHaptic } from "@/shared/lib/haptics";
@@ -9,18 +8,13 @@ import { useTabRole } from "./useTabRole";
 
 export type TabItemData = { def: TabDef; focused: boolean; onPress: () => void };
 
-// The tabs of the current role that may be shown right now (module access, a pending seller, the cabinet's actions).
+// The tabs of the current role that may be shown right now (a pending seller, the cabinet's actions).
 export function useVisibleTabs(): TabDef[] {
   const role = useTabRole();
-  const access = useAccess();
-  const open = (k?: string) => (k ? !!moduleByKey(k)?.visible(access) : false);
   const cabinet = useCabinet().data; // professionals only (the query is off for everyone else)
   const pending = useSession()?.user.accountStatus === "pending";
   const limited = role === "seller" && (cabinet ? cabinet.limited : pending);
-  return TABS[role].filter((def) => {
-    if ((def.needs && !open(def.needs)) || (def.hideWith && open(def.hideWith))) return false;
-    return !(role === "seller" && sellerTabHidden(def.route, limited, cabinet?.actions));
-  });
+  return TABS[role].filter((def) => !(role === "seller" && sellerTabHidden(def.route, limited, cabinet?.actions)));
 }
 
 // Turns the router state into the ordered tab list for the current role.

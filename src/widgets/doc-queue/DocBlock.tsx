@@ -8,7 +8,7 @@ import { docCan, type DocReq } from "@/entities/doc-queue";
 export function DocBlock({ doc }: { doc: DocReq }) {
   const { t } = useT();
   const c = useColors();
-  if (!docCan(doc, "", false).blocked) return null;
+  if (!docCan(doc, "").blocked) return null;
   return (
     <View style={{ flexDirection: "row", gap: 10, padding: 14, borderRadius: 16, backgroundColor: c.warnBg }}>
       <Icon name="lock" size={18} color={c.warn} />

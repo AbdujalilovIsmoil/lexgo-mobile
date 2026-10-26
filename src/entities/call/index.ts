@@ -1,11 +1,10 @@
 export * from "./model/types";
 export * from "./model/historyTypes";
-export { meetKeys, useInvited, useAdminCalls, useAdminCall, useRoomCalls, useCallMeta } from "./model/queries";
+export { meetKeys, useInvited, useRoomCalls, useCallMeta } from "./model/queries";
 export { createMeetingRoom, startCall, listCalls, getCall, getJoinToken, startDocAudioCall, joinCall, leaveCall, endCall, patchParticipant, inviteParticipant } from "./api/callApi";
 export { pauseCall, resumeCall, freeExtend, requestPaidExtension } from "./api/limitsApi";
 export { requestRecording, answerRecording, startRecording } from "./api/recordingApi";
-export { listInvited, listAdminCalls, getAdminCall, type AdminCallFilter } from "./api/historyApi";
+export { listInvited } from "./api/historyApi";
 export { MeetingRow } from "./ui/MeetingRow";
-export { AdminCallRow } from "./ui/AdminCallRow";
 export { callPath, chatPath, meetingPath } from "./model/paths";
 export { csLabel } from "./lib/csLabel";

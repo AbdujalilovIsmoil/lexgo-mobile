@@ -9,6 +9,7 @@ export const au4: Messages["au4"] = {
     title: "Account blocked",
     text: "Your account was blocked by an administrator. Contact support for details.",
   },
+  webOnly: { text: "This account type does not work in the mobile app. The app is for clients, advocates and lawyers — sign in on the web portal." },
   deleted: { title: "Account deleted", text: "This account no longer exists. You can create a new one." },
   rejected: {
     title: "Request rejected",

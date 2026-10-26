@@ -1,1 +1,0 @@
-export { OrgScope } from "./OrgScope";

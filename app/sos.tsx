@@ -1,7 +1,7 @@
 import { RoleGate } from "@/entities/access";
 import { SosPage } from "@/pages/sos/SosPage";
 
-// Emergency legal help is a client flow; advocates and staff have /pro/urgent and /cc/urgent.
+// Emergency legal help is a client flow; advocates have /pro/urgent.
 export default function Screen() {
   return (
     <RoleGate roles={["client"]}>

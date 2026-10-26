@@ -8,9 +8,9 @@ import { DetailOutcome } from "./DetailOutcome";
 import { DetailPeople } from "./DetailPeople";
 import { useRequestActions } from "./useRequestActions";
 
-// One record in full, for the client (/urgent/[id]), an advocate (/pro/urgent/[id]) or the call center (/cc/urgent/[id]).
-export function RequestDetail({ req, scope, pool }: { req: UrgentRequest; scope: Scope; pool?: boolean }) {
-  const a = useRequestActions(req, scope, pool);
+// One record in full, for the client (/urgent/[id]) or an advocate (/pro/urgent/[id]).
+export function RequestDetail({ req, scope }: { req: UrgentRequest; scope: Scope }) {
+  const a = useRequestActions(req, scope);
   const staff = scope !== "client";
   return (
     <>

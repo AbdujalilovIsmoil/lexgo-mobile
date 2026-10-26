@@ -1,6 +1,4 @@
-import type { PriceBand, ProService, ServiceFilter, ServiceScope } from "../model/types";
-
-export const scopeKey = (s: ServiceScope) => (s.kind === "org" ? `org:${s.orgId}:${s.memberId}` : "me");
+import type { PriceBand, ProService, ServiceFilter } from "../model/types";
 
 // Catalogue prefixes only an advocate may sell (a yurist is refused by the server).
 const ADVOCATE_PREFIX = ["criminal-", "administrative-"];

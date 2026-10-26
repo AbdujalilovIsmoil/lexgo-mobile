@@ -5,7 +5,7 @@ import { resolveLink, resolveUrl } from "./resolve";
 import type { Viewer } from "./types";
 
 const HOSTS = ["lexgo.uz", "www.lexgo.uz"] as const;
-const v = (kind: Viewer["kind"], extra: Partial<Viewer> = {}): Viewer => ({ signedIn: true, kind, orgOwner: false, callCenterLawyer: false, ...extra });
+const v = (kind: Viewer["kind"], extra: Partial<Viewer> = {}): Viewer => ({ signedIn: true, kind, ...extra });
 
 describe("parseExternal", () => {
   it("accepts lexgo:// and https on our hosts, and cleans the path", () => {
@@ -49,34 +49,27 @@ describe("appHref", () => {
   it("refuses unplanned routes", () => {
     for (const bad of ["/_sitemap", "/settings/secret", "/profile/edit", "/pro", "/random", "/chat"]) expect(appHref(bad)).toBeNull();
   });
+  it("refuses the areas of the roles the app does not serve", () => {
+    for (const gone of ["/manage/roles", "/cc/calls", "/cc/urgent/u1", "/org", "/org/members", "/leads", "/admin"]) expect(appHref(gone)).toBeNull();
+  });
 });
 
 describe("guard", () => {
-  it("keeps roles inside their own area", () => {
+  it("keeps a client out of the professional's area", () => {
     expect(mayOpen("/pro/orders", v("client"))).toBe(false);
     expect(mayOpen("/pro/orders", v("seller"))).toBe(true);
-    expect(mayOpen("/org/members", v("seller"))).toBe(false);
-    expect(mayOpen("/org/members", v("seller", { orgOwner: true }))).toBe(true);
-    expect(mayOpen("/manage/chats", v("client"))).toBe(false);
-    expect(mayOpen("/manage/chats", v("staff"))).toBe(true);
-    expect(mayOpen("/cc/calls", v("client"))).toBe(false);
-    expect(mayOpen("/cc/calls", v("client", { callCenterLawyer: true }))).toBe(true);
     expect(mayOpen("/payments?x=1", v("client"))).toBe(true);
     expect(mayOpen("/profile/gifts", v("client"))).toBe(true); // not under "/pro"
-    expect(mayOpen("/profile/referral", v("callcenter"))).toBe(true);
-    expect(mayOpen("/organization", v("client"))).toBe(true);
+    expect(mayOpen("/profile/referral", v("seller"))).toBe(true);
   });
   it("safeHome per role", () => {
     expect(safeHome({ ...v("client"), signedIn: false })).toBe("/");
+    expect(safeHome({ ...v("seller"), signedIn: false })).toBe("/");
     expect(safeHome(v("seller"))).toBe("/(tabs)/workspace");
-    expect(safeHome(v("callcenter"))).toBe("/(tabs)/leads");
-    expect(safeHome(v("staff"))).toBe("/(tabs)/admin");
-    expect(safeHome(v("staff", { sales: true }))).toBe("/(tabs)/pipeline");
     expect(safeHome(v("client"))).toBe("/");
   });
-  it("a lead opens the sales operator's funnel tab, the admin funnel for other staff", () => {
-    expect(resolveLink({ event: "lead.assigned", data: { lead_id: "l1" } }, v("staff", { sales: true }))).toMatchObject({ kind: "target", target: { href: "/(tabs)/pipeline" } });
-    expect(resolveLink({ event: "lead.assigned", data: { lead_id: "l1" } }, v("staff"))).toMatchObject({ kind: "target", target: { href: "/manage/pipeline" } });
+  it("events of the removed staff areas open nothing", () => {
+    for (const event of ["lead.assigned", "approval.requested", "studio.object_reviewed", "internal.task_assigned"]) expect(resolveLink({ event }, v("client"))).toEqual({ kind: "none" });
   });
 });
 

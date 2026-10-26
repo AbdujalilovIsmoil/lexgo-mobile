@@ -13,7 +13,7 @@ export function PendingPage() {
   const { t } = useT();
   const router = useRouter();
   const { role, message } = useLocalSearchParams<{ role?: string; message?: string }>();
-  const kind = role && ["yurist", "advokat", "advokat_tashkiloti"].includes(role) ? role : "advokat";
+  const kind = role === "yurist" ? "yurist" : "advokat";
   return (
     <View style={[s.fill, { backgroundColor: c.canvas }]}>
       <HeroScroll contentContainerStyle={s.content} showsVerticalScrollIndicator={false}>

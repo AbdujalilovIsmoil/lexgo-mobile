@@ -14,9 +14,7 @@ import { subp } from "./subp";
 import { notif } from "./notif";
 import { ord } from "./ord";
 import { docs } from "./docs";
-import { modes } from "./modes";
 import { stats } from "./stats";
-import { topics } from "./topics";
 import { svc } from "./svc";
 import { flt } from "./flt";
 import { lw } from "./lw";
@@ -26,5 +24,5 @@ import { admBundleB } from "./admBundleB";
 import { admBundleC } from "./admBundleC";
 import { tzBundle } from "./tzBundle";
 
-export const uz = { common, cdash, ntd, tabs, home, lawyers, services, ai, plans, auth, profile, seller, subp, notif, ord, docs, modes, stats, topics, svc, flt, lw, guest, ...admBundleA, ...admBundleB, ...admBundleC, ...tzBundle };
+export const uz = { common, cdash, ntd, tabs, home, lawyers, services, ai, plans, auth, profile, seller, subp, notif, ord, docs, stats, svc, flt, lw, guest, ...admBundleA, ...admBundleB, ...admBundleC, ...tzBundle };
 export type Messages = typeof uz;

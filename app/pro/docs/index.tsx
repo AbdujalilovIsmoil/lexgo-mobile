@@ -3,7 +3,7 @@ import ProDocsPage from "@/pages/pro-docs/ProDocsPage";
 
 export default function Screen() {
   return (
-    <RoleGate roles={["seller", "callCenterLawyer", "staff"]}>
+    <RoleGate roles={["seller"]}>
       <ProDocsPage />
     </RoleGate>
   );

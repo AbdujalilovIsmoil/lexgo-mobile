@@ -1,6 +1,5 @@
 import { View } from "react-native";
 import { useColors } from "@/shared/theme";
-import { OrgEntryCard } from "@/widgets/org-entry";
 import { SellerHome } from "@/widgets/seller-home";
 import { useTabPad } from "@/widgets/tab-page";
 
@@ -11,7 +10,7 @@ export function WorkspacePage() {
   const pad = useTabPad();
   return (
     <View style={{ flex: 1, backgroundColor: c.canvas }}>
-      <SellerHome bottomPad={pad} orgEntry={<OrgEntryCard />} />
+      <SellerHome bottomPad={pad} />
     </View>
   );
 }

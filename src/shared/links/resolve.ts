@@ -6,9 +6,16 @@ import { subjectOf } from "./subject";
 import { webToApp } from "./web";
 import type { LinkInput, Resolution, Target, Viewer } from "./types";
 
+const LISTS: Record<string, [client: string, seller: string]> = {
+  orders: ["/orders", "/pro/orders"],
+  payments: ["/payments", "/payments"],
+  documents: ["/documents", "/pro/docs"],
+  chat: ["/(tabs)/messages", "/(tabs)/messages"],
+};
+
 const listFor = (category: string | undefined, v: Viewer): Target | null => {
-  const seller = v.kind === "seller";
-  const href = category === "orders" ? (seller ? "/pro/orders" : v.kind === "client" ? "/orders" : "") : category === "payments" ? "/payments" : category === "documents" ? (seller ? "/pro/docs" : v.kind === "client" ? "/documents" : "") : category === "chat" ? "/(tabs)/messages" : "";
+  const pair = category ? LISTS[category] : undefined;
+  const href = pair ? pair[v.kind === "seller" ? 1 : 0] : "";
   return href ? { href, fallback: href, label: "list" } : null;
 };
 

@@ -14,7 +14,7 @@ export { isPriorPurchase, isConflict, assignRefusal } from "./model/refusal";
 export { chatHref, callHref, detailHref, orderHref, rateHref } from "./model/hrefs";
 export { useUrgentFlash, type UrgentNote } from "./model/flash";
 export { useUrgentLabels } from "./model/useLabels";
-export { useCatalog, useMine, useAssigned, useQueue, useRequest } from "./model/queries";
+export { useCatalog, useMine, useAssigned, useRequest } from "./model/queries";
 export { useCandidates, useWideCandidates } from "./model/candidateQueries";
 export { useCountdown } from "./model/useCountdown";
 export { useUrgentLive } from "./model/useUrgentLive";

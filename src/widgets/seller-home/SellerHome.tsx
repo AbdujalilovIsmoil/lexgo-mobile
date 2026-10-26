@@ -1,4 +1,3 @@
-import type { ReactNode } from "react";
 import { View } from "react-native";
 import { useQueryClient } from "@tanstack/react-query";
 import { groupTasks, n, useCabinet } from "@/entities/pro-workspace";
@@ -28,7 +27,7 @@ const KEYS = ["pro-workspace", "pro-requests", "pro-calendar", "pro-tasks", "pro
 // then quick actions → my tasks → referral ladder → LexGo AI → new cases → metrics → payouts → account security (advocate:
 // the promotion card in its place). Everything comes from the backend (the cabinet, payouts, referral). A pending seller sees
 // only the verification state. Profile completeness lives on the profile page.
-export function SellerHome({ bottomPad, orgEntry }: { bottomPad: number; orgEntry?: ReactNode }) {
+export function SellerHome({ bottomPad }: { bottomPad: number }) {
   const { t } = useT();
   const qc = useQueryClient();
   const insets = useInsets();
@@ -45,7 +44,7 @@ export function SellerHome({ bottomPad, orgEntry }: { bottomPad: number; orgEntr
     return (
       <HeroScroll contentContainerStyle={{ ...body, paddingBottom: pad }}>
         <StatusBanner />
-        <InfoCards orgEntry={orgEntry} />
+        <InfoCards />
       </HeroScroll>
     );
   }
@@ -73,7 +72,6 @@ export function SellerHome({ bottomPad, orgEntry }: { bottomPad: number; orgEntr
         <MetricsPanel cabinet={c} i={k++} />
         <PayoutsPanel i={k++} />
         {advocate ? <BoostCard i={k++} /> : <SecurityFold i={k++} />}
-        {orgEntry}
       </View>
     </HeroScroll>
   );

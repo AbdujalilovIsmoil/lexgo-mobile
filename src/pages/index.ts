@@ -15,5 +15,4 @@ export { OrdersPage } from "./orders/OrdersPage";
 export { NotificationsPage } from "./notifications/NotificationsPage";
 export { NotFoundPage } from "./not-found/NotFoundPage";
 export { DocAnalysisPage } from "./doc-analysis/DocAnalysisPage";
-export { AdminHubPage, ModuleStub } from "./admin-hub";
 export { PackagesPage } from "./packages/PackagesPage";

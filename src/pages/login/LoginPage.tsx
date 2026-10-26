@@ -18,9 +18,9 @@ export function LoginPage() {
         <AuthHero title={t("auth.loginTitle")} subtitle={t("auth.loginSub")} />
         <TabletColumn max={520}>
         <View style={s.body}>
-          {notice === "sessionExpired" ? (
+          {notice ? (
             <Text variant="small" tone="warn" center>
-              {t("auth.sessionExpired")}
+              {t(notice === "webOnly" ? "au4.webOnly.text" : "auth.sessionExpired")}
             </Text>
           ) : null}
           <LoginForm />

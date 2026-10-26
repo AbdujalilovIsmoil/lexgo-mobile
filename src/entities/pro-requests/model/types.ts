@@ -1,4 +1,4 @@
-export type ReqKind = "docs" | "urgent" | "orders" | "meetings" | "pool";
+export type ReqKind = "docs" | "urgent" | "orders" | "meetings";
 
 // One incoming/assigned piece of work, whatever module it comes from.
 export type ReqItem = {

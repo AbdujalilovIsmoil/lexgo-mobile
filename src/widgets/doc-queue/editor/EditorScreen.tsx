@@ -5,7 +5,6 @@ import { ErrorView, Skeleton } from "@/shared/ui";
 import { AdminPage } from "@/shared/ui/admin";
 import { FilePreview } from "@/shared/ui/preview";
 import { useT } from "@/shared/i18n";
-import { useAccess } from "@/entities/access";
 import { useSession } from "@/entities/session";
 import { docCan, docPath, useDoc, useDocSync, type DocFile } from "@/entities/doc-queue";
 import { useStarted } from "@/features/doc-editor";
@@ -24,9 +23,8 @@ export function EditorScreen({ id }: { id: string }) {
   const { started, setStarted } = useStarted(id);
   const [file, setFile] = useState<DocFile | null>(null);
   const me = useSession()?.user.id ?? "";
-  const ccl = useAccess().callCenterLawyer;
   const doc = q.data;
-  const can = doc && docCan(doc, me, ccl);
+  const can = doc && docCan(doc, me);
   const frame = (body: ReactNode) => <AdminPage title={doc?.title || t("ad5.title")} subtitle={doc?.clientName}>{body}</AdminPage>;
   if (q.isLoading || (doc && can?.editor && started === null)) return frame(<View style={{ padding: 16, gap: 12 }}><Skeleton height={90} round={20} /><Skeleton height={90} round={20} /></View>);
   if (!doc || !can) return frame(<ErrorView error={q.error} onRetry={() => void q.refetch()} />);

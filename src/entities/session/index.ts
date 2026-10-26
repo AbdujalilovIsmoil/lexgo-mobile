@@ -9,5 +9,5 @@ export { useProfileRefresh } from "./lib/useProfileRefresh";
 export { refreshProfile } from "./lib/refreshProfile";
 export { accountGate, isSellerUser, mergeUser, type AccountGate } from "./lib/accountState";
 export { displayName } from "./lib/displayName";
-export { describeAuthError, type AuthErr, type AuthErrKind } from "./lib/authError";
+export { describeAuthError, WebOnlyAccountError, type AuthErr, type AuthErrKind } from "./lib/authError";
 export { retryAfterOf, isCodeExpired } from "./lib/retryAfter";

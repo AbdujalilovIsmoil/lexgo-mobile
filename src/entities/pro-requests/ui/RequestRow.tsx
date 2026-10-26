@@ -6,7 +6,7 @@ import { RowCard, StatusPill } from "@/shared/ui/admin";
 import { statusLabel } from "../lib/label";
 import type { ReqItem } from "../model/types";
 
-const ICON = { docs: "file-text", pool: "inbox", urgent: "zap", orders: "shopping-bag", meetings: "video" } as const;
+const ICON = { docs: "file-text", urgent: "zap", orders: "shopping-bag", meetings: "video" } as const;
 
 // One request: kind icon (amber when it needs action), title, client + extra, age and status.
 export function RequestRow({ item, onPress }: { item: ReqItem; onPress: () => void }) {

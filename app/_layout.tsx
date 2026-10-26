@@ -13,7 +13,6 @@ export default function RootLayout() {
         <Stack.Screen name="auth/forgot" />
         <Stack.Screen name="lawyer/[id]" options={{ presentation: "transparentModal", animation: "none", contentStyle: { backgroundColor: "transparent" } }} />
         <Stack.Screen name="doc-analysis" />
-        <Stack.Screen name="manage" />
         <Stack.Screen name="security" />
         <Stack.Screen name="+not-found" />
       </Stack>

@@ -14,7 +14,7 @@ export function useOpenChat(onDone?: () => void) {
   const qc = useQueryClient();
   const me = useSession()?.user.id ?? "";
   const a = useAccess();
-  const free = a.seller || a.canCalls || a.staff;
+  const free = a.seller || a.canCalls;
   return useAdminMutation<string, Room>({
     mutationFn: (personId) => (free ? (a.seller ? createRoom(personId, me) : createRoom(me, personId)) : openPrivateChat(personId)),
     onSuccess: (room) => {

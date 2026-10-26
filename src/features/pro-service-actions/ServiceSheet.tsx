@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 import { StyleSheet, View } from "react-native";
-import { SERVICE_STATUSES, canEdit, canPromote, useRemoveService, useServiceStatus, type ProService, type ServiceScope, type ServiceStatus } from "@/entities/pro-service";
+import { SERVICE_STATUSES, canEdit, canPromote, useRemoveService, useServiceStatus, type ProService, type ServiceStatus } from "@/entities/pro-service";
 import { BottomSheet, Button, Icon, PressableScale, Pill, Segmented, SheetScroll, Text, confirmDialog, type IconName } from "@/shared/ui";
 import { Notice } from "@/shared/ui/sel";
 import { useKept } from "@/shared/lib/useKept";
@@ -17,7 +17,6 @@ type Props = {
   item: ProService | null;
   verified: boolean;
   waiting?: boolean;
-  scope?: ServiceScope;
   banner?: ReactNode;
   extra?: (item: ProService) => ReactNode;
   lock?: SheetLock | null;
@@ -38,13 +37,13 @@ function RoundAction({ icon, label, onPress, disabled, danger }: { icon: IconNam
 
 // One service in detail, as blocks: the status switch, the price on its corridor bar, the "why is it (not) listed" checklist, the note,
 // the marketplace settings (slot), and a sticky bar with Edit (primary), Promote and Remove (round icon buttons).
-export function ServiceSheet({ item: current, verified, waiting = false, scope, banner, extra, lock, onClose, onEdit, onPromote }: Props) {
+export function ServiceSheet({ item: current, verified, waiting = false, banner, extra, lock, onClose, onEdit, onPromote }: Props) {
   const { t } = useT();
   const c = useColors();
   const insets = useInsets();
   const item = useKept(current);
-  const status = useServiceStatus(scope);
-  const remove = useRemoveService(scope);
+  const status = useServiceStatus();
+  const remove = useRemoveService();
   const change = (next: ServiceStatus) => item && next !== item.status && !(lock && next === "active") && status.mutate({ id: item.id, status: next });
   const ask = () =>
     item &&

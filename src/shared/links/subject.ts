@@ -18,8 +18,7 @@ const PREFIX: [RegExp, SubjectKind][] = [
   [/^(payment|payout|invoice|refund|document_payment)/, "payment"], [/^(subscription|plan_)/, "subscription"],
   [/^(document|ai_document|existing_document|custom_document|contract|workspace_file|file_)/, "doc"],
   [/^calendar_event/, "calendar"], [/^promotion\./, "promotion"], [/^(seller_register|register_request)/, "registration"],
-  [/^(identity|security|account|password|2fa|login|session)/, "security"], [/^lead/, "lead"], [/^approval/, "approval"],
-  [/^studio\./, "studio"], [/^internal\./, "internal"], [/^(upsell|gift)/, "gift"], [/^referral/, "referral"],
+  [/^(identity|security|account|password|2fa|login|session)/, "security"], [/^(upsell|gift)/, "gift"], [/^referral/, "referral"],
 ];
 const ENTITY: Record<string, SubjectKind> = {
   document_request: "doc", document: "doc", order: "order", service_order: "order", marketplace_order: "order", payment: "payment",

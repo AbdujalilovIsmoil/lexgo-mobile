@@ -3,7 +3,7 @@ import { ProDetailPage } from "@/pages/urgent/UrgentDetailPage";
 
 export default function Screen() {
   return (
-    <RoleGate roles={["seller", "callCenterLawyer"]}>
+    <RoleGate roles={["seller"]}>
       <ProDetailPage />
     </RoleGate>
   );

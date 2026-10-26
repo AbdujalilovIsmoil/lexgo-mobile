@@ -11,7 +11,7 @@ export function useBuyGate(lawyer: Lawyer): string {
   const a = useAccess();
   if (!user) return "";
   if (user.id === lawyer.userId) return t("mk2.blockedOwn");
-  if (a.seller || a.staff) return t("mk2.blockedSeller");
+  if (a.seller) return t("mk2.blockedSeller");
   if (!lawyer.verified) return t("mk2.blockedUnverified");
   if (!lawyer.available) return t("mk2.blockedBusy");
   return "";

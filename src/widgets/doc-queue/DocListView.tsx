@@ -6,7 +6,6 @@ import { AdminPage } from "@/shared/ui/admin";
 import { useInsets } from "@/shared/lib/insets";
 import { useKept } from "@/shared/lib/useKept";
 import { useT } from "@/shared/i18n";
-import { useAccess } from "@/entities/access";
 import { useSession } from "@/entities/session";
 import { DocRow, DocRowSkeleton, docCan, flowCounts, docPath, editorPath, tabCounts, useDocSync, useDocs, useLocalPaged, type DocReq, type DocTab } from "@/entities/doc-queue";
 import { TransferSheet, useClaim } from "@/features/doc-pool";
@@ -24,7 +23,6 @@ export function DocListView() {
   const { t } = useT();
   const router = useRouter();
   const insets = useInsets();
-  const access = useAccess();
   const me = useSession()?.user.id ?? "";
   const [tab, setTab] = useState<DocTab>("claimed");
   const [open, setOpen] = useState("");
@@ -44,7 +42,7 @@ export function DocListView() {
   const later = (fn: () => void) => { setOpen(""); clearTimeout(timer.current); timer.current = setTimeout(fn, HAND_OFF); };
 
   const quick = (d: DocReq) => {
-    const can = docCan(d, me, access.callCenterLawyer);
+    const can = docCan(d, me);
     return can.claim ? <Button title={t("proDocSheet.act.claim")} icon="check-circle" size="sm" loading={claim.isPending && claim.variables === d.id} onPress={() => claim.mutate(d.id)} style={s.quick} />
       : can.editor ? <Button title={t("proDocSheet.act.editor")} icon="edit-3" size="sm" variant="soft" onPress={() => router.push(editorPath(d.id))} style={s.quick} /> : null;
   };
@@ -62,7 +60,7 @@ export function DocListView() {
         keyExtractor={(d) => d.id}
         renderItem={({ item, index }) => <DocRow doc={item} index={index} onPress={() => setOpen(item.id)} action={quick(item)} />}
         ItemSeparatorComponent={() => <View style={s.sep} />}
-        ListHeaderComponent={<DocListHead tab={tab} onTab={setTab} counts={counts} f={f} total={items.length} flows={flowCounts(q.data ?? [])} pool={access.callCenterLawyer} />}
+        ListHeaderComponent={<DocListHead tab={tab} onTab={setTab} counts={counts} f={f} total={items.length} flows={flowCounts(q.data ?? [])} />}
         ListEmptyComponent={empty}
         ListFooterComponent={rows.length ? <DocListFooter page={page} onMore={() => query.fetchNextPage()} /> : null}
         contentContainerStyle={[s.content, { paddingBottom: insets.bottom + 28 }]}
@@ -75,7 +73,7 @@ export function DocListView() {
         showsVerticalScrollIndicator={false}
       />
       <DocSheet id={shown} row={rows.find((d) => d.id === shown)} visible={!!open} onClose={() => setOpen("")} onDetail={(id) => later(() => router.push(docPath(id)))} onEditor={(id) => later(() => router.push(editorPath(id)))} onTransfer={(d) => later(() => setMove(d))} />
-      <TransferSheet doc={move} pool={access.callCenterLawyer && move?.assignedId !== me} onClose={() => setMove(null)} onDone={() => setMove(null)} />
+      <TransferSheet doc={move} onClose={() => setMove(null)} onDone={() => setMove(null)} />
     </AdminPage>
   );
 }

@@ -11,10 +11,10 @@ import { useTransfer } from "../model/useTransfer";
 import { transferSchema } from "../model/transferSchema";
 import { CandidateRow } from "./CandidateRow";
 
-type Props = { doc: DocReq | null; pool: boolean; onClose: () => void; onDone: () => void };
+type Props = { doc: DocReq | null; onClose: () => void; onDone: () => void };
 
 // Pick another advocate (not yourself, never a client) and hand the request over.
-export function TransferSheet({ doc, pool, onClose, onDone }: Props) {
+export function TransferSheet({ doc, onClose, onDone }: Props) {
   const { t } = useT();
   const kept = useKept(doc);
   const me = useSession()?.user.id;
@@ -30,7 +30,7 @@ export function TransferSheet({ doc, pool, onClose, onDone }: Props) {
   const submit = f.handleSubmit((v) => {
     if (!doc || !target) return;
     onClose();
-    setTimeout(() => confirmDialog({ title: t("ad2.transferTitle"), message: t("ad2.transferAsk", { name: target.name }), confirmLabel: t("ad2.transferGo"), cancelLabel: t("common.cancel"), icon: "repeat", onConfirm: () => send.mutateAsync({ id: doc.id, targetId: target.id, reason: v.reason, pool }) }), 320);
+    setTimeout(() => confirmDialog({ title: t("ad2.transferTitle"), message: t("ad2.transferAsk", { name: target.name }), confirmLabel: t("ad2.transferGo"), cancelLabel: t("common.cancel"), icon: "repeat", onConfirm: () => send.mutateAsync({ id: doc.id, targetId: target.id, reason: v.reason }) }), 320);
   });
   return (
     <FormSheet visible={!!doc} onClose={onClose} title={t("ad2.transferTitle")} subtitle={kept?.title} onSubmit={() => void submit()} submitLabel={t("ad2.transferGo")} snaps={[0.8, 0.94]}>

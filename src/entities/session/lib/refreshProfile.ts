@@ -1,6 +1,7 @@
 import { ApiError } from "@/shared/api";
 import { me } from "../api/authApi";
 import { useSessionStore } from "../model/store";
+import { isMobileAccount } from "../model/types";
 import { mergeUser } from "./accountState";
 import { probeSession } from "./bindHttp";
 
@@ -24,6 +25,11 @@ export async function refreshProfile(): Promise<ProfileResult> {
     const u = await me();
     const now = useSessionStore.getState().session?.user;
     if (!now || u.id !== now.id) return "failed";
+    if (!isMobileAccount(u.backendRole)) {
+      // The account became one the app does not serve (e.g. made a call-centre operator): sign out, the form says why.
+      await useSessionStore.getState().signOut(false, "webOnly");
+      return "failed";
+    }
     await useSessionStore.getState().setUser(mergeUser(now, u));
     lastAt = Date.now();
     return "ok";

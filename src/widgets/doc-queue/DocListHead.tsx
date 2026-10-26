@@ -5,22 +5,20 @@ import { ChipBar, SearchBox } from "@/shared/ui/admin";
 import { useT } from "@/shared/i18n";
 import { DOC_TABS, filterChips, type DocTab } from "@/entities/doc-queue";
 import { DocFilterSheet } from "./DocFilterSheet";
-import { PoolBanner } from "./PoolBanner";
 import { SummaryStrip } from "./SummaryStrip";
 import type { DocFilter } from "./useDocFilter";
 
-type Props = { tab: DocTab; onTab: (t: DocTab) => void; counts: Record<string, number>; f: DocFilter; total: number; pool: boolean; flows: Record<string, number> };
+type Props = { tab: DocTab; onTab: (t: DocTab) => void; counts: Record<string, number>; f: DocFilter; total: number; flows: Record<string, number> };
 
-// Top of the list: the pool shortcut (call-center lawyers), three summary tiles, status tabs with counts, a search with one Filtr button
+// Top of the list: three summary tiles, status tabs with counts, a search with one Filtr button
 // (work type + sort live in its sheet) and what is applied from it as removable chips.
-export function DocListHead({ tab, onTab, counts, f, total, pool, flows }: Props) {
+export function DocListHead({ tab, onTab, counts, f, total, flows }: Props) {
   const { t } = useT();
   const [open, setOpen] = useState(false);
   const tabs = DOC_TABS.map((v) => ({ value: v, label: t(`ad1.tab.${v}`), count: counts[v] }));
   const chips = filterChips(f, { flow: (v) => t(`ad1.flow.${v}`), oldest: t("proDocSheet.oldest") });
   return (
     <View style={s.col}>
-      {pool ? <View style={s.pad}><PoolBanner /></View> : null}
       <SummaryStrip counts={counts} tab={tab} onTab={onTab} />
       <ChipBar options={tabs} value={tab} onChange={onTab} />
       <View style={s.search}>

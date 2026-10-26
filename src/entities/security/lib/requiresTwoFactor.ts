@@ -1,4 +1,5 @@
-// Roles that must use 2FA at login and cannot turn it off (DELETE /auth/2fa answers 403).
+// Roles that must use 2FA at login and cannot turn it off (DELETE /auth/2fa answers 403). This mirrors the server's rule: a client who also
+// holds a staff role (an assigned one) still cannot turn it off, although the app has no screens for that role.
 const MANDATORY = ["yurist", "advokat", "advokat_tashkiloti", "admin", "superadmin", "manager", "call_center", "sales"];
 
 type Who = { role: string; backendRole: string; roles: string[] };
