@@ -4,9 +4,9 @@ import { refreshOutboxCount } from "./outboxStore";
 import { cacheScope } from "./scope";
 import { serialize } from "./sanitize";
 
-// Offline write queue — ONLY for idempotent drafts and messages. Anything that moves money or
-// changes who owns a record is refused by name (TZ 38).
-const FORBIDDEN = /(pay|claim|complete|approve|reject|delete|remove|transfer|cancel|refund|release|sign|otp|login|password)/i;
+// Offline write queue — ONLY for idempotent drafts and messages. Anything that moves money, changes who owns a record or answers an order
+// (TZ.md §15: payment, accept, decline, complete, rating, complaint — and the warranty) is refused by name.
+const FORBIDDEN = /(pay|claim|complete|approve|reject|delete|remove|transfer|cancel|refund|release|sign|otp|login|password|accept|decline|rating|complain|warrant)/i;
 export type OutboxItem = { id: number; kind: string; dedupe: string; payload: unknown; createdAt: number; attempts: number; nextAt: number };
 export type OutboxHandler = (payload: unknown, item: OutboxItem) => Promise<void>;
 // invalidate: query keys to refetch once an item of this kind was sent (or dropped), so the screen shows server truth.

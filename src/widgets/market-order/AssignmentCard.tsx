@@ -7,8 +7,8 @@ import { DeclineSheet } from "@/features/pro-order-actions";
 import type { ProOrder } from "@/entities/pro-order";
 import { Button, Icon, Text } from "@/shared/ui";
 import { useColors } from "@/shared/theme";
-import { useNow } from "@/shared/lib/pay/useNow";
 import { useT } from "@/shared/i18n";
+import { useServerNow } from "@/shared/network";
 
 type Props = { order: ProOrder; flow: FlowOrder; acceptAllowed: boolean };
 
@@ -20,7 +20,7 @@ export function AssignmentCard({ order, flow, acceptAllowed }: Props) {
   const qc = useQueryClient();
   const a = useAnswer(order.id);
   const [declining, setDeclining] = useState(false);
-  const now = useNow(!a.outcome, 1000);
+  const now = useServerNow(!a.outcome, 1000);
   const state = answerState(flow.acceptanceDeadlineAt, now);
   const expired = state === "expired" || a.outcome === "expired";
   const refetched = useRef(false);

@@ -2,12 +2,12 @@ import { StyleSheet, View } from "react-native";
 import Animated, { FadeIn } from "react-native-reanimated";
 import { hintOf, OrderStatusPill, stageOf, type ProOrder } from "@/entities/pro-order";
 import { answerState, clock, msUntil } from "@/entities/market-flow";
-import { useNow } from "@/shared/lib/pay/useNow";
 import { useT } from "@/shared/i18n";
 import { fmtDateTime } from "@/shared/lib/format";
 import { fmtMoney } from "@/shared/lib/money";
 import { radius, useColors } from "@/shared/theme";
 import { Icon, PressableScale, Text } from "@/shared/ui";
+import { useServerNow } from "@/shared/network";
 
 // One order of the seller: stage-coloured edge, service, client and work id, price / date chips, the status pill and — when the seller
 // has to act — what to do next.
@@ -47,7 +47,7 @@ export function OrderCard({ order: o, onPress }: { order: ProOrder; onPress: () 
 function AnswerTimer({ deadlineAt }: { deadlineAt: string }) {
   const c = useColors();
   const { t } = useT();
-  const now = useNow(true, 1000);
+  const now = useServerNow(true, 1000);
   const open = answerState(deadlineAt, now) === "open";
   const tone = open ? c.warn : c.gray;
   return (

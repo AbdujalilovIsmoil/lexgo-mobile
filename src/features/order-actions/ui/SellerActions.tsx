@@ -4,8 +4,8 @@ import { answerState, clock, msUntil } from "@/entities/market-flow";
 import { DECLINE_REASONS, type DeclineReason } from "@/entities/pro-order";
 import { useAnswer } from "@/features/market-flow";
 import { Button, Chip, Text } from "@/shared/ui";
-import { useNow } from "@/shared/lib/pay/useNow";
 import { useT } from "@/shared/i18n";
+import { useServerNow } from "@/shared/network";
 
 type Props = { orderId: string; onDone: () => void; deadlineAt?: string };
 
@@ -18,7 +18,7 @@ export function SellerActions({ orderId, onDone, deadlineAt = "" }: Props) {
   const [declining, setDeclining] = useState(false);
   const [reason, setReason] = useState<DeclineReason>("busy");
   const gone = outcome === "expired" || outcome === "taken" || outcome === "forbidden";
-  const now = useNow(!!deadlineAt && !gone, 1000);
+  const now = useServerNow(!!deadlineAt && !gone, 1000);
   const answer = answerState(deadlineAt, now);
   useEffect(() => {
     if (outcome === "accepted" || outcome === "declined") onDone();

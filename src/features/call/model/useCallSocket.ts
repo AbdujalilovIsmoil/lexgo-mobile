@@ -3,6 +3,7 @@ import { AppState } from "react-native";
 import { WS_BASE } from "@/shared/config/env";
 import { accessToken, http } from "@/shared/api";
 import { asDict, asStr } from "@/shared/lib/json";
+import { onBackOnline } from "@/shared/network";
 import { ReconnectingSocket, useUserEvents } from "@/shared/realtime";
 
 type Signal = "call.join" | "call.leave" | "call.end";
@@ -34,7 +35,8 @@ export function useCallSocket(roomId: string, callId: string, enabled: boolean, 
     sock.current = s;
     s.start();
     const app = AppState.addEventListener("change", (st) => { if (st === "active") { s.nudge(); ref.current.onMeta(); } });
-    return () => { app.remove(); s.stop(); sock.current = null; };
+    const net = onBackOnline(() => { s.nudge(); ref.current.onMeta(); }); // the network is back: rejoin at once, not after the backoff
+    return () => { app.remove(); net(); s.stop(); sock.current = null; };
   }, [roomId, callId, enabled]);
   useUserEvents("call.", (e) => {
     const id = asStr(e.call_id ?? asDict(e.call).id);

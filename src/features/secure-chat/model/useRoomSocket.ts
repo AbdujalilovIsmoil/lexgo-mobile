@@ -3,12 +3,14 @@ import { AppState } from "react-native";
 import { WS_BASE } from "@/shared/config/env";
 import { accessToken, http } from "@/shared/api";
 import { asDict, asStr } from "@/shared/lib/json";
+import { onBackOnline } from "@/shared/network";
 import { ReconnectingSocket, type SocketState } from "@/shared/realtime";
 import { normMsg, type Msg } from "@/entities/secure-chat";
 
 type Handlers = { onMessage: (m: Msg) => void; onCall: () => void; onState: (s: SocketState) => void; onOpen: (again: boolean) => void };
 
-// /ws/secure-chats/{room}?token=… — pushes secure_message.created and call.* frames of one room.
+// /ws/secure-chats/{room}?token=… — pushes secure_message.created and call.* frames of one room. It reconnects at once when the app comes
+// back to the front or the network comes back (TZ §7, §15: the history is re-read on open), not after its backoff delay.
 export function useRoomSocket(roomId: string, handlers: Handlers): void {
   const ref = useRef(handlers);
   useEffect(() => { ref.current = handlers; });
@@ -34,6 +36,7 @@ export function useRoomSocket(roomId: string, handlers: Handlers): void {
     });
     sock.start();
     const app = AppState.addEventListener("change", (s) => { if (s === "active") sock.nudge(); });
-    return () => { app.remove(); sock.stop(); };
+    const net = onBackOnline(() => sock.nudge());
+    return () => { app.remove(); net(); sock.stop(); };
   }, [roomId]);
 }
