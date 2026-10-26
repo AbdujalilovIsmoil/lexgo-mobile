@@ -11,7 +11,7 @@ export { docEventOf, type DocEvent, type DocEventKind } from "./lib/realtime";
 export { docFileName, cleanTitle } from "./lib/title";
 export { docPath, chatPath, callPath, ratePath } from "./lib/paths";
 export { StatusBadge } from "./ui/StatusBadge";
-export { DocRowCard } from "./ui/DocRowCard";
+
 export { MODE_ICON, MODES } from "./ui/modeMeta";
 export { useToneColor } from "./ui/useToneColor";
 export { downloadOf, actionOf, factsOf, answersPeek, stepProgress, type DownloadPlan, type SheetAction, type Fact, type FactKey, type AnswerPeek } from "./lib/sheetLogic";

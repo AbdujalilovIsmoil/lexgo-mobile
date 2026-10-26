@@ -1,11 +1,11 @@
 export * from "./model/types";
-export { useDocSchema, useTemplateMeta, usePreview, usePreviewOf, useTemplateRender, docFormKeys, cleanSourcePath } from "./model/queries";
+export { useDocSchema, usePreview, usePreviewOf, useTemplateRender, docFormKeys, cleanSourcePath } from "./model/queries";
 export { generateDoc, generateAiDoc, getAiQuestions, previewDoc, getDocSchema, type AiInput } from "./api/docFormApi";
 export { useSectionWizard, type Problem } from "./model/useSectionWizard";
 export { useDraftStore, draftKey, type Draft } from "./model/draftStore";
 export { useDraftsReady } from "./model/useDraftsReady";
 export { useDraftSync } from "./model/useDraftSync";
-export { useServiceHold } from "./model/useServiceHold";
+
 export { getServiceHold, type ServiceHold } from "./api/holdApi";
 export { toWire, wireValue, isFilled } from "./lib/values";
 export { validateField, sectionFilled, type FieldError } from "./lib/validate";

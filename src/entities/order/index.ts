@@ -1,6 +1,6 @@
 export * from "./model/types";
 export * from "./model/marketTypes";
-export { useOrders, useServiceOrder, useOpenOrders, useTakenOrders, usePaymentPolicy, usePriceQuote, orderKeys } from "./model/queries";
+export { useOrders, useServiceOrder, usePaymentPolicy, usePriceQuote, orderKeys } from "./model/queries";
 export { useMarketOrders, useMarketOrder, useStatusHistory, marketKeys } from "./model/marketQueries";
 export { useMarketSync, useMarketSignals } from "./model/useMarketSync";
 export { useRatingWindow } from "./model/useRatingWindow";

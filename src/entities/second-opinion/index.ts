@@ -5,7 +5,7 @@ export { normPromotion, normOptions, normQuote, normCreated } from "./api/norm";
 export { promotionSessionId } from "./lib/session";
 export { eventKey, quoteKey } from "./lib/keys";
 export { soErrorKind } from "./lib/errors";
-export { trackPromo, wasTracked, resetTracked } from "./lib/track";
+export { trackPromo } from "./lib/track";
 export { clampCount, canQuote, toggleDirection, addDirection } from "./lib/selection";
 export { useOriginStore, type Origin } from "./model/originStore";
 export { useSecondOpinionPurchased, shouldSendPurchased, isPaidStatus } from "./model/usePurchased";

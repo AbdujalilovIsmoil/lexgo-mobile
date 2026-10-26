@@ -1,11 +1,10 @@
-export type { Room, Msg, MsgFile, Reply, Sender, Member, LastMessage, Reveal, PickedFile } from "./model/types";
+export type { Room, Msg, MsgFile, Reply, Sender, Member, LastMessage, PickedFile } from "./model/types";
 export { HIDDEN } from "./model/types";
 export { listRooms, getRoom, createRoom, openPrivateChat, getMessages, sendMessage, setRoomTtl, deleteRoom, completeUrgentChat } from "./api/chatApi";
 export { uploadMessage } from "./api/upload";
-export { getReveal, requestReveal, approveReveal } from "./api/revealApi";
 export { openFile, localFile, isImage } from "./api/files";
 export { normMsg } from "./api/normalize";
-export { chatKeys, useRooms, useReveal } from "./model/queries";
+export { chatKeys, useRooms } from "./model/queries";
 export { applyRoomEvent } from "./model/roomsCache";
 export { setActiveRoom } from "./model/active";
 export { isMyRoom, myRooms, unreadTotal, byActivity } from "./model/mine";
@@ -13,8 +12,8 @@ export { roomTitle, roomKind, otherMembers, peerOf, isClosed, type RoomKind } fr
 export { callIdOf, previewText } from "./model/preview";
 export { maskContacts } from "./lib/maskContacts";
 export { fmtSize } from "./lib/fmtSize";
-export { PRIVATE_CHAT_FEE } from "./lib/fee";
-export { MAX_MB, CHAT_EXTS, isAllowedName } from "./lib/fileRules";
+
+export { MAX_MB, CHAT_EXTS } from "./lib/fileRules";
 export { roleKey } from "./lib/roleLabel";
 export { listStamp } from "./lib/stamp";
 export { RoomRow, ROOM_AVATAR } from "./ui/RoomRow";

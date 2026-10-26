@@ -13,6 +13,6 @@ export { PlanFeatures } from "./ui/PlanFeatures";
 export { PlanFunctions } from "./ui/PlanFunctions";
 export { PlanPrice, PERIOD_KEY } from "./ui/PlanPrice";
 export { PlanCardSkeleton } from "./ui/PlanCardSkeleton";
-export { CurrentPlan } from "./ui/CurrentPlan";
+
 export * from "./lib/pricing";
 export { getMyFeatures, getContract, acceptRenewal, consumeFeature, normFeatures, normContract, type PlanFeature, type FeatureMode, type MyFeatures, type PlanContract } from "./api/featuresApi";

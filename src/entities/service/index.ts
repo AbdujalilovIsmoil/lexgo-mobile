@@ -1,6 +1,6 @@
 export * from "./model/types";
 export type { ServicePassport } from "./model/passportTypes";
-export { useServiceCategories, useServices, useServiceSearch, useCatalogBrowse, useServicePages, useServicePassport, serviceKeys } from "./model/queries";
+export { useServiceCategories, useServiceSearch, useCatalogBrowse, useServicePassport, serviceKeys } from "./model/queries";
 export { listCategories, listServices, searchServices } from "./api/serviceApi";
 export { getPassport, type PassportBundle } from "./api/passportApi";
 export { categoryIcon } from "./lib/categoryIcon";
@@ -12,7 +12,7 @@ export { ServiceCardSkeleton } from "./ui/ServiceCardSkeleton";
 export { ServiceList } from "./ui/ServiceList";
 export { MODES, type Mode, type ModeKey } from "./lib/modes";
 export type { DetailRenderer } from "./model/slots";
-export { DirectionTile } from "./ui/DirectionTile";
+
 export { PassportFacts } from "./ui/PassportFacts";
 export { useAllServices, useCategoryServices, useCatalogSearch } from "./model/catalogQueries";
 export * from "./lib/filters";

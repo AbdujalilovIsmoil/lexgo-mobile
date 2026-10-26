@@ -1,7 +1,7 @@
 export * from "./model/types";
 export * from "./model/filters";
 export * from "./model/marketTypes";
-export { useLawyers, useLawyerPage, useLawyerPages, useLawyerCount, useLawyer, useServiceLawyers, lawyerKeys, PAGE_SIZE } from "./model/queries";
+export { useLawyerPage, useLawyerPages, useLawyerCount, useLawyer, lawyerKeys, PAGE_SIZE } from "./model/queries";
 export { useAiSearch, useAiRows, MIN_AI_CHARS, type AiRow } from "./model/aiQueries";
 export { useMarketMeta, useLawyerServices, useMyMatches, usePricingPolicy, usePromoActive } from "./model/metaQueries";
 export { useServiceSellers, useOfferedServiceIds, useCandidates } from "./model/sellerQueries";

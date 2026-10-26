@@ -1,6 +1,5 @@
 import { useEffect } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { getReveal } from "../api/revealApi";
 import { listRooms } from "../api/chatApi";
 import { myRooms } from "./mine";
 import { loadRooms, saveRooms } from "./roomsStore";
@@ -11,7 +10,6 @@ export const chatKeys = {
   rooms: ["secure-chat", "rooms"] as const,
   room: (roomId: string) => ["secure-chat", "room", roomId] as const,
   messages: (roomId: string) => ["secure-chat", "messages", roomId] as const,
-  reveal: (roomId: string) => ["secure-chat", "reveal", roomId] as const,
   file: (messageId: string) => ["secure-chat", "file", messageId] as const,
 };
 
@@ -37,4 +35,3 @@ export function useRooms(live: boolean, userId = "") {
   });
 }
 
-export const useReveal = (roomId: string) => useQuery({ queryKey: chatKeys.reveal(roomId), queryFn: () => getReveal(roomId), staleTime: 30_000 });

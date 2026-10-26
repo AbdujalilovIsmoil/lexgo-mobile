@@ -1,4 +1,4 @@
-export { ConfigPanel, negotiationChipKey } from "./ConfigPanel";
+export { ConfigPanel } from "./ConfigPanel";
 export { PriceExplanation } from "./PriceExplanation";
 export { Factors, factorAmount, type ConfigFactor } from "./Factors";
 export { Requirements, type ConfigRequirements } from "./Requirements";

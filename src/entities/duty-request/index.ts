@@ -4,5 +4,5 @@ export { blockedBy, reviewBody, answersToSave, ctorPromptFor, markCtorAsked, was
 export { docTypeApplies } from "./api/infoApi";
 export { existingOf } from "./api/normResult";
 export { useDocTypes, useServiceDoc, dutyKeys } from "./model/queries";
-export { LIMITS, FILE_EXT_LIST, checkAttach, isRecordedVoice, type AttachError } from "./lib/validate";
+export { LIMITS, FILE_EXT_LIST, checkAttach, type AttachError } from "./lib/validate";
 export { DocTypePicker } from "./ui/DocTypePicker";

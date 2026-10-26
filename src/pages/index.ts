@@ -3,7 +3,7 @@ export { ServicesPage } from "./services/ServicesPage";
 export { AiChatPage } from "./ai-chat/AiChatPage";
 export { ChatsHistoryPage } from "./chats-history/ChatsHistoryPage";
 export { LawyersPage } from "./lawyers/LawyersPage";
-export { LawyerDetailPage } from "./lawyer-detail/LawyerDetailPage";
+
 export { ProfilePage } from "./profile/ProfilePage";
 export { SubscriptionPage } from "./subscription/SubscriptionPage";
 export { AcademyPage } from "./academy/AcademyPage";

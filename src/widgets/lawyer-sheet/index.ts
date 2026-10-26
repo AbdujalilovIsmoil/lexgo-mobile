@@ -1,10 +1,3 @@
-export { LawyerSheetBody } from "./LawyerSheetBody";
-export { LawyerSheetSkeleton } from "./LawyerSheetSkeleton";
-export type { LawyerTab } from "./LawyerTabs";
-export { AboutTab } from "./AboutTab";
-export { InfoTab } from "./InfoTab";
-export { ResultsTab } from "./ResultsTab";
-export { ServicesTab } from "./ServicesTab";
 export { PriceExplainer } from "./PriceExplainer";
 export { useBuyGate } from "./useBuyGate";
 export { ReviewsList } from "./ReviewsList";

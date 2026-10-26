@@ -47,6 +47,5 @@ export type Msg = {
 };
 
 // Staff only read "[metadata_only]" until a second person approves a reveal.
-export type Reveal = { visible: boolean; metadataOnly: boolean; status: string; expiresAt: string; reason: string };
 export type PickedFile = { uri: string; name: string; mime: string; size: number };
 export const HIDDEN = "[metadata_only]";
