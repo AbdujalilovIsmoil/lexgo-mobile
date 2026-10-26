@@ -3,16 +3,19 @@ import { STAGE_TINT, TaskCard, type ProTask, type TaskStage } from "@/entities/p
 import { useT } from "@/shared/i18n";
 import { useColors } from "@/shared/theme";
 import { Text } from "@/shared/ui";
+import { ShowMore, useShowMore } from "@/shared/ui/profile";
 
 type Props = {
   stage: TaskStage; tasks: ProTask[]; total: number; filtered: boolean;
   onOpen: (t: ProTask) => void; onMove: (t: ProTask, s: TaskStage) => void; onPick: (t: ProTask) => void;
 };
 
-// One kanban column (its width comes from the board's carousel): colour dot, stage name, task count and its cards.
+// One kanban column (its width comes from the board's carousel): colour dot, stage name, task count and its cards, ten at a time (the
+// "done" column only grows).
 export function TaskColumn({ stage, tasks, total, filtered, onOpen, onMove, onPick }: Props) {
   const { t } = useT();
   const c = useColors();
+  const page = useShowMore(tasks, String(filtered));
   return (
     <View style={[s.col, { backgroundColor: c.surface2, borderColor: c.line }]}>
       <View style={s.head}>
@@ -20,8 +23,9 @@ export function TaskColumn({ stage, tasks, total, filtered, onOpen, onMove, onPi
         <Text variant="body" weight="bold" numberOfLines={1} style={s.fill}>{t(`aw7.tab.${stage}`)}</Text>
         <View style={[s.count, { backgroundColor: c.surface }]}><Text variant="caption" weight="bold">{filtered ? tasks.length : total}</Text></View>
       </View>
-      {tasks.length ? tasks.map((x) => <TaskCard key={x.id} task={x} onOpen={() => onOpen(x)} onMove={(st) => onMove(x, st)} onPickStage={() => onPick(x)} />)
+      {tasks.length ? page.visible.map((x) => <TaskCard key={x.id} task={x} onOpen={() => onOpen(x)} onMove={(st) => onMove(x, st)} onPickStage={() => onPick(x)} />)
         : <Text variant="small" tone="gray2" center style={s.empty}>{t("aw7.emptyFilter")}</Text>}
+      <ShowMore left={page.left} expanded={page.expanded} onMore={page.more} onLess={page.less} />
     </View>
   );
 }
