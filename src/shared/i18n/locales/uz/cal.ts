@@ -1,7 +1,7 @@
 export const cal = {
   "month": "Bu oyda",
   "today": "Bugun",
-  "next": "Yaqinlashayotgan",
+  "next": "Kelgusi",
   "add": "Tadbir qo'shish",
   "calc": "Muddat hisoblash",
   "none": "Kunda reja yo'q",

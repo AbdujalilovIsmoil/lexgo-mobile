@@ -27,7 +27,7 @@ export function CalHero({ year, month, onStep, onToday, thisMonth, today, next, 
         {cells.map(([n, label], i) => (
           <View key={label} style={[s.stat, i ? s.sep : null]}>
             <Text variant="h2" tone="white">{n}</Text>
-            <Text variant="caption" numberOfLines={2} style={s.lbl}>{label}</Text>
+            <Text variant="caption" numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.8} style={s.lbl}>{label}</Text>
           </View>
         ))}
       </View>
