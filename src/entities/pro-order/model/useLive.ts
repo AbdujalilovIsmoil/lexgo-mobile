@@ -13,7 +13,7 @@ export function useOrderLive(): void {
   const qc = useQueryClient();
   const { t } = useT();
   const refresh = () => void qc.invalidateQueries({ queryKey: orderKeys.all });
-  useUserEvents(["marketplace.", "order.", "notification.created"], (e) => {
+  useUserEvents(["marketplace.", "order.", "order_", "notification.created"], (e) => {
     const extra = ADDITIONAL_EVENTS[e.event];
     if (extra) toast(t(`ntd.sellerV2.ev.${extra.key}`), extra.tone);
     if (e.event !== "notification.created") return refresh();

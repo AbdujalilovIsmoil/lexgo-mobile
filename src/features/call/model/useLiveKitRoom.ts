@@ -27,7 +27,9 @@ export function useLiveKitRoom(call: Call | null, opts: Opts) {
     if (!call || !token) return;
     let alive = true;
     const quality = call.quality;
-    const video = quality ? quality.videoEnabled : call.type === "video";
+    // TZ §8: an audio call starts with the camera off (turning it on later makes it a video call in the same room); a video call starts
+    // with it on when the backend's quality policy allows video at all.
+    const video = call.type === "video" && (quality ? quality.videoEnabled : true);
     const r = new Room(buildRoomOptions(quality));
     wireRoom(r, {
       bump,

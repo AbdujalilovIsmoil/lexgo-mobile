@@ -3,14 +3,15 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useResync, useUserEvents, type UserEvent } from "@/shared/realtime";
 import { marketSignalOf, type MarketSignal } from "../lib/signal";
 
-const WATCH = ["marketplace.", "payment.", "order.", "notification.created"];
+// "order_" catches the raw frames TZ §6 names (order_accepted, order_payment_updated …), "order." the dotted ones.
+const WATCH = ["marketplace.", "payment.", "order.", "order_", "notification.created"];
 
 // Calls `onSignal` for every user-socket event that concerns a marketplace order.
 export function useMarketSignals(onSignal: (s: MarketSignal, e: UserEvent) => void): void {
   useUserEvents(WATCH, (e) => {
     const s = marketSignalOf(e);
     if (s) onSignal(s, e);
-    else if (e.event.startsWith("payment.") || e.event.startsWith("order.")) onSignal({ kind: "other", orderId: "", workId: "", roomId: "" }, e);
+    else if (e.event.startsWith("payment.") || e.event.startsWith("order")) onSignal({ kind: "other", orderId: "", workId: "", roomId: "" }, e);
   });
 }
 

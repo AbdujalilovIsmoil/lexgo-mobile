@@ -25,7 +25,8 @@ export const getMilestones = async (id: string): Promise<Milestone[]> => listOf(
 
 export const acceptOrder = (id: string) => http(`/orders/${enc(id)}/accept`, { method: "POST" });
 
-export const declineOrder = (id: string, reason: string, note: string) => http(`/orders/${enc(id)}/decline`, { method: "POST", body: { reason, note: note.trim() || undefined } });
+// POST /orders/{id}/decline with the reason as the web sends it ({reason_code, reason, note}).
+export const declineOrder = (id: string, reason: string, note = "") => http(`/orders/${enc(id)}/decline`, { method: "POST", body: { reason_code: reason, reason, note: note.trim() || undefined } });
 
 // PATCH /orders/{id}/status — the seller's progress moves (started → in_progress → result_ready → delivered).
 export const moveOrder = (id: string, status: string, note: string) => http(`/orders/${enc(id)}/status`, { method: "PATCH", body: { status, note: note.trim() } });

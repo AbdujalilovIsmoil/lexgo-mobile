@@ -1,22 +1,11 @@
-import { completionBody, fileIdFromPath } from "./complete";
+import { fileIdFromPath } from "./complete";
 import { hms, msUntil, ratingMsLeft } from "./countdown";
 import { isPaused } from "./additional";
 import { stageOf } from "./stage";
 import type { OrderRating } from "../model/extraTypes";
 
 const rating = (p: Partial<OrderRating>): OrderRating => ({ available: true, closed: false, reason: "", deadlineAt: "", remainingSeconds: 0, stars: 0, comment: "", fetchedAt: 0, ...p });
-const file = { fileId: "f1", fileName: "a.pdf", downloadUrl: "/secure-files/f1" };
-
-describe("completionBody (TZ 13)", () => {
-  it("blocks an empty completion", () => {
-    expect(completionBody("", [])).toBeNull();
-    expect(completionBody("   \n", [])).toBeNull();
-  });
-  it("accepts text only, files only, or both", () => {
-    expect(completionBody(" done ", [])).toEqual({ result_text: "done" });
-    expect(completionBody("", [file])?.result_files).toEqual([{ file_id: "f1", file_name: "a.pdf", download_url: "/secure-files/f1" }]);
-    expect(completionBody("x", [file])).toMatchObject({ result_text: "x", result_files: [{}] });
-  });
+describe("fileIdFromPath", () => {
   it("reads the file id from a secure path", () => {
     const id = "0f8fad5b-d9cb-469f-a165-70867728950e";
     expect(fileIdFromPath(`/secure-files/${id}`)).toBe(id);

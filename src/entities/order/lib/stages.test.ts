@@ -36,6 +36,11 @@ describe("order actions", () => {
     expect(canCompleteOrder(m({ completeOffered: true, status: "in_progress" }))).toBe(true);
     expect(canCompleteOrder(m({ completeOffered: true, status: "completed" }))).toBe(false);
   });
+  it("TZ §4: the backend's can_cancel wins over the local rule when it is sent", () => {
+    expect(canCancelOrder(m({ cancelOffered: true, status: "in_progress", canCancel: true }))).toBe(true);
+    expect(canCancelOrder(m({ cancelOffered: true, status: "pending_payment", canCancel: false }))).toBe(false);
+    expect(canCancelOrder(m({ cancelOffered: true, status: "pending_payment", canCancel: null }))).toBe(true);
+  });
   it("shows the ADV number, never an empty string", () => {
     expect(orderNumber(m({ workId: "ADV-9" }))).toBe("ADV-9");
     expect(orderNumber(m({ workId: "" }))).toBe("—");

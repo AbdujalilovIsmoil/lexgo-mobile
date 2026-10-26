@@ -1,7 +1,10 @@
 import { useRef, useState } from "react";
 import { RefreshControl, ScrollView, StyleSheet, View } from "react-native";
+import { useRouter } from "expo-router";
+import { callPath } from "@/entities/call";
 import type { MarketOrder } from "@/entities/order";
-import { phaseOf, useFlowLive } from "@/entities/market-flow";
+import { chatModeOf, phaseOf, useFlowLive } from "@/entities/market-flow";
+import { ActiveCallBar } from "@/widgets/secure-chat";
 import { ChecklistCard, ComplaintCard, FlowLead, PaymentRequestCard, PaymentsCard, WarrantyCard } from "@/widgets/market-order";
 import { useInsets } from "@/shared/lib/insets";
 import { DetailHeader } from "./DetailHeader";
@@ -22,8 +25,10 @@ type Props = { order: MarketOrder; refreshing: boolean; onRefresh: () => void };
 // and complaint window, the result, the checklist the specialist works through, the payments, the warranty, then what was bought.
 export function MarketOrderDetail({ order, refreshing, onRefresh }: Props) {
   const insets = useInsets();
+  const router = useRouter();
   useFlowLive();
   const phase = phaseOf({ status: order.status, paymentStatus: order.paymentStatus, flow: order.flow, rated: order.ratingStars > 0 });
+  const live = chatModeOf(order, phase) === "open";
   const f = order.flow;
   // Bumped while the page scrolls (and when it settles): the second-opinion card asks again whether it is on screen.
   const [tick, setTick] = useState(0);
@@ -41,6 +46,7 @@ export function MarketOrderDetail({ order, refreshing, onRefresh }: Props) {
     >
       <DetailHeader order={order} />
       {phase === "pending" ? <PendingNote onCheck={onRefresh} checking={refreshing} /> : <FlowLead phase={phase} role="client" lead={phase === "completed" && !order.rating?.available ? "completedClosed" : undefined} />}
+      {live ? <ActiveCallBar roomId={order.roomId} onJoin={(id) => router.push(callPath(order.roomId, id) as never)} style={s.call} /> : null}
       <PaymentRequestCard orderId={order.id} flow={f} phase={phase} />
       <AddPayNote order={order} />
       <SellerCard order={order} />
@@ -62,4 +68,5 @@ export function MarketOrderDetail({ order, refreshing, onRefresh }: Props) {
 const s = StyleSheet.create({
   content: { paddingHorizontal: 16, gap: 14, paddingTop: 4 },
   tl: { marginTop: 4 },
+  call: { borderRadius: 14 },
 });

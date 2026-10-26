@@ -22,10 +22,12 @@ export function marketSignalOf(ev: { event: string } & Record<string, unknown>):
     const kind = topic ? "other" : /paid|approved/.test(name) ? "paid" : /reject|cancel/.test(name) ? "rejected" : "other";
     return { kind, topic, orderId: asStr(ev.order_id), workId: asStr(ev.work_id) || asStr(asDict(ev.purchase_request).work_id), roomId: room(ev.room_id, ev.chat_url) };
   }
+  // TZ §6: order_accepted (the 10 % advance request appears), order_payment_updated … as raw frames: the order is read again.
+  if (name.startsWith("order_")) return { kind: "other", orderId: asStr(ev.order_id ?? ev.id), workId: asStr(ev.work_id), roomId: room(ev.room_id, ev.chat_url) };
   if (name !== "notification.created") return null;
   const data = asDict(asDict(ev.notification).data);
   const inner = asStr(data.event);
-  if (inner === "order_payment_updated" && data.order_id) return { kind: "other", orderId: asStr(data.order_id), workId: "", roomId: "" };
+  if (inner.startsWith("order_") && data.order_id) return { kind: "other", orderId: asStr(data.order_id), workId: asStr(data.work_id), roomId: asStr(data.room_id) };
   if (inner === "payment_paid" && asStr(data.target_type) === "marketplace_order") return { kind: "other", orderId: asStr(data.target_id), workId: "", roomId: "" };
   if (!inner.startsWith("marketplace_")) return null;
   const kind = /approved|order_paid/.test(inner) ? "paid" : inner === "marketplace_purchase_rejected" ? "rejected" : inner === "marketplace_purchase_requested" ? "requested" : "other";

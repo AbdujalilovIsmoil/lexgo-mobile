@@ -120,6 +120,12 @@ describe("phase & contact gates", () => {
     const acc = normFlow({ ...PAID, status: "accepted", contact_unlocked: false });
     expect(phaseOf({ status: "accepted", paymentStatus: "pending", flow: acc })).toBe("advance");
   });
+  it("TZ §3: an order no specialist holds yet reads as received — never as paid, never as a search", () => {
+    const open = normFlow({ ...PAID, status: "seller_selection", contact_unlocked: false, acceptance_deadline_at: null });
+    for (const status of ["seller_selection", "new", "created", "sent_to_seller"]) expect(phaseOf({ status, paymentStatus: "", flow: open })).toBe("received");
+    expect(phaseOf({ status: "new", paymentStatus: "paid", flow: normFlow(PAID) })).toBe("paid");
+    expect(chatModeOf({ ...base, roomId: "", flow: open }, "received")).toBe("locked");
+  });
   it("opens chat and calls only once the backend unlocked contact", () => {
     const locked = normFlow({ ...PAID, contact_unlocked: false });
     expect(chatModeOf({ ...base, flow: locked }, "advance")).toBe("locked");

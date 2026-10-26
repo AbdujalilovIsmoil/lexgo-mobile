@@ -5,7 +5,7 @@ export const mk6 = {
     waiting_docs: "Hujjat kutilmoqda",
     waiting_payment: "To'lov kutilmoqda",
     pending_payment: "To'lov kutilmoqda",
-    seller_selection: "Mutaxassis tanlanmoqda",
+    seller_selection: "Buyurtma qabul qilindi",
     sent_to_seller: "Mutaxassisga yuborildi",
     paid: "To'langan",
     accepted: "Qabul qilindi",

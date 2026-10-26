@@ -17,7 +17,7 @@ export const cl2: Messages["cl2"] = {
     waiting_payment: "Ожидает оплаты",
     waiting_info: "Ожидаются данные",
     waiting_docs: "Ожидаются документы",
-    seller_selection: "Подбор исполнителя",
+    seller_selection: "Заказ принят",
     sent_to_seller: "Отправлено исполнителю",
     in_review: "Готовится",
     lawyer_review: "Юрист рассматривает",

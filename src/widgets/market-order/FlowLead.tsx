@@ -4,14 +4,14 @@ import { Icon, Text, type IconName } from "@/shared/ui";
 import { useColors } from "@/shared/theme";
 import { useT } from "@/shared/i18n";
 
-const ICON: Record<FlowPhase, IconName> = { assigned: "user-check", advance: "credit-card", pending: "clock", paid: "check-circle", in_progress: "activity", review: "pause-circle", completed: "flag", rated: "star", cancelled: "x-circle" };
+const ICON: Record<FlowPhase, IconName> = { received: "inbox", assigned: "user-check", advance: "credit-card", pending: "clock", paid: "check-circle", in_progress: "activity", review: "pause-circle", completed: "flag", rated: "star", cancelled: "x-circle" };
 
 // One line on top of an order saying where it stands and what comes next, for the client or the seller (the web's order lead). `lead`
 // picks another text of the same role (a finished order whose rating window is already over).
 export function FlowLead({ phase, role, lead }: { phase: FlowPhase; role: "client" | "seller"; lead?: string }) {
   const c = useColors();
   const { t } = useT();
-  const tone = phase === "cancelled" ? c.err : phase === "assigned" || phase === "advance" || phase === "pending" || phase === "review" ? c.warn : phase === "completed" || phase === "rated" ? c.ok : c.accent;
+  const tone = phase === "cancelled" ? c.err : phase === "received" || phase === "assigned" || phase === "advance" || phase === "pending" || phase === "review" ? c.warn : phase === "completed" || phase === "rated" ? c.ok : c.accent;
   const bg = phase === "cancelled" ? c.errBg : tone === c.warn ? c.warnBg : tone === c.ok ? c.okBg : c.tint2;
   return (
     <View style={[s.box, { backgroundColor: bg }]} accessibilityRole="text">

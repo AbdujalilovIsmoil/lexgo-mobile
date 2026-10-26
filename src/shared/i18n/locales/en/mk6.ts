@@ -7,7 +7,7 @@ export const mk6: Messages["mk6"] = {
     waiting_docs: "Waiting for documents",
     waiting_payment: "Awaiting payment",
     pending_payment: "Awaiting payment",
-    seller_selection: "Choosing a specialist",
+    seller_selection: "Order received",
     sent_to_seller: "Sent to the specialist",
     paid: "Paid",
     accepted: "Accepted",

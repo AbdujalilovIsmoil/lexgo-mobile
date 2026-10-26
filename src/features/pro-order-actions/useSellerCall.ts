@@ -1,26 +1,9 @@
-import { useState } from "react";
-import { useRouter } from "expo-router";
-import { callPath, startCall, type CallType } from "@/entities/call";
 import type { ProOrder } from "@/entities/pro-order";
-import { ApiError } from "@/shared/api";
-import { useT } from "@/shared/i18n";
-import { toast } from "@/shared/ui";
+import { useRoomCall } from "@/features/secure-chat";
 
-// TZ 10: the seller may call the buyer from the order (call_create_url -> POST /chats/{room}/calls), then the call screen opens.
+// TZ §8: the seller calls the buyer from the order through the room's own call flow — a call already running in the room is joined
+// instead of a second one being started, and the buyer is invited with it.
 export function useSellerCall(order: ProOrder | undefined) {
-  const router = useRouter();
-  const { t } = useT();
-  const [calling, setCalling] = useState(false);
-  const call = async (kind: CallType) => {
-    if (calling || !order?.roomId) return;
-    setCalling(true);
-    try {
-      const c = await startCall(order.roomId, kind, order.serviceTitle || order.workId || "LexGo", order.buyerUserId ? [order.buyerUserId] : []);
-      router.push(callPath(order.roomId, c.id) as never);
-    } catch (e) {
-      toast(e instanceof ApiError && e.detail ? e.detail : t("mk7.callError"), "err");
-    }
-    setCalling(false);
-  };
-  return { calling, call };
+  const room = useRoomCall(order?.roomId ?? "", order?.serviceTitle || order?.workId || "LexGo", "", order?.buyerUserId ? [order.buyerUserId] : []);
+  return { calling: room.busy, call: (kind: "audio" | "video") => (order?.roomId ? room.begin(kind) : Promise.resolve()) };
 }

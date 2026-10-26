@@ -3,7 +3,7 @@ import { subscribeUserEvents, onResync, useSocketStatus } from "./bus";
 import type { UserEventHandler } from "./types";
 
 // Subscribe to user-channel events while the component is mounted. `match` is an
-// event name or a prefix ending in "." (e.g. "document_request.").
+// event name or a prefix ending in "." or "_" (e.g. "document_request.", "order_" for order_accepted).
 export function useUserEvents(match: string | string[], handler: UserEventHandler): void {
   const ref = useRef(handler);
   useEffect(() => {
@@ -13,7 +13,7 @@ export function useUserEvents(match: string | string[], handler: UserEventHandle
   useEffect(() => {
     const list = key.split("|");
     return subscribeUserEvents((e) => {
-      if (list.some((m) => (m.endsWith(".") ? e.event.startsWith(m) : e.event === m))) ref.current(e);
+      if (list.some((m) => (m.endsWith(".") || m.endsWith("_") ? e.event.startsWith(m) : e.event === m))) ref.current(e);
     });
   }, [key]);
 }

@@ -1,6 +1,7 @@
 export * from "./model/types";
 export { normFlow, normFinancials, normChecklist, normCheckItem, normCaps, normTimeline, payKindOf } from "./api/norm";
-export { getFinancials, getChecklist, getTimeline, getRuntimeCaps, patchCheckItem, fileOrderComplaint, createOrderWarranty, startOrder, completeWithResult, type CheckPatch, type ResultRef } from "./api/flowApi";
+export { getFinancials, getChecklist, getTimeline, getRuntimeCaps, patchCheckItem, fileOrderComplaint, createOrderWarranty, startOrder, completeWithResult, type CheckPatch } from "./api/flowApi";
+export { completionBody, type ResultRef } from "./lib/completion";
 export { flowKeys, useFinancials, useChecklist, useFlowTimeline, useRuntimeCaps, useFlowLive, refreshFlow } from "./model/queries";
 export { phaseOf, phaseFinished, phaseClosed, chatModeOf, callTypesOf, type ChatMode } from "./lib/phase";
 export { msUntil, complaintState, answerState, clock, type ComplaintState, type AnswerState } from "./lib/window";

@@ -2,6 +2,7 @@ export const mf = {
   mf: {
     phase: {
       assigned: "With the specialist",
+      received: "Received",
       advance: "Advance payment due",
       pending: "Awaiting payment",
       paid: "Paid",
@@ -14,6 +15,7 @@ export const mf = {
     lead: {
       client: {
         assigned: "Your order is with the specialist. Once they accept it, you'll get the advance payment request.",
+        received: "Your order is received. Once a specialist confirms it, you'll get the advance payment request.",
         advance: "The specialist accepted your order. Secure chat and calls open once the advance payment is confirmed.",
         completedClosed: "The work is done. The result and files stay in this order.",
         pending: "The payment is being confirmed in Telegram. Once confirmed, the specialist starts the work.",
@@ -26,6 +28,7 @@ export const mf = {
       },
       seller: {
         assigned: "This order was assigned to you. Accept or decline it in time.",
+        received: "This order is not assigned to you yet.",
         advance: "Waiting for the client's advance payment. Chat and calls open once it is confirmed.",
         pending: "Waiting for the client's payment to be confirmed.",
         paid: "Payment confirmed. Start the work — the deadline counts from that moment.",

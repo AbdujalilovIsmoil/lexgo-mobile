@@ -15,7 +15,7 @@ export const cl2 = {
     waiting_payment: "To'lov kutilmoqda",
     waiting_info: "Ma'lumot kutilmoqda",
     waiting_docs: "Hujjatlar kutilmoqda",
-    seller_selection: "Ijrochi tanlanmoqda",
+    seller_selection: "Buyurtma qabul qilindi",
     sent_to_seller: "Ijrochiga yuborildi",
     in_review: "Tayyorlanmoqda",
     lawyer_review: "Advokat ko'rib chiqmoqda",

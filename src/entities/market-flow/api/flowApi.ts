@@ -1,6 +1,7 @@
 import { ApiError, http } from "@/shared/api";
 import { asDict, asStr } from "@/shared/lib/json";
 import { normCaps, normChecklist, normCheckItem, normFinancials, normTimeline } from "./norm";
+import { completionBody, type ResultRef } from "../lib/completion";
 import type { CheckFile, CheckStatus, Checklist, Financials, FlowEvent, RuntimeCaps, WarrantyKind, WarrantyResolution } from "../model/types";
 
 const enc = encodeURIComponent;
@@ -14,15 +15,8 @@ export const getChecklist = async (orderId: string, url = ""): Promise<Checklist
 
 export const getTimeline = async (orderId: string): Promise<FlowEvent[]> => normTimeline(await http(`${me(orderId)}/timeline`));
 
-// One request per app run (cleared when it fails, so the next screen asks again).
-let caps: Promise<RuntimeCaps> | null = null;
-export function getRuntimeCaps(): Promise<RuntimeCaps> {
-  caps ??= http("/marketplace/runtime-capabilities").then(normCaps, (e: unknown) => {
-    caps = null;
-    throw e;
-  });
-  return caps;
-}
+// TZ §2: read at start, on every return to the foreground and after a reconnect (MarketMounts); React Query keeps and dedupes it.
+export const getRuntimeCaps = async (): Promise<RuntimeCaps> => normCaps(await http("/marketplace/runtime-capabilities"));
 
 export type CheckPatch = { status: CheckStatus; comment?: string; files?: CheckFile[]; images?: CheckFile[] };
 
@@ -58,18 +52,17 @@ export async function startOrder(orderId: string, startUrl: string, note: string
   await http(`/orders/${enc(orderId)}/status`, { method: "PATCH", body: { status: "in_progress", note: note.trim() || "Work started" } });
 }
 
-export type ResultRef = { id: string; name: string; url: string };
 const missing = (e: unknown) => e instanceof ApiError && !e.code && (e.status === 405 || (e.status === 404 && (!e.detail || /^not found$/i.test(e.detail.trim()))));
 
-// TZ §9: complete with the result (text and/or at least one file). complete-v2 checks the checklist; an older backend without it gets the
-// first completion endpoint.
+// TZ §9: complete with the result (text and/or at least one file) at POST /marketplace/me/orders/{id}/complete, as the TZ and the web
+// do. A backend without that route (404/405 with no error code) gets complete-v2.
 export async function completeWithResult(orderId: string, text: string, files: ResultRef[]): Promise<void> {
-  const t = text.trim();
-  if (!t && !files.length) throw new ApiError(422, undefined, { code: "marketplace_result_required" });
+  const body = completionBody(text, files);
+  if (!body) throw new ApiError(422, undefined, { code: "marketplace_result_required" });
   try {
-    await http(`/marketplace/orders/${enc(orderId)}/complete-v2`, { method: "POST", body: { result_text: t, result_files: files.map((f) => ({ id: f.id, name: f.name })) } });
+    await http(`${me(orderId)}/complete`, { method: "POST", body });
   } catch (e) {
     if (!missing(e)) throw e;
-    await http(`${me(orderId)}/complete`, { method: "POST", body: { ...(t ? { result_text: t } : {}), ...(files.length ? { result_files: files.map((f) => ({ file_id: f.id, file_name: f.name, download_url: f.url })) } : {}) } });
+    await http(`/marketplace/orders/${enc(orderId)}/complete-v2`, { method: "POST", body: { result_text: body.result_text ?? "", result_files: files.map((f) => ({ id: f.id, name: f.name })) } });
   }
 }

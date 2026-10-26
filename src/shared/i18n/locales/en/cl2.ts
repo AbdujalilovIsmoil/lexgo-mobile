@@ -17,7 +17,7 @@ export const cl2: Messages["cl2"] = {
     waiting_payment: "Awaiting payment",
     waiting_info: "Waiting for information",
     waiting_docs: "Waiting for documents",
-    seller_selection: "Choosing a provider",
+    seller_selection: "Order received",
     sent_to_seller: "Sent to the provider",
     in_review: "Being prepared",
     lawyer_review: "Lawyer is reviewing",

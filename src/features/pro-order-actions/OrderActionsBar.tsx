@@ -1,10 +1,10 @@
 import { useState } from "react";
 import { useKept } from "@/shared/lib/useKept";
 import { View } from "react-native";
-import { actionsOf, useAcceptOrder, useMoveOrder, type ProOrder } from "@/entities/pro-order";
+import { actionsOf, moveOrder, type ProOrder } from "@/entities/pro-order";
 import { AdditionalSheet } from "@/features/pro-order-additional";
 import { CompleteSheet } from "@/features/pro-order-complete";
-import { StartWorkSheet } from "@/features/market-flow";
+import { StartWorkSheet, useAnswer, useFlowMutation } from "@/features/market-flow";
 import { Button, type IconName } from "@/shared/ui";
 import { ActionList } from "@/shared/ui/admin";
 import { useT } from "@/shared/i18n";
@@ -15,7 +15,7 @@ type Step = { kind: "move"; status: string } | { kind: "start" } | { kind: "comp
 type Act = { key: string; label: string; icon: IconName; danger?: boolean; onPress: () => void };
 
 // The next actions the order's status allows (accept · start · progress moves · complete · decline). The first is the
-// big button, the rest sit under "More". The server has the last word (409 / 403 are shown as toasts).
+// big button, the rest sit under "More". The server has the last word: a TZ §16 code is explained in words and a 409 re-reads the order.
 export function OrderActionsBar({ order, acceptAllowed }: { order: ProOrder; acceptAllowed: boolean }) {
   const { t } = useT();
   const a = actionsOf(order, acceptAllowed);
@@ -23,10 +23,10 @@ export function OrderActionsBar({ order, acceptAllowed }: { order: ProOrder; acc
   const shown = useKept(step);
   const [more, setMore] = useState(false);
   const [declining, setDeclining] = useState(false);
-  const accept = useAcceptOrder();
-  const move = useMoveOrder();
+  const accept = useAnswer(order.id, { inPlace: false }).accept;
+  const move = useFlowMutation({ mutationFn: (v: { status: string; note: string }) => moveOrder(order.id, v.status, v.note), success: "sl9.done.moved" });
   const acts: Act[] = [
-    ...(a.accept ? [{ key: "accept", label: t("sl9.accept"), icon: "check" as const, onPress: () => accept.mutate(order.id) }] : []),
+    ...(a.accept ? [{ key: "accept", label: t("sl9.accept"), icon: "check" as const, onPress: () => accept.mutate(undefined) }] : []),
     ...(a.start ? [{ key: "start", label: t("mf.start.button"), icon: "play-circle" as const, onPress: () => setStep({ kind: "start" }) }] : []),
     ...a.moves.map((s) => ({ key: s, label: t(`sl12.move.${s}`), icon: "arrow-right-circle" as const, onPress: () => setStep({ kind: "move", status: s }) })),
     ...(a.complete ? [{ key: "complete", label: t("sl9.complete"), icon: "check-circle" as const, onPress: () => setStep({ kind: "complete" }) }] : []),
@@ -48,7 +48,7 @@ export function OrderActionsBar({ order, acceptAllowed }: { order: ProOrder; acc
         text={t("sl9.moveText")}
         submitLabel={t("adm.confirm")}
         submitting={move.isPending}
-        onSubmit={(note) => step?.kind === "move" && move.mutate({ id: order.id, status: step.status, note }, { onSuccess: () => setStep(null) })}
+        onSubmit={(note) => step?.kind === "move" && move.mutate({ status: step.status, note }, { onSuccess: () => setStep(null) })}
       />
       <StartWorkSheet visible={step?.kind === "start"} onClose={() => setStep(null)} orderId={order.id} startUrl={order.flow.startUrl} />
       <CompleteSheet order={order} visible={step?.kind === "complete"} onClose={() => setStep(null)} />

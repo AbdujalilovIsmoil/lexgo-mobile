@@ -1,10 +1,12 @@
 import { useLocalSearchParams, useRouter } from "expo-router";
+import { callPath } from "@/entities/call";
 import { actionsOf, useOrderLive, useProOrder, useProOrders } from "@/entities/pro-order";
 import { phaseFinished, phaseOf, useFlowLive } from "@/entities/market-flow";
 import { useCabinet } from "@/entities/pro-onboarding";
 import { OrderActionsBar, useSellerCall } from "@/features/pro-order-actions";
 import { AdditionalCard, BuyerCard, OrderFactsCard, OrderQuoteCard, OrderResultCard, OrderSummaryCard, OrderTimeline } from "@/widgets/pro-order";
 import { AssignmentCard, ChecklistCard, FlowLead, PaymentsCard } from "@/widgets/market-order";
+import { ActiveCallBar } from "@/widgets/secure-chat";
 import { EmptyState } from "@/shared/ui";
 import { AdminPage, QueryBoundary } from "@/shared/ui/admin";
 import { PageScroll } from "@/shared/ui/sel";
@@ -41,6 +43,7 @@ export default function ProOrderPage() {
             <OrderSummaryCard order={order} />
             <AssignmentCard order={order} flow={order.flow} acceptAllowed={allowed} />
             {phase !== "assigned" ? <FlowLead phase={phase} role="seller" /> : null}
+            {order.canChat && !phaseFinished(phase) ? <ActiveCallBar roomId={order.roomId} onJoin={(id) => router.push(callPath(order.roomId, id) as never)} style={{ borderRadius: 14 }} /> : null}
             <AdditionalCard order={order} />
             <BuyerCard order={order} phase={phase} onChat={() => router.push(`/chat/${order.roomId}` as never)} onCall={(k) => void sc.call(k)} calling={sc.calling} />
             <ChecklistCard orderId={order.id} url={order.flow.checklistUrl} role="seller" roomId={order.roomId} editable={phase === "in_progress"} locked={phaseFinished(phase)} enabled={phase !== "assigned" && phase !== "advance" && phase !== "cancelled"} />

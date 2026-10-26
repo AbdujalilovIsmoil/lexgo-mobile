@@ -2,7 +2,7 @@ import { http, ApiError } from "@/shared/api";
 import { asDict, asStr, listFrom } from "@/shared/lib/json";
 import { isOpenOrder } from "@/entities/order";
 import { normOrder } from "@/entities/order/api/orderApi";
-import { acceptOrder } from "@/entities/order/api/actionApi";
+import { acceptOrder } from "@/entities/pro-order/api/orderApi";
 import type { Job } from "../lib/filter";
 
 // GET /orders — everything this seller can see; the open ones (not yet taken, not an unpaid marketplace order) are the "Ishlar bozori"

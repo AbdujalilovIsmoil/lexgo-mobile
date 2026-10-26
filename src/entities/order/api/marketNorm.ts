@@ -33,6 +33,7 @@ export function normMarketOrder(v: unknown, clientActions: string[] = []): Marke
     canStartChat: d.can_start_chat === true && d.contact_unlocked !== false && !!roomId,
     canCreateCall: d.can_create_call === true && d.contact_unlocked !== false && !!roomId,
     cancelOffered: !!asStr(d.cancel_url),
+    canCancel: typeof d.can_cancel === "boolean" ? d.can_cancel : null,
     completeOffered: clientActions.includes("complete") && !!asStr(d.complete_url),
     createdAt: asStr(d.created_at),
     requestedAt: asStr(details.requested_at) || asStr(d.created_at),

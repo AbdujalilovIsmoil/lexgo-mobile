@@ -56,7 +56,7 @@ export const ccs = {
     "waiting_info": "Ожидаются сведения",
     "waiting_docs": "Ожидаются документы",
     "waiting_payment": "Ожидает оплаты",
-    "seller_selection": "Подбор исполнителя",
+    "seller_selection": "Заказ принят",
     "sent_to_seller": "Отправлен исполнителю",
     "paid": "Оплачен",
     "accepted": "Принят",

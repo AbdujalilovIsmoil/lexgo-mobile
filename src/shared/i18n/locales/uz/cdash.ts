@@ -97,7 +97,7 @@ export const cdash = {
     "waiting_info": "Ma'lumot kutilmoqda",
     "waiting_docs": "Hujjatlar kutilmoqda",
     "waiting_payment": "To'lov kutilmoqda",
-    "seller_selection": "Ijrochi tanlanmoqda",
+    "seller_selection": "Buyurtma qabul qilindi",
     "sent_to_seller": "Ijrochiga yuborildi",
     "accepted": "Qabul qilindi",
     "started": "Ish boshlandi",

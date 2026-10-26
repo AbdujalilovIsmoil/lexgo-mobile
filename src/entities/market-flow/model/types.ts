@@ -88,7 +88,7 @@ export type RuntimeCaps = {
 export type FlowEvent = { id: string; type: string; status: string; note: string; at: string };
 
 // The order's place in the flow, for the one-line explanation on top of the detail screen.
-export type FlowPhase = "assigned" | "advance" | "pending" | "paid" | "in_progress" | "review" | "completed" | "rated" | "cancelled";
+export type FlowPhase = "received" | "assigned" | "advance" | "pending" | "paid" | "in_progress" | "review" | "completed" | "rated" | "cancelled";
 
 export const WARRANTY_KINDS = ["no_response", "sla_breach", "abandoned", "not_delivered", "seller_restricted"] as const;
 export type WarrantyKind = (typeof WARRANTY_KINDS)[number];

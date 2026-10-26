@@ -22,6 +22,9 @@ export function phaseOf(o: O): FlowPhase {
   if (ACCEPTED.has(s) && !PAID.has(o.paymentStatus) && o.flow.contactUnlocked !== true) return "advance";
   if (LEGACY_PENDING.has(s) || (s === "pending" && o.paymentStatus !== "paid")) return "pending";
   if (s === "in_progress" || s === "started" || !!o.flow.startedAt) return "in_progress";
+  // TZ §3: before a specialist holds the order the client only sees that it was received — never "a lawyer is being searched", and
+  // never "paid" for a status the app does not know.
+  if (AWAITING.has(s) && !PAID.has(o.paymentStatus) && o.flow.contactUnlocked !== true) return "received";
   return "paid";
 }
 
@@ -32,7 +35,7 @@ export const phaseClosed = (p: FlowPhase): boolean => phaseFinished(p) || p === 
 // its chat readable (read-only); calls stop with it.
 export type ChatMode = "open" | "readOnly" | "locked" | "none";
 export function chatModeOf(o: { roomId: string; canStartChat: boolean; flow: FlowOrder }, phase: FlowPhase): ChatMode {
-  if (!o.roomId) return phase === "advance" || phase === "assigned" || phase === "pending" ? "locked" : "none";
+  if (!o.roomId) return phase === "received" || phase === "advance" || phase === "assigned" || phase === "pending" ? "locked" : "none";
   if (o.flow.contactUnlocked === false) return "locked";
   if (phaseFinished(phase) || o.flow.chatReadOnly === true) return "readOnly";
   if (phase === "cancelled") return "none";

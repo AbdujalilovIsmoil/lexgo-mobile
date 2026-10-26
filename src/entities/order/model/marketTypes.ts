@@ -32,6 +32,7 @@ export type MarketOrder = {
   canStartChat: boolean;
   canCreateCall: boolean;
   cancelOffered: boolean; // the backend sends cancel_url on EVERY order — see lib/actions.ts
+  canCancel: boolean | null; // the backend's own can_cancel flag (TZ §4); null when an older answer has none
   completeOffered: boolean; // `complete` is listed in client_actions (today only sellers get it)
   createdAt: string;
   requestedAt: string;

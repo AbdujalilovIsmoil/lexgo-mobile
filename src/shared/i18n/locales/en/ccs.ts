@@ -56,7 +56,7 @@ export const ccs = {
     "waiting_info": "Waiting for details",
     "waiting_docs": "Waiting for documents",
     "waiting_payment": "Awaiting payment",
-    "seller_selection": "Choosing a performer",
+    "seller_selection": "Order received",
     "sent_to_seller": "Sent to the performer",
     "paid": "Paid",
     "accepted": "Accepted",

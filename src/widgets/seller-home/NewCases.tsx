@@ -2,7 +2,8 @@ import { useState } from "react";
 import { StyleSheet, View } from "react-native";
 import Animated, { FadeInDown } from "react-native-reanimated";
 import { useRouter } from "expo-router";
-import { useAcceptOrder, type ProOrder } from "@/entities/pro-order";
+import type { ProOrder } from "@/entities/pro-order";
+import { useAnswer } from "@/features/market-flow";
 import type { SellerOrder } from "@/entities/pro-workspace";
 import { DeclineSheet } from "@/features/pro-order-actions/DeclineSheet";
 import { fmtDateTime } from "@/shared/lib/format";
@@ -20,7 +21,7 @@ function Card({ o, index }: { o: SellerOrder; index: number }) {
   const router = useRouter();
   const [full, setFull] = useState(false);
   const [declining, setDeclining] = useState(false);
-  const accept = useAcceptOrder();
+  const accept = useAnswer(o.id, { inPlace: false }).accept;
   const live = OPEN.has(o.status.toLowerCase()) && !!o.deadline;
   return (
     <Animated.View entering={FadeInDown.delay(Math.min(index, 5) * 60).duration(280)} style={[s.card, { backgroundColor: c.surface2, borderColor: c.line }]}>
@@ -37,7 +38,7 @@ function Card({ o, index }: { o: SellerOrder; index: number }) {
           {o.createdAt ? <View style={s.chip}><Icon name="clock" size={12} tone="gray" /><Text variant="caption" tone="gray">{fmtDateTime(o.createdAt, locale)}</Text></View> : null}
         </View>
         <View style={s.actions}>
-          <Button title={t("sl9.accept")} icon="check" loading={accept.isPending} onPress={() => accept.mutate(o.id)} style={s.flex} />
+          <Button title={t("sl9.accept")} icon="check" loading={accept.isPending} onPress={() => accept.mutate(undefined)} style={s.flex} />
           <IconButton icon="eye" size={46} label={t("shm.sd.review")} onPress={() => (o.title ? setFull((v) => !v) : router.push("/pro/orders" as never))} />
           <IconButton icon="x" size={46} label={t("sl9.decline")} onPress={() => setDeclining(true)} />
         </View>

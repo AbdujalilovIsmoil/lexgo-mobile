@@ -41,5 +41,6 @@ export function actionsOf(o: ProOrder, acceptAllowed = true): OrderActions {
 
 // The five steps of the track under an order (request → paid → work → delivered → done).
 export const TRACK = ["paid", "accepted", "in_progress", "delivered", "completed"] as const;
-const RANK: Record<string, number> = { paid: 0, sent_to_seller: 0, accepted: 1, started: 2, in_progress: 2, result_ready: 3, quality_check: 3, delivered: 3, client_confirmation: 3, completed: 4, rated: 4 };
+// TZ §6: the final payment never takes a finished order back — whatever status follows "completed" stays on the last step.
+const RANK: Record<string, number> = { paid: 0, sent_to_seller: 0, accepted: 1, started: 2, in_progress: 2, result_ready: 3, quality_check: 3, delivered: 3, client_confirmation: 3, completed: 4, rated: 4, done: 4, closed: 4, final_paid: 4 };
 export const trackIndex = (status: string): number => RANK[status] ?? 0;

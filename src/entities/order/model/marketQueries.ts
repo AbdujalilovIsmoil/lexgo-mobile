@@ -8,9 +8,10 @@ export const useMarketOrders = (enabled: boolean) =>
   useQuery({ queryKey: marketKeys.list, queryFn: listMarketOrders, enabled, staleTime: 30 * 1000 });
 
 // One purchase by its order id (GET …/orders/{id}) or by the work number in the route (from the list); invalidating the list key
-// refreshes it too. `pollMs` is a slow safety net (the socket normally pushes the change first).
+// refreshes it too. `pollMs` is a slow safety net (the socket normally pushes the change first). TZ §14: read again whenever the screen
+// opens (a push tap shows the snapshot for a moment, then the server's state).
 export const useMarketOrder = (key: string, enabled: boolean, pollMs = 0) =>
-  useQuery({ queryKey: marketKeys.detail(key), queryFn: () => getMarketOrder(key), enabled: enabled && !!key, staleTime: 15 * 1000, refetchInterval: pollMs || false });
+  useQuery({ queryKey: marketKeys.detail(key), queryFn: () => getMarketOrder(key), enabled: enabled && !!key, staleTime: 15 * 1000, refetchOnMount: "always", refetchInterval: pollMs || false });
 
 export const useStatusHistory = (orderId: string) =>
   useQuery({ queryKey: marketKeys.history(orderId), queryFn: () => getStatusHistory(orderId), enabled: !!orderId, staleTime: 30 * 1000 });

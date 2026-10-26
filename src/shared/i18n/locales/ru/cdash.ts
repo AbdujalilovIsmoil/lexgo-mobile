@@ -97,7 +97,7 @@ export const cdash = {
     "waiting_info": "Ожидаются сведения",
     "waiting_docs": "Ожидаются документы",
     "waiting_payment": "Ожидает оплаты",
-    "seller_selection": "Подбор исполнителя",
+    "seller_selection": "Заказ принят",
     "sent_to_seller": "Отправлен исполнителю",
     "accepted": "Принят",
     "started": "Работа начата",

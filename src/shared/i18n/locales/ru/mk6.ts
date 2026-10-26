@@ -7,7 +7,7 @@ export const mk6: Messages["mk6"] = {
     waiting_docs: "Ждём документы",
     waiting_payment: "Ожидает оплату",
     pending_payment: "Ожидает оплату",
-    seller_selection: "Подбор специалиста",
+    seller_selection: "Заказ принят",
     sent_to_seller: "Отправлено специалисту",
     paid: "Оплачено",
     accepted: "Принят",

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { View } from "react-native";
-import { blockingItems, blockingOf, completeWithResult, useChecklist, type BlockingItem } from "@/entities/market-flow";
-import { completionBody, type ProOrder } from "@/entities/pro-order";
+import { blockingItems, blockingOf, completeWithResult, completionBody, useChecklist, type BlockingItem } from "@/entities/market-flow";
+import type { ProOrder } from "@/entities/pro-order";
 import { useFlowMutation } from "@/features/market-flow";
 import { FormInput, useAppForm } from "@/shared/form";
 import { useSheetReset } from "@/shared/lib/useSheetReset";
@@ -24,10 +24,11 @@ export function CompleteSheet({ order, visible, onClose }: Props) {
   const c = useColors();
   const f = useAppForm(completeSchema, { text: "" });
   const att = useResultFiles(order.roomId);
+  const refs = att.files.map((x) => ({ id: x.fileId, name: x.fileName, url: x.downloadUrl }));
   const [refused, setRefused] = useState<BlockingItem[] | null>(null);
   const ck = useChecklist(order.id, order.flow.checklistUrl, visible && !!order.flow.checklistUrl);
   const done = useFlowMutation({
-    mutationFn: (v: { text: string }) => completeWithResult(order.id, v.text, att.files.map((x) => ({ id: x.fileId, name: x.fileName, url: x.downloadUrl }))),
+    mutationFn: (v: { text: string }) => completeWithResult(order.id, v.text, refs),
     success: "ntd.sellerV2.done.sent",
     onSuccess: onClose,
     onError: (e) => {
@@ -40,8 +41,8 @@ export function CompleteSheet({ order, visible, onClose }: Props) {
   const open = blockingOf(ck.data);
   const blocked: BlockingItem[] = refused ?? open.map((i) => ({ id: i.id, title: i.title }));
   const text = f.watch("text");
-  const empty = !completionBody(text, att.files);
-  const submit = f.handleSubmit((v) => { if (!completionBody(v.text, att.files)) return; done.mutate({ text: v.text }); });
+  const empty = !completionBody(text, refs);
+  const submit = f.handleSubmit((v) => { if (!completionBody(v.text, refs)) return; done.mutate({ text: v.text }); });
   if (blocked.length) {
     return (
       <FormSheet visible={visible} onClose={onClose} title={t("mf.ck.blockTitle")} subtitle={t("mf.ck.blockLead", { n: blocked.length })} onSubmit={onClose} submitLabel={t("mf.ck.open")} snaps={[0.6, 0.9]}>

@@ -4,6 +4,7 @@ export const mf = {
   mf: {
     phase: {
       assigned: "Mutaxassis ko'rib chiqmoqda",
+      received: "Qabul qilindi",
       advance: "Oldindan to'lov kutilmoqda",
       pending: "To'lov kutilmoqda",
       paid: "To'langan",
@@ -16,6 +17,7 @@ export const mf = {
     lead: {
       client: {
         assigned: "Buyurtma mutaxassisga yuborildi. U qabul qilgach, oldindan to'lov so'rovi keladi.",
+        received: "Buyurtmangiz qabul qilindi. Mutaxassis tasdiqlagach, oldindan to'lov so'rovi keladi.",
         advance: "Mutaxassis buyurtmani qabul qildi. Oldindan to'lov tasdiqlangach himoyalangan chat va qo'ng'iroq ochiladi.",
         completedClosed: "Ish yakunlandi. Natija va fayllar shu buyurtmada saqlanadi.",
         pending: "To'lov Telegram orqali tasdiqlanmoqda. Tasdiqlangach ijrochi ishni boshlaydi.",
@@ -28,6 +30,7 @@ export const mf = {
       },
       seller: {
         assigned: "Buyurtma sizga biriktirildi. Belgilangan vaqt ichida qabul qiling yoki rad eting.",
+        received: "Buyurtma hali sizga biriktirilmagan.",
         advance: "Mijozning boshlang'ich to'lovi kutilmoqda. Chat va qo'ng'iroq to'lov tasdiqlangandan keyin ochiladi.",
         pending: "Mijoz to'lovi tasdiqlanishi kutilmoqda.",
         paid: "To'lov tasdiqlandi. Ishni boshlang — muddat shu paytdan hisoblanadi.",

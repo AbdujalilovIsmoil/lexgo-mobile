@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { StyleSheet, View } from "react-native";
 import { useRouter } from "expo-router";
-import { canCancelOrder, canCompleteOrder, type MarketOrder } from "@/entities/order";
+import { canCancelOrder, canCompleteOrder, useRatingWindow, type MarketOrder } from "@/entities/order";
 import { callTypesOf, chatModeOf, phaseOf } from "@/entities/market-flow";
 import { CallButtons, CancelOrderSheet, CompleteOrderSheet } from "@/features/order-actions";
 import { Button, Icon, Text } from "@/shared/ui";
@@ -20,7 +20,7 @@ export function DetailActions({ order }: { order: MarketOrder }) {
   const phase = phaseOf({ status: order.status, paymentStatus: order.paymentStatus, flow: order.flow, rated: order.ratingStars > 0 });
   const chat = chatModeOf(order, phase);
   const calls = callTypesOf(order, phase);
-  const rate = !!order.rating?.available && !order.ratingSubmitted;
+  const rate = useRatingWindow(order).open;
   const extra = calls.length > 0 || canCancelOrder(order) || canCompleteOrder(order) || rate;
   if (chat === "none" && !extra) return null;
   const openChat = () => router.push({ pathname: "/chat/[roomId]", params: { roomId: order.roomId } });
