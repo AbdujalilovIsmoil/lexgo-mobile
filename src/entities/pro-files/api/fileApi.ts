@@ -49,4 +49,3 @@ export async function listDocRequests(): Promise<DocRequest[]> {
     return { id: asStr(d.id), title: asStr(d.title), message: asStr(d.message), status: asStr(d.status, "requested"), fileName: asStr(f.file_name), fileUrl: asStr(f.file_url), mime: asStr(f.mime_type), createdAt: asStr(d.created_at) };
   });
 }
-export const requestClientDocument = (b: { client_user_id: string; title: string; message?: string; case_id?: string }) => http("/workspace/document-requests", { method: "POST", body: b });

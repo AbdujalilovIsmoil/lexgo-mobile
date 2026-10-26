@@ -32,6 +32,4 @@ export async function listCases(): Promise<ProCase[]> {
 export const getCase = async (id: string): Promise<ProCase> => normCase(await http(`/cases/${encodeURIComponent(id)}`));
 export const createCase = async (body: CaseInput & { title: string }): Promise<ProCase> => normCase(await http("/cases", { method: "POST", body }));
 export const updateCase = async (id: string, body: CaseInput): Promise<ProCase> => normCase(await http(`/cases/${encodeURIComponent(id)}`, { method: "PATCH", body }));
-export const setCaseStatus = async (id: string, status: string, nextAction?: string): Promise<ProCase> =>
-  normCase(await http(`/cases/${encodeURIComponent(id)}/status`, { method: "POST", body: { status, ...(nextAction !== undefined ? { next_action: nextAction } : {}) } }));
 export const archiveCase = async (id: string): Promise<ProCase> => normCase(await http(`/cases/${encodeURIComponent(id)}/archive`, { method: "POST" }));

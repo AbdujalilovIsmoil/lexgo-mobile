@@ -34,8 +34,3 @@ export async function getLawyerServices(id: string): Promise<LawyerService[]> {
   }
 }
 
-// Specialists who perform one service (the order flow lets the client pick one).
-export async function listLawyersForService(serviceId: string): Promise<Lawyer[]> {
-  const data = await http(`/marketplace/lawyers?${new URLSearchParams({ service_id: serviceId, limit: "50" })}`);
-  return listFrom(data, "items", "data", "lawyers").map(normLawyer).filter((l) => l.name);
-}

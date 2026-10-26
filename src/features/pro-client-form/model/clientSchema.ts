@@ -20,4 +20,3 @@ export const conflictSchema = z
   .object({ phone: rules.optPhone, pinfl, opponent: rules.optText(120), reps: rules.optText(500) })
   .refine((v) => !!(v.phone.replace(/\D/g, "").length > 3 || v.pinfl || v.opponent || v.reps), { path: ["phone"], message: rules.m("required") });
 
-export const requestDocSchema = z.object({ title: rules.text(1, 160), message: rules.optText(1000) });

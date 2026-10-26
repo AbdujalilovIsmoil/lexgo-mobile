@@ -1,6 +1,6 @@
 import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
 import { listLawyers } from "../api/lawyerApi";
-import { getLawyer, listLawyersForService } from "../api/profileApi";
+import { getLawyer } from "../api/profileApi";
 import { defaultLawyerFilters, type LawyerFilters } from "./filters";
 
 export const PAGE_SIZE = 10;
@@ -34,14 +34,7 @@ export function useLawyerPage(filters: Partial<LawyerFilters> = defaultLawyerFil
   return useQuery({ queryKey: lawyerKeys.list(filters), queryFn: () => listLawyers(filters), staleTime: 2 * 60 * 1000 });
 }
 
-export function useLawyers(filters: Partial<LawyerFilters> = defaultLawyerFilters) {
-  const q = useLawyerPage(filters);
-  return { ...q, data: q.data?.items };
-}
-
 export function useLawyer(id: string) {
   return useQuery({ queryKey: lawyerKeys.one(id), queryFn: () => getLawyer(id), enabled: !!id, staleTime: 5 * 60 * 1000 });
 }
 
-export const useServiceLawyers = (serviceId: string) =>
-  useQuery({ queryKey: ["service-lawyers", serviceId], queryFn: () => listLawyersForService(serviceId), enabled: !!serviceId, staleTime: 2 * 60 * 1000 });

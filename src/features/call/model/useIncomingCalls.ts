@@ -45,8 +45,8 @@ export function useIncomingCalls(inCall: boolean) {
     } catch { /* the next poll tries again */ }
   }, [myId]);
 
+  useEffect(() => { void poll(); }, [poll]); // at start (and for another account) — not again each time the socket state flips
   useEffect(() => {
-    void poll();
     const id = myId ? setInterval(() => void poll(), online ? SAFETY_MS : POLL_MS) : undefined;
     const app = AppState.addEventListener("change", (s) => { if (s === "active") void poll(); });
     return () => { clearInterval(id); app.remove(); };

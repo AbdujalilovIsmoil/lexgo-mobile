@@ -12,13 +12,6 @@ export async function getDocSchema(serviceId: string, extraTitle: string): Promi
   return normSchema(await http(`${base(serviceId)}/document-fields`), serviceId, extraTitle);
 }
 
-// GET /services/{id}/document-template — language / price of the template.
-export async function getTemplateMeta(serviceId: string): Promise<{ language: string; price: number }> {
-  const d = asDict(await http(`${base(serviceId)}/document-template`));
-  const t = asDict(d.template ?? d);
-  return { language: asStr(t.language), price: Number(t.price) || 0 };
-}
-
 // The clean (marker-free) template: the only copy of the blank a client may open.
 export const cleanSourcePath = (serviceId: string): string => `${base(serviceId)}/document-template/clean-source-file`;
 

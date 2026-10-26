@@ -10,7 +10,7 @@ import { useMeetings } from "@/features/meeting";
 import { useSellerActions } from "@/features/secure-chat";
 import { useT } from "@/shared/i18n";
 import { useTimeline } from "./lib/useTimeline";
-import { phaseOf } from "./lib/week";
+import { phaseOf, shiftWeek } from "./lib/week";
 import { CreateFab } from "./CreateFab";
 import { CreateMeetingSheet } from "./CreateMeetingSheet";
 import { LiveCard } from "./LiveCard";
@@ -42,7 +42,7 @@ export function MeetingsBoard({ bottom }: { bottom: number }) {
   const { live, sections, counts, shown, filtered } = useTimeline(tab === "upcoming" ? upcoming : past, search, day);
   const refresh = () => { setPulling(true); void q.refetch().finally(() => setPulling(false)); };
   const liveAll = upcoming.filter((m) => phaseOf(m, new Date()) === "live").length;
-  const shift = (n: number) => { setAnchor((a) => new Date(a.getFullYear(), a.getMonth(), a.getDate() + 7 * n)); setDay(null); };
+  const shift = (n: number) => { setAnchor((a) => shiftWeek(a, n)); setDay(null); };
 
   const empty = q.isLoading ? <MeetingsSkeleton />
     : q.isError ? <ErrorView error={q.error} onRetry={() => void q.refetch()} />

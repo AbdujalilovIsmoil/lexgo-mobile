@@ -1,10 +1,10 @@
 export * from "./model/types";
 export * from "./model/period";
 export type { ActiveSub, SharedMember, PlanRequestRow } from "./model/entitlement";
-export { usePlans, usePlan, useEntitlements, useMyFeatures, useContract, planKeys, entitlementKeys, featureKeys } from "./model/queries";
+export { usePlans, useEntitlements, useMyFeatures, useContract, planKeys, entitlementKeys, featureKeys } from "./model/queries";
 export { useIsFreeAiTier } from "./model/useAiTier";
 export { useAutoRenewStore } from "./model/autoRenewStore";
-export { listPlans, getPlan } from "./api/planApi";
+export { listPlans } from "./api/planApi";
 export { purchasePlan, requestPlanPurchase, refusedPeriods, type PurchaseResult, type PlanRequest } from "./api/purchaseApi";
 export { setAutoRenew } from "./api/autoRenewApi";
 export { getEntitlements, type Entitlements } from "./api/entitlementApi";

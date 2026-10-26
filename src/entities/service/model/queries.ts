@@ -1,4 +1,4 @@
-import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { useLocaleStore } from "@/shared/i18n";
 import { listCategories, listServices, searchServices } from "../api/serviceApi";
 import { getPassport } from "../api/passportApi";
@@ -33,16 +33,6 @@ export function useCatalogBrowse(categoryId = "") {
   });
 }
 
-export function useServices(categoryId: string) {
-  const locale = useLocaleStore((s) => s.locale);
-  return useQuery({
-    queryKey: serviceKeys.list(categoryId, locale),
-    queryFn: () => listServices({ categoryId, limit: 100 }, locale),
-    enabled: !!categoryId,
-    staleTime: 5 * 60 * 1000,
-  });
-}
-
 // Search runs on the server from 2 characters; callers debounce the text.
 export function useServiceSearch(q: string) {
   const locale = useLocaleStore((s) => s.locale);
@@ -56,20 +46,6 @@ export function useServiceSearch(q: string) {
 }
 
 export const SERVICE_PAGE = 12;
-
-// A direction's services, SERVICE_PAGE at a time; search and subdirection are
-// applied by the server, "show more" fetches the next page.
-export function useServicePages(cat: string, sub: string, q: string) {
-  const locale = useLocaleStore((s) => s.locale);
-  return useInfiniteQuery({
-    queryKey: serviceKeys.pages(cat, sub, q, locale),
-    queryFn: ({ pageParam }) => listServices({ categoryId: cat, sub, q, limit: SERVICE_PAGE, offset: pageParam }, locale),
-    initialPageParam: 0,
-    getNextPageParam: (last, all) => (last.length === SERVICE_PAGE ? all.length * SERVICE_PAGE : undefined),
-    enabled: !!cat,
-    staleTime: 5 * 60 * 1000,
-  });
-}
 
 // Passport + the full service card; changes rarely, so it stays fresh for a while.
 export function useServicePassport(id: string) {

@@ -71,12 +71,6 @@ export async function getOnboarding(): Promise<Onboarding> {
   return { status: asStr(d.status), done: d.completed_count == null ? steps.filter((s) => s.completed).length : asNum(d.completed_count), total: d.total_count == null ? steps.length : asNum(d.total_count) };
 }
 
-// GET /secure-chats → unread messages across the professional's secure rooms.
-export async function getUnread(): Promise<number> {
-  const rooms = listFrom(await http("/secure-chats"), "items", "data", "rooms");
-  return rooms.reduce<number>((sum, r) => sum + asNum(asDict(r).unread_count), 0);
-}
-
 // GET /payouts/me — the payout ledger (seller share of paid orders).
 export async function getPayouts(): Promise<Payout[]> {
   return listFrom(await http("/payouts/me"), "items", "data").map((v) => {

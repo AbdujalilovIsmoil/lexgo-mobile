@@ -2,7 +2,6 @@ import { useQuery } from "@tanstack/react-query";
 import { useIsAuthed } from "@/entities/session";
 import { listOrders } from "../api/orderApi";
 import { getPaymentPolicy, getPriceQuote } from "../api/paymentApi";
-import { isOpenOrder, isTakenOrder } from "../lib/status";
 import type { Order } from "./types";
 
 export const orderKeys = { list: ["orders"] as const };
@@ -13,9 +12,6 @@ function useOrderList(select?: (rows: Order[]) => Order[]) {
 }
 
 export const useOrders = () => useOrderList();
-// Seller views of the same /orders feed (as on the web).
-export const useOpenOrders = () => useOrderList((rows) => rows.filter(isOpenOrder));
-export const useTakenOrders = () => useOrderList((rows) => rows.filter(isTakenOrder));
 
 export const usePaymentPolicy = (orderId: string) =>
   useQuery({ queryKey: ["payment-policy", orderId], queryFn: () => getPaymentPolicy(orderId), enabled: !!orderId });

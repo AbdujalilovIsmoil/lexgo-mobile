@@ -1,7 +1,7 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useIsAuthed } from "@/entities/session";
 import { useAdminMutation } from "@/shared/lib/useAdminMutation";
-import { addComment, getLimits, listComments, listDocRequests, listVersions, requestClientDocument } from "../api/fileApi";
+import { addComment, getLimits, listComments, listDocRequests, listVersions } from "../api/fileApi";
 import { createFolder, deleteFile, deleteFolder, getTree, updateFile, updateFolder } from "../api/treeApi";
 import type { FilePatch, FolderPatch, Tree } from "./types";
 
@@ -35,4 +35,3 @@ export const useUpdateFile = (success?: string) => useAdminMutation({ mutationFn
 export const useDeleteFolder = () => useAdminMutation({ mutationFn: (id: string) => deleteFolder(id), invalidate: inv, success: "aw8.deleted" });
 export const useDeleteFile = () => useAdminMutation({ mutationFn: (id: string) => deleteFile(id), invalidate: inv, success: "aw8.deleted" });
 export const useAddComment = () => useAdminMutation({ mutationFn: ({ id, text }: { id: string; text: string }) => addComment(id, text), invalidate: inv });
-export const useRequestDocument = () => useAdminMutation({ mutationFn: requestClientDocument, invalidate: inv, success: "aw8.requested" });

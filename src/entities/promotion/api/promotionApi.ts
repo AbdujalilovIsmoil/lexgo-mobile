@@ -1,9 +1,9 @@
 import { http } from "@/shared/api";
 import { appendFile } from "@/shared/lib/upload";
-import { asDict, listFrom } from "@/shared/lib/json";
+import { asDict } from "@/shared/lib/json";
 import { normBannerCheck, normCatalog, normCheckout } from "./normalize";
-import { normAnalytics, normRunning, normStatus } from "./normStatus";
-import type { Analytics, BannerCheck, AnalyticsFilter, CheckoutInput, CheckoutResult, Catalog, Placement, PromoStatus, Running } from "../model/types";
+import { normAnalytics, normStatus } from "./normStatus";
+import type { Analytics, BannerCheck, AnalyticsFilter, CheckoutInput, CheckoutResult, Catalog, Placement, PromoStatus } from "../model/types";
 
 // Only packages on sale (status=active), like the web checkout.
 export const listPackages = async (placement?: Placement): Promise<Catalog> => normCatalog(await http(`/promotions/packages?status=active${placement ? `&placement=${placement}` : ""}`), placement);
@@ -15,12 +15,6 @@ export async function getAnalytics(f: AnalyticsFilter = {}): Promise<Analytics> 
   if (f.from) qs.set("date_from", f.from);
   if (f.to) qs.set("date_to", f.to);
   return normAnalytics(await http(`/promotions/analytics${qs.size ? `?${qs}` : ""}`));
-}
-
-// GET /promotions/active?seller_user_id=… — what clients can see of this seller right now.
-export async function listActive(sellerUserId: string): Promise<Running[]> {
-  const qs = new URLSearchParams({ seller_user_id: sellerUserId, limit: "10" });
-  return listFrom(await http(`/promotions/active?${qs}`), "items", "data", "promotions").map(normRunning);
 }
 
 // POST /promotions/banner-assets (multipart `file`) → the stored file's URL and the picture check (active · manual_review · rejected).

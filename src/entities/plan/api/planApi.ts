@@ -14,7 +14,3 @@ export async function listPlans(locale = "uz"): Promise<Plan[]> {
     .sort((a, b) => a.sortOrder - b.sortOrder || a.monthlyPrice - b.monthlyPrice);
 }
 
-// GET /subscription-plans/{id or slug}
-export async function getPlan(idOrSlug: string, locale = "uz"): Promise<Plan> {
-  return normPlan(await http(`/subscription-plans/${encodeURIComponent(idOrSlug)}`, { auth: false }), locale);
-}
