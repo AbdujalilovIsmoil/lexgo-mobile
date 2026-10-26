@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useState } from "react";
 import { RefreshControl, ScrollView, StyleSheet, View } from "react-native";
 import { useRouter } from "expo-router";
 import { callPath } from "@/entities/call";
@@ -7,6 +7,7 @@ import { chatModeOf, phaseOf, useFlowLive } from "@/entities/market-flow";
 import { ActiveCallBar } from "@/widgets/secure-chat";
 import { ChecklistCard, ComplaintCard, FlowLead, PaymentRequestCard, PaymentsCard, WarrantyCard } from "@/widgets/market-order";
 import { useInsets } from "@/shared/lib/insets";
+import { createSignal } from "@/shared/lib/signal";
 import { DetailHeader } from "./DetailHeader";
 import { OrderFacts } from "./OrderFacts";
 import { OrderTimeline } from "./OrderTimeline";
@@ -30,15 +31,14 @@ export function MarketOrderDetail({ order, refreshing, onRefresh }: Props) {
   const phase = phaseOf({ status: order.status, paymentStatus: order.paymentStatus, flow: order.flow, rated: order.ratingStars > 0 });
   const live = chatModeOf(order, phase) === "open";
   const f = order.flow;
-  // Bumped while the page scrolls (and when it settles): the second-opinion card asks again whether it is on screen.
-  const [tick, setTick] = useState(0);
-  const last = useRef(0);
-  const bump = () => { const now = Date.now(); if (now - last.current > 150) { last.current = now; setTick((n) => n + 1); } };
+  // Fired while the page scrolls (and when it settles): the second-opinion card asks again whether it is on screen. A signal, not state:
+  // a state bump re-rendered every card of the page every 150 ms of scrolling.
+  const [scrolled] = useState(createSignal);
   return (
     <ScrollView
-      onScroll={bump}
-      onMomentumScrollEnd={() => setTick((n) => n + 1)}
-      onScrollEndDrag={() => setTick((n) => n + 1)}
+      onScroll={scrolled.emit}
+      onMomentumScrollEnd={scrolled.emit}
+      onScrollEndDrag={scrolled.emit}
       scrollEventThrottle={100}
       contentContainerStyle={[s.content, { paddingBottom: insets.bottom + 24 }]}
       refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
@@ -56,7 +56,7 @@ export function MarketOrderDetail({ order, refreshing, onRefresh }: Props) {
       <ChecklistCard orderId={order.id} url={f.checklistUrl} role="client" enabled={phase === "in_progress" || phase === "review" || phase === "completed" || phase === "rated" || (phase === "paid" && !!f.checklistProgress)} />
       <PaymentsCard orderId={order.id} url={f.financialsUrl} role="client" enabled={phase !== "cancelled" || order.paymentStatus === "paid"} />
       <WarrantyCard orderId={order.id} flow={f} phase={phase} />
-      <SecondOpinionCard order={order} tick={tick} />
+      <SecondOpinionCard order={order} scrolled={scrolled} />
       <PackageCard order={order} />
       <OptionsCard order={order} />
       <OrderFacts order={order} />

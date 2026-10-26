@@ -3,6 +3,7 @@ import { View } from "react-native";
 import { ActionList } from "@/shared/ui/admin";
 import { FilePreview } from "@/shared/ui/preview";
 import { useKept } from "@/shared/lib/useKept";
+import { createSignal } from "@/shared/lib/signal";
 import { useSession } from "@/entities/session";
 import { docCan, type DocFile, type DocReq } from "@/entities/doc-queue";
 import { FinalizeSheet, FulfillSheet, SourceSheet, useEditorSession, useLiveCall, useSaveState, type EditorMsg } from "@/features/doc-editor";
@@ -26,16 +27,20 @@ export function EditorSession({ doc, onSent }: { doc: DocReq; onSent: () => void
   const [failed, setFailed] = useState(false);
   const [sheet, setSheet] = useState<Sheet>("");
   const [file, setFile] = useState<DocFile | null>(null);
+  const [activity] = useState(createSignal); // a touch or an edit: keeps the screen awake a while longer (ScreenGuard)
   const shown = useKept(file);
   const live = useLiveCall(doc.chatRoomId, sheet === "menu");
   const leave = useLeave(save.state === "saving");
   const reopen = () => { setReady(false); setFailed(false); reset(); s.reopen(); };
-  const onMsg = (m: EditorMsg) => (m.t === "ready" ? setReady(true) : m.t === "dirty" ? onDirty(m.d === true) : m.t === "error" ? onError() : m.t === "fail" ? setFailed(true) : null);
+  const onMsg = (m: EditorMsg) => {
+    if (m.t === "dirty") activity.emit();
+    return m.t === "ready" ? setReady(true) : m.t === "dirty" ? onDirty(m.d === true) : m.t === "error" ? onError() : m.t === "fail" ? setFailed(true) : null;
+  };
   const menu = useDocMenu(doc, can, live.data ?? "", { info: () => setSheet("info"), source: () => setSheet("source"), transfer: () => setSheet("transfer"), upload: () => setSheet("upload") });
   const preview = (f: DocFile) => { setSheet(""); setTimeout(() => setFile(f), 320); };
   return (
-    <View style={{ flex: 1 }}>
-      <ScreenGuard />
+    <View style={{ flex: 1 }} onTouchStart={activity.emit}>
+      <ScreenGuard activity={activity} />
       <EditorBar doc={doc} save={save} canSend={ready && !failed && save.state !== "saving"} onBack={leave} onMenu={() => setSheet("menu")} onSend={() => setSheet("send")} />
       <EditorPane doc={doc} s={s} ready={ready} failed={failed} onMsg={onMsg} onRetry={reopen} />
       <ActionList visible={sheet === "menu"} onClose={() => setSheet("")} title={doc.title} actions={menu} />

@@ -18,7 +18,7 @@ export function SellerActions({ orderId, onDone, deadlineAt = "" }: Props) {
   const [declining, setDeclining] = useState(false);
   const [reason, setReason] = useState<DeclineReason>("busy");
   const gone = outcome === "expired" || outcome === "taken" || outcome === "forbidden";
-  const now = useServerNow(!!deadlineAt && !gone, 1000);
+  const now = useServerNow(!!deadlineAt && !gone, 1000, Date.parse(deadlineAt));
   const answer = answerState(deadlineAt, now);
   useEffect(() => {
     if (outcome === "accepted" || outcome === "declined") onDone();

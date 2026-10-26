@@ -1,18 +1,19 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Dimensions, StyleSheet, View } from "react-native";
 import type { MarketOrder } from "@/entities/order";
-import { trackPromo, useHidePromotion, usePromotion, usePromotionSync } from "@/entities/second-opinion";
+import { trackPromo, useHidePromotion, usePromotion, usePromotionSync, wasTracked } from "@/entities/second-opinion";
 import { SecondOpinionSheet } from "@/features/second-opinion";
 import { Button, Card, Icon, IconButton, Text } from "@/shared/ui";
 import { radius, useColors } from "@/shared/theme";
 import { useT } from "@/shared/i18n";
+import type { Signal } from "@/shared/lib/signal";
 
-type Props = { order: MarketOrder; tick: number }; // tick: bumps while the page scrolls, so "is the card on screen" is asked again
+type Props = { order: MarketOrder; scrolled: Signal }; // scrolled: fires while the page scrolls, so "is the card on screen" is asked again
 
 // "Ikkinchi fikr — advokatlar guruhi" on a paid marketplace order, in progress and after completion. Rendered only when the order carries
 // the promotion link and the backend says `visible`; the texts are the backend's and there is no price on the card, ever. The impression is
 // sent once, when at least half of the card is on screen; a tap sends `click` and opens the selection sheet; the close sends `dismiss`.
-export function SecondOpinionCard({ order, tick }: Props) {
+export function SecondOpinionCard({ order, scrolled }: Props) {
   const { t } = useT();
   const c = useColors();
   const fromEvent = usePromotionSync(order.id);
@@ -24,18 +25,25 @@ export function SecondOpinionCard({ order, tick }: Props) {
   const p = q.data;
   const shown = !!url && !!p?.visible;
 
-  const check = useCallback(() => {
-    if (!p || !shown) return;
-    ref.current?.measureInWindow((_x, y, _w, h) => {
-      if (h <= 0) return;
-      const H = Dimensions.get("window").height;
-      if (Math.min(y + h, H) - Math.max(y, 0) >= h * 0.5) void trackPromo(p, "impression");
-    });
-  }, [p, shown]);
+  // Measured once laid out, then 150 ms after scrolling moves it (at most that often, the last position included), until the impression is
+  // sent.
   useEffect(() => {
-    const id = setTimeout(check, 350);
-    return () => clearTimeout(id);
-  }, [check, tick]);
+    if (!p || !shown) return;
+    let soon: ReturnType<typeof setTimeout> | undefined;
+    const check = () => {
+      if (wasTracked(p, "impression")) return;
+      ref.current?.measureInWindow((_x, y, _w, h) => {
+        if (h <= 0) return;
+        const H = Dimensions.get("window").height;
+        if (Math.min(y + h, H) - Math.max(y, 0) >= h * 0.5) void trackPromo(p, "impression");
+      });
+    };
+    const first = setTimeout(check, 350);
+    const off = scrolled.on(() => {
+      soon ??= setTimeout(() => { soon = undefined; check(); }, 150);
+    });
+    return () => { clearTimeout(first); clearTimeout(soon); off(); };
+  }, [p, shown, scrolled]);
 
   if (!p || !shown) return null;
   const cta = p.ctaLabel || t("so1.sheetTitle");

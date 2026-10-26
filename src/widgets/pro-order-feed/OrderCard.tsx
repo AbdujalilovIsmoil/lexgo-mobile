@@ -47,7 +47,7 @@ export function OrderCard({ order: o, onPress }: { order: ProOrder; onPress: () 
 function AnswerTimer({ deadlineAt }: { deadlineAt: string }) {
   const c = useColors();
   const { t } = useT();
-  const now = useServerNow(true, 1000);
+  const now = useServerNow(true, 1000, Date.parse(deadlineAt));
   const open = answerState(deadlineAt, now) === "open";
   const tone = open ? c.warn : c.gray;
   return (

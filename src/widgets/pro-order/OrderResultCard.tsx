@@ -15,7 +15,7 @@ export function OrderResultCard({ order: o }: { order: ProOrder }) {
   const { t } = useT();
   const r = o.rating;
   const open = r.available && !r.closed;
-  const left = ratingMsLeft(r, useNow(open));
+  const left = ratingMsLeft(r, useNow(open, 1000, ratingMsLeft(r, 0))); // ratingMsLeft(r, 0) = the window's end
   if (!o.result.text && !o.result.files.length && !open && !r.stars && !r.closed) return null;
   const view = (f: (typeof o.result.files)[number]) => openFile({ id: f.fileId, file: { name: f.fileName, mime: "", size: 0, path: f.downloadUrl } } as Msg).catch(() => toast(t("ntd.sellerV2.ord.openFail"), "err"));
   return (

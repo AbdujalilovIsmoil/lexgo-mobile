@@ -20,7 +20,7 @@ export function AssignmentCard({ order, flow, acceptAllowed }: Props) {
   const qc = useQueryClient();
   const a = useAnswer(order.id);
   const [declining, setDeclining] = useState(false);
-  const now = useServerNow(!a.outcome, 1000);
+  const now = useServerNow(!a.outcome, 1000, Date.parse(flow.acceptanceDeadlineAt));
   const state = answerState(flow.acceptanceDeadlineAt, now);
   const expired = state === "expired" || a.outcome === "expired";
   const refetched = useRef(false);
