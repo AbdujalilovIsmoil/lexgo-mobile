@@ -3,3 +3,4 @@ export { subscribeUserEvents, onResync, useSocketStatus, emit as emitUserEvent }
 export { useUserEvents, useResync, useSocketState } from "./useUserEvents";
 export type { UserEvent, UserEventHandler, SocketState } from "./types";
 export { ReconnectingSocket } from "./ReconnectingSocket";
+export { closeWhileAway } from "./closeWhileAway";

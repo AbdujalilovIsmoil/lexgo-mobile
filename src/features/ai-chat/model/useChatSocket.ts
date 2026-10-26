@@ -1,10 +1,11 @@
 import { useEffect, useRef } from "react";
 import { AppState } from "react-native";
 import { createChatSocket } from "@/entities/chat";
+import { closeWhileAway } from "@/shared/realtime";
 import { applyChatEvent, reconcileChat } from "./chatSync";
 
 // Keeps ONE socket on the open chat: answers stream in even when the REST call is cut,
-// every reconnect / foreground re-reads the chat, and `onReply` fires for each assistant message.
+// every reconnect / foreground re-reads the chat, and `onReply` fires for each assistant message. Closed while the app is away.
 export function useChatSocket(clientId: string | null, chatId: string | null, onReply?: () => void): void {
   const reply = useRef(onReply);
   useEffect(() => {
@@ -17,6 +18,7 @@ export function useChatSocket(clientId: string | null, chatId: string | null, on
       onOpen: (again) => again && void reconcileChat(clientId, chatId),
     });
     sock.start();
+    const away = closeWhileAway(sock);
     const sub = AppState.addEventListener("change", (s) => {
       if (s !== "active") return;
       sock.nudge();
@@ -24,6 +26,7 @@ export function useChatSocket(clientId: string | null, chatId: string | null, on
     });
     return () => {
       sub.remove();
+      away();
       sock.stop();
     };
   }, [clientId, chatId]);

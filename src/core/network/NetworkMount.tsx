@@ -40,12 +40,21 @@ export function NetworkMount() {
       void flushOutbox();
     });
     void probeHealth();
-    // Items waiting out a retry delay are picked up by this slow tick (a flush with nothing due is one cheap query).
-    const tick = setInterval(() => void flushOutbox(), 30_000);
-    // While the banner says "server not answering", look again every few seconds so it goes away by itself.
-    const heal = setInterval(() => { if (useNetStore.getState().serverDown) void probeHealth(); }, 8_000);
+    // Items waiting out a retry delay are picked up by a slow tick (a flush with nothing due is one cheap query), and while the banner
+    // says "server not answering" the server is asked again every few seconds so it goes away by itself. Both only while the app is in
+    // front: in the background they would wake the phone for nothing (a return runs both checks at once).
+    let tick: ReturnType<typeof setInterval> | undefined, heal: ReturnType<typeof setInterval> | undefined;
+    const startTicks = () => {
+      if (tick) return;
+      tick = setInterval(() => void flushOutbox(), 30_000);
+      heal = setInterval(() => { if (useNetStore.getState().serverDown) void probeHealth(); }, 8_000);
+    };
+    const stopTicks = () => { clearInterval(tick); clearInterval(heal); tick = heal = undefined; };
+    if (AppState.currentState !== "background") startTicks();
     const sub = AppState.addEventListener("change", (s) => {
+      if (s === "background") return stopTicks();
       if (s !== "active") return;
+      startTicks();
       void recheckNetwork();
       void flushOutbox();
       void probeHealth();
@@ -57,8 +66,7 @@ export function NetworkMount() {
       stopSoft();
       off();
       sub.remove();
-      clearInterval(tick);
-      clearInterval(heal);
+      stopTicks();
     };
   }, [qc]);
   useDeniedNotice();
