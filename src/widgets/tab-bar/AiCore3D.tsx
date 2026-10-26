@@ -117,7 +117,7 @@ export function AiCore3D({ size, t, calm = false, paused = false, playMs = Infin
   if (!GL) return null;
   return (
     <Animated.View pointerEvents="none" style={[s.wrap, { width: size, height: size, left: "50%", top: "50%", marginLeft: -size / 2, marginTop: -size / 2 }, style]}>
-      <GL.GLView style={{ width: size, height: size }} onContextCreate={onContext} msaaSamples={4} />
+      <GL.GLView style={{ width: size, height: size }} onContextCreate={onContext} msaaSamples={2} />
     </Animated.View>
   );
 }
