@@ -4,7 +4,6 @@ import { useIsAuthed } from "@/entities/session";
 import { useUserEvents } from "@/shared/realtime";
 import { caseReplacement, listCaseDocs } from "../api/requestApi";
 import { listCaseOrders, listCases } from "../api/caseApi";
-import { DEFAULT_HOURS, fetchBusinessHours } from "../api/hoursApi";
 import { listMilestones, orderHistory } from "../api/orderFlowApi";
 import { joinItems } from "../lib/items";
 
@@ -28,7 +27,6 @@ export function useCaseItems() {
   return { items, isLoading: cases.isLoading || orders.isLoading, isError: cases.isError && orders.isError, error: cases.error ?? orders.error, isRefetching: cases.isRefetching || orders.isRefetching, refetch };
 }
 
-export const useBusinessHours = () => useQuery({ queryKey: [...caseKeys.all, "hours"], queryFn: fetchBusinessHours, staleTime: 10 * 60 * 1000 }).data ?? DEFAULT_HOURS;
 export const useCaseDocs = (caseId: string) => useQuery({ queryKey: caseKeys.docs(caseId), queryFn: () => listCaseDocs(caseId), enabled: !!caseId });
 export const useReplacement = (caseId: string) => useQuery({ queryKey: caseKeys.repl(caseId), queryFn: () => caseReplacement(caseId), retry: false });
 export const useOrderHistory = (orderId: string) => useQuery({ queryKey: caseKeys.history(orderId), queryFn: () => orderHistory(orderId), enabled: !!orderId });

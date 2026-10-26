@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { useIsAuthed } from "@/entities/session";
 import { useAdminMutation } from "@/shared/lib/useAdminMutation";
-import { calcDeadline, cascadeReminders, createEvent, deleteEvent, getHours, listEvents, updateEvent } from "../api/calendarApi";
+import { calcDeadline, cascadeReminders, createEvent, deleteEvent, listEvents, updateEvent } from "../api/calendarApi";
 import type { DeadlineKind, EventInput } from "./types";
 
 export const calKeys = { all: ["pro-calendar"] as const };
@@ -11,7 +11,6 @@ export const useEvents = () => {
   return useQuery({ queryKey: calKeys.all, queryFn: listEvents, enabled: authed });
 };
 
-export const useHours = () => useQuery({ queryKey: [...calKeys.all, "hours"], queryFn: getHours, staleTime: 5 * 60 * 1000 });
 
 const inv = [calKeys.all];
 export const useCreateEvent = () => useAdminMutation({ mutationFn: (b: EventInput) => createEvent(b), invalidate: inv, success: "aw6.created" });

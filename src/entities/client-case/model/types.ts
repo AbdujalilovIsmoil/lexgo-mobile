@@ -35,4 +35,3 @@ export type Milestone = {
   status: string;
 };
 
-export type BusinessHours = { days: number[]; start: string; end: string; holidays: string[] };

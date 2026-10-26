@@ -14,7 +14,7 @@ export type SupportMessage = {
 
 export type MetaOption = { key: string; label: string };
 export type SupportMeta = { categories: MetaOption[]; priorities: MetaOption[] };
-export type SupportHours = { open: boolean | null; days: string[]; start: string; end: string };
+export type SupportHours = { open: boolean; days: number[]; start: string; end: string };
 export type TicketTab = "active" | "closed";
 
 /** One page of GET …/messages; `raw` counts what the server sent (before dropping empty rows). */

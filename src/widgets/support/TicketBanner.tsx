@@ -9,7 +9,7 @@ import { useAssistStore } from "@/features/support";
 export function TicketBanner({ ticket }: { ticket: SupportTicket }) {
   const { t } = useT();
   const c = useColors();
-  const hours = useSupportHours().data;
+  const hours = useSupportHours();
   const labels = useSupportLabels();
   const card = useAssistStore((s) => s.cards).filter((x) => x.ticketId === ticket.id).pop();
   const connecting = !ticket.operatorName && isWaiting(ticket.status);

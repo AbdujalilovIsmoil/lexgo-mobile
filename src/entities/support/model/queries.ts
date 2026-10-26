@@ -3,10 +3,11 @@ import { useIsFocused } from "expo-router";
 import { usePaged } from "@/shared/lib/usePaged";
 import { useSocketState } from "@/shared/realtime";
 import { getTicket, listMyTickets } from "../api/ticketApi";
-import { getSupportHours, getSupportMeta } from "../api/metaApi";
+import { hoursState, useBusinessHoursQuery } from "@/entities/business-hours";
+import { getSupportMeta } from "../api/metaApi";
 import { loadChat } from "./chatCache";
 import { supKeys } from "./keys";
-import type { TicketTab } from "./types";
+import type { SupportHours, TicketTab } from "./types";
 
 // Poll only while the socket is down (events refetch everything while it is up).
 function useFallbackPoll(ms: number): number | false {
@@ -51,6 +52,8 @@ export function useSupportMeta() {
   return useQuery({ queryKey: supKeys.meta, queryFn: getSupportMeta, staleTime: 3_600_000, retry: false });
 }
 
-export function useSupportHours() {
-  return useQuery({ queryKey: supKeys.hours, queryFn: getSupportHours, staleTime: 120_000, refetchInterval: 300_000, retry: false });
+// The call center's schedule (the shared office hours) and whether it is open now; undefined until known.
+export function useSupportHours(): SupportHours | undefined {
+  const bh = useBusinessHoursQuery().data;
+  return bh ? { open: hoursState(bh) === "open", days: bh.days, start: bh.start, end: bh.end } : undefined;
 }

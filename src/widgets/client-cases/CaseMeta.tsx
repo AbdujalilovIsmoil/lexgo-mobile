@@ -3,7 +3,8 @@ import { StyleSheet, View } from "react-native";
 import { useColors } from "@/shared/theme";
 import { Icon, Text } from "@/shared/ui";
 import { useT } from "@/shared/i18n";
-import { deadlineLabel, orderDeadline, useBusinessHours, useReplacement, type CaseItem } from "@/entities/client-case";
+import { deadlineLabel, useBusinessHours } from "@/entities/business-hours";
+import { orderDeadline, useReplacement, type CaseItem } from "@/entities/client-case";
 import { humanizeSlug } from "@/shared/lib/format";
 
 // The seller's answer deadline (working hours only) and the latest replacement request of a case.

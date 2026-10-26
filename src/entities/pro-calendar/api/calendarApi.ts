@@ -44,9 +44,3 @@ export async function calcDeadline(i: { kind: DeadlineKind; baseDate: string; ad
   return { deadline: asStr(d.deadline), baseDate: asStr(d.base_date), added: Boolean(d.event) };
 }
 
-// GET /calendar/business-hours — office hours (Asia/Tashkent) and whether it is working time right now.
-export async function getHours(): Promise<{ start: string; end: string; working: boolean }> {
-  const d = asDict(await http("/calendar/business-hours"));
-  const s = asDict(d.schedule);
-  return { start: asStr(s.start, "09:00"), end: asStr(s.end, "19:00"), working: Boolean(asDict(d.current).is_working_time) };
-}

@@ -7,5 +7,4 @@ export const supKeys = {
   ticket: (id: string) => ["support", "ticket", id] as const,
   chat: (id: string) => ["support", "chat", id] as const,
   meta: ["support", "meta"] as const,
-  hours: ["support", "hours"] as const,
 };

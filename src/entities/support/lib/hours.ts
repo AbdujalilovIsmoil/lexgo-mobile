@@ -1,11 +1,9 @@
-import type { SupportHours } from "../model/types";
-
-const ORDER = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"];
+import { dayKey, type BusinessHours } from "@/entities/business-hours";
 
 /** "Du–Sh, 09:00–19:00": consecutive days collapse to a range; `dayName` translates mon…sun. */
-export function scheduleText(h: SupportHours, dayName: (key: string) => string): string {
-  const idx = h.days.map((d) => ORDER.indexOf(d)).filter((i) => i >= 0).sort((a, b) => a - b);
-  const run = idx.length > 1 && idx.every((v, i) => i === 0 || v === idx[i - 1] + 1);
-  const days = run ? `${dayName(ORDER[idx[0]])}–${dayName(ORDER[idx[idx.length - 1]])}` : idx.map((i) => dayName(ORDER[i])).join(", ");
-  return `${days}, ${h.start}–${h.end}`;
+export function scheduleText(h: Pick<BusinessHours, "days" | "start" | "end">, dayName: (key: string) => string): string {
+  const days = [...h.days].sort((a, b) => a - b);
+  const run = days.length > 1 && days.every((v, i) => i === 0 || v === days[i - 1] + 1);
+  const text = run ? `${dayName(dayKey(days[0]))}–${dayName(dayKey(days[days.length - 1]))}` : days.map((d) => dayName(dayKey(d))).join(", ");
+  return `${text}, ${h.start}–${h.end}`;
 }

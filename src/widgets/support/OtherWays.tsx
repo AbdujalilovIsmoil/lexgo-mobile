@@ -23,7 +23,7 @@ export function OtherWays() {
   const { t } = useT();
   const c = useColors();
   const [form, setForm] = useState(false);
-  const hours = useSupportHours().data;
+  const hours = useSupportHours();
   const sched = hours ? scheduleText(hours, (d) => t(`sp4.days.${d}`)) : "";
   return (
     <View style={s.row}>
