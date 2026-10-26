@@ -34,14 +34,11 @@ export function ruleFor(key: readonly unknown[]): PersistRule | null {
 /** Longest TTL of any rule: in-memory gcTime of persisted queries must be at least this, or they vanish before reuse. */
 export const rulePrefixes = (): readonly (readonly unknown[])[] => rules.map((r) => r.prefix);
 
-// Defaults: notification list + preferences, plan summary, entitlements, service catalogue
-// (categories + lists), chat list with its last message.
+// Defaults: notification list + preferences, entitlements, chat list with its last message. The public catalogue (plans, service
+// categories and lists) is kept for everybody, guests too, by the app's AsyncStorage copy (core/providers/queryPersist), not twice.
 persistQueries(["notifications"], { ttlMs: 3 * DAY });
 persistQueries(["notification-prefs"], { ttlMs: 7 * DAY });
-persistQueries(["plans"], { ttlMs: 7 * DAY });
 persistQueries(["entitlements"], { ttlMs: DAY });
-persistQueries(["service-categories"], { ttlMs: 7 * DAY });
-persistQueries(["services"], { ttlMs: 7 * DAY });
 persistQueries(["secure-chat", "rooms"], { ttlMs: 3 * DAY });
 
 // Signed-in work data: lists and detail metadata that make the app usable without a connection.

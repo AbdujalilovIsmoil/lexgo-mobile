@@ -1,8 +1,6 @@
-import { useEffect } from "react";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { listRooms } from "../api/chatApi";
-import { myRooms } from "./mine";
-import { loadRooms, saveRooms } from "./roomsStore";
+import "./legacyRooms";
 import type { Room } from "./types";
 
 export const chatKeys = {
@@ -13,23 +11,12 @@ export const chatKeys = {
   file: (messageId: string) => ["secure-chat", "file", messageId] as const,
 };
 
-// `live` = the user socket is up and keeps the list fresh; otherwise poll every 15 s. The last list is
-// restored from disk first (stale on purpose, so the network answer still follows).
+// `live` = the user socket is up and keeps the list fresh; otherwise poll every 15 s. The last list comes back from the device's
+// snapshot at start (persistRules), so the inbox paints at once and the network answer follows.
 export function useRooms(live: boolean, userId = "") {
-  const qc = useQueryClient();
-  useEffect(() => {
-    if (!userId) return;
-    void loadRooms(userId).then((cached) => {
-      if (cached && !qc.getQueryData(chatKeys.rooms)) qc.setQueryData(chatKeys.rooms, cached, { updatedAt: 0 });
-    });
-  }, [qc, userId]);
   return useQuery({
     queryKey: chatKeys.rooms,
-    queryFn: async (): Promise<Room[]> => {
-      const rooms = await listRooms();
-      if (userId) void saveRooms(userId, myRooms(rooms, userId));
-      return rooms;
-    },
+    queryFn: (): Promise<Room[]> => listRooms(),
     refetchInterval: live ? false : 15_000,
     enabled: userId !== "",
   });
