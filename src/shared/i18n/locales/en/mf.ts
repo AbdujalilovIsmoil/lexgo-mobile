@@ -216,6 +216,8 @@ export const mf = {
     },
     wr: {
       title: "LexGo guarantee",
+      orderHint: "A warranty request for a marketplace order is sent from that order's page.",
+      toOrders: "My orders",
       lead: "If the specialist did not answer in time, missed the deadline, abandoned the work or did not deliver, send a warranty request. The call center reviews it and decides: another specialist or a refund.",
       open: "Use the guarantee",
       dialogTitle: "Guarantee request",

@@ -218,6 +218,8 @@ export const mf = {
     },
     wr: {
       title: "LexGo kafolati",
+      orderHint: "Marketplace buyurtmasi bo'yicha kafolat so'rovi o'sha buyurtma sahifasidan yuboriladi.",
+      toOrders: "Buyurtmalarim",
       lead: "Ijrochi vaqtida javob bermasa, muddatni buzsa, ishni tashlab ketsa yoki xizmatni bajarmasa, kafolat so'rovini yuboring. Call-markaz ko'rib chiqib, boshqa mutaxassis yoki pulni qaytarish haqida qaror qabul qiladi.",
       open: "Kafolatdan foydalanish",
       dialogTitle: "Kafolat so'rovi",

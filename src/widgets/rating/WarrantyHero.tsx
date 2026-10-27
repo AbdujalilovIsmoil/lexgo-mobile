@@ -1,4 +1,5 @@
 import { View } from "react-native";
+import { useRouter } from "expo-router";
 import { Button, Card, Icon, Text, type IconName } from "@/shared/ui";
 import { useColors } from "@/shared/theme";
 import { useT } from "@/shared/i18n";
@@ -11,6 +12,7 @@ const FACTS: [IconName, string][] = [["shield", "srt.w.terms"], ["clock", "srt.w
 export function WarrantyHero({ onRequest }: { onRequest: () => void }) {
   const c = useColors();
   const { t } = useT();
+  const router = useRouter();
   return (
     <View style={{ gap: 12, paddingBottom: 12 }}>
       <View style={{ flexDirection: "row", gap: 12, alignItems: "center" }}>
@@ -22,6 +24,11 @@ export function WarrantyHero({ onRequest }: { onRequest: () => void }) {
       </View>
       <Card tinted style={{ gap: 8 }}>
         {FACTS.map(([icon, key]) => <View key={key} style={{ flexDirection: "row", gap: 8, alignItems: "center" }}><Icon name={icon} size={16} tone="accent" /><Text variant="small" style={{ flex: 1 }}>{t(key)}</Text></View>)}
+      </Card>
+      {/* A marketplace order's warranty is asked from that order (POST …/orders/{id}/warranty), never from this general form. */}
+      <Card tinted style={{ gap: 8 }}>
+        <View style={{ flexDirection: "row", gap: 8, alignItems: "flex-start" }}><Icon name="shopping-bag" size={16} tone="accent" /><Text variant="small" style={{ flex: 1 }}>{t("mf.wr.orderHint")}</Text></View>
+        <Button title={t("mf.wr.toOrders")} icon="arrow-right" variant="soft" size="sm" onPress={() => router.push("/(tabs)/orders" as never)} />
       </Card>
       <Card style={{ gap: 10 }}>
         <Text variant="body" weight="bold">{t("pwr.wr.requestTitle")}</Text>
