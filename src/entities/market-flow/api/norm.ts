@@ -1,5 +1,5 @@
 import { asArr, asDict, asNum, asStr, uzs, type Dict } from "@/shared/lib/json";
-import type { CallKind, CheckFile, CheckItem, CheckStatus, Checklist, ChecklistProgress, FinPayment, Financials, FlowEvent, FlowOrder, OrderComplaint, PayKind, PayPart, RuntimeCaps, WarrantyResolution } from "../model/types";
+import type { CallKind, CheckFile, CheckItem, CheckStatus, Checklist, ChecklistProgress, FinPayment, Financials, FlowEvent, FlowOrder, OrderComplaint, OrderResolution, PayKind, PayPart, PriceComponent, PriceSnapshot, ResolutionChoice, RuntimeCaps, WarrantyResolution } from "../model/types";
 
 const bool = (...v: unknown[]): boolean | null => {
   for (const x of v) if (typeof x === "boolean") return x;
@@ -91,6 +91,36 @@ export function normFlow(v: unknown): FlowOrder {
     finalPayment: finalId || finalAmount > 0 ? { id: finalId, amount: finalAmount, status: asStr(fp.status ?? d.final_payment_status).toLowerCase(), url: https(fp.payment_url ?? d.final_payment_url) } : null,
     payment: asStr(pay.id) ? { id: asStr(pay.id), amount: uzs(pay, "amount"), status: asStr(pay.status).toLowerCase(), url: https(pay.payment_url) } : null,
     checklistProgress: d.checklist_progress !== undefined || asDict(d.checklist).progress !== undefined ? progressOf(d.checklist_progress ?? asDict(d.checklist).progress) : null,
+    pricing: normPricing(det.pricing_snapshot ?? d.pricing_snapshot),
+    resolution: normResolution(d.resolution ?? det.resolution),
+  };
+}
+
+// details.pricing_snapshot: the components exactly as listed (order kept, nothing summed); null when there are none.
+export function normPricing(v: unknown): PriceSnapshot | null {
+  const p = asDict(v);
+  const components: PriceComponent[] = asArr(p.components).map((x) => {
+    const c = asDict(x);
+    const ex = asDict(c.explanation);
+    const explanation: PriceComponent["explanation"] = {};
+    for (const k of ["uz", "ru", "en"] as const) if (asStr(ex[k]).trim()) explanation[k] = asStr(ex[k]).trim();
+    return { code: asStr(c.code).toLowerCase(), optionId: asStr(c.option_id), amount: num(c.amount) ?? 0, explanation };
+  }).filter((c) => c.code || Object.keys(c.explanation).length);
+  if (!components.length) return null;
+  return { currency: asStr(p.currency, "UZS").toUpperCase() || "UZS", components, finalPrice: num(p.final_price, p.selected_price) ?? 0, historical: p.historical_policy_exact === false };
+}
+
+const CHOICES: ResolutionChoice[] = ["reassign", "refund"];
+
+// `resolution`: { can_choose, offer: { id, status, options, deadline_at, message, selected_choice } }; null when the order has none.
+export function normResolution(v: unknown): OrderResolution | null {
+  const r = asDict(v);
+  if (!Object.keys(r).length) return null;
+  const o = asDict(r.offer);
+  const options = asArr(o.options).map((x) => asStr(x).toLowerCase()).filter((x): x is ResolutionChoice => (CHOICES as string[]).includes(x));
+  return {
+    canChoose: r.can_choose === true,
+    offer: Object.keys(o).length ? { id: asStr(o.id), status: asStr(o.status).toLowerCase(), options, deadlineAt: asStr(o.deadline_at), message: asStr(o.message).trim(), selected: asStr(o.selected_choice).toLowerCase() } : null,
   };
 }
 

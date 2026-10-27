@@ -5,3 +5,5 @@ export { ChecklistCard } from "./ChecklistCard";
 export { AssignmentCard } from "./AssignmentCard";
 export { WarrantyCard } from "./WarrantyCard";
 export { ComplaintCard } from "./ComplaintCard";
+export { ResolutionCard } from "./ResolutionCard";
+export { PriceCard } from "./PriceCard";

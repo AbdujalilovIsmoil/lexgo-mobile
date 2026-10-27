@@ -26,7 +26,20 @@ export type FlowOrder = {
   finalPayment: FinalPayment | null; // the 90% request after completion (final_payment_id / final_amount)
   payment: FinalPayment | null; // the order's current payment (the advance while it waits): its status and a provider link when there is one
   checklistProgress: ChecklistProgress | null;
+  pricing: PriceSnapshot | null; // details.pricing_snapshot: why the order costs what it costs
+  resolution: OrderResolution | null; // the call center's offer after no specialist could take the order
 };
+
+// details.pricing_snapshot ("Transparent price explanation"): the components in the backend's order — they sum to finalPrice, the phone
+// never adds them up. Each explains itself in uz / ru / en.
+export type PriceComponent = { code: string; optionId: string; amount: number; explanation: Partial<Record<"uz" | "ru" | "en", string>> };
+export type PriceSnapshot = { currency: string; components: PriceComponent[]; finalPrice: number; historical: boolean };
+
+// `resolution` of an order in `resolution_required`: the operator offers the client another specialist or a full refund. The choice is
+// shown only while `canChoose` is true, with the buttons the offer lists.
+export type ResolutionChoice = "reassign" | "refund";
+export type ResolutionOffer = { id: string; status: string; options: ResolutionChoice[]; deadlineAt: string; message: string; selected: string };
+export type OrderResolution = { canChoose: boolean; offer: ResolutionOffer | null };
 
 export type PayPart = { percent: number | null; amount: number };
 export type FinalPayment = { id: string; amount: number; status: string; url: string };

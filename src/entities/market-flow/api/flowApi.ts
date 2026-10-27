@@ -2,7 +2,7 @@ import { ApiError, http } from "@/shared/api";
 import { asDict, asStr } from "@/shared/lib/json";
 import { normCaps, normChecklist, normCheckItem, normFinancials, normTimeline } from "./norm";
 import { completionBody, type ResultRef } from "../lib/completion";
-import type { CheckFile, CheckStatus, Checklist, Financials, FlowEvent, RuntimeCaps, WarrantyKind, WarrantyResolution } from "../model/types";
+import type { CheckFile, CheckStatus, Checklist, Financials, FlowEvent, ResolutionChoice, RuntimeCaps, WarrantyKind, WarrantyResolution } from "../model/types";
 
 const enc = encodeURIComponent;
 const me = (id: string) => `/marketplace/me/orders/${enc(id)}`;
@@ -41,6 +41,17 @@ export async function createOrderWarranty(orderId: string, url: string, v: { kin
   const d = asDict(await http(own(url, `${me(orderId)}/warranty`), { method: "POST", body: { kind: v.kind, resolution: v.resolution, reason: v.reason.trim() } }));
   const w = asDict(d.warranty ?? d.claim ?? d);
   return { status: asStr(w.status).toLowerCase() || "new", resolution: asStr(w.resolution ?? v.resolution).toLowerCase() };
+}
+
+export type ResolutionAnswer = { replay: boolean; status: string; refundStatus: string };
+
+// "Alternative specialist or full refund" §1.4–1.7: the client's choice. The caller passes one Idempotency-Key per tap and reuses it only to
+// retry after a lost answer; a replay of an earlier success (`idempotent_replay`) is a success too.
+export async function chooseResolution(orderId: string, v: { choice: ResolutionChoice; reason: string }, key: string): Promise<ResolutionAnswer> {
+  const body: Record<string, unknown> = { choice: v.choice };
+  if (v.reason.trim()) body.reason = v.reason.trim();
+  const d = asDict(await http(`${me(orderId)}/resolution`, { method: "POST", body, headers: { "Idempotency-Key": key } }));
+  return { replay: d.idempotent_replay === true, status: asStr(d.status ?? asDict(d.order).status).toLowerCase(), refundStatus: asStr(d.refund_status).toLowerCase() };
 }
 
 // TZ §9: start the work. The order's own `start_url` when the backend offers it, else PATCH /orders/{id}/status in_progress.

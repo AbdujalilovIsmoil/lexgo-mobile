@@ -5,7 +5,7 @@ import { callPath } from "@/entities/call";
 import type { MarketOrder } from "@/entities/order";
 import { chatModeOf, phaseOf, useFlowLive } from "@/entities/market-flow";
 import { ActiveCallBar } from "@/widgets/secure-chat";
-import { ChecklistCard, ComplaintCard, FlowLead, PaymentRequestCard, PaymentsCard, WarrantyCard } from "@/widgets/market-order";
+import { ChecklistCard, ComplaintCard, FlowLead, PaymentRequestCard, PaymentsCard, PriceCard, ResolutionCard, WarrantyCard } from "@/widgets/market-order";
 import { useInsets } from "@/shared/lib/insets";
 import { createSignal } from "@/shared/lib/signal";
 import { DetailHeader } from "./DetailHeader";
@@ -47,6 +47,7 @@ export function MarketOrderDetail({ order, refreshing, onRefresh }: Props) {
       <DetailHeader order={order} />
       {phase === "pending" ? <PendingNote onCheck={onRefresh} checking={refreshing} /> : <FlowLead phase={phase} role="client" lead={phase === "completed" && !order.rating?.available ? "completedClosed" : undefined} />}
       {live ? <ActiveCallBar roomId={order.roomId} onJoin={(id) => router.push(callPath(order.roomId, id) as never)} style={s.call} /> : null}
+      <ResolutionCard orderId={order.id} flow={f} />
       <PaymentRequestCard orderId={order.id} flow={f} phase={phase} />
       <AddPayNote order={order} />
       <SellerCard order={order} />
@@ -58,7 +59,7 @@ export function MarketOrderDetail({ order, refreshing, onRefresh }: Props) {
       <WarrantyCard orderId={order.id} flow={f} phase={phase} />
       <SecondOpinionCard order={order} scrolled={scrolled} />
       <PackageCard order={order} />
-      <OptionsCard order={order} />
+      {f.pricing ? <PriceCard price={f.pricing} /> : <OptionsCard order={order} />}
       <OrderFacts order={order} />
       <View style={s.tl}><OrderTimeline order={order} /></View>
     </ScrollView>
