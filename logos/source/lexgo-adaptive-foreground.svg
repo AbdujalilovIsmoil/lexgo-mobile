@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024"><defs>
+    <linearGradient id="fgold" x1="0.12" y1="0" x2="0.88" y2="1"><stop offset="0" stop-color="#FFF3CB"/><stop offset="0.28" stop-color="#F6CC67"/><stop offset="0.64" stop-color="#D79D37"/><stop offset="1" stop-color="#9B6815"/></linearGradient>
+    <linearGradient id="flight" x1="0.5" y1="0" x2="0.5" y2="1"><stop offset="0" stop-color="#FFFFFF" stop-opacity="0.38"/><stop offset="0.45" stop-color="#FFFFFF" stop-opacity="0.06"/><stop offset="0.62" stop-color="#FFFFFF" stop-opacity="0"/></linearGradient>
+    <linearGradient id="fcut" x1="0.2" y1="0" x2="0.8" y2="1"><stop offset="0" stop-color="#0A4B40"/><stop offset="1" stop-color="#03211C"/></linearGradient>
+    <clipPath id="fclip"><path d="M346.4 280.4 L677.6 280.4 Q728.7 280.4 728.7 331.4 L728.7 524.7 C728.7 684.1 590 758.5 512 811.6 C434 758.5 295.3 684.1 295.3 524.7 L295.3 331.4 Q295.3 280.4 346.4 280.4 Z"/></clipPath>
+    <filter id="fdrop" x="-30%" y="-30%" width="160%" height="160%"><feDropShadow dx="0" dy="16.6" stdDeviation="19.3" flood-color="#000000" flood-opacity="0.5"/></filter></defs>
+    <g filter="url(#fdrop)"><path d="M346.4 280.4 L677.6 280.4 Q728.7 280.4 728.7 331.4 L728.7 524.7 C728.7 684.1 590 758.5 512 811.6 C434 758.5 295.3 684.1 295.3 524.7 L295.3 331.4 Q295.3 280.4 346.4 280.4 Z" fill="url(#fgold)"/></g>
+    <g clip-path="url(#fclip)"><rect x="295.3" y="280.4" width="433.3" height="531.3" fill="url(#flight)"/></g>
+    <path d="M346.4 280.4 L677.6 280.4 Q728.7 280.4 728.7 331.4 L728.7 524.7 C728.7 684.1 590 758.5 512 811.6 C434 758.5 295.3 684.1 295.3 524.7 L295.3 331.4 Q295.3 280.4 346.4 280.4 Z" fill="none" stroke="#8C5C10" stroke-opacity="0.45" stroke-width="2.8"/>
+    
+    <circle cx="512" cy="403.9" r="19.4" fill="url(#fcut)"/>
+    <rect x="500.5" y="403.9" width="23.1" height="242.9" rx="7.3" fill="url(#fcut)"/>
+    <rect x="366.9" y="443.3" width="290.2" height="18.2" rx="9.1" fill="url(#fcut)"/>
+    <path d="M375.4 458.5 L325.6 543.5 M375.4 458.5 L425.2 543.5 M648.6 458.5 L598.8 543.5 M648.6 458.5 L698.4 543.5" stroke="url(#fcut)" stroke-width="6.7" stroke-linecap="round" fill="none"/>
+    <path d="M319.5 543.5 A55.9 43.6 0 0 0 431.2 543.5 Z M592.8 543.5 A55.9 43.6 0 0 0 704.5 543.5 Z" fill="url(#fcut)"/>
+    <rect x="433.1" y="640.7" width="157.9" height="24.3" rx="8.5" fill="url(#fcut)"/>
+    <rect x="463.4" y="627.3" width="97.2" height="18.2" rx="6.1" fill="url(#fcut)"/></svg>
