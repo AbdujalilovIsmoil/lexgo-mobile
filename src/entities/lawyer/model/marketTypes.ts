@@ -32,5 +32,5 @@ export type PromoSurface = {
 export type AiMatch = { userId: string; score: number; reasons: string[]; lawyer: Lawyer | null };
 export type AiResult = { matches: AiMatch[]; summary: string; disclaimer: string; total: number; sponsored: PromoSurface[]; banners: PromoSurface[] };
 
-// GET /matching/me — the specialists the platform picked for this client.
-export type MyMatch = { id: string; kind: "advocate" | "lawyer"; userId: string; name: string; area: string; region: string; rating: number; pct: number; reason: string };
+// GET /matching/me — the specialists the platform picked for this client. `rating` is shown only when `rated`.
+export type MyMatch = { id: string; kind: "advocate" | "lawyer"; userId: string; name: string; area: string; region: string; rating: number; rated: boolean; pct: number; reason: string };

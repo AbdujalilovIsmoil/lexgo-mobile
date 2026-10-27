@@ -11,7 +11,8 @@ function Block({ label, value }: { label: string; value?: string }) {
   return value ? <View style={[s.block, { backgroundColor: c.surface2 }]}><Text variant="caption" tone="gray" weight="bold" style={s.cap}>{label}</Text><Text variant="body" weight="bold">{value}</Text></View> : null;
 }
 
-// "Mutaxassis haqida": the bio, the practice areas as chips and the labelled blocks (education, bar association, licence, organization).
+// "Mutaxassis haqida": the bio, the practice areas as chips and the organization. Education, bar association and licence are private
+// (TZ.md public lawyer privacy) and never shown here.
 export function AboutPanel({ lawyer: l }: { lawyer: Lawyer }) {
   const { t } = useT();
   return (
@@ -23,9 +24,6 @@ export function AboutPanel({ lawyer: l }: { lawyer: Lawyer }) {
           <View style={s.chips}>{l.specializations.map((x) => <Pill key={x} label={humanizeSlug(x)} tone="blue" />)}</View>
         </View>
       ) : null}
-      <Block label={t("mkd.education")} value={l.education} />
-      <Block label={t("mkd.bar")} value={l.barAssociation} />
-      <Block label={t("mkd.license")} value={l.licenseNumber} />
       <Block label={t("mkd.organization")} value={l.organizationName} />
     </ProfileSection>
   );

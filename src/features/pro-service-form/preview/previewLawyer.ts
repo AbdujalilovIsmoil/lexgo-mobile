@@ -19,7 +19,7 @@ export function previewLawyer(seller: ProSeller, sellerId: string, region: strin
     experienceYears: seller.experienceYears, rating: seller.rating, reviews: seller.reviews, rated: seller.reviews > 0 && seller.rating > 0,
     basePrice: priced.length ? Math.min(...priced) : 0, priceTo: priced.length ? Math.max(...priced) : 0, bio: a.bio || undefined, verified: seller.verified, badge: "",
     kind: seller.kind === "advokat" ? "advocate" : "lawyer", totalCases: seller.cases, winsCount: 0, partialWins: 0, successRate: seller.successRate, completed: seller.completed ?? 0,
-    education: a.education || undefined, licenseNumber: a.license || undefined, barAssociation: a.bar || undefined, organizationName: a.organization || undefined,
+    organizationName: a.organization || undefined, // clients never see education, licence or bar association, so neither does the preview
     createdAt: "", isNew: false, promoted: boost.profile, boost: boost.profile ? 1 : 0, available: true, services, reviewList: [],
   };
 }

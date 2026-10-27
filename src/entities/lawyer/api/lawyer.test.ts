@@ -1,19 +1,36 @@
 import { http } from "@/shared/api";
+import { listLawyers } from "./lawyerApi";
 import { getMyMatches } from "./matchApi";
 import { normLawyer } from "./normalize";
 import { hasPromoTarget, normPromo } from "./normPromo";
 import { normReview, normService } from "./normService";
 import { buildQuery, isLocalMode } from "./query";
 import { activeFilterCount, defaultLawyerFilters } from "../model/filters";
+import { isRated } from "../lib/rating";
 
 jest.mock("@/shared/api", () => ({ ...jest.requireActual("@/shared/api"), http: jest.fn() }));
 const mockHttp = http as jest.MockedFunction<typeof http>;
+beforeEach(() => mockHttp.mockReset());
 
 describe("normLawyer", () => {
   it("reads the marketplace seller card", () => {
-    const l = normLawyer({ id: "s1", user_id: "u1", lawyer_name: " Ali Valiyev ", region: "tashkent", rating: 4.8, reviews_count: 12, seller_type: "advokat", verification_status: "approved", services: [{ id: "a", title: "Nikoh", base_price: 100000 }, { id: "b", title: "Mehnat", base_price: 50000 }, { title: "no id" }] });
-    expect(l).toMatchObject({ id: "s1", userId: "u1", name: "Ali Valiyev", kind: "advocate", verified: true, rated: true, basePrice: 50000, priceTo: 100000 });
+    const l = normLawyer({ id: "s1", user_id: "u1", lawyer_name: " Ali Valiyev ", region: "tashkent", rating: 4.8, reviews_count: 12, seller_type: "advokat", is_verified: true, verification_badge: { visible: true, label: "LexGo tomonidan tasdiqlangan" }, services: [{ id: "a", title: "Nikoh", base_price: 100000 }, { id: "b", title: "Mehnat", base_price: 50000 }, { title: "no id" }] });
+    expect(l).toMatchObject({ id: "s1", userId: "u1", name: "Ali Valiyev", kind: "advocate", verified: true, badge: "LexGo tomonidan tasdiqlangan", rated: true, basePrice: 50000, priceTo: 100000 });
     expect(l.services).toHaveLength(2);
+  });
+  it("takes the LexGo badge from is_verified alone (TZ.md public lawyer privacy)", () => {
+    expect(normLawyer({ is_verified: true, lexgo_verified: false }).verified).toBe(true);
+    expect(normLawyer({ verification_status: "approved" }).verified).toBe(false);
+    expect(normLawyer({ verification_status: "verified", lexgo_verified: true, verified: true, verification_badge: { visible: true } }).verified).toBe(false);
+    expect(normLawyer({ is_verified: false, lexgo_verified: true }).verified).toBe(false);
+    expect(normLawyer({ is_verified: "true" }).verified).toBe(false);
+  });
+  it("never reads the private fields, keeps the organization", () => {
+    const l = normLawyer({ education: "TDYU", license_number: "L-1", bar_association: "Toshkent", organization_name: " Adliya byurosi " });
+    expect(l).not.toHaveProperty("education");
+    expect(l).not.toHaveProperty("licenseNumber");
+    expect(l).not.toHaveProperty("barAssociation");
+    expect(l.organizationName).toBe("Adliya byurosi");
   });
   it("a young seller with few reviews is new and unrated", () => {
     const l = normLawyer({ id: "x", rating: 5, reviews_count: 1, created_at: new Date(Date.now() - 5 * 86_400_000).toISOString() });
@@ -43,6 +60,27 @@ describe("normService / normReview / normPromo", () => {
     expect(hasPromoTarget(normPromo({ id: "p", seller_user_id: "u" }))).toBe(true);
     expect(hasPromoTarget(normPromo({ id: "p" }))).toBe(false);
     expect(normPromo({ seller_profile: { is_verified: true, rating: 4.5 } })).toMatchObject({ sellerVerified: true, sellerRating: 4.5 });
+  });
+  it("promo seller: the badge from is_verified alone", () => {
+    expect(normPromo({ seller_profile: { verification_status: "approved", lexgo_verified: true } }).sellerVerified).toBe(false);
+  });
+});
+
+describe("listLawyers", () => {
+  it("lists only is_verified sellers", async () => {
+    mockHttp.mockResolvedValueOnce({ items: [{ user_id: "a", lawyer_name: "A", is_verified: true }, { user_id: "b", lawyer_name: "B", verification_status: "approved", lexgo_verified: true, verification_badge: { visible: true } }], total: 2 });
+    expect((await listLawyers({}, { limit: 10 })).items.map((l) => l.userId)).toEqual(["a"]);
+  });
+});
+
+describe("isRated", () => {
+  it("rated only by the backend's status, else by five reviews", () => {
+    expect(isRated("rated", 4.2, 1)).toBe(true);
+    expect(isRated(" Rated ", 4.2, 1)).toBe(true);
+    expect(isRated("unrated", 5, 40)).toBe(false);
+    expect(isRated("rated", 0, 3)).toBe(false);
+    expect(isRated("", 5, 4)).toBe(false);
+    expect(isRated("", 4.9, 5)).toBe(true);
   });
 });
 
@@ -82,6 +120,17 @@ describe("getMyMatches", () => {
     expect(rows).toHaveLength(2);
     expect(rows[0]).toMatchObject({ userId: "u1", kind: "advocate", pct: 100, area: "family, labor" });
     expect(rows[1]).toMatchObject({ userId: "u3", name: "Vali", pct: 88, kind: "lawyer" });
+  });
+  it("never makes up a 5.0: a missing rating is 0 and unrated, a rating counts only when rated", async () => {
+    mockHttp.mockResolvedValueOnce([
+      { lawyer_user_id: "a", name: "A" },
+      { lawyer_user_id: "b", name: "B", rating: 5, reviews_count: 2 },
+      { lawyer_user_id: "c", name: "C", rating: 4.6, rating_status: "rated", reviews_count: 1 },
+      { lawyer_user_id: "d", name: "D", rating: 4.1, reviews_count: 6 },
+      { lawyer_user_id: "e", name: "E", rating: 5, rating_status: "unrated", reviews_count: 9 },
+    ]);
+    const rows = await getMyMatches();
+    expect(rows.map((m) => [m.userId, m.rating, m.rated])).toEqual([["a", 0, false], ["b", 5, false], ["c", 4.6, true], ["d", 4.1, true], ["e", 5, false]]);
   });
   it("is empty for an empty answer", async () => {
     mockHttp.mockResolvedValueOnce(null);

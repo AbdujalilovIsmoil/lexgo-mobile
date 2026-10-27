@@ -7,7 +7,8 @@ import { useGeoLabels } from "../lib/labels";
 import type { MyMatch } from "../model/marketTypes";
 import { Monogram } from "./Monogram";
 
-// One runner-up in the ranking: its place, monogram, name, area · region · rating, and the match percentage over a thin bar.
+// One runner-up in the ranking: its place, monogram, name, area · region, the rating ("not rated yet" until the backend rates him),
+// and the match percentage over a thin bar.
 export function RankedMatchRow({ rank, match: m, onPress }: { rank: number; match: MyMatch; onPress: () => void }) {
   const c = useColors();
   const { t, locale } = useT();
@@ -18,11 +19,13 @@ export function RankedMatchRow({ rank, match: m, onPress }: { rank: number; matc
   return (
     <PressableScale onPress={onPress} style={s.row}>
       <Text variant="small" weight="bold" tone="gray" style={s.rank}>{rank}</Text>
-      <Monogram name={m.name || "A"} rating={m.rating} size={48} />
+      <Monogram name={m.name || "A"} rating={m.rating} size={48} ring={m.rated} />
       <View style={s.body}>
         <Text variant="body" weight="bold" numberOfLines={1}>{m.name || "—"}</Text>
         <Text variant="caption" tone="gray" numberOfLines={1}>{facts}</Text>
-        <View style={s.rate}><Icon name="star" size={12} color={c.warn} /><Text variant="caption" tone="gray">{fmtRating(m.rating, locale)}</Text></View>
+        {m.rated ? (
+          <View style={s.rate}><Icon name="star" size={12} color={c.warn} /><Text variant="caption" tone="gray">{fmtRating(m.rating, locale)}</Text></View>
+        ) : <Text variant="caption" tone="gray">{t("lawyers.card.unrated")}</Text>}
       </View>
       <View style={s.pct}>
         <Text variant="body" weight="bold" tone="accent">{pct}%</Text>

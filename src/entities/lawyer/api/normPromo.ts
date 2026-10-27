@@ -3,7 +3,7 @@ import { cleanTitle } from "../lib/cleanTitle";
 import type { PromoSurface } from "../model/marketTypes";
 
 // A paid placement (banner / profile boost / service boost) as the list and
-// /promotions/active return it. Only the seller's public card is read.
+// /promotions/active return it. Only the seller's public card is read: the LexGo badge is `is_verified` alone.
 export function normPromo(v: unknown): PromoSurface {
   const d = asDict(v);
   const seller = asDict(d.seller);
@@ -19,7 +19,7 @@ export function normPromo(v: unknown): PromoSurface {
     sellerRating: asNum(profile.rating),
     sellerReviews: asNum(profile.reviews_count),
     sellerYears: asNum(profile.experience_years),
-    sellerVerified: profile.is_verified === true || asStr(profile.verification_status) === "approved",
+    sellerVerified: profile.is_verified === true,
     serviceId: asStr(d.service_id ?? service.id),
     serviceTitle: cleanTitle(asStr(d.service_title ?? service.title ?? service.name)),
     title: asStr(d.title),

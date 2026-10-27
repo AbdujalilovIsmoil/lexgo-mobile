@@ -11,8 +11,8 @@ import { Monogram } from "./Monogram";
 
 const SKY = [brand.b800, brand.b600, "#0E9FD0"] as const;
 
-// The single best pick as a hero: gradient card with the monogram, name, area · region, rating, a match bar with the
-// big percentage, the AI reason and a white "open profile" button. `footer` sits under the button (inside the card).
+// The single best pick as a hero: gradient card with the monogram, name, area · region, rating ("not rated yet" until the backend
+// rates him), a match bar with the big percentage, the AI reason and a white "open profile" button. `footer` sits under the button.
 export function BestMatchCard({ match: m, onPress, footer }: { match: MyMatch; onPress: () => void; footer?: ReactNode }) {
   const { t, locale } = useT();
   const geo = useGeoLabels();
@@ -26,11 +26,13 @@ export function BestMatchCard({ match: m, onPress, footer }: { match: MyMatch; o
       </View>
       <View style={s.bar}><View style={[s.fill, { width: `${pct}%` }]} /></View>
       <View style={s.who}>
-        <Monogram name={m.name || "A"} rating={m.rating} size={58} />
+        <Monogram name={m.name || "A"} rating={m.rating} size={58} ring={m.rated} />
         <View style={s.col}>
           <Text variant="h4" tone="white" numberOfLines={1}>{m.name || "—"}</Text>
           {facts ? <Text variant="small" tone="white" numberOfLines={1} style={s.soft}>{facts}</Text> : null}
-          <View style={s.rate}><Icon name="star" size={13} color="#FFD36B" /><Text variant="caption" tone="white" weight="bold">{fmtRating(m.rating, locale)}</Text></View>
+          {m.rated ? (
+            <View style={s.rate}><Icon name="star" size={13} color="#FFD36B" /><Text variant="caption" tone="white" weight="bold">{fmtRating(m.rating, locale)}</Text></View>
+          ) : <Text variant="caption" tone="white" weight="bold" style={s.soft}>{t("lawyers.card.unrated")}</Text>}
         </View>
       </View>
       {m.reason ? <Text variant="small" tone="white" numberOfLines={3} style={s.soft}>{m.reason}</Text> : null}
