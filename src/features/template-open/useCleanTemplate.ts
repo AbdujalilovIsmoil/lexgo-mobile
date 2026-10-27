@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { ApiError, isPaymentRequired } from "@/shared/api";
+import { useDocRefusal } from "@/entities/doc-settings";
 import { cleanTemplatePath } from "@/entities/doc-template";
 import { useTemplateDownload } from "@/features/service-open";
 import { trackDoc } from "@/shared/analytics";
@@ -14,9 +15,11 @@ type Target = { id: string; name: string; category?: string; language?: string }
 
 // "Download clean template" (README §9). A template with a linked service goes through the service's own clean file (and its plan gates);
 // a template without one through GET /document-templates/{id}/clean-source-file. Both are authenticated binary downloads handed to the share
-// sheet — never an unauthenticated browser link, never the marker-bearing source file. A 402 opens the plan sheet and the page stays where it is.
+// sheet — never an unauthenticated browser link, never the marker-bearing source file. A 402 opens the plan sheet and the page stays where it is;
+// a refusal of the document service (TZ.md §4) is said in plain words.
 export function useCleanTemplate(t: Target, serviceId?: string) {
   const { t: tr } = useT();
+  const refusal = useDocRefusal();
   const linked = useTemplateDownload();
   const [busy, setBusy] = useState(false);
   const [planMsg, setPlanMsg] = useState<string | null>(null);
@@ -30,10 +33,11 @@ export function useCleanTemplate(t: Target, serviceId?: string) {
       await shareFile(await downloadAuthed(cleanTemplatePath(t.id), name), DOCX);
       trackDoc("document_clean_template_downloaded", { category: t.category, language: t.language });
     } catch (e) {
+      const refused = refusal(e);
       if (isPaymentRequired(e)) {
         setSeen(true);
-        setPlanMsg(e instanceof ApiError && e.detail ? e.detail : "");
-      } else toast(tr("csv.downloadError"), "err");
+        setPlanMsg(refused ?? (e instanceof ApiError && e.detail ? e.detail : ""));
+      } else toast(refused ?? tr("csv.downloadError"), "err");
     } finally {
       setBusy(false);
     }

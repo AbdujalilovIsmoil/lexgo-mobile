@@ -59,6 +59,5 @@ export type HandoffResult = {
 
 export type DocRequestState = { id: string; workId: string; status: string; paymentRequired: boolean; gate: PayGate | null };
 
-export const MAX_FILE_MB = 20;
-export const FILE_EXT = /\.(pdf|docx?|txt)$/i;
-export const FILE_TYPES = ["application/pdf", "application/vnd.openxmlformats-officedocument.wordprocessingml.document", "application/msword", "text/plain"];
+// The upload rule kept until the document service settings arrive, or when they cannot (offline, an error): PDF, DOC(X), TXT to 20 MB.
+export const FILE_RULE = { mb: 20, formats: ["pdf", "doc", "docx", "txt"] };

@@ -5,15 +5,17 @@ import { useT } from "@/shared/i18n";
 import { errorHaptic, successHaptic } from "@/shared/lib/haptics";
 import { toast, useErrorText } from "@/shared/ui";
 import { docKeys } from "@/entities/my-document";
+import { useDocRefusal } from "@/entities/doc-settings";
 import { trackDoc } from "@/shared/analytics";
 import { ctorPromptFor, existingOf, markCtorAsked, submitDuty, type DutyCtor, type DutyResult, type ExistingRef } from "@/entities/duty-request";
 
-// Sends the request and sorts the outcome: created, "already with the advocates" (409),
-// "plan needed" (402) or any other failure (server text in a toast).
+// Sends the request and sorts the outcome: created, "already with the advocates" (409), refused by the document service (its code in
+// plain words, TZ.md §4), "plan needed" (402) or any other failure (server text in a toast).
 export function useDutySubmit() {
   const qc = useQueryClient();
   const { t } = useT();
   const errText = useErrorText();
+  const refusal = useDocRefusal();
   const [result, setResult] = useState<DutyResult | null>(null);
   const [existing, setExisting] = useState<ExistingRef | null>(null);
   const [plan, setPlan] = useState("");
@@ -34,10 +36,12 @@ export function useDutySubmit() {
     onError: (e) => {
       errorHaptic();
       const ex = existingOf(e);
+      const refused = refusal(e);
       if (ex) {
         setExisting(ex);
         refresh();
-      } else if (isPaymentRequired(e)) setPlan(e instanceof ApiError && e.detail ? e.detail : t("dm7.planRequired"));
+      } else if (refused) toast(refused, "err");
+      else if (isPaymentRequired(e)) setPlan(e instanceof ApiError && e.detail ? e.detail : t("dm7.planRequired"));
       else toast(e instanceof ApiError && e.status === 422 ? t("dm7.needRequired") : errText(e), "err");
     },
   });

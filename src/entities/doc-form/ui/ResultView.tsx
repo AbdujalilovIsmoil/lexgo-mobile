@@ -5,15 +5,18 @@ import { FilePreview } from "@/shared/ui/preview";
 import { useT } from "@/shared/i18n";
 import { downloadAndShare } from "@/shared/lib/files";
 import { errorHaptic } from "@/shared/lib/haptics";
+import { useDocRefusal } from "@/entities/doc-settings";
 import type { GeneratedDoc } from "../model/types";
 import { GeneratedCard } from "./GeneratedCard";
 
 type Props = { doc: GeneratedDoc; onNew: () => void; onOpenDocs: () => void };
 
 // Result of generate: the server-built file can be viewed, shared / saved, and the
-// request found again under "Mening hujjatlarim". The mobile app never builds files.
+// request found again under "Mening hujjatlarim". The mobile app never builds files. A download the document service refuses
+// (a closed format, a plan) says why in plain words (TZ.md §4).
 export function ResultView({ doc, onNew, onOpenDocs }: Props) {
   const { t } = useT();
+  const refusal = useDocRefusal();
   const [open, setOpen] = useState(false);
   const [busy, setBusy] = useState(false);
   const file = doc.file;
@@ -23,9 +26,9 @@ export function ResultView({ doc, onNew, onOpenDocs }: Props) {
     setBusy(true);
     try {
       await downloadAndShare(file.path, name, file.mime);
-    } catch {
+    } catch (e) {
       errorHaptic();
-      toast(t("dc4.shareFailed"), "err");
+      toast(refusal(e) ?? t("dc4.shareFailed"), "err");
     } finally {
       setBusy(false);
     }

@@ -49,6 +49,9 @@ describe("docCan", () => {
     expect(docCan(doc({ canSend: true, templateId: "" })).review).toBe(false);
     expect(docCan(doc({ canSend: true, status: "awaiting_payment" })).review).toBe(false);
   });
+  it("no review while the platform keeps the review mode off", () => {
+    expect(docCan(doc({ canSend: true }), undefined, true).review).toBe(false);
+  });
   it("advocate when one holds the request", () => {
     expect(docCan(doc({ mode: "lawyer" })).advocate).toBe(true);
     expect(docCan(doc({ lawyer: "Ali" })).advocate).toBe(true);

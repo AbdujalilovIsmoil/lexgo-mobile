@@ -15,7 +15,7 @@ export function AnalysisInput({ d }: { d: ReturnType<typeof useDocAnalysis> }) {
   const running = d.status === "running";
   return (
     <View style={s.col}>
-      {d.file ? <FileCard file={d.file} onRemove={() => d.setFile(null)} /> : <PickArea onPress={() => void d.pick()} />}
+      {d.file ? <FileCard file={d.file} onRemove={() => d.setFile(null)} /> : <PickArea hint={t("dset.pickHint", { types: d.rule.label, mb: d.rule.maxMb })} onPress={() => void d.pick()} />}
       {d.file ? null : (
         <>
           <Text variant="caption" tone="gray2" center>{t("docs.or")}</Text>

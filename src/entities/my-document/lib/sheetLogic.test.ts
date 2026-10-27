@@ -21,6 +21,16 @@ describe("downloadOf", () => {
     expect(downloadOf(d, docCan(d), policy).file?.path).toBe("/document-requests/7/docx");
     expect(downloadOf(d, docCan(d))).toEqual({ file: null, reason: "none" });
   });
+  it("keeps a file in a format the document service closed, and says so", () => {
+    const pdfOnly = (f: string) => f !== "docx";
+    const ready = doc({ status: "file_ready", fileReady: true, format: "docx", file: { name: "a.docx", mime: "", path: "/x/file" } });
+    expect(downloadOf(ready, docCan(ready), undefined, pdfOnly)).toEqual({ file: null, reason: "format" });
+    const pdf = doc({ status: "file_ready", fileReady: true, format: "pdf" });
+    expect(downloadOf(pdf, docCan(pdf), undefined, pdfOnly).file?.path).toBe("/document-requests/7/file");
+    const draft = doc({});
+    const policy = { paid: false, requiresPayment: false, canGenerate: true, amount: 0, currency: "UZS", formats: ["docx"], missing: [] };
+    expect(downloadOf(draft, docCan(draft), policy, pdfOnly)).toEqual({ file: null, reason: "none" });
+  });
   it("explains a missing file by payment or advocate", () => {
     const p = doc({ status: "payment_pending", paymentRequired: true });
     expect(downloadOf(p, docCan(p)).reason).toBe("pay");

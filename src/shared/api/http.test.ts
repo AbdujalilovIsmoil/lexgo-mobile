@@ -1,5 +1,5 @@
 import { ApiError } from "./errors";
-import { bindAuth, http } from "./http";
+import { bindAuth, http, refusalOf } from "./http";
 
 const reply = (status: number, body?: unknown) => ({ ok: status < 400, status, headers: { get: () => null }, json: async () => body ?? {}, text: async () => (body === undefined ? "" : JSON.stringify(body)) }) as unknown as Response;
 const sent = () => (global.fetch as jest.Mock).mock.calls;
@@ -38,5 +38,20 @@ describe("http", () => {
     (global.fetch as jest.Mock).mockResolvedValue(reply(200, { n: 1 }));
     await Promise.all([http("/same"), http("/same")]);
     expect(sent()).toHaveLength(1);
+  });
+});
+
+describe("refusalOf", () => {
+  it("reads why a GET is refused, with the token", async () => {
+    (global.fetch as jest.Mock).mockResolvedValue(reply(403, { detail: { code: "document_download_format_disabled", message: "DOCX yopiq" } }));
+    await expect(refusalOf("/document-requests/1/docx")).resolves.toMatchObject({ status: 403, code: "document_download_format_disabled", detail: "DOCX yopiq" });
+    expect(sent()[0][1].headers.Authorization).toBe("Bearer tok1");
+  });
+  it("leaves a success unread and an unreachable server unexplained", async () => {
+    const ok = { ...reply(200), json: jest.fn() };
+    (global.fetch as jest.Mock).mockResolvedValueOnce(ok).mockRejectedValueOnce(new Error("offline"));
+    await expect(refusalOf("/file")).resolves.toBeNull();
+    expect(ok.json).not.toHaveBeenCalled();
+    await expect(refusalOf("/file")).resolves.toBeNull();
   });
 });

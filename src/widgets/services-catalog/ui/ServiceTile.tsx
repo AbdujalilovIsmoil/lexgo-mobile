@@ -1,14 +1,14 @@
 import { Image, StyleSheet, View } from "react-native";
-import { DocActions, subcatImage, type DocActionHandlers, type Service } from "@/entities/service";
+import { DocActions, subcatImage, type DocActionHandlers, type DocWays, type Service } from "@/entities/service";
 import { radius, useColors } from "@/shared/theme";
 import { Icon, Pill, Text } from "@/shared/ui";
 import { useT } from "@/shared/i18n";
 
 export type TileActions = DocActionHandlers;
-type Props = TileActions & { service: Service; locked: boolean; downloading: boolean; error?: string };
+type Props = TileActions & { service: Service; locked: boolean; downloading: boolean; error?: string; ways?: DocWays };
 
 // A catalogue service: the direction's illustration, the full name, the "with an advocate" ribbon, then the four ways forward.
-export function ServiceTile({ service: sv, locked, downloading, error, ...handlers }: Props) {
+export function ServiceTile({ service: sv, locked, downloading, error, ways, ...handlers }: Props) {
   const c = useColors();
   const { t } = useT();
   const doc = !!sv.documentTemplateId;
@@ -25,7 +25,7 @@ export function ServiceTile({ service: sv, locked, downloading, error, ...handle
           </View>
         </View>
       </View>
-      <DocActions hasDoc={doc} advokatOnly={sv.advokatRequired} locked={locked} downloading={downloading} error={error} {...handlers} />
+      <DocActions hasDoc={doc} advokatOnly={sv.advokatRequired} locked={locked} downloading={downloading} error={error} ways={ways} {...handlers} />
     </View>
   );
 }

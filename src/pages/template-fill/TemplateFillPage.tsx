@@ -1,12 +1,13 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { draftKey, useDraftsReady, useDraftStore, useTemplateRender, type Draft, type DocSchema } from "@/entities/doc-form";
+import { useDocSettings } from "@/entities/doc-settings";
 import { useTemplateDetail } from "@/entities/doc-template";
 import type { MyDoc } from "@/entities/my-document";
 import { useSession } from "@/entities/session";
 import { FillFlow } from "@/features/doc-fill";
 import { docToGenerated, mergeAnswers, requestSource, schemaFromDoc, serverAnswers } from "@/features/doc-fill/model/requestSource";
 import { useTemplateRequest } from "@/features/doc-fill/model/useTemplateRequest";
-import { FlowFailure, FlowLoading, LoginGate } from "@/widgets/doc-flow";
+import { FlowFailure, FlowGate, FlowLoading, LoginGate } from "@/widgets/doc-flow";
 import { trackDoc } from "@/shared/analytics";
 import { useT } from "@/shared/i18n";
 
@@ -15,13 +16,16 @@ type Props = { templateId: string; requestId?: string };
 // /templates/[id]/fill — the constructor of a template with no linked service (README §7): sign in → the template and its sections → the document
 // request (resumed or started) → the same section wizard as a catalogue service, saved to the server as the person types.
 // `requestId` (?request=) resumes one particular request, e.g. after "Yes, I will also fill it in" on a lawyer request.
+// Filling in yourself is the document service's manual mode: closed (TZ.md §4), the page says why instead.
 export function TemplateFillPage({ templateId, requestId }: Props) {
   const { t } = useT();
+  const gate = useDocSettings().gate("manual");
   const user = useSession()?.user.id ?? "";
   const detail = useTemplateDetail(templateId);
   const render = useTemplateRender(templateId);
   const ready = useDraftsReady();
   const title = detail.data?.name || render.data?.schema.title || t("dcf.title");
+  if (gate.state !== "open") return <FlowGate title={title} gate={gate} />;
   if (!user) return <LoginGate title={title} />;
   if (detail.error && !detail.data) return <FlowFailure title={title} error={detail.error} onRetry={() => void detail.refetch()} />;
   if (!ready || detail.isLoading || render.isLoading) return <FlowLoading title={title} />;

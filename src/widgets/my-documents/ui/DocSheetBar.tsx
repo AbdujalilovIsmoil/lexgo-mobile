@@ -8,13 +8,17 @@ import type { DownloadPlan, SheetAction } from "@/entities/my-document";
 type Props = { plan: DownloadPlan | null; action: SheetAction; busy: boolean; paying: boolean; onDownload: () => void; onAction: () => void; onDetail: () => void };
 const ICON = { pay: "credit-card", rate: "star", review: "send" } as const;
 
+// Why there is nothing to download; a closed format is said in the document service's words (TZ.md §4).
+export const noFileText = (t: (key: string) => string, reason?: DownloadPlan["reason"]): string =>
+  reason === "format" ? t("dset.code.document_download_format_disabled") : t(`docSheet.noFile.${reason || "none"}`);
+
 // Sticky bar of the detail sheet: "Yuklab olish" (disabled with its reason when there is no file), "Batafsil", and the
 // one contextual action (pay / rate / send for review) on its own line above when the flow allows it.
 export function DocSheetBar({ plan, action, busy, paying, onDownload, onAction, onDetail }: Props) {
   const { t } = useT();
   const c = useColors();
   const insets = useInsets();
-  const reason = plan && !plan.file ? t(`docSheet.noFile.${plan.reason || "none"}`) : "";
+  const reason = plan && !plan.file ? noFileText(t, plan.reason) : "";
   return (
     <View style={[s.bar, { borderTopColor: c.line, backgroundColor: c.surface, paddingBottom: insets.bottom + 12 }]}>
       {reason ? (

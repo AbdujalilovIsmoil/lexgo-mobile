@@ -17,7 +17,7 @@ export async function analyzeText(text: string): Promise<DocAnalysis> {
   return normAnalysis(await http("/ai/document-analysis", { method: "POST", body: { text } }));
 }
 
-// PDF, DOC(X) or TXT up to 20 MB (POST /ai/document-analysis/file, multipart).
+// A file in a format and size the document service settings allow (POST /ai/document-analysis/file, multipart).
 export async function analyzeFile(file: PickedDoc): Promise<DocAnalysis> {
   const form = new FormData();
   appendFile(form, "file", file);

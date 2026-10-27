@@ -81,3 +81,14 @@ export async function httpRaw(path: string, init: HttpInit = {}): Promise<{ stat
   const body = await res.json().catch(() => ({}));
   return { status: res.status, body };
 }
+
+// Why a GET is refused, for a caller that could not read the answer (a native file download reports only "status 403"): the same
+// GET once more, its JSON error parsed. A success this time is left unread; null when it succeeds or the server cannot be reached.
+export async function refusalOf(path: string): Promise<ApiError | null> {
+  try {
+    const res = await run(path, {}, getToken());
+    return res.ok ? null : parseErrorBody(res.status, await res.json().catch(() => ({})), res.headers.get("Retry-After"));
+  } catch {
+    return null;
+  }
+}

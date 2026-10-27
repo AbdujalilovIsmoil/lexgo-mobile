@@ -20,5 +20,5 @@ export { getTemplateSource, isPlanRequired, type TemplateSource } from "./api/te
 export { subcatIcon } from "./lib/subcatIcon";
 export { subcatImage, categoryImage } from "./lib/subcatImage";
 export * from "./lib/subcats";
-export { DocActions, type DocActionHandlers } from "./ui/DocActions";
+export { DocActions, type DocActionHandlers, type DocWays } from "./ui/DocActions";
 export { serviceTone } from "./lib/serviceTone";

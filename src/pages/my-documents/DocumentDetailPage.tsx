@@ -8,6 +8,7 @@ import { FilePreview, type FileRef } from "@/shared/ui/preview";
 import { useInsets } from "@/shared/lib/insets";
 import { useKept } from "@/shared/lib/useKept";
 import { useT } from "@/shared/i18n";
+import { useDocSettings } from "@/entities/doc-settings";
 import { docCan, docKeys, useDoc, useDocPolicy } from "@/entities/my-document";
 import { AnswersSheet, CtorSheet, RatingSheet, ReviewSheet, VersionsSheet, useCtorPrompt, useDocRealtime } from "@/features/my-documents";
 import { DocDetailBody, type SheetKey } from "@/widgets/my-documents";
@@ -21,12 +22,13 @@ export default function DocumentDetailPage({ id }: { id: string }) {
   const q = useDoc(id);
   const doc = q.data;
   const policy = useDocPolicy(id, !!doc).data;
+  const reviewOff = useDocSettings().gate("review").state === "off"; // the platform switched the review mode off (TZ.md §4)
   const [sheet, setSheet] = useState<SheetKey>(null);
   const [file, setFile] = useState<FileRef | null>(null);
   const shownFile = useKept(file);
   useDocRealtime();
   const ctor = useCtorPrompt(doc);
-  const can = doc ? docCan(doc, policy) : null;
+  const can = doc ? docCan(doc, policy, reviewOff) : null;
   const close = () => setSheet(null);
   // A sheet must be gone before the full-screen preview opens over it.
   const openFile = (f: FileRef) => { const wait = sheet ? 320 : 0; close(); setTimeout(() => setFile(f), wait); };

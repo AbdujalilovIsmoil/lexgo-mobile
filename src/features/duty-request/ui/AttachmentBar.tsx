@@ -1,7 +1,7 @@
 import { Linking, View } from "react-native";
 import { Text } from "@/shared/ui";
 import { useT } from "@/shared/i18n";
-import { FILE_EXT_LIST, LIMITS } from "@/entities/duty-request";
+import { LIMITS } from "@/entities/duty-request";
 import { useVoiceRecorder } from "../model/useVoiceRecorder";
 import type { useAttachments } from "../model/useAttachments";
 import { AttachmentList } from "./AttachmentList";
@@ -15,7 +15,7 @@ export function AttachmentBar({ att, disabled }: Props) {
   const { t } = useT();
   const r = useVoiceRecorder(att.addVoice);
   const full = disabled || att.files.length >= LIMITS.maxFiles;
-  const err = att.note ? t(`dm8.err.${att.note}`, { mb: LIMITS.fileMb, n: LIMITS.maxFiles, types: FILE_EXT_LIST }) : "";
+  const err = att.note ? t(`dm8.err.${att.note}`, { mb: att.rule.mb, n: LIMITS.maxFiles, types: att.rule.list }) : "";
   return (
     <View style={{ gap: 10 }}>
       {r.active ? <VoiceLive r={r} /> : (
@@ -26,7 +26,7 @@ export function AttachmentBar({ att, disabled }: Props) {
         </View>
       )}
       {r.denied ? <Text variant="caption" tone="err" onPress={() => void Linking.openSettings()}>{t("dm8.micDenied")}</Text> : null}
-      {err ? <Text variant="caption" tone="err">{err}</Text> : <Text variant="caption" tone="gray2">{t("dm8.hint", { mb: LIMITS.fileMb, types: FILE_EXT_LIST })}</Text>}
+      {err ? <Text variant="caption" tone="err">{err}</Text> : <Text variant="caption" tone="gray2">{t("dm8.hint", { mb: att.rule.mb, types: att.rule.list })}</Text>}
       <AttachmentList files={att.files} voices={att.voices} onRemoveFile={att.removeFile} onRemoveVoice={att.removeVoice} />
     </View>
   );

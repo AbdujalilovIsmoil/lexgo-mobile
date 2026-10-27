@@ -3,6 +3,7 @@ import { RefreshControl, ScrollView, StyleSheet, View } from "react-native";
 import { useRouter } from "expo-router";
 import { useTemplateDetail, useLinkedServices } from "@/entities/doc-template";
 import { useTemplateRender } from "@/entities/doc-form";
+import { gateText, useDocSettings } from "@/entities/doc-settings";
 import { useIsAuthed } from "@/entities/session";
 import { useCleanTemplate } from "@/features/template-open";
 import { TemplateGates } from "@/widgets/ai-plan-upgrade";
@@ -20,12 +21,15 @@ import { TemplatePreview } from "./TemplatePreview";
 // /templates/[id] — one ready document: title, description, category and language, the full preview, and the three ways on (README §3.2).
 // The template is read again from the server on opening (never only the list row). A template with a linked service uses the service's
 // own screens; one without goes through the generic /document-requests flow. A guest reads everything; acting needs an account.
+// The document service settings (TZ.md §4) decide the ways: a mode switched off is not offered, one outside the plan shows a lock and
+// why, and the blank is offered only while DOCX downloads are open.
 export function TemplateDetailPage({ id }: { id: string }) {
   const { t } = useT();
   const c = useColors();
   const router = useRouter();
   const insets = useInsets();
   const authed = useIsAuthed();
+  const ds = useDocSettings();
   const q = useTemplateDetail(id);
   const render = useTemplateRender(id);
   const linked = useLinkedServices();
@@ -38,10 +42,13 @@ export function TemplateDetailPage({ id }: { id: string }) {
   useEffect(() => { if (tpl) trackDoc("document_template_opened", { category: tpl.category, language: tpl.language }); }, [tpl?.id]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const need = (go: () => void) => () => (authed ? go() : router.push("/auth/login"));
+  const ways = ds.offer([
+    { key: "fill", mode: "manual" as const, icon: "edit-3" as const, primary: true, title: t("dcat.fillSelf"), hint: t("dcat.fillSelfHint"), onPress: need(() => router.push((serviceId ? `/services/${serviceId}/fill` : `/templates/${id}/fill`) as never)) },
+    { key: "lawyer", mode: "lawyer" as const, icon: "headphones" as const, title: t("dcat.withLawyer"), hint: t("dcat.withLawyerHint"), onPress: need(() => router.push((serviceId ? `/services/${serviceId}/lawyer` : `/templates/${id}/lawyer`) as never)) },
+  ]);
   const actions = [
-    { key: "fill", icon: "edit-3" as const, primary: true, title: t("dcat.fillSelf"), hint: t("dcat.fillSelfHint"), onPress: need(() => router.push((serviceId ? `/services/${serviceId}/fill` : `/templates/${id}/fill`) as never)) },
-    { key: "lawyer", icon: "headphones" as const, title: t("dcat.withLawyer"), hint: t("dcat.withLawyerHint"), onPress: need(() => router.push((serviceId ? `/services/${serviceId}/lawyer` : `/templates/${id}/lawyer`) as never)) },
-    ...(tpl?.hasSource ? [{ key: "clean", icon: "download" as const, title: t("dcat.downloadClean"), hint: t("dcat.downloadCleanHint"), busy: clean.busy, onPress: need(() => void clean.download()) }] : []),
+    ...ways.map((a) => (a.gate.state === "locked" ? { ...a, icon: "lock" as const, hint: gateText(t, a.gate) } : a)),
+    ...(tpl?.hasSource && ds.downloadOk("docx") ? [{ key: "clean", icon: "download" as const, title: t("dcat.downloadClean"), hint: t("dcat.downloadCleanHint"), busy: clean.busy, onPress: need(() => void clean.download()) }] : []),
   ];
   const title = tpl?.name || t("dcat.docTitle");
   const missing = q.isError && !tpl;
@@ -76,7 +83,7 @@ export function TemplateDetailPage({ id }: { id: string }) {
               <Button title={t("dcat.planChoose")} icon="award" variant="gradient" full onPress={() => router.push("/subscription" as never)} />
             </Card>
           ) : null}
-          <Text variant="h4">{t("dcat.whatNext")}</Text>
+          {actions.length ? <Text variant="h4">{t("dcat.whatNext")}</Text> : null}
           <TemplateActions actions={actions} />
           <TemplatePreview kicker={categoryLabel(t, tpl.category)} text={text} loading={render.isLoading} error={render.error} onRetry={() => void render.refetch()} open={full} onOpen={() => { setFull(true); trackDoc("document_preview_opened", { category: tpl.category, language: tpl.language }); }} onClose={() => setFull(false)} title={tpl.name} />
         </ScrollView>

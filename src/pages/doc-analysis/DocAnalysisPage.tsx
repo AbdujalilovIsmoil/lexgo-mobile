@@ -1,6 +1,7 @@
 import { StyleSheet, View } from "react-native";
 import { useRouter } from "expo-router";
 import { AnalysisResult } from "@/entities/doc-analysis";
+import { ModeNotice } from "@/entities/doc-settings";
 import { useIsAuthed } from "@/entities/session";
 import { AnalysisInput, HandoffCard, UpsellCard, useDocAnalysis, useHandoff } from "@/features/doc-analysis";
 import { Button, Header, Screen, Text } from "@/shared/ui";
@@ -10,6 +11,7 @@ import { useT } from "@/shared/i18n";
 
 // AI document analysis (TZ 16): file or text → result → optional advocate review.
 // The server measures the pages; a fee past the base allowance waits for Telegram approval.
+// A closed analysis mode (switched off, or not in the plan — TZ.md §4) shows why instead of the form; a result already on screen stays.
 export function DocAnalysisPage() {
   const c = useColors();
   const { t } = useT();
@@ -17,12 +19,15 @@ export function DocAnalysisPage() {
   const authed = useIsAuthed();
   const d = useDocAnalysis();
   const h = useHandoff(d.file, d.result);
+  const done = d.status === "done" && !!d.result;
   return (
     <View style={[s.fill, { backgroundColor: c.canvas }]}>
       <Header title={t("docs.title")} />
       <Screen topInset={false} contentContainerStyle={s.content}>
         <Text variant="small" tone="gray">{t("docs.sub")}</Text>
-        {!authed ? (
+        {d.gate.state !== "open" && !done ? (
+          <ModeNotice gate={d.gate} onPlan={() => router.push("/subscription")} />
+        ) : !authed ? (
           <>
             <Text variant="body" tone="warn">{t("docs.needLogin")}</Text>
             <Button title={t("auth.submit")} onPress={() => router.push("/auth/login")} variant="gradient" icon="log-in" full />

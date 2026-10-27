@@ -4,6 +4,7 @@ import { IconButton } from "@/shared/ui";
 import { ActionList, AdminPage } from "@/shared/ui/admin";
 import { useT } from "@/shared/i18n";
 import { useKept } from "@/shared/lib/useKept";
+import { useDocSettings } from "@/entities/doc-settings";
 import { docPath } from "@/entities/my-document";
 import { RatingSheet, ReviewSheet, useDocList, useDocRealtime } from "@/features/my-documents";
 import { DocDetailSheet, DocList, DocListHeader } from "@/widgets/my-documents";
@@ -12,10 +13,12 @@ import { DocDetailSheet, DocList, DocListHeader } from "@/widgets/my-documents";
 const HAND_OFF = 320;
 
 // "Mening hujjatlarim" (TZ 15): every document the client started, in any mode, with its status. Ten at a time; a tap on a
-// card opens its detail sheet (the full page /documents/[id] stays one tap further).
+// card opens its detail sheet (the full page /documents/[id] stays one tap further). The "new" menu offers only the document service
+// modes the platform keeps on; one outside the plan carries a lock and its page says why (TZ.md §4).
 export default function MyDocumentsPage() {
   const { t } = useT();
   const router = useRouter();
+  const ds = useDocSettings();
   const l = useDocList();
   const [menu, setMenu] = useState(false);
   const [open, setOpen] = useState("");
@@ -28,11 +31,14 @@ export default function MyDocumentsPage() {
   const go = (path: string) => router.push(path as never);
   const later = (fn: () => void) => { setOpen(""); clearTimeout(timer.current); timer.current = setTimeout(fn, HAND_OFF); };
   const filtered = !!(l.group || l.mode || l.status || l.q.trim());
+  const modes = ds.offer([
+    { key: "custom", mode: "lawyer" as const, label: t("dm1.menu.custom"), icon: "edit" as const, path: "/documents/new?kind=custom" },
+    { key: "review", mode: "review" as const, label: t("dm1.menu.review"), icon: "search" as const, path: "/documents/new?kind=review" },
+    { key: "analysis", mode: "analysis" as const, label: t("dm1.menu.analysis"), icon: "cpu" as const, path: "/doc-analysis" },
+  ]);
   const actions = [
     { key: "svc", label: t("dm1.menu.services"), icon: "grid" as const, onPress: () => go("/services") },
-    { key: "custom", label: t("dm1.menu.custom"), icon: "edit" as const, onPress: () => go("/documents/new?kind=custom") },
-    { key: "review", label: t("dm1.menu.review"), icon: "search" as const, onPress: () => go("/documents/new?kind=review") },
-    { key: "analysis", label: t("dm1.menu.analysis"), icon: "cpu" as const, onPress: () => go("/doc-analysis") },
+    ...modes.map((m) => ({ key: m.key, label: m.label, icon: m.gate.state === "locked" ? ("lock" as const) : m.icon, onPress: () => go(m.path) })),
   ];
   return (
     <AdminPage title={t("dm1.title")} subtitle={l.countsLoading ? t("dm1.lead") : t("docSheet.count", { n: l.counts.all ?? 0 })} right={<IconButton icon="plus" label={t("dm1.new")} onPress={() => setMenu(true)} />}>

@@ -14,7 +14,7 @@ export function QuotePanel({ q, pageCount, pagesOk }: { q: ReturnType<typeof use
   return (
     <View {...mark} style={s.col}>
       {q.fresh ? <Rows q={q.fresh} pages={q.fresh.pageCount || pageCount} /> : <Button title={q.busy ? t("cxDa.quoting") : t("cxDa.getQuote")} variant="line" full loading={q.busy} disabled={!pagesOk} onPress={() => void q.get()} />}
-      {q.failed ? <Text variant="caption" tone="err">{t("cxDa.quoteError")}</Text> : null}
+      {q.failed ? <Text variant="caption" tone="err">{q.why || t("cxDa.quoteError")}</Text> : null}
     </View>
   );
 }

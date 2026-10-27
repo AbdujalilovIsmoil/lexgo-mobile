@@ -7,7 +7,7 @@ import { useT } from "@/shared/i18n";
 import type { useDocAnalysis } from "../model/useDocAnalysis";
 import { Rows } from "./QuotePanel";
 
-// Permanent offer after an AI analysis: advocate review price, "add the review" (re-quotes) and the advocate list.
+// Permanent offer after an AI analysis: advocate review price, "add the review" (re-quotes; only while that mode is open) and the advocate list.
 export function UpsellCard({ result, d }: { result: DocAnalysis; d: ReturnType<typeof useDocAnalysis> }) {
   const { t } = useT();
   const router = useRouter();
@@ -24,7 +24,7 @@ export function UpsellCard({ result, d }: { result: DocAnalysis; d: ReturnType<t
       <Text variant="small" tone="gray">{up.reason || t("cxDa.upsellText")}</Text>
       {price ? <Text variant="small" weight="bold" tone="accent">{t("cxDa.upsellPrice", { price: `${fmtMoney(price)} ${t("cxDa.som")}` })}</Text> : null}
       {d.opts.lawyerReview && fresh ? <Rows q={fresh} pages={fresh.pageCount || result.pageCount} /> : null}
-      {d.opts.lawyerReview ? null : <Button title={t("cxDa.upsellAdd")} size="sm" full onPress={d.addReview} />}
+      {d.opts.lawyerReview || !d.opts.review ? null : <Button title={t("cxDa.upsellAdd")} size="sm" full onPress={d.addReview} />}
       <Button title={t("cxDa.upsellLawyers")} variant="line" size="sm" icon="arrow-right" iconRight full onPress={() => router.push("/lawyers")} />
     </Card>
   );

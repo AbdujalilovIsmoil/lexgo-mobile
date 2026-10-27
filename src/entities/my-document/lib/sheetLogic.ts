@@ -10,12 +10,14 @@ import { docFileName } from "./title";
 const DOCX = "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
 
 // What the sheet's "Yuklab olish" can fetch: the finished file, else a DOCX of the current answers; with no file it says why.
-export type DownloadPlan = { file: FileRef | null; reason: "" | "pay" | "review" | "none" };
-export function downloadOf(d: MyDoc, can: DocCan, policy?: UnlockPolicy): DownloadPlan {
+// `allowed` is the document service's download policy (TZ.md §4): a finished file in a closed format is not offered ("format").
+export type DownloadPlan = { file: FileRef | null; reason: "" | "pay" | "review" | "none" | "format" };
+export function downloadOf(d: MyDoc, can: DocCan, policy?: UnlockPolicy, allowed: (format: string) => boolean = () => true): DownloadPlan {
   const base = `/document-requests/${encodeURIComponent(d.id)}`;
+  if ((d.file || d.fileReady) && !allowed(d.format)) return { file: null, reason: "format" };
   if (d.file) return { file: { path: d.file.path, name: d.file.name, mime: d.file.mime || DOCX }, reason: "" };
   if (d.fileReady) return { file: { path: `${base}/file`, name: docFileName(d.title, d.format, "document"), mime: DOCX }, reason: "" };
-  if (policy?.canGenerate && policy.formats.includes("docx") && !can.payWait) return { file: { path: `${base}/docx`, name: docFileName(d.title, "docx", "document"), mime: DOCX }, reason: "" };
+  if (policy?.canGenerate && policy.formats.includes("docx") && allowed("docx") && !can.payWait) return { file: { path: `${base}/docx`, name: docFileName(d.title, "docx", "document"), mime: DOCX }, reason: "" };
   return { file: null, reason: can.payWait ? "pay" : can.advocate && !can.stopped ? "review" : "none" };
 }
 

@@ -3,22 +3,26 @@ import { Button, Text } from "@/shared/ui";
 import { SectionCard } from "@/shared/ui/admin";
 import type { FileRef } from "@/shared/ui/preview";
 import { useT } from "@/shared/i18n";
+import { useDocSettings } from "@/entities/doc-settings";
 import { docFileName, type MyDoc, type UnlockPolicy } from "@/entities/my-document";
 import { useShare } from "../model/useShare";
 
 const DOCX = "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
 type Props = { doc: MyDoc; policy?: UnlockPolicy; onOpen: (f: FileRef) => void };
 
-// The finished file (…/file), a DOCX of the current state (…/docx) and the blank template (…/clean-template-file).
+// The finished file (…/file), a DOCX of the current state (…/docx) and the blank template (…/clean-template-file). Each only in a format
+// the document service lets out (TZ.md §4); a finished file in a closed format says so instead of offering it.
 export function FileActions({ doc, policy, onOpen }: Props) {
   const { t } = useT();
   const dl = useShare();
+  const ok = useDocSettings().downloadOk;
   const base = `/document-requests/${encodeURIComponent(doc.id)}`;
   const main: FileRef | null = doc.file ? { path: doc.file.path, name: doc.file.name, mime: doc.file.mime || DOCX } : null;
-  const draft: FileRef | null = !main && policy?.canGenerate && policy.formats.includes("docx") ? { path: `${base}/docx`, name: docFileName(doc.title, "docx", "document"), mime: DOCX } : null;
-  const blank: FileRef | null = doc.templateId ? { path: `${base}/clean-template-file`, name: docFileName(`${doc.title} (${t("dm3.blankSuffix")})`, "docx", "document"), mime: DOCX } : null;
+  const shut = !!main && !ok(doc.format);
+  const draft: FileRef | null = !main && policy?.canGenerate && policy.formats.includes("docx") && ok("docx") ? { path: `${base}/docx`, name: docFileName(doc.title, "docx", "document"), mime: DOCX } : null;
+  const blank: FileRef | null = doc.templateId && ok("docx") ? { path: `${base}/clean-template-file`, name: docFileName(`${doc.title} (${t("dm3.blankSuffix")})`, "docx", "document"), mime: DOCX } : null;
   if (!main && !draft && !blank) return null;
-  const f = main ?? draft;
+  const f = shut ? null : main ?? draft;
   return (
     <SectionCard title={main ? t("dm3.fileTitle") : t("dm3.fileDraftTitle")}>
       {f ? (
@@ -27,7 +31,7 @@ export function FileActions({ doc, policy, onOpen }: Props) {
           <Button title={t("dm3.download")} icon="download" variant="soft" loading={dl.busy} onPress={() => void dl.share(f)} style={{ flex: 1 }} />
         </View>
       ) : null}
-      {main ? null : f ? <Text variant="caption" tone="gray">{t("dm3.draftHint")}</Text> : null}
+      {shut ? <Text variant="caption" tone="gray">{t("dset.code.document_download_format_disabled")}</Text> : main ? null : f ? <Text variant="caption" tone="gray">{t("dm3.draftHint")}</Text> : null}
       {blank ? <Button title={t("dm3.blank")} icon="file" variant="line" size="sm" onPress={() => onOpen(blank)} /> : null}
     </SectionCard>
   );

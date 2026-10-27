@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { getTemplateSource, isPlanRequired } from "@/entities/service";
 import { useIsFreeAiTier } from "@/entities/plan";
+import { useDocRefusal, useDocSettings } from "@/entities/doc-settings";
 import { downloadAuthed, shareFile } from "@/shared/lib/files";
 import { cleanDocTitle } from "@/shared/lib/doc/cleanTitle";
 import { useT } from "@/shared/i18n";
@@ -11,10 +12,13 @@ export type TemplateTarget = { id: string; name: string };
 
 // "Download" on a catalogue card. Free LexGo.AI tier -> `upgrade` opens the plan picker; a plan without
 // the manual-documents entitlement answers 402 -> `planMsg` carries the server's own sentence.
-// Otherwise the clean template (no {{field}} markers) is saved through the share sheet.
+// Otherwise the clean template (no {{field}} markers) is saved through the share sheet — unless its format is closed for
+// downloads by the document service settings, which is said up front, as is any document service refusal (TZ.md §4).
 export function useTemplateDownload() {
   const { t } = useT();
   const free = useIsFreeAiTier();
+  const ok = useDocSettings().downloadOk;
+  const refusal = useDocRefusal();
   const [busy, setBusy] = useState("");
   const [error, setError] = useState<{ id: string; msg: string } | null>(null);
   const [planMsg, setPlanMsg] = useState<string | null>(null);
@@ -29,11 +33,13 @@ export function useTemplateDownload() {
       const src = await getTemplateSource(s.id);
       if (!src.hasFile) throw new Error("no_file");
       const ext = src.name.match(FILE_EXT)?.[1] ?? "docx";
+      if (!ok(ext)) return setError({ id: s.id, msg: t("dset.code.document_download_format_disabled") });
       const name = `${cleanDocTitle(src.name.replace(FILE_EXT, "")) || cleanDocTitle(s.name) || t("csv.docViewTitle")}.${ext}`;
       await shareFile(await downloadAuthed(src.path, name), src.mime || undefined);
     } catch (e) {
+      const refused = refusal(e);
       if (isPlanRequired(e)) setPlanMsg(e.detail || t("csv.planRequired"));
-      else setError({ id: s.id, msg: t("csv.downloadError") });
+      else setError({ id: s.id, msg: refused ?? t("csv.downloadError") });
     } finally {
       setBusy("");
     }

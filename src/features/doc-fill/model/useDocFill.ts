@@ -5,6 +5,7 @@ import {
   Autosaver, classify, draftKey, missingFromError, toWire, useDraftSync, useSectionWizard,
   type Draft, type DocAnswers, type DocSchema, type FillSource, type GeneratedDoc, type SaveState,
 } from "@/entities/doc-form";
+import { useDocRefusal } from "@/entities/doc-settings";
 import { trackDoc } from "@/shared/analytics";
 import { toast } from "@/shared/ui";
 import { useT } from "@/shared/i18n";
@@ -14,8 +15,10 @@ type Args = { source: FillSource; userId: string; schema: DocSchema; draft?: Dra
 
 // Manual fill (TZ 12): section wizard + local draft + server preview / generate. The source says where the preview and the file come from
 // (a service, or a template's document request); a request source also gets the server autosave of the answers (Saving / Saved / Retry).
+// A generate the document service refuses (TZ.md §4) says why in plain words.
 export function useDocFill({ source, userId, schema, draft, initialDoc }: Args) {
   const { t } = useT();
+  const refusal = useDocRefusal();
   const qc = useQueryClient();
   const [answers, setAnswers] = useState<DocAnswers>(draft?.answers ?? {});
   const [doc, setDoc] = useState<GeneratedDoc | null>(initialDoc ?? null);
@@ -63,7 +66,9 @@ export function useDocFill({ source, userId, schema, draft, initialDoc }: Args) 
       errorHaptic();
       const f = classify(e);
       const missing = missingFromError(e);
-      if (f.kind === "plan") setPlan(f.message);
+      const refused = refusal(e);
+      if (f.kind === "plan") setPlan(refused ?? f.message);
+      else if (refused) toast(refused, "err");
       else if (missing.length) {
         const at = schema.sections.findIndex((s) => s.fields.some((x) => x.key === missing[0].key));
         if (at >= 0) wiz.jump(at);

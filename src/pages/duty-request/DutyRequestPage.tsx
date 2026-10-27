@@ -5,16 +5,19 @@ import { AdminPage } from "@/shared/ui/admin";
 import { useT } from "@/shared/i18n";
 import { trackDoc } from "@/shared/analytics";
 import { docPath } from "@/entities/my-document";
+import { ModeNotice, useDocSettings } from "@/entities/doc-settings";
 import { useServiceDoc, type DutyKind } from "@/entities/duty-request";
 import { CtorPrompt, DutyForm, ExistingCard, FormFrame, PlanCard, SentCard, useDutyRequest, useOpenRequest, useTemplateLawyer } from "@/features/duty-request";
 
 // Duty-advocate request (TZ 14): for a catalogue service, a from-scratch document, an existing one to check — or (`kind` "template") a ready
 // template that has no linked service: its document request is sent to the pool through …/lawyer-review (README §11.4).
+// A check is the document service's review mode, the rest its lawyer mode: a closed one shows why instead of the form (TZ.md §4).
 export default function DutyRequestPage({ kind, serviceId, templateId }: { kind: DutyKind; serviceId?: string; templateId?: string }) {
   const { t } = useT();
   const router = useRouter();
   const byService = kind === "service";
   const byTemplate = kind === "template";
+  const gate = useDocSettings().gate(kind === "review" ? "review" : "lawyer");
   const svc = useServiceDoc(byService ? serviceId ?? "" : "");
   const tpl = useTemplateLawyer(byTemplate ? templateId ?? "" : "");
   const open = useOpenRequest(byService ? svc.data?.templateId ?? "" : "");
@@ -24,7 +27,7 @@ export default function DutyRequestPage({ kind, serviceId, templateId }: { kind:
 
   const view = byService && svc.isLoading ? "load" : byService && svc.isError ? "error" : byService && svc.data && !svc.data.lawyerFlow ? "none"
     : byTemplate && tpl.loading ? "load"
-    : sub.result ? "sent" : existing ? "exists" : sub.plan ? "plan" : "form";
+    : sub.result ? "sent" : existing ? "exists" : gate.state !== "open" ? "gate" : sub.plan ? "plan" : "form";
   const title = byService ? t("dm7.title") : byTemplate ? t("dcl.title") : kind === "custom" ? t("dm7.titleCustom") : t("dm7.titleReview");
 
   // README §24: the request form was opened (once per visit; the kind, category and language only).
@@ -46,6 +49,7 @@ export default function DutyRequestPage({ kind, serviceId, templateId }: { kind:
         {view === "load" ? <Skeleton height={320} round={20} /> : null}
         {view === "error" ? <ErrorView error={svc.error} onRetry={() => void svc.refetch()} /> : null}
         {view === "none" ? <EmptyState icon="slash" title={t("dm9.unavailable")} text={t("dm9.unavailableText")} /> : null}
+        {view === "gate" ? <ModeNotice gate={gate} onPlan={() => router.push("/subscription" as never)} onBack={() => router.back()} /> : null}
         {view === "sent" && sub.result ? <SentCard r={sub.result} {...out} /> : null}
         {view === "exists" && existing ? <ExistingCard e={existing} {...out} /> : null}
         {view === "plan" ? <PlanCard message={sub.plan} onChoose={() => router.push("/subscription" as never)} onBack={sub.back} /> : null}
