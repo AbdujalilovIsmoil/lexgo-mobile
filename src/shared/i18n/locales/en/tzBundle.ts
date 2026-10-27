@@ -33,6 +33,8 @@ import { prm } from "./prm";
 import { subq } from "./subq";
 import { dset } from "./dset";
 import { ra } from "./ra";
+import { ach } from "./ach";
+import { rt3 } from "./rt3";
 
 // Namespaces pre-registered per work package (see TZ_STATUS.md for owners).
 export const tzBundle = {
@@ -41,4 +43,5 @@ export const tzBundle = {
   ...tzAw, ...tzSl, ...tzMk, ...tzUg, ...tzPy, ...tzNt, ccs, ...tzCx,
   ...cpA, ...cpC, ...cpD, ...tzCsv, ...tgp, ...so1, ...dcat, ...dcf, ...dcl, ...mf,
   ...srt, ...scfg, ...pxp, ...prm, ...subq, ...dset, ...ra,
+  ...ach, ...rt3,
 };
