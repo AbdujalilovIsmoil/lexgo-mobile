@@ -33,7 +33,7 @@ export const useRefund = (orderId: string, enabled: boolean) =>
 
 export const useRuntimeCaps = (enabled = true) => useQuery({ queryKey: flowKeys.caps, queryFn: getRuntimeCaps, enabled, staleTime: 60 * 60 * 1000, retry: 1 });
 
-const WATCH = ["marketplace.", "order.", "order_", "payment.", "notification.created"];
+const WATCH = ["marketplace.", "marketplace_", "order.", "order_", "payment.", "notification.created"];
 const INNER = /^(order_|marketplace|payment_paid|checklist)/;
 
 export const refreshFlow = (qc: QueryClient) => void qc.invalidateQueries({ queryKey: flowKeys.all });

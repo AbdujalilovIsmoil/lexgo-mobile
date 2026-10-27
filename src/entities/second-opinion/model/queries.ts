@@ -32,7 +32,7 @@ export function usePromotion(orderId: string, url: string) {
   });
 }
 
-// marketplace.order_started / order_completed say "look again": the flag is a trigger, the endpoint decides. The order may not carry the
+// marketplace.order_started / order_review_started / order_review_completed / order_completed say "look again": the flag is a trigger, the endpoint decides. The order may not carry the
 // link yet when the first event arrives, so the event's own `second_opinion_promotion_url` is returned to be used until the order has one.
 // Also after a reconnect.
 export function usePromotionSync(orderId: string): string {
@@ -42,7 +42,7 @@ export function usePromotionSync(orderId: string): string {
     void qc.invalidateQueries({ queryKey: soKeys.promo(orderId) });
     void qc.invalidateQueries({ queryKey: ["market-orders"] });
   }, [qc, orderId]);
-  useUserEvents(["marketplace.order_started", "marketplace.order_completed"], (e) => {
+  useUserEvents(["marketplace.order_started", "marketplace.order_review_started", "marketplace.order_review_completed", "marketplace.order_completed"], (e) => {
     const id = typeof e.order_id === "string" ? e.order_id : "";
     if (id && id !== orderId) return;
     const url = typeof e.second_opinion_promotion_url === "string" ? e.second_opinion_promotion_url : "";

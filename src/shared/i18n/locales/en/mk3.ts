@@ -26,7 +26,7 @@ export const mk3: Messages["mk3"] = {
   },
   existing: { pending: "You already have an active request for this specialist and service.", paid: "You already have this service active", chat: "You already have this service active" },
   lead: {
-    pending: "Once the payment is confirmed, the specialist gets the order and a secure chat opens.",
+    pending: "Your request is received. The next step and the status show on the order page.",
     paid: "Preparing your secure chat…",
     chat: "Payment confirmed and your secure chat is open. You can message the specialist now.",
     completed: "The work is done. You can see the result in your orders.",

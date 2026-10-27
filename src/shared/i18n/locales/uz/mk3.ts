@@ -24,7 +24,7 @@ export const mk3 = {
   },
   existing: { pending: "Bu mutaxassis va xizmat bo'yicha faol so'rovingiz bor.", paid: "Bu xizmat sizda allaqachon faol", chat: "Bu xizmat sizda allaqachon faol" },
   lead: {
-    pending: "To'lov tasdiqlanishi bilan mutaxassisga ish tushadi va xavfsiz chat ochiladi.",
+    pending: "So'rovingiz qabul qilindi. Keyingi qadam va holat buyurtma sahifasida ko'rinadi.",
     paid: "Xavfsiz chat tayyorlanmoqda…",
     chat: "To'lov tasdiqlandi, xavfsiz chat ochildi. Mutaxassisga yozishingiz mumkin.",
     completed: "Ish yakunlandi. Natijani buyurtmalaringizda ko'rasiz.",

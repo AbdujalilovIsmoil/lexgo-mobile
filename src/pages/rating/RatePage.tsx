@@ -10,7 +10,7 @@ import { useT } from "@/shared/i18n";
 
 type Sent = { stars: number; complaint: QualityComplaintRef | null };
 
-// Rate a finished work within the backend's 15-minute window, optionally with a complaint.
+// Rate a finished work within the backend's rating window; other works may add a complaint here.
 export function RatePage({ workId }: { workId: string }) {
   const { t } = useT();
   const q = useRateTarget(workId);
@@ -30,7 +30,8 @@ export function RatePage({ workId }: { workId: string }) {
           <>
             {target.lawyerName ? <Text variant="small" tone="gray">{t("py10.lawyer", { name: target.lawyerName })}</Text> : null}
             {open ? <RateForm target={target} busy={submit.isPending} onExpired={expired} onSubmit={(n, comment, text) => { setStars(n); submit.mutate({ stars: n, comment, complaint: text }); }} /> : <RateOutcome target={target} sent={sent} />}
-            {open ? <Button title={t("py10.rate.complain")} icon="message-square" variant="line" full onPress={() => setComplaint(true)} /> : null}
+            {/* A marketplace order has its own complaint (enterprise §9: one window, and a 1–2 star rating opens it by itself) — no second channel here. */}
+            {open && target.kind !== "market" ? <Button title={t("py10.rate.complain")} icon="message-square" variant="line" full onPress={() => setComplaint(true)} /> : null}
             <ComplaintSheet visible={complaint} onClose={() => setComplaint(false)} relatedRef={target.workId} />
           </>
         )}

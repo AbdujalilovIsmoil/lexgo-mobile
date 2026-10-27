@@ -2,7 +2,7 @@ import { StyleSheet, View } from "react-native";
 import { useRouter } from "expo-router";
 import { useResponseNote } from "@/entities/response-window";
 import { useColors } from "@/shared/theme";
-import { Button, Card, Icon, Input, Pill, Text } from "@/shared/ui";
+import { Button, Card, Icon, Input, Pill, Text, useErrorText } from "@/shared/ui";
 import { humanizeSlug } from "@/shared/lib/format";
 import { useT } from "@/shared/i18n";
 import { useOrderPanel, type OrderTarget } from "../model/useOrderPanel";
@@ -21,6 +21,7 @@ export function OrderPanel({ service, preSeller, packageId = "", onChat }: Props
   const c = useColors();
   const router = useRouter();
   const note = useResponseNote();
+  const errorText = useErrorText();
   const f = useOrderPanel(service, preSeller?.id ?? "", packageId);
   const o = f.created;
   if (o && o.source !== "marketplace" && o.paymentStatus !== "paid") return <PayBlock orderId={o.id} onChat={onChat} />;
@@ -51,7 +52,7 @@ export function OrderPanel({ service, preSeller, packageId = "", onChat }: Props
           <Text variant="caption" tone={note.afterHours ? "warn" : "ok"} style={s.flex}>{note.text}</Text>
         </View>
       ) : null}
-      {f.failed ? <Text variant="small" tone="err">{t("csv.orderError")}</Text> : null}
+      {f.failed ? <Text variant="small" tone="err">{errorText(f.failed) === t("common.serverError") ? t("csv.orderError") : errorText(f.failed)}</Text> : null}
       <Button title={f.busy ? t("csv.buying") : t("csv.buy")} onPress={() => void f.buy()} loading={f.busy} variant="gradient" size="lg" full />
       <Text variant="caption" tone="gray" center>{t("csv.orderNote")}</Text>
     </View>

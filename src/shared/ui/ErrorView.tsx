@@ -13,10 +13,11 @@ export function useErrorText() {
       if (e.status === 403) return t("common.forbidden");
       if (e.status === 404) return t("common.notFound");
       if (e.status === 429) return t("common.rateLimited");
+      // TZ §2.4: the code decides, not the backend's sentence — a code the app knows is explained in the user's language; any other
+      // refusal keeps the server's own message.
+      const known = e.code ? [`ntd.bz.${e.code}`, `mf.err.${e.code}`].find((k) => t(k) !== k) : undefined;
+      if (known) return t(known);
       if (e.detail) return e.detail;
-      // Business codes the backend answers without a message (marketplace_order_already_active, rating_window_closed…).
-      const key = `ntd.bz.${e.code ?? ""}`;
-      if (e.code && t(key) !== key) return t(key);
     }
     return t("common.serverError");
   };

@@ -17,7 +17,7 @@ const room = (id: unknown, url: unknown) => asStr(id) || (ROOM_RE.exec(asStr(url
 // marketSignalOf() on the web); null for everything else.
 export function marketSignalOf(ev: { event: string } & Record<string, unknown>): MarketSignal | null {
   const name = ev.event;
-  if (name.startsWith("marketplace.")) {
+  if (name.startsWith("marketplace.") || name.startsWith("marketplace_")) {
     const topic = topicOf(name);
     const kind = topic ? "other" : /paid|approved/.test(name) ? "paid" : /reject|cancel/.test(name) ? "rejected" : "other";
     return { kind, topic, orderId: asStr(ev.order_id), workId: asStr(ev.work_id) || asStr(asDict(ev.purchase_request).work_id), roomId: room(ev.room_id, ev.chat_url) };
@@ -29,7 +29,7 @@ export function marketSignalOf(ev: { event: string } & Record<string, unknown>):
   const inner = asStr(data.event);
   if (inner.startsWith("order_") && data.order_id) return { kind: "other", orderId: asStr(data.order_id), workId: asStr(data.work_id), roomId: asStr(data.room_id) };
   if (inner === "payment_paid" && asStr(data.target_type) === "marketplace_order") return { kind: "other", orderId: asStr(data.target_id), workId: "", roomId: "" };
-  if (!inner.startsWith("marketplace_")) return null;
+  if (!inner.startsWith("marketplace_") && !inner.startsWith("marketplace.")) return null;
   const kind = /approved|order_paid/.test(inner) ? "paid" : inner === "marketplace_purchase_rejected" ? "rejected" : inner === "marketplace_purchase_requested" ? "requested" : "other";
   return { kind, orderId: asStr(data.order_id), workId: asStr(data.work_id), roomId: asStr(data.room_id) };
 }

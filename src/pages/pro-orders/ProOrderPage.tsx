@@ -58,7 +58,7 @@ export default function ProOrderPage() {
         {order && phase ? (
           <PageScroll onRefresh={refresh} refreshing={one.isRefetching} scrollRef={scroll}>
             <OrderSummaryCard order={order} />
-            <AssignmentCard order={order} flow={order.flow} acceptAllowed={allowed} />
+            {phase === "assigned" || phase === "replacing" ? <AssignmentCard order={order} flow={order.flow} acceptAllowed={allowed} /> : null}
             {phase !== "assigned" ? <FlowLead phase={phase} role="seller" /> : null}
             <WorkTimeCard flow={order.flow} phase={phase} role="seller" />
             <RefundCard orderId={order.id} enabled={phase === "refund" || phase === "refunded"} />

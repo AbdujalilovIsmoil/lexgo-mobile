@@ -21,7 +21,7 @@ export function useOrderPanel(service: OrderTarget, preSellerId: string, package
   const [sort, setSort] = useState<SellerSort>("match");
   const [missing, setMissing] = useState(false);
   const [busy, setBusy] = useState(false);
-  const [failed, setFailed] = useState(false);
+  const [failed, setFailed] = useState<unknown>(null); // the refusal, explained by its code (TZ §2.4) on the panel
   const [created, setCreated] = useState<Order | null>(null);
   const [problem, setProblem] = useState("");
   const rows = useMemo(() => sellers.data ?? [], [sellers.data]);
@@ -45,16 +45,16 @@ export function useOrderPanel(service: OrderTarget, preSellerId: string, package
     if (!sellerId) return setMissing(true);
     setMissing(false);
     setBusy(true);
-    setFailed(false);
+    setFailed(null);
     try {
       const o = await createOrder({ serviceId: service.id, lawyerUserId: auto ? undefined : sellerId, packageId, region, problem, title: service.name });
       successHaptic();
       void qc.invalidateQueries({ queryKey: orderKeys.list });
       void qc.invalidateQueries({ queryKey: ["market-orders"] });
       setCreated(o);
-    } catch {
+    } catch (e) {
       errorHaptic();
-      setFailed(true);
+      setFailed(e);
     } finally {
       setBusy(false);
     }
