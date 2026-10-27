@@ -2,6 +2,8 @@
 // approved experience counts for pricing and ranking (§3.14), so a pending, rejected or cancelled revision never changes the verified labels.
 export type ExpStatus = "pending_review" | "approved" | "rejected" | "cancelled" | "superseded" | "other";
 export type ExpEvidence = { id: string; fileName: string; mime: string; size: number; downloadUrl: string };
+// One position held at the workplace (contract §15). Periods may overlap or run in parallel: the backend merges them for the rating.
+export type ExpPosition = { title: string; startedAt: string; endedAt: string; isCurrent: boolean; description: string };
 export type ExpRecord = {
   id: string;
   rootId: string;
@@ -10,10 +12,7 @@ export type ExpRecord = {
   categoryId: string;
   subcategoryId: string;
   workplace: string;
-  position: string;
-  startedAt: string;
-  endedAt: string;
-  isCurrent: boolean;
+  positions: ExpPosition[]; // newest first; a record without `positions` gives its legacy single position
   description: string;
   stages: string[];
   results: string[];
@@ -25,20 +24,26 @@ export type ExpRecord = {
 };
 // One experience entry: the verified revision, the one under review and the newest.
 export type ExpGroup = { rootId: string; current: ExpRecord | null; pending: ExpRecord | null; latest: ExpRecord | null; revisionCount: number };
+export type ExpPositionInput = {
+  key: string; // the form's own row key, never sent
+  title: string;
+  startedOn: string; // YYYY-MM-DD
+  endedOn: string;
+  isCurrent: boolean;
+  description: string;
+};
 export type ExpInput = {
   sourceId: string; // the entry being edited ("" for a new one)
   categoryId: string;
   subcategoryId: string;
   workplace: string;
-  position: string;
-  startedOn: string; // YYYY-MM-DD
-  endedOn: string;
-  isCurrent: boolean;
+  positions: ExpPositionInput[]; // 1 to EXP_POSITIONS_MAX
   description: string;
   stages: string[];
   results: string[];
   evidenceIds: string[];
 };
+export const EXP_POSITIONS_MAX = 30; // ExperienceSubmission.positions maxItems
 export type ExpCategory = { id: string; title: string; children: { id: string; title: string }[] };
 
 // GET …/experience/{id}/history (§3.8): every revision and every call-center decision with its checklist.

@@ -1,5 +1,6 @@
 import { asArr, asDict, asNum, asStr, type Dict } from "@/shared/lib/json";
-import type { ExpCategory, ExpEvidence, ExpGroup, ExpRecord, ExpStatus } from "../model/types";
+import { newestFirst } from "../lib/positions";
+import type { ExpCategory, ExpEvidence, ExpGroup, ExpPosition, ExpRecord, ExpStatus } from "../model/types";
 
 const num = (v: unknown): number | null => (v === null || v === undefined || v === "" ? null : Number.isFinite(asNum(v, NaN)) ? asNum(v) : null);
 export const strs = (v: unknown): string[] => asArr(v).map((x) => asStr(x)).filter(Boolean);
@@ -27,11 +28,28 @@ function evidenceOf(d: Dict): ExpEvidence[] {
   return [...out.values()];
 }
 
+// One position (§15 ExperiencePosition: title, its own period, an optional description). Without `is_current`, no end means held now.
+function position(v: unknown): ExpPosition | null {
+  const d = asDict(v);
+  const title = asStr(d.title ?? d.position).trim();
+  const started = asStr(d.started_at);
+  const ended = asStr(d.ended_at);
+  if (!title && !started) return null;
+  return { title, startedAt: started, endedAt: ended, isCurrent: d.is_current === true || (d.is_current === undefined && !ended), description: asStr(d.description) };
+}
+
+// `positions[]`, newest first. An answer without them (an older backend or revision) has one position in the legacy single fields.
+function positionsOf(d: Dict): ExpPosition[] {
+  const list = asArr(d.positions).map(position).filter((p): p is ExpPosition => !!p);
+  if (list.length) return newestFirst(list);
+  const one = position({ title: d.position, started_at: d.started_at, ended_at: d.ended_at, is_current: d.is_current });
+  return one ? [one] : [];
+}
+
 export function normRecord(v: unknown): ExpRecord | null {
   const d = asDict(v);
   const id = asStr(d.id);
   if (!id) return null;
-  const ended = asStr(d.ended_at);
   const status = statusOf(d.status);
   return {
     id,
@@ -41,10 +59,7 @@ export function normRecord(v: unknown): ExpRecord | null {
     categoryId: asStr(d.category_id),
     subcategoryId: asStr(d.subcategory_id),
     workplace: asStr(d.workplace),
-    position: asStr(d.position),
-    startedAt: asStr(d.started_at),
-    endedAt: ended,
-    isCurrent: d.is_current === true || (d.is_current === undefined && !ended),
+    positions: positionsOf(d),
     description: asStr(d.description),
     stages: strs(d.stages),
     results: strs(d.results),

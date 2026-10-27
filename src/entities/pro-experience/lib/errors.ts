@@ -3,16 +3,16 @@ import { asDict, asStr } from "@/shared/lib/json";
 import { strs } from "../api/norm";
 
 // The inputs of the form a server error can point at.
-export type ExpSlot = "category" | "subcategory" | "workplace" | "position" | "started" | "ended" | "description" | "stages" | "results" | "evidence";
+export type ExpSlot = "category" | "subcategory" | "workplace" | "positions" | "description" | "stages" | "results" | "evidence";
 export type ExpServerError = { code: string; slots: ExpSlot[]; conflictId: string; values: string[]; allowed: string[] };
 
 const BY_FIELD: Record<string, ExpSlot> = {
-  category_id: "category", subcategory_id: "subcategory", workplace: "workplace", position: "position", started_at: "started", ended_at: "ended",
-  is_current: "ended", description: "description", stages: "stages", results: "results", evidence_ids: "evidence", evidence: "evidence",
+  category_id: "category", subcategory_id: "subcategory", workplace: "workplace", positions: "positions", position: "positions", started_at: "positions", ended_at: "positions", title: "positions",
+  is_current: "positions", description: "description", stages: "stages", results: "results", evidence_ids: "evidence", evidence: "evidence",
 };
 // A code that arrives without its `field` still belongs to an input.
 const BY_CODE: Record<string, ExpSlot> = {
-  experience_dates_invalid: "ended", experience_future_date: "started", experience_dates_overlap: "started", experience_category_invalid: "category",
+  experience_dates_invalid: "positions", experience_future_date: "positions", experience_dates_overlap: "positions", experience_category_invalid: "category",
   experience_subcategory_invalid: "subcategory", experience_stage_invalid: "stages", experience_result_invalid: "results",
 };
 

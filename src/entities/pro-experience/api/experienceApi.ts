@@ -3,6 +3,7 @@ import { ApiError } from "@/shared/api/errors";
 import { appendFile, type Picked } from "@/shared/lib/upload";
 import { asArr, asDict, asNum, type Dict } from "@/shared/lib/json";
 import { evidence, normPages, normRecord, normTree } from "./norm";
+import { headIndex } from "../lib/positions";
 import { normHistory } from "./normHistory";
 import type { ExpCategory, ExpEvidence, ExpGroup, ExpHistory, ExpInput, ExpRecord } from "../model/types";
 
@@ -29,16 +30,21 @@ export const getExperienceHistory = async (id: string): Promise<ExpHistory> => n
 const day = (v: string) => (v ? `${v}T00:00:00Z` : null);
 
 // POST /marketplace/me/experience — a new entry, or (with source_id = the approved revision) an edit of one; either goes to review.
-// The backend computes `years` itself; a whole-category entry has no subcategory_id.
+// `positions[]` carries every position of the workplace (§15). The legacy single position / started_at / ended_at / is_current are sent
+// too, filled from the position held now (else the newest), because an older backend reads only those. The backend computes `years`
+// itself; a whole-category entry has no subcategory_id.
 export async function submitExperience(i: ExpInput): Promise<ExpRecord | null> {
+  const positions = i.positions.map((p) => ({ title: p.title.trim(), started_at: day(p.startedOn), ended_at: p.isCurrent ? null : day(p.endedOn), is_current: p.isCurrent, description: p.description.trim() }));
+  const head = positions[headIndex(i.positions)];
   const body: Record<string, unknown> = {
     source_id: i.sourceId || null,
     category_id: i.categoryId,
     workplace: i.workplace.trim(),
-    position: i.position.trim(),
-    started_at: day(i.startedOn),
-    ended_at: i.isCurrent ? null : day(i.endedOn),
-    is_current: i.isCurrent,
+    positions,
+    position: head?.title ?? "",
+    started_at: head?.started_at ?? null,
+    ended_at: head?.ended_at ?? null,
+    is_current: head?.is_current ?? false,
     description: i.description.trim(),
     stages: i.stages,
     results: i.results,

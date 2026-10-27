@@ -7,6 +7,7 @@ import { ShowMore, TimelineItem, useShowMore } from "@/shared/ui/profile";
 import { useColors } from "@/shared/theme";
 import { fmtDate } from "@/shared/lib/format";
 import { useT } from "@/shared/i18n";
+import { PositionChanges, PositionList } from "./PositionList";
 import { StatePill } from "./StatePill";
 
 type Props = { group: ExpGroup | null; visible: boolean; onClose: () => void };
@@ -21,7 +22,7 @@ export function HistorySheet({ group, visible, onClose }: Props) {
   const page = useShowMore(events, id);
   const r = group?.current ?? group?.latest;
   const versions = q.data?.revisions.length || group?.revisionCount || 0;
-  const subtitle = [r?.position, r?.workplace, versions > 1 ? t("pxp.hist.versions", { n: versions }) : ""].filter(Boolean).join(" · ");
+  const subtitle = [r?.workplace, r?.positions[0]?.title, versions > 1 ? t("pxp.hist.versions", { n: versions }) : ""].filter(Boolean).join(" · ");
   return (
     <BottomSheet visible={visible} onClose={onClose} title={t("pxp.hist.title")} subtitle={subtitle || undefined} snaps={[0.6, 0.92]}>
       <SheetScroll>
@@ -47,8 +48,10 @@ function EventRow({ e, last }: { e: ExpEvent; last: boolean }) {
   if (e.kind === "sent") {
     const r = e.record;
     return (
-      <TimelineItem color={c.accent} title={r.version != null ? t("pxp.hist.sentV", { n: r.version }) : t("pxp.hist.sent")} subtitle={[r.position, r.workplace].filter(Boolean).join(" · ")} time={time} last={last}>
+      <TimelineItem color={c.accent} title={r.version != null ? t("pxp.hist.sentV", { n: r.version }) : t("pxp.hist.sent")} subtitle={r.workplace} time={time} last={last}>
+        <PositionList list={r.positions} />
         {e.changed.length ? <Text variant="caption" tone="gray2">{t("pxp.note.changed", { list: e.changed.map((k) => t(`pxp.field.${k}`)).join(", ") })}</Text> : null}
+        <PositionChanges diff={e.positions} tone="gray2" />
         <View style={s.pill}><StatePill state={r.status} years={r.years} /></View>
       </TimelineItem>
     );

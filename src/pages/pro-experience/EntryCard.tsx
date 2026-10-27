@@ -6,6 +6,7 @@ import { useColors } from "@/shared/theme";
 import { fmtDate } from "@/shared/lib/format";
 import { errorHaptic, successHaptic } from "@/shared/lib/haptics";
 import { useT } from "@/shared/i18n";
+import { PositionChanges, PositionList } from "./PositionList";
 import { StatePill } from "./StatePill";
 
 type Props = { g: ExpGroup; category: (r: ExpRecord) => string; onEdit: (base: ExpRecord) => void; onHistory: () => void };
@@ -13,7 +14,7 @@ type Props = { g: ExpGroup; category: (r: ExpRecord) => string; onEdit: (base: E
 // One experience entry (Gaps Closed §3.5–3.7, §3.14): the verified data with its pill and what it is made of (stages, results, the files,
 // which open), a newer revision beside it as a note, and whether it counts for the price. Withdrawing a revision under review asks first.
 export function EntryCard({ g, category, onEdit, onHistory }: Props) {
-  const { t, locale } = useT();
+  const { t } = useT();
   const c = useColors();
   const qc = useQueryClient();
   const errText = useErrorText();
@@ -28,7 +29,6 @@ export function EntryCard({ g, category, onEdit, onHistory }: Props) {
   const { shown, state, note, pendingId } = card;
   const askCancel = () =>
     confirmDialog({ title: t("pxp.cancel.title"), message: t(g.current ? "pxp.cancel.edit" : "pxp.cancel.new"), confirmLabel: t("pxp.cancel.ok"), cancelLabel: t("pxp.cancel.no"), icon: "x-circle", danger: true, onConfirm: () => cancel.mutate(pendingId) });
-  const day = (iso: string) => (iso ? fmtDate(iso, locale) : "—");
   const counts = state === "approved" && shown.affectsPricing;
   const files = shown.evidence.map((e, i) => ({ key: e.id, name: e.fileName || t("pxp.ev.file", { n: i + 1 }), file: evidenceFile(e) }));
   return (
@@ -37,8 +37,8 @@ export function EntryCard({ g, category, onEdit, onHistory }: Props) {
         <Text variant="small" weight="bold" tone="accent" style={s.flex}>{category(shown) || "—"}</Text>
         <StatePill state={state} years={shown.years} />
       </View>
-      <Text variant="body" weight="bold">{[shown.position, shown.workplace].filter(Boolean).join(" · ")}</Text>
-      <Text variant="caption" tone="gray">{`${day(shown.startedAt)} – ${shown.isCurrent ? t("mf.exp.now") : day(shown.endedAt)}`}</Text>
+      <Text variant="body" weight="bold">{shown.workplace || "—"}</Text>
+      <PositionList list={shown.positions} big />
       {shown.description ? <Text variant="small" numberOfLines={4}>{shown.description}</Text> : null}
       {shown.stages.length ? <Line label={t("mf.exp.stages")} text={shown.stages.map((k) => stageLabel(k, t)).join(", ")} /> : null}
       {shown.results.length ? <Line label={t("mf.exp.results")} text={shown.results.map((k) => resultLabel(k, t)).join(", ")} /> : null}
@@ -84,6 +84,7 @@ function NoteBox({ note, onFix }: { note: ExpNote; onFix: () => void }) {
     <View style={[s.note, { backgroundColor: bg }]}>
       <Text variant="small" weight="bold" tone={tone}>{[t(`pxp.note.${note.kind}`), meta].filter(Boolean).join(" · ")}</Text>
       {note.changed.length ? <Text variant="caption" tone="gray">{t("pxp.note.changed", { list: note.changed.map((k) => t(`pxp.field.${k}`)).join(", ") })}</Text> : null}
+      <PositionChanges diff={note.positions} />
       {note.kind === "rejected" && r.rejectionReason ? <Text variant="caption" tone="err">{t("mf.exp.reason", { text: r.rejectionReason })}</Text> : null}
       <Text variant="caption" tone="gray">{t(note.kind === "pending" ? "pxp.note.pendingText" : "pxp.note.keeps")}</Text>
       {note.kind === "rejected" ? <Button title={t("pxp.act.fix")} icon="tool" variant="soft" size="sm" onPress={onFix} /> : null}

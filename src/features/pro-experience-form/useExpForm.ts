@@ -1,8 +1,8 @@
 import { useRef, useState } from "react";
 import type { LayoutChangeEvent, ScrollView } from "react-native";
 import { useQueryClient } from "@tanstack/react-query";
-import { DESCRIPTION_MIN, expIssues, expKeys, experienceErrorOf, resultLabel, stageLabel, submitExperience, useExpCategories } from "@/entities/pro-experience";
-import type { ExpGroup, ExpInput, ExpIssue, ExpRecord, ExpServerError, ExpSlot } from "@/entities/pro-experience";
+import { DESCRIPTION_MIN, EXP_POSITIONS_MAX, expIssues, expKeys, experienceErrorOf, posIssues, resultLabel, stageLabel, submitExperience, useExpCategories } from "@/entities/pro-experience";
+import type { ExpGroup, ExpInput, ExpIssue, ExpPositionInput, ExpRecord, ExpServerError, ExpSlot, PosIssue } from "@/entities/pro-experience";
 import { toast, useErrorText } from "@/shared/ui";
 import { errorHaptic, successHaptic } from "@/shared/lib/haptics";
 import { useT } from "@/shared/i18n";
@@ -10,17 +10,17 @@ import { useEvidence } from "./useEvidence";
 
 const iso = (v: string) => v.slice(0, 10);
 const today = () => new Date().toISOString().slice(0, 10);
-const ISSUE_SLOT: Record<ExpIssue, ExpSlot> = { category: "category", subcategory: "subcategory", workplace: "workplace", position: "position", started: "started", ended: "ended", description: "description", contacts: "description" };
+const ISSUE_SLOT: Record<ExpIssue, ExpSlot> = { category: "category", subcategory: "subcategory", workplace: "workplace", positions: "positions", description: "description", contacts: "description" };
+
+let rowSeq = 0;
+const blankRow = (): ExpPositionInput => ({ key: `p${++rowSeq}`, title: "", startedOn: "", endedOn: "", isCurrent: false, description: "" });
 
 const startOf = (r: ExpRecord | null, sourceId: string): ExpInput => ({
   sourceId,
   categoryId: r?.categoryId ?? "",
   subcategoryId: r?.subcategoryId ?? "",
   workplace: r?.workplace ?? "",
-  position: r?.position ?? "",
-  startedOn: r?.startedAt ? iso(r.startedAt) : "",
-  endedOn: r?.endedAt ? iso(r.endedAt) : "",
-  isCurrent: r ? r.isCurrent : false,
+  positions: r?.positions.length ? r.positions.map((p) => ({ key: `p${++rowSeq}`, title: p.title, startedOn: iso(p.startedAt), endedOn: iso(p.endedAt), isCurrent: p.isCurrent, description: p.description })) : [blankRow()],
   description: r?.description ?? "",
   stages: r?.stages ?? [],
   results: r?.results ?? [],
@@ -59,6 +59,15 @@ export function useExpForm(group: ExpGroup | null, base: ExpRecord | null, onClo
     setV((cur) => ({ ...cur, ...p }));
     touch(...slots);
   };
+  // Positions of the workplace, 1 to 30. Their periods may overlap or run in parallel; only each row is checked on its own.
+  const pos = {
+    add: () => v.positions.length < EXP_POSITIONS_MAX && set({ positions: [...v.positions, blankRow()] }, "positions"),
+    remove: (key: string) => v.positions.length > 1 && set({ positions: v.positions.filter((p) => p.key !== key) }, "positions"),
+    patch: (key: string, p: Partial<ExpPositionInput>) => set({ positions: v.positions.map((x) => (x.key === key ? { ...x, ...p } : x)) }, "positions"),
+    // What is wrong with one row, once a send was tried: the text under that input.
+    issue: (row: ExpPositionInput, kind: PosIssue): string | undefined => (tried && posIssues(row, today()).includes(kind) ? t(`mf.exp.issue.${kind === "title" ? "position" : kind}`) : undefined),
+    full: v.positions.length >= EXP_POSITIONS_MAX,
+  };
 
   const known = (code: string) => (code && t(`mf.exp.err.${code}`) !== `mf.exp.err.${code}` ? t(`mf.exp.err.${code}`) : "");
   const label = (slot: ExpSlot, x: string) =>
@@ -67,7 +76,7 @@ export function useExpForm(group: ExpGroup | null, base: ExpRecord | null, onClo
   const nameOf = (id: string) => {
     const g = id ? qc.getQueryData<ExpGroup[]>(expKeys.mine)?.find((x) => [x.rootId, x.current?.id, x.pending?.id, x.latest?.id].includes(id)) : undefined;
     const r = g?.current ?? g?.latest;
-    return r ? [r.position, r.workplace].filter(Boolean).join(" · ") : "";
+    return r ? [r.positions[0]?.title, r.workplace].filter(Boolean).join(" · ") : "";
   };
   const serverText = (x: ExpServerError, slot: ExpSlot): string => {
     if (x.code === "experience_fields_required") return t("pxp.form.required");
@@ -78,7 +87,7 @@ export function useExpForm(group: ExpGroup | null, base: ExpRecord | null, onClo
   };
   const err = (slot: ExpSlot): string | undefined => {
     const k = tried ? issues.find((i) => ISSUE_SLOT[i] === slot) : undefined;
-    if (k) return k === "subcategory" ? t("pxp.issue.subcategory") : t(`mf.exp.issue.${k}`, { n: DESCRIPTION_MIN });
+    if (k) return k === "subcategory" || k === "positions" ? t(`pxp.issue.${k}`) : t(`mf.exp.issue.${k}`, { n: DESCRIPTION_MIN });
     return server?.slots.includes(slot) ? serverText(server, slot) : undefined;
   };
 
@@ -108,5 +117,5 @@ export function useExpForm(group: ExpGroup | null, base: ExpRecord | null, onClo
     }
   };
 
-  return { v, set, touch, ev, err, banner, busy, submit, scroll, anchor, cats, cat: cats.data?.find((x) => x.id === v.categoryId), today };
+  return { v, set, pos, touch, ev, err, banner, busy, submit, scroll, anchor, cats, cat: cats.data?.find((x) => x.id === v.categoryId), today };
 }

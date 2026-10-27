@@ -27,7 +27,7 @@ describe("experience history (Gaps Closed §3.8)", () => {
     const tl = timelineOf(h);
     expect(tl.map((e) => e.key)).toEqual(["r:rv2", "s:v2", "r:rv1", "s:v1"]);
     expect(tl[0]).toMatchObject({ kind: "review", version: 2 });
-    expect(tl[1]).toMatchObject({ kind: "sent", changed: ["position"] });
+    expect(tl[1]).toMatchObject({ kind: "sent", changed: ["positions"], positions: { edited: ["Advokat → Katta advokat"] } });
     expect(tl[3]).toMatchObject({ kind: "sent", changed: [] });
   });
   it("takes the decisions from the revisions when the answer has no reviews", () => {
@@ -41,20 +41,20 @@ describe("experience history (Gaps Closed §3.8)", () => {
 describe("experience submission errors (Gaps Closed §3.12)", () => {
   const err = (detail: unknown, status = 422) => experienceErrorOf(parseErrorBody(status, { detail }));
   it("points every code at its input", () => {
-    expect(err({ code: "experience_dates_invalid", field: "ended_at" })).toEqual({ code: "experience_dates_invalid", slots: ["ended"], conflictId: "", values: [], allowed: [] });
-    expect(err({ code: "experience_future_date", field: "started_at" })?.slots).toEqual(["started"]);
+    expect(err({ code: "experience_dates_invalid", field: "ended_at" })).toEqual({ code: "experience_dates_invalid", slots: ["positions"], conflictId: "", values: [], allowed: [] });
+    expect(err({ code: "experience_future_date", field: "started_at" })?.slots).toEqual(["positions"]);
     expect(err({ code: "experience_category_invalid", field: "category_id" })?.slots).toEqual(["category"]);
     expect(err({ code: "experience_subcategory_invalid", field: "subcategory_id" })?.slots).toEqual(["subcategory"]);
     expect(err({ code: "experience_fields_required", fields: ["category_id", "workplace"] })?.slots).toEqual(["category", "workplace"]);
   });
   it("keeps the overlapping entry and the refused values", () => {
-    expect(err({ code: "experience_dates_overlap", field: "started_at", conflicting_experience_id: "e7" })).toMatchObject({ slots: ["started"], conflictId: "e7" });
+    expect(err({ code: "experience_dates_overlap", field: "started_at", conflicting_experience_id: "e7" })).toMatchObject({ slots: ["positions"], conflictId: "e7" });
     expect(err({ code: "experience_stage_invalid", field: "stages", values: ["court"], allowed: ["investigation", "appeal"] })).toMatchObject({ slots: ["stages"], values: ["court"], allowed: ["investigation", "appeal"] });
     expect(err({ code: "experience_result_invalid", values: ["won"] })).toMatchObject({ slots: ["results"], values: ["won"] }); // no field: the code decides
   });
   it("leaves a code without an input for the top of the form, and ignores other errors", () => {
     expect(err({ code: "experience_revision_already_pending", source_id: "a" }, 409)).toMatchObject({ code: "experience_revision_already_pending", slots: [] });
-    expect(err([{ loc: ["body", "started_at"], msg: "invalid datetime" }])).toMatchObject({ code: "", slots: ["started"] }); // FastAPI 422
+    expect(err([{ loc: ["body", "started_at"], msg: "invalid datetime" }])).toMatchObject({ code: "", slots: ["positions"] }); // FastAPI 422
     expect(err({ code: "order_not_found" }, 404)).toBeNull();
     expect(err("Internal error", 500)).toBeNull();
     expect(experienceErrorOf(new Error("x"))).toBeNull();

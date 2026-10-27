@@ -1,17 +1,18 @@
 import { useState } from "react";
 import { StyleSheet, View } from "react-native";
 import { EXP_RESULTS, EXP_STAGES, EvidenceList, type ExpGroup, type ExpRecord } from "@/entities/pro-experience";
-import { Button, DatePickerField, Input, Text } from "@/shared/ui";
-import { Field, FormSheet, SelectField, SwitchField } from "@/shared/ui/admin";
+import { Button, Input } from "@/shared/ui";
+import { Field, FormSheet, SelectField } from "@/shared/ui/admin";
 import { Notice } from "@/shared/ui/sel";
 import { useT } from "@/shared/i18n";
+import { PositionsEditor } from "./PositionsEditor";
 import { useExpForm } from "./useExpForm";
 import { ValueChips } from "./ValueChips";
 
 // group: the entry (null = a new one); base: the revision the form starts from (null = empty).
 type Props = { visible: boolean; onClose: () => void; group: ExpGroup | null; base: ExpRecord | null };
 
-// Add or edit one experience entry (TZ.md Gaps Closed §3): category (and an optional direction), workplace and position, the period, what
+// Add or edit one experience entry (TZ.md Gaps Closed §3): category (and an optional direction), workplace and the positions held there (each with its own period), what
 // was done, the stages and results, and supporting files. Every submission is a new revision for the call center (an edit names the
 // verified one it replaces); the verified revision stays in force until the new one is approved.
 export function ExperienceSheet({ visible, onClose, group, base }: Props) {
@@ -52,16 +53,8 @@ function Form({ visible, onClose, group, base }: Props) {
       <View onLayout={f.anchor("workplace")}>
         <Input label={t("mf.exp.workplace")} value={v.workplace} onChangeText={(x) => set({ workplace: x }, "workplace")} maxLength={200} error={err("workplace")} />
       </View>
-      <View onLayout={f.anchor("position")}>
-        <Input label={t("mf.exp.position")} value={v.position} onChangeText={(x) => set({ position: x }, "position")} maxLength={200} error={err("position")} />
-      </View>
-      <View onLayout={f.anchor("started")}>
-        <DatePickerField label={t("mf.exp.startedAt")} value={v.startedOn} onChange={(x) => set({ startedOn: x }, "started")} max={f.today()} years error={err("started")} />
-      </View>
-      <View onLayout={f.anchor("ended")} style={s.group}>
-        <SwitchField label={t("mf.exp.isCurrent")} value={v.isCurrent} onChange={(x) => set({ isCurrent: x, endedOn: x ? "" : v.endedOn }, "ended")} />
-        {!v.isCurrent ? <DatePickerField label={t("mf.exp.endedAt")} value={v.endedOn} onChange={(x) => set({ endedOn: x }, "ended")} min={v.startedOn || undefined} max={f.today()} years error={err("ended")} /> : null}
-        {v.isCurrent && err("ended") ? <Text variant="caption" tone="err" style={s.note}>{err("ended")}</Text> : null}
+      <View onLayout={f.anchor("positions")}>
+        <PositionsEditor rows={v.positions} full={f.pos.full} today={f.today()} issue={f.pos.issue} error={err("positions")} onPatch={f.pos.patch} onAdd={f.pos.add} onRemove={f.pos.remove} />
       </View>
       <View onLayout={f.anchor("description")}>
         <Input label={t("mf.exp.description")} value={v.description} onChangeText={(x) => set({ description: x }, "description")} placeholder={t("mf.exp.descriptionPh")} multiline maxLength={4000} style={s.area} error={err("description")} />
@@ -86,8 +79,6 @@ function Form({ visible, onClose, group, base }: Props) {
 }
 
 const s = StyleSheet.create({
-  group: { gap: 14 },
-  note: { marginLeft: 4, marginTop: -8 },
   area: { minHeight: 120, textAlignVertical: "top" },
   buttons: { flexDirection: "row", gap: 10, flexWrap: "wrap" },
 });

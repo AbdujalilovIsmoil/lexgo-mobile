@@ -1,10 +1,11 @@
 import { normGroups, normPages, normRecord, normTree } from "../api/norm";
-import { EXP_STAGES } from "../model/types";
+import { EXP_STAGES, type ExpPositionInput } from "../model/types";
 import { cardOf } from "./card";
 import { expIssues, strayValues } from "./validate";
 
 const rec = (p: Record<string, unknown>) => ({ id: "r1", root_id: "root", version: 1, status: "approved", category_id: "c1", workplace: "Advokatlik byurosi", position: "Advokat", started_at: "2015-01-01T00:00:00Z", ended_at: null, description: "x", ...p });
 const one = (p: Record<string, unknown>) => normRecord(rec(p))!;
+const row = (p: Partial<ExpPositionInput>): ExpPositionInput => ({ key: "k", title: "Advokat", startedOn: "2015-01-01", endedOn: "", isCurrent: true, description: "", ...p });
 
 describe("experience (TZ Gaps Closed §3)", () => {
   it("reads the backend groups", () => {
@@ -12,7 +13,7 @@ describe("experience (TZ Gaps Closed §3)", () => {
     expect(g).toHaveLength(1);
     expect(g[0].current?.status).toBe("approved");
     expect(g[0].pending?.id).toBe("r2");
-    expect(g[0].current?.isCurrent).toBe(true);
+    expect(g[0].current?.positions[0].isCurrent).toBe(true);
   });
   it("groups flat revisions by root: verified, under review, newest", () => {
     const g = normGroups({ items: [rec({ id: "a", version: 1 }), rec({ id: "b", version: 2, status: "pending" }), rec({ id: "x", root_id: "other", status: "rejected", rejection_reason: "Hujjat yo'q" })] });
@@ -61,15 +62,15 @@ describe("experience (TZ Gaps Closed §3)", () => {
     expect(normTree({ items: tree })).toHaveLength(1);
   });
   it("checks the form like the web does", () => {
-    const base = { sourceId: "", categoryId: "c1", subcategoryId: "", workplace: "Byuro", position: "Advokat", startedOn: "2015-01-01", endedOn: "", isCurrent: true, description: "Jinoyat ishlari bo'yicha tergov va sud bosqichlarida himoya", stages: [], results: [], evidenceIds: [] };
+    const base = { sourceId: "", categoryId: "c1", subcategoryId: "", workplace: "Byuro", positions: [row({})], description: "Jinoyat ishlari bo'yicha tergov va sud bosqichlarida himoya", stages: [], results: [], evidenceIds: [] };
     expect(expIssues(base, "2026-10-24")).toEqual([]);
-    expect(expIssues({ ...base, categoryId: "", workplace: " ", startedOn: "2027-01-01" }, "2026-10-24")).toEqual(["category", "workplace", "started"]);
-    expect(expIssues({ ...base, isCurrent: false, endedOn: "2014-01-01" }, "2026-10-24")).toEqual(["ended"]);
+    expect(expIssues({ ...base, categoryId: "", workplace: " ", positions: [row({ startedOn: "2027-01-01" })] }, "2026-10-24")).toEqual(["category", "workplace", "positions"]);
+    expect(expIssues({ ...base, positions: [row({ isCurrent: false, endedOn: "2014-01-01" })] }, "2026-10-24")).toEqual(["positions"]);
     expect(expIssues({ ...base, description: "qisqa" }, "2026-10-24")).toEqual(["description"]);
     expect(expIssues({ ...base, description: "Bog'laning: +998 90 123 45 67, tergov va sud bosqichlari" }, "2026-10-24")).toEqual(["contacts"]);
   });
   it("flags a category or direction the tree no longer has", () => {
-    const base = { sourceId: "", categoryId: "c1", subcategoryId: "s1", workplace: "Byuro", position: "Advokat", startedOn: "2015-01-01", endedOn: "", isCurrent: true, description: "Jinoyat ishlari bo'yicha tergov va sud bosqichlarida himoya", stages: [], results: [], evidenceIds: [] };
+    const base = { sourceId: "", categoryId: "c1", subcategoryId: "s1", workplace: "Byuro", positions: [row({})], description: "Jinoyat ishlari bo'yicha tergov va sud bosqichlarida himoya", stages: [], results: [], evidenceIds: [] };
     const tree = [{ id: "c1", title: "Jinoiy", children: [{ id: "s1", title: "Ariza" }] }];
     expect(expIssues(base, "2026-10-24", tree)).toEqual([]);
     expect(expIssues({ ...base, subcategoryId: "Ariza" }, "2026-10-24", tree)).toEqual(["subcategory"]);
@@ -84,7 +85,7 @@ describe("experience card: the verified data stays, a newer revision is a note",
     const rejected = one({ id: "b", version: 2, status: "rejected", position: "Katta advokat", rejection_reason: "Hujjat yo'q" });
     const c = cardOf({ rootId: "root", current: approved, pending: null, latest: rejected, revisionCount: 2 })!;
     expect([c.shown.id, c.state, c.pendingId]).toEqual(["a", "approved", ""]);
-    expect(c.note).toEqual({ kind: "rejected", record: rejected, changed: ["position"] });
+    expect(c.note).toEqual({ kind: "rejected", record: rejected, changed: ["positions"], positions: { added: [], removed: [], edited: ["Advokat → Katta advokat"] } });
   });
   it("a cancelled edit leaves the verified data and says so", () => {
     const cancelled = one({ id: "b", version: 2, status: "cancelled", description: "boshqa" });
