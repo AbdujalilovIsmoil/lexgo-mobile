@@ -11,7 +11,7 @@ export type Viewer = { signedIn: boolean; kind: ViewerKind };
 
 export type SubjectKind =
   | "chat" | "call" | "doc" | "order" | "payment" | "ticket" | "urgent" | "complaint" | "subscription" | "calendar"
-  | "promotion" | "gift" | "referral" | "security" | "registration" | "case";
+  | "promotion" | "gift" | "referral" | "security" | "registration" | "case" | "experience";
 export type Subject = { kind: SubjectKind; id: string; event: string; data: Dict };
 
 // GET `path` before opening: 2xx (and a body.status outside `closed`) = open, 403/404/410 = closed.

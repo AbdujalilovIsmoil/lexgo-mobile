@@ -8,6 +8,8 @@ const EXACT: Record<string, NotifCategory> = {
   document_payment_created: "payments", document_payment_auto_confirmed: "payments", upsell_redeemed: "marketing",
   seller_register_approved: "system", seller_register_rejected: "system", sos_request: "orders",
   secure_chat_message: "chat", meeting_invite: "chat", contract_signature_otp: "documents",
+  // The call center's decision on a seller's experience is about the profile, not an order.
+  "marketplace.experience_reviewed": "system", marketplace_experience_reviewed: "system",
 };
 
 const EVENT_RULES: [RegExp, NotifCategory][] = [

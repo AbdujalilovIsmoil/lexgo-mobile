@@ -1,14 +1,35 @@
-import { ApiError, http } from "@/shared/api";
+import { http } from "@/shared/api";
+import { ApiError } from "@/shared/api/errors";
 import { appendFile, type Picked } from "@/shared/lib/upload";
-import { asArr, asDict, asStr } from "@/shared/lib/json";
-import { evidence, normGroups, normRecord, strs } from "./norm";
-import type { ExpCategory, ExpEvidence, ExpGroup, ExpInput, ExpRecord } from "../model/types";
+import { asArr, asDict, asNum, type Dict } from "@/shared/lib/json";
+import { evidence, normPages, normRecord, normTree } from "./norm";
+import { normHistory } from "./normHistory";
+import type { ExpCategory, ExpEvidence, ExpGroup, ExpHistory, ExpInput, ExpRecord } from "../model/types";
 
-export const listMyExperience = async (): Promise<ExpGroup[]> => normGroups(await http("/marketplace/me/experience?limit=50&offset=0"));
+const LIMIT = 100; // the backend allows 1..200
+const MAX_PAGES = 10; // a thousand revisions: far beyond any real profile, and the loop always ends
+
+// GET /marketplace/me/experience is paged (limit / offset / has_more, §3.5): every page is read and the entries are merged by root.
+export async function listMyExperience(): Promise<ExpGroup[]> {
+  const pages: Dict[] = [];
+  for (let offset = 0; pages.length < MAX_PAGES; ) {
+    const raw = await http(`/marketplace/me/experience?limit=${LIMIT}&offset=${offset}`);
+    const d = Array.isArray(raw) ? { items: raw } : asDict(raw);
+    pages.push(d);
+    const step = asNum(d.count, 0) || asArr(d.items).length || asArr(d.groups).length;
+    if (d.has_more !== true || step <= 0) break;
+    offset += step;
+  }
+  return normPages(pages);
+}
+
+// GET …/experience/{id}/history: every revision of the entry and every call-center decision (any revision id of the entry works).
+export const getExperienceHistory = async (id: string): Promise<ExpHistory> => normHistory(await http(`/marketplace/me/experience/${encodeURIComponent(id)}/history`));
 
 const day = (v: string) => (v ? `${v}T00:00:00Z` : null);
 
-// POST /marketplace/me/experience — a new entry, or (with source_id) an edit of one; either goes to review.
+// POST /marketplace/me/experience — a new entry, or (with source_id = the approved revision) an edit of one; either goes to review.
+// The backend computes `years` itself; a whole-category entry has no subcategory_id.
 export async function submitExperience(i: ExpInput): Promise<ExpRecord | null> {
   const body: Record<string, unknown> = {
     source_id: i.sourceId || null,
@@ -27,6 +48,7 @@ export async function submitExperience(i: ExpInput): Promise<ExpRecord | null> {
   return normRecord(asDict(await http("/marketplace/me/experience", { method: "POST", body })));
 }
 
+// Only a revision under review can be withdrawn (§3.7).
 export async function cancelExperience(id: string): Promise<void> {
   await http(`/marketplace/me/experience/${encodeURIComponent(id)}/cancel`, { method: "POST" });
 }
@@ -40,20 +62,5 @@ export async function uploadEvidence(file: Picked): Promise<ExpEvidence> {
   return e;
 }
 
-// The categories an experience is filed under (top level) and their directions (children).
-export async function listCategoryTree(): Promise<ExpCategory[]> {
-  const d = await http("/marketplace/service-category-tree");
-  return asArr(Array.isArray(d) ? d : asDict(d).items).map((x) => {
-    const c = asDict(x);
-    return { id: asStr(c.id), title: asStr(c.title ?? c.name), children: asArr(c.children).map((y) => ({ id: asStr(asDict(y).id), title: asStr(asDict(y).title ?? asDict(y).name) })).filter((y) => y.id) };
-  }).filter((c) => c.id && c.title);
-}
-
-// `experience_*` validation codes name the field they are about.
-export function experienceErrorOf(e: unknown): { code: string; field: string } | null {
-  if (!(e instanceof ApiError)) return null;
-  const d = asDict(e.data.detail);
-  const code = asStr(d.code) || e.code || "";
-  if (!code.startsWith("experience_")) return null;
-  return { code, field: asStr(d.field) || strs(d.fields)[0] || "" };
-}
+// The categories an experience is filed under, with their real child ids (one tree for every category select).
+export const listCategoryTree = async (): Promise<ExpCategory[]> => normTree(await http("/service-categories/tree"));

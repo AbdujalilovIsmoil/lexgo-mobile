@@ -30,13 +30,23 @@ export async function pickDocuments(o: Opts = {}): Promise<PickOut> {
   return check(res.assets.map((a) => ({ uri: a.uri, name: a.name, size: a.size ?? 0, mime: a.mimeType ?? guessMime(a.name) })), o);
 }
 
-// Gallery (or camera) image(s), same validation.
-export async function pickImages(o: Opts & { camera?: boolean } = {}): Promise<PickOut> {
+// The picker's copy can be in another format than the original's name says (Android re-encodes below quality 1 and writes a HEIC photo
+// out as .jpeg under the old name): the name and the type follow the copy.
+function asWritten(f: Picked): Picked {
+  const real = extOf(f.uri);
+  if (!/^(jpe?g|png|webp)$/.test(real) || extOf(f.name) === real) return f;
+  return { ...f, name: `${f.name.replace(/\.[^./]+$/, "")}.${real}`, mime: guessMime(`x.${real}`) };
+}
+
+// Gallery (or camera) image(s), same validation. `compatible`: for a backend that takes JPEG / PNG / WEBP only — iOS hands a HEIC photo
+// over as JPEG, and a re-encoded copy is named after what it now is.
+export async function pickImages(o: Opts & { camera?: boolean; compatible?: boolean } = {}): Promise<PickOut> {
   const launch = o.camera ? ImagePicker.launchCameraAsync : ImagePicker.launchImageLibraryAsync;
-  const res = await launch({ mediaTypes: ["images"], allowsMultipleSelection: !!o.multiple && !o.camera, quality: 0.85 }).finally(() => resyncStatusBarSoon());
+  const mode = o.compatible ? { preferredAssetRepresentationMode: ImagePicker.UIImagePickerPreferredAssetRepresentationMode.Compatible } : null;
+  const res = await launch({ mediaTypes: ["images"], allowsMultipleSelection: !!o.multiple && !o.camera, quality: 0.85, ...mode }).finally(() => resyncStatusBarSoon());
   if (res.canceled) return null;
   const list = res.assets.map((a, i) => ({ uri: a.uri, name: a.fileName ?? `photo-${Date.now()}-${i}.jpg`, size: a.fileSize ?? 0, mime: a.mimeType ?? "image/jpeg" }));
-  return check(list, o);
+  return check(o.compatible ? list.map(asWritten) : list, o);
 }
 
 // Expo's fetch rejects { uri, name, type } parts; a real File from expo-file-system works. The part is named after the file on

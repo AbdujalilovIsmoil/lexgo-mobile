@@ -8,6 +8,8 @@ const EXACT: Record<string, SubjectKind> = {
   call_extension_payment_requested: "payment", document_payment_auto_confirmed: "payment",
   // TZ.md §14: the plan's renewal needs the client's consent — the subscription page asks for it.
   "subscription.renewal_consent_required": "subscription", subscription_renewal_consent_required: "subscription",
+  // The call center's decision on the seller's experience (Gaps Closed §3.13) is not about an order: it opens the experience page.
+  "marketplace.experience_reviewed": "experience", marketplace_experience_reviewed: "experience",
 };
 const PREFIX: [RegExp, SubjectKind][] = [
   [/^(secure_chat|chat\.|message)/, "chat"], [/^call\./, "call"], [/^urgent_advokat\./, "urgent"], [/^support\./, "ticket"],

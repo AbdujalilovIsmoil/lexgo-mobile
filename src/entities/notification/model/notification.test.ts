@@ -15,6 +15,7 @@ describe("categoryOf", () => {
     expect(categoryOf("secure_chat_message", [], "")).toBe("chat");
     expect(categoryOf("meeting_invite", [], "")).toBe("chat");
     expect(categoryOf("contract_signature_otp", [], "")).toBe("documents");
+    expect(categoryOf("marketplace_experience_reviewed", [], "")).toBe("system"); // not an order (TZ Gaps Closed §3.13)
   });
   it("prefix rules", () => {
     expect(categoryOf("order_status_changed", [], "")).toBe("orders");

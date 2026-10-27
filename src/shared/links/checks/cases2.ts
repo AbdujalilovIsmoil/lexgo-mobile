@@ -35,4 +35,9 @@ export const MORE_CASES: Case[] = [
   ["warranty update, client", "client", ev("marketplace.warranty_resolved", { order_id: "o5" }), { href: "/orders/o5" }],
   ["renewal consent, client", "client", ev("subscription.renewal_consent_required"), { href: "/subscription" }],
   ["renewal consent, seller", "seller", ev("subscription_renewal_consent_required"), { href: "/subscription" }],
+  // Gaps Closed §3.13: the experience decision opens the experience page, never Orders (it has no order_id).
+  ["experience reviewed, seller", "seller", ev("marketplace.experience_reviewed", { experience_id: "e1", decision: "rejected" }), { href: "/pro/experience", fallback: "/pro/experience", label: "experience" }],
+  ["experience reviewed (notification name), seller", "seller", ev("marketplace_experience_reviewed", { experience_id: "e1" }), { href: "/pro/experience" }],
+  ["experience reviewed, client", "client", ev("marketplace.experience_reviewed", { experience_id: "e1" }), { kind: "none" }],
+  ["experience reviewed in a notification's data", "seller", { data: { event: "marketplace.experience_reviewed", experience_id: "e1" } }, { href: "/pro/experience" }],
 ];
