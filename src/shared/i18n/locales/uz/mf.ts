@@ -299,7 +299,7 @@ export const mf = {
       required_checklist_incomplete: "Yakunlashdan oldin majburiy bandlarni bajaring",
       marketplace_result_required: "Yakunlash uchun natija matnini yozing yoki fayl biriktiring.",
       marketplace_order_already_completed: "Buyurtma allaqachon yakunlangan.",
-      rating_window_closed: "Baholash muddati (15 daqiqa) tugagan.",
+      rating_window_closed: "Baholash muddati tugagan.",
       complaint_window_closed: "Shikoyat muddati tugadi.",
       conflict: "Buyurtma holati o'zgargan — ma'lumot yangilandi. Qayta urinib ko'ring.",
       payment_required: "To'lov hali tasdiqlanmagan — buyurtma to'lov bosqichida.",

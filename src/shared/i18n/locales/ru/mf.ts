@@ -297,7 +297,7 @@ export const mf = {
       required_checklist_incomplete: "Перед завершением выполните обязательные пункты",
       marketplace_result_required: "Чтобы завершить, напишите результат или прикрепите файл.",
       marketplace_order_already_completed: "Заказ уже завершён.",
-      rating_window_closed: "Время на оценку (15 минут) истекло.",
+      rating_window_closed: "Время на оценку истекло.",
       complaint_window_closed: "Время на жалобу истекло.",
       conflict: "Статус заказа изменился — данные обновлены. Попробуйте ещё раз.",
       payment_required: "Оплата ещё не подтверждена — заказ на этапе оплаты.",

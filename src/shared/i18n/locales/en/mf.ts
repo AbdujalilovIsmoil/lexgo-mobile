@@ -297,7 +297,7 @@ export const mf = {
       required_checklist_incomplete: "Finish the required items before completing",
       marketplace_result_required: "To complete, write the result or attach a file.",
       marketplace_order_already_completed: "The order is already completed.",
-      rating_window_closed: "The 15-minute rating window has closed.",
+      rating_window_closed: "The rating window has closed.",
       complaint_window_closed: "The time to complain has passed.",
       conflict: "The order changed in the meantime — it was refreshed. Please try again.",
       payment_required: "The payment is not confirmed yet — the order is at the payment step.",

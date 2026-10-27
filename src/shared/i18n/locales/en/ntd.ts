@@ -94,7 +94,7 @@ export const ntd = {
     "additional_payment_must_increase_price": "The new total must be higher than what was already paid",
     "additional_payment_not_allowed": "An additional payment cannot be requested for this order",
     "marketplace_result_required": "Write the result text or attach a file",
-    "rating_window_closed": "The rating window (15 minutes) has closed",
+    "rating_window_closed": "The rating window has closed",
     "ticket_closed": "The ticket is closed"
   },
   "pk": {
@@ -290,7 +290,7 @@ export const ntd = {
       "submit": "Complete",
       "sent": "Order completed",
       "title": "Complete the order",
-      "lead": "Write the result text and/or attach a file. Client acceptance is not required: the 15-minute rating window opens right away.",
+      "lead": "Write the result text and/or attach a file. Client acceptance is not required: the rating window opens right away.",
       "text": "Result text",
       "textPh": "A short summary of the work done",
       "file": "File",

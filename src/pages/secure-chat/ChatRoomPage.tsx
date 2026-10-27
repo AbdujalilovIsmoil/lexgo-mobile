@@ -22,10 +22,14 @@ export default function ChatRoomPage() {
   const online = r.thread.conn === "online";
   const sub = group ? `${online ? t("admChat.online") : t("admChat.reconnecting")} · ${t("admChat.members", { n: r.room?.memberCount ?? 0 })}` : online ? t("admChat.online") : t("admChat.reconnecting");
   const sellerCalls = useSellerActions().calls;
+  // An order's room offers only the call types the order allows (none once it is finished, refunded or reassigned).
   const calls = a.canCalls && sellerCalls && !r.closed;
+  const audio = calls && r.gate.calls.includes("audio");
+  const video = calls && r.gate.calls.includes("video");
   const right = (
     <>
-      {calls ? <><IconButton icon="phone" size={40} label={t("admChat.audioCall")} onPress={() => void r.call.begin("audio")} /><IconButton icon="video" size={40} label={t("admChat.videoCall")} onPress={() => void r.call.begin("video")} /></> : null}
+      {audio ? <IconButton icon="phone" size={40} label={t("admChat.audioCall")} onPress={() => void r.call.begin("audio")} /> : null}
+      {video ? <IconButton icon="video" size={40} label={t("admChat.videoCall")} onPress={() => void r.call.begin("video")} /> : null}
       {!a.canCalls && doc && !r.closed ? <IconButton icon="phone" size={40} label={t("ms2.callAdvocate")} onPress={() => void r.call.docAudio()} /> : null}
       <IconButton icon="more-vertical" size={40} onPress={() => r.sh.setSheet("menu")} />
     </>

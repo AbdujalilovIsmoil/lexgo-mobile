@@ -37,10 +37,6 @@ export const ccs = {
     "rejected": "Rejected",
     "completed": "Advocate replaced"
   },
-  "deadlineText": "Advocate's reply: by {when}",
-  "deadlineToday": "today",
-  "deadlineTomorrow": "tomorrow",
-  "deadlineOverdue": "The advocate didn't reply — another advocate will be offered",
   "historyCta": "History",
   "hideHistory": "Hide history",
   "viewAll": "View all",
@@ -74,7 +70,7 @@ export const ccs = {
   },
   "stage": {
     "request": "Request",
-    "matching": "Performer",
+    "matching": "Preparing",
     "payment": "Payment",
     "work": "Work",
     "done": "Done",

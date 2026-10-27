@@ -37,10 +37,6 @@ export const ccs = {
     "rejected": "Rad etildi",
     "completed": "Almashtirildi"
   },
-  "deadlineText": "Advokat javobi: {when} gacha",
-  "deadlineToday": "bugun",
-  "deadlineTomorrow": "ertaga",
-  "deadlineOverdue": "Advokat javob bermadi — boshqa advokat taklif qilinadi",
   "historyCta": "Tarix",
   "hideHistory": "Tarixni yopish",
   "viewAll": "Barchasini ko'rish",
@@ -74,7 +70,7 @@ export const ccs = {
   },
   "stage": {
     "request": "So'rov",
-    "matching": "Ijrochi tanlash",
+    "matching": "Tayyorlanmoqda",
     "payment": "To'lov",
     "work": "Ish jarayoni",
     "done": "Yakun",

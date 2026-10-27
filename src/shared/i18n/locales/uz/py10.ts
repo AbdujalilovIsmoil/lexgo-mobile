@@ -20,7 +20,7 @@ export const py10 = {
     submit: "Bahoni yuborish",
     complain: "Alohida shikoyat yozish",
   },
-  closed: { title: "Baholash muddati tugagan", expired: "Baholash va shikoyat uchun 15 daqiqa berilgan edi.", notReady: "Baholash ish yakunlangach ochiladi." },
+  closed: { title: "Baholash muddati tugagan", expired: "Baholash va shikoyat uchun berilgan vaqt tugadi.", notReady: "Baholash ish yakunlangach ochiladi." },
   done: {
     title: "Bahoyingiz uchun rahmat",
     text: "Baho mutaxassis reytingiga ta'sir qiladi.",

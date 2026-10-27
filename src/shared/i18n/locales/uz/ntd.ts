@@ -94,7 +94,7 @@ export const ntd = {
     "additional_payment_must_increase_price": "Yangi jami summa to'langanidan katta bo'lishi kerak",
     "additional_payment_not_allowed": "Bu buyurtma uchun qo'shimcha to'lov so'rab bo'lmaydi",
     "marketplace_result_required": "Natija matnini yozing yoki fayl biriktiring",
-    "rating_window_closed": "Baholash vaqti (15 daqiqa) tugagan",
+    "rating_window_closed": "Baholash vaqti tugagan",
     "ticket_closed": "Murojaat yopilgan"
   },
   "pk": {
@@ -290,7 +290,7 @@ export const ntd = {
       "submit": "Yakunlash",
       "sent": "Buyurtma yakunlandi",
       "title": "Buyurtmani yakunlash",
-      "lead": "Natija matnini yozing va/yoki fayl biriktiring. Mijozning tasdig'i kerak emas: baholash oynasi (15 daqiqa) darhol ochiladi.",
+      "lead": "Natija matnini yozing va/yoki fayl biriktiring. Mijozning tasdig'i kerak emas: baholash oynasi darhol ochiladi.",
       "text": "Natija matni",
       "textPh": "Bajarilgan ish haqida qisqacha",
       "file": "Fayl",

@@ -22,7 +22,7 @@ export const py10: Messages["py10"] = {
     submit: "Send rating",
     complain: "File a separate complaint",
   },
-  closed: { title: "The rating window is closed", expired: "Rating and complaints were open for 15 minutes.", notReady: "Rating opens once the work is completed." },
+  closed: { title: "The rating window is closed", expired: "The time for rating and complaints is over.", notReady: "Rating opens once the work is completed." },
   done: {
     title: "Thanks for your rating",
     text: "Your rating affects the specialist's score.",

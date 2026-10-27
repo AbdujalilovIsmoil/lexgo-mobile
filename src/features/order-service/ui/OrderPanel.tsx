@@ -45,10 +45,10 @@ export function OrderPanel({ service, preSeller, packageId = "", onChat }: Props
       <PassportToggle serviceId={service.id} />
       <SellerPicker f={f} preName={preSeller?.name ?? ""} preId={preSeller?.id ?? ""} />
       <Input label={t("mf.create.problem")} value={f.problem} onChangeText={f.setProblem} placeholder={t("mf.create.problemPh")} multiline maxLength={2000} style={{ minHeight: 80, textAlignVertical: "top" }} />
-      {note.afterHours || (f.sellerId && !f.auto) ? (
+      {note.text && (note.afterHours || (f.sellerId && !f.auto)) ? (
         <View style={s.note}>
           <Icon name="clock" size={16} color={note.afterHours ? c.warn : c.ok} />
-          <Text variant="caption" tone={note.afterHours ? "warn" : "ok"} style={s.flex}>{note.afterHours ? t("csv.afterHours", { when: note.respondBy }) : t("csv.respondBy", { when: note.respondBy })}</Text>
+          <Text variant="caption" tone={note.afterHours ? "warn" : "ok"} style={s.flex}>{note.text}</Text>
         </View>
       ) : null}
       {f.failed ? <Text variant="small" tone="err">{t("csv.orderError")}</Text> : null}

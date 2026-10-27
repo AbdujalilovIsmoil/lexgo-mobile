@@ -19,5 +19,5 @@ export function roomTitle(room: Room, myId: string): string {
 /** The one person a 1:1 room is with (null for groups) — drives the avatar and the role chip. */
 export const peerOf = (room: Room, myId: string): Member | null => (room.memberCount > 2 ? null : (otherMembers(room, myId)[0] ?? null));
 
-/** A finished consultation / archived chat takes no new messages. */
-export const isClosed = (room: Room | undefined): boolean => !!room && (room.status === "archived" || room.status === "completed");
+/** A finished consultation / archived or read-only chat takes no new messages (its history stays readable). */
+export const isClosed = (room: Room | undefined): boolean => !!room && (room.status === "archived" || room.status === "completed" || room.status === "read_only" || room.status === "closed");

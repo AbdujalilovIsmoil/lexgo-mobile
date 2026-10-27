@@ -3,10 +3,10 @@ import { brand, radius, useColors } from "@/shared/theme";
 import { Avatar, Icon, PressableScale, Text } from "@/shared/ui";
 import { useT } from "@/shared/i18n";
 
-type Props = { name: string; offered: Set<string> | null; narrowed: boolean; afterHours: boolean; respondBy: string; onClear: () => void };
+type Props = { name: string; offered: Set<string> | null; narrowed: boolean; afterHours: boolean; onClear: () => void };
 
 // An advocate chosen in the directory: the catalogue is narrowed to the services they offer.
-export function PreSellerBanner({ name, offered, narrowed, afterHours, respondBy, onClear }: Props) {
+export function PreSellerBanner({ name, offered, narrowed, afterHours, onClear }: Props) {
   const { t } = useT();
   const c = useColors();
   const line = narrowed ? t("csv.preSellerOnly", { n: offered?.size ?? 0 }) : offered && !offered.size ? t("csv.preSellerNoList") : t("csv.preSellerLead");
@@ -16,7 +16,7 @@ export function PreSellerBanner({ name, offered, narrowed, afterHours, respondBy
       <Avatar name={name || "A"} size={44} />
       <View style={s.col}>
         <Text variant="small" weight="bold" numberOfLines={2}>{t("csv.preSellerTitle", { name: name || t("csv.preSellerAnon") })}</Text>
-        <Text variant="caption" tone="gray">{line}{afterHours ? ` ${t("csv.afterHours", { when: respondBy })}` : ""}</Text>
+        <Text variant="caption" tone="gray">{line}{afterHours ? ` ${t("csv.afterHours")}` : ""}</Text>
       </View>
       <PressableScale onPress={onClear} hitSlop={10} accessibilityRole="button" accessibilityLabel={t("csv.preSellerClear")} style={[s.x, { backgroundColor: c.surface }]}>
         <Icon name="x" size={16} tone="gray" />

@@ -11,3 +11,4 @@ export { useUnreadBadge } from "./model/useUnreadBadge";
 export { Composer } from "./ui/Composer";
 export { CompleteSheet } from "./ui/CompleteSheet";
 export { NewChatSheet } from "./ui/NewChatSheet";
+export { useOrderGate, type OrderGate } from "./model/useOrderGate";

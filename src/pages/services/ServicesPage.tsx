@@ -63,7 +63,7 @@ function AdvocateServices({ pre, onClear, onNewDoc, sheets }: Advocate) {
   return (
     <TabPage title={t("csv.title")} subtitle={t("csv.lead")}>
       <TabScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={() => void refresh()} tintColor={c.accent} />} contentContainerStyle={{ ...s.content, paddingBottom: pad }}>
-        <PreSellerBanner name={pre.name} offered={offered} narrowed={!!offered?.size} afterHours={note.afterHours} respondBy={note.respondBy} onClear={onClear} />
+        <PreSellerBanner name={pre.name} offered={offered} narrowed={!!offered?.size} afterHours={note.afterHours} onClear={onClear} />
         <ServicesHub hub={hub} onOpen={open} />
         <MoreWays onNewDoc={onNewDoc} />
         {sheets}

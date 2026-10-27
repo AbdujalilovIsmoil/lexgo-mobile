@@ -13,7 +13,7 @@ export const cl5: Messages["cl5"] = {
   rating: {
     title: "Rating and complaint",
     left: "Time left: {time}",
-    hint: "You can rate the work or file a complaint within 15 minutes of completion.",
+    hint: "You can rate the work or file a complaint in the time given after completion.",
     cta: "Rate now",
     rated: "Rated: {date}",
     closed: "The time to rate or complain has passed.",

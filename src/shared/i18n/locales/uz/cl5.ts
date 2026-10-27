@@ -11,7 +11,7 @@ export const cl5 = {
   rating: {
     title: "Baholash va shikoyat",
     left: "Qolgan vaqt: {time}",
-    hint: "Ish yakunlangandan keyin 15 daqiqa ichida baholash yoki shikoyat qilish mumkin.",
+    hint: "Ish yakunlangandan keyin belgilangan vaqt ichida baholash yoki shikoyat qilish mumkin.",
     cta: "Baholash",
     rated: "Baholangan: {date}",
     closed: "Baholash va shikoyat muddati tugagan.",

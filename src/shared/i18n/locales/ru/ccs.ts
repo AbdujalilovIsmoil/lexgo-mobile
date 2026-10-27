@@ -37,10 +37,6 @@ export const ccs = {
     "rejected": "Отклонена",
     "completed": "Адвокат заменён"
   },
-  "deadlineText": "Ответ адвоката: до {when}",
-  "deadlineToday": "сегодня",
-  "deadlineTomorrow": "завтра",
-  "deadlineOverdue": "Адвокат не ответил — предложим другого адвоката",
   "historyCta": "История",
   "hideHistory": "Скрыть историю",
   "viewAll": "Смотреть все",
@@ -74,7 +70,7 @@ export const ccs = {
   },
   "stage": {
     "request": "Заявка",
-    "matching": "Выбор исполнителя",
+    "matching": "Подготовка",
     "payment": "Оплата",
     "work": "Работа",
     "done": "Итог",
