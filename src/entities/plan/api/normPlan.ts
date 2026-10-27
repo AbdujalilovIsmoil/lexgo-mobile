@@ -1,5 +1,6 @@
 import { asArr, asDict, asNum, asStr, uzs } from "@/shared/lib/json";
 import { pickLoc, pickLocArr } from "../lib/localized";
+import { normTerms } from "../lib/terms";
 import type { Plan, PlanFunction } from "../model/types";
 
 function normFunction(v: unknown, locale: string): PlanFunction {
@@ -31,6 +32,8 @@ export function normPlan(v: unknown, locale: string): Plan {
     features: pickLocArr(d.features, locale, d.benefits),
     functions: asArr(d.functions).map((x) => normFunction(x, locale)).filter((f) => f.key),
     entitlements: asDict(d.entitlements),
+    contract: normTerms(asArr(d.entitlement_contract).length ? d.entitlement_contract : d.entitlements),
+    version: asNum(d.current_version, 1),
     isGiftable: Boolean(d.is_giftable),
     isActive: d.is_active !== false,
     sortOrder: asNum(d.sort_order),

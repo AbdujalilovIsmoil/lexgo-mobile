@@ -4,7 +4,7 @@ import { useRouter } from "expo-router";
 import { ResultView, type Draft, type DocSchema, type FillSource, type GeneratedDoc } from "@/entities/doc-form";
 import { IconButton, Screen, confirmDialog } from "@/shared/ui";
 import { AdminPage } from "@/shared/ui/admin";
-import { ManualDocPlanSheet } from "@/features/manual-doc-plan";
+import { PlanGateSheet } from "@/features/plan-gate";
 import { useKeyboardOpen } from "@/shared/lib/doc/useKeyboardOpen";
 import { useT } from "@/shared/i18n";
 import { trackDoc } from "@/shared/analytics";
@@ -50,7 +50,7 @@ export function FillFlow({ source, userId, schema, draft, initialDoc }: Props) {
         )}
       </Screen>
       <PreviewSheet visible={preview} onClose={() => setPreview(false)} source={source} wire={f.wire} />
-      <ManualDocPlanSheet message={f.plan} onClose={f.closePlan} />
+      <PlanGateSheet gate={f.plan} onClose={f.closePlan} />
     </AdminPage>
   );
 }

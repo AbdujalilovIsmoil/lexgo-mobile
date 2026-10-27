@@ -1,7 +1,7 @@
 import type { Service } from "@/entities/service";
 import { OrderSheet } from "@/features/order-service";
 import { useTemplateDownload } from "@/features/service-open";
-import { TemplateGates } from "@/widgets/ai-plan-upgrade";
+import { PlanGateSheet } from "@/features/plan-gate";
 import { NewDocSheet } from "@/widgets/services-catalog";
 
 type Dl = ReturnType<typeof useTemplateDownload>;
@@ -14,7 +14,7 @@ export function CatalogSheets({ order, onOrder, newDoc, onNewDoc, dl, pre, packa
     <>
       <NewDocSheet visible={newDoc} onClose={() => onNewDoc(false)} />
       <OrderSheet service={order} preSeller={pre} packageId={packageId} onClose={() => onOrder(null)} />
-      <TemplateGates gates={dl} />
+      <PlanGateSheet gate={dl.gate} onClose={dl.closeGate} />
     </>
   );
 }

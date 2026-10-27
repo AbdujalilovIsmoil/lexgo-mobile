@@ -6,7 +6,7 @@ import { ShowMore, useShowMore } from "@/shared/ui/profile";
 import { useT } from "@/shared/i18n";
 import { ServiceTile, type TileActions } from "./ServiceTile";
 
-type Dl = { free: boolean; busy: string; error: { id: string; msg: string } | null };
+type Dl = { locked: boolean; note: string; busy: string; error: { id: string; msg: string } | null };
 type Props = { rows: Service[]; dl: Dl; act: (s: Service) => TileActions };
 
 // The service cards of a direction or of the search results, ten at a time (a search may match a hundred); another result set starts
@@ -19,7 +19,7 @@ export function ServiceResults({ rows, dl, act }: Props) {
   const ways = { fill: ds.gate("manual").state, lawyer: ds.gate("lawyer").state };
   return (
     <View style={s.col}>
-      {page.visible.map((sv) => <ServiceTile key={sv.id} service={sv} locked={dl.free} downloading={dl.busy === sv.id} error={dl.error?.id === sv.id ? dl.error.msg : undefined} ways={ways} {...act(sv)} />)}
+      {page.visible.map((sv) => <ServiceTile key={sv.id} service={sv} locked={dl.locked} note={dl.note} downloading={dl.busy === sv.id} error={dl.error?.id === sv.id ? dl.error.msg : undefined} ways={ways} {...act(sv)} />)}
       <ShowMore left={page.left} expanded={page.expanded} onMore={page.more} onLess={page.less} />
     </View>
   );

@@ -6,7 +6,7 @@ import { ApiError } from "@/shared/api";
 import { keepPersistedQueries } from "@/shared/cache/gc";
 import { DAY, keepPublicQueries, persister, shouldPersist } from "./queryPersist";
 
-const BUSTER = "2"; // bump to throw every saved cache away after a response-shape change
+const BUSTER = "3"; // bump to throw every saved cache away after a response-shape change (3: plans carry their entitlement contract)
 
 // One shared cache: data stays fresh for 2 minutes (screens reuse it instead of asking again), refetches only happen when
 // the app returns to the foreground or the data went stale, 4xx errors are not retried, and public catalogue data is kept on disk.

@@ -1,4 +1,4 @@
-import { ApiError } from "@/shared/api";
+import { ApiError, parseErrorBody } from "@/shared/api";
 import { classify } from "./classify";
 import { daysIn, fmtDoc, maskDoc, monthCells, parseDoc } from "./dateParts";
 import { missingFromError } from "./missingFromError";
@@ -80,6 +80,7 @@ describe("validateField", () => {
 describe("failures", () => {
   it("classify maps statuses", () => {
     expect(classify(new ApiError(402, "plan")).kind).toBe("plan");
+    expect(classify(parseErrorBody(402, { detail: { code: "feature_limit_exhausted", feature_key: "document_constructor", limit: 3, used: 3 } })).gate).toMatchObject({ code: "feature_limit_exhausted", featureKey: "document_constructor", limit: 3, used: 3 });
     expect(classify(new ApiError(422, "m")).kind).toBe("missing");
     expect(classify(new ApiError(403)).kind).toBe("auth");
     expect(classify(new ApiError(429)).kind).toBe("busy");

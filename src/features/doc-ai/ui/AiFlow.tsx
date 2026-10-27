@@ -3,7 +3,7 @@ import { useRouter } from "expo-router";
 import { ResultView, type Draft } from "@/entities/doc-form";
 import { Screen } from "@/shared/ui";
 import { AdminPage } from "@/shared/ui/admin";
-import { ManualDocPlanSheet } from "@/features/manual-doc-plan";
+import { PlanGateSheet } from "@/features/plan-gate";
 import { useKeyboardOpen } from "@/shared/lib/doc/useKeyboardOpen";
 import { useT } from "@/shared/i18n";
 import { useDocAi } from "../model/useDocAi";
@@ -37,7 +37,7 @@ export function AiFlow({ serviceId, userId, title, draft }: Props) {
           <NeedStep serviceId={serviceId} title={title} need={f.need} extra={f.extra} language={f.language} onNeed={f.setNeed} onExtra={f.setExtra} onLanguage={f.setLanguage} />
         )}
       </Screen>
-      <ManualDocPlanSheet message={f.plan} onClose={f.closePlan} />
+      <PlanGateSheet gate={f.plan} onClose={f.closePlan} />
     </AdminPage>
   );
 }

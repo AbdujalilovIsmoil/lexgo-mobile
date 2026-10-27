@@ -1,7 +1,7 @@
 import { useServiceOpen, useTemplateDownload } from "@/features/service-open";
 import { DocActions, type Service } from "@/entities/service";
 import { useDocSettings } from "@/entities/doc-settings";
-import { TemplateGates } from "@/widgets/ai-plan-upgrade";
+import { PlanGateSheet } from "@/features/plan-gate";
 
 type Props = { service: Service; navigate: (fn: () => void) => void };
 
@@ -15,7 +15,8 @@ export function ServiceDocActions({ service: sv, navigate }: Props) {
       <DocActions
         hasDoc={!!sv.documentTemplateId}
         advokatOnly={sv.advokatRequired}
-        locked={dl.free}
+        locked={dl.locked}
+        note={dl.note}
         downloading={dl.busy === sv.id}
         error={dl.error?.id === sv.id ? dl.error.msg : undefined}
         ways={{ fill: ds.gate("manual").state, lawyer: ds.gate("lawyer").state }}
@@ -24,7 +25,7 @@ export function ServiceDocActions({ service: sv, navigate }: Props) {
         onLawyer={() => open.lawyer(sv.id)}
         onFill={() => open.fill(sv.id)}
       />
-      <TemplateGates gates={dl} />
+      <PlanGateSheet gate={dl.gate} onClose={dl.closeGate} />
     </>
   );
 }

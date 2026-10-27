@@ -1,31 +1,35 @@
 import { useState } from "react";
-import { getTemplateSource, isPlanRequired } from "@/entities/service";
-import { useIsFreeAiTier } from "@/entities/plan";
+import { getTemplateSource } from "@/entities/service";
+import { gateOfFeature, planGateOf, useFeature, useFeatureLabel, type PlanGate } from "@/entities/plan";
 import { useDocRefusal, useDocSettings } from "@/entities/doc-settings";
 import { downloadAuthed, shareFile } from "@/shared/lib/files";
 import { cleanDocTitle } from "@/shared/lib/doc/cleanTitle";
 import { useT } from "@/shared/i18n";
 
 const FILE_EXT = /\.([A-Za-z0-9]{1,8})$/;
+const FEATURE = "template_download";
 
 export type TemplateTarget = { id: string; name: string };
 
-// "Download" on a catalogue card. Free LexGo.AI tier -> `upgrade` opens the plan picker; a plan without
-// the manual-documents entitlement answers 402 -> `planMsg` carries the server's own sentence.
-// Otherwise the clean template (no {{field}} markers) is saved through the share sheet — unless its format is closed for
-// downloads by the document service settings, which is said up front, as is any document service refusal (TZ.md §4).
+// "Download" on a catalogue card, gated by the backend's own feature state (GET /subscriptions/me/features), not by the tariff's name: a
+// locked `template_download` or a used-up limit opens the plan sheet before anything is fetched, a limited one says how many are left, and
+// any 402 the download still gets opens the same sheet with the backend's code. Otherwise the clean template (no {{field}} markers) is saved
+// through the share sheet — unless its format is closed for downloads by the document service settings, which is said up front, as is any
+// other document service refusal (TZ.md §4). The download endpoint counts the use itself; the phone keeps no counter.
 export function useTemplateDownload() {
   const { t } = useT();
-  const free = useIsFreeAiTier();
+  const feature = useFeature(FEATURE);
+  const label = useFeatureLabel();
   const ok = useDocSettings().downloadOk;
   const refusal = useDocRefusal();
   const [busy, setBusy] = useState("");
   const [error, setError] = useState<{ id: string; msg: string } | null>(null);
-  const [planMsg, setPlanMsg] = useState<string | null>(null);
-  const [upgrade, setUpgrade] = useState(false);
+  const [gate, setGate] = useState<PlanGate | null>(null);
+  const stop = gateOfFeature(feature, FEATURE);
+  const note = feature?.mode === "limited" && feature.remaining !== null && feature.remaining > 0 ? t("subq.gate.left", { feature: label(FEATURE), n: feature.remaining }) : "";
 
   const download = async (s: TemplateTarget) => {
-    if (free) return setUpgrade(true);
+    if (stop) return setGate(stop);
     if (busy) return;
     setError(null);
     setBusy(s.id);
@@ -38,12 +42,13 @@ export function useTemplateDownload() {
       await shareFile(await downloadAuthed(src.path, name), src.mime || undefined);
     } catch (e) {
       const refused = refusal(e);
-      if (isPlanRequired(e)) setPlanMsg(e.detail || t("csv.planRequired"));
+      const g = planGateOf(e);
+      if (g) setGate(g);
       else setError({ id: s.id, msg: refused ?? t("csv.downloadError") });
     } finally {
       setBusy("");
     }
   };
 
-  return { free, busy, error, download, planMsg, closePlan: () => setPlanMsg(null), upgrade, setUpgrade };
+  return { locked: !!stop, note, busy, error, download, gate, closeGate: () => setGate(null) };
 }

@@ -1,12 +1,13 @@
 import { useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { getTemplateSource, isPlanRequired } from "@/entities/service";
+import { planGateOf } from "@/entities/plan";
+import { getTemplateSource } from "@/entities/service";
 import { kindOf, useDownload } from "@/shared/lib/download";
 
 const DOCX = "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
 
 // The blank sample of a service: its file facts (GET document-fields), then the clean file itself.
-// `plan` carries the server's sentence when the client's plan has no template access (402).
+// `gate` says why the client's plan has no template access (a 402, per the backend's code).
 export function useSampleFile(serviceId: string) {
   const meta = useQuery({ queryKey: ["service-sample", serviceId], queryFn: () => getTemplateSource(serviceId), enabled: !!serviceId, retry: false, staleTime: 5 * 60 * 1000 });
   const file = useDownload();
@@ -17,12 +18,12 @@ export function useSampleFile(serviceId: string) {
     if (src) void file.start({ path: src.path, name, mime });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [src?.path]);
-  const plan = isPlanRequired(meta.error) ? meta.error.detail ?? "" : null;
+  const gate = planGateOf(meta.error);
   return {
     title: meta.data?.title ?? "",
-    plan,
+    gate,
     empty: !!meta.data && !src,
-    failed: (meta.isError && plan === null) || file.state.phase === "error",
+    failed: (meta.isError && !gate) || file.state.phase === "error",
     loading: meta.isPending || (!!src && file.state.phase !== "done" && file.state.phase !== "error"),
     uri: file.state.uri ?? null,
     kind: kindOf(name, mime),

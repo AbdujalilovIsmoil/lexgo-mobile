@@ -6,8 +6,8 @@ import { PayScroll } from "@/shared/ui/pay/PayScroll";
 import { Button, EmptyState } from "@/shared/ui";
 import { useT } from "@/shared/i18n";
 
-// "What my plan gives": the current period's features (TZ §12, with the renewal consent), active subscriptions with their functions and limits, document access,
-// family members who share it, and tariff requests still waiting for an operator.
+// "What my plan gives": the current period's features (TZ §13, with the renewal consent and the new terms), active subscriptions with the
+// terms of their contract snapshot, document access, family members who share it, and tariff requests still waiting for an operator.
 export function EntitlementsPage() {
   const { t } = useT();
   const router = useRouter();

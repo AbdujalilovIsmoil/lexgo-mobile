@@ -1,3 +1,5 @@
+import type { FeatureTerm } from "./features";
+
 export type PlanFunction = { key: string; title: string; description: string; enabled: boolean; limit: number | null; unit: string };
 
 export type Plan = {
@@ -14,6 +16,8 @@ export type Plan = {
   features: string[];
   functions: PlanFunction[];
   entitlements: Record<string, unknown>;
+  contract: FeatureTerm[]; // the current published version's entitlement contract: what a new period of this tariff gives
+  version: number;
   isGiftable: boolean;
   isActive: boolean;
   sortOrder: number;

@@ -6,6 +6,7 @@ import {
   type Draft, type DocAnswers, type DocSchema, type FillSource, type GeneratedDoc, type SaveState,
 } from "@/entities/doc-form";
 import { useDocRefusal } from "@/entities/doc-settings";
+import type { PlanGate } from "@/entities/plan";
 import { trackDoc } from "@/shared/analytics";
 import { toast } from "@/shared/ui";
 import { useT } from "@/shared/i18n";
@@ -22,7 +23,7 @@ export function useDocFill({ source, userId, schema, draft, initialDoc }: Args) 
   const qc = useQueryClient();
   const [answers, setAnswers] = useState<DocAnswers>(draft?.answers ?? {});
   const [doc, setDoc] = useState<GeneratedDoc | null>(initialDoc ?? null);
-  const [plan, setPlan] = useState<string | null>(null);
+  const [plan, setPlan] = useState<PlanGate | null>(null);
   const wiz = useSectionWizard(schema.sections, answers, { strict: true, initial: draft?.step });
   const sync = useDraftSync(draftKey(userId, source.draftMode, source.draftId), { answers, step: wiz.step, requestId: source.requestId });
   const fields = useMemo(() => schema.sections.flatMap((s) => s.fields), [schema]);
@@ -67,7 +68,7 @@ export function useDocFill({ source, userId, schema, draft, initialDoc }: Args) 
       const f = classify(e);
       const missing = missingFromError(e);
       const refused = refusal(e);
-      if (f.kind === "plan") setPlan(refused ?? f.message);
+      if (f.gate) setPlan(f.gate);
       else if (refused) toast(refused, "err");
       else if (missing.length) {
         const at = schema.sections.findIndex((s) => s.fields.some((x) => x.key === missing[0].key));

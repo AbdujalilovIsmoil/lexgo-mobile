@@ -1,6 +1,7 @@
 import { useMemo, useState } from "react";
 import { analyzeFile, analyzeText, FILE_RULE, type DocAnalysis, type PickedDoc } from "@/entities/doc-analysis";
 import { pickRule, useDocRefusal, useDocSettings } from "@/entities/doc-settings";
+import { planGateOf, type PlanGate } from "@/entities/plan";
 import { ApiError } from "@/shared/api";
 import { useT } from "@/shared/i18n";
 import { errorHaptic, successHaptic } from "@/shared/lib/haptics";
@@ -25,7 +26,7 @@ export function useDocAnalysis() {
   const [status, setStatus] = useState<Status>("idle");
   const [result, setResult] = useState<DocAnalysis | null>(null);
   const [error, setError] = useState("");
-  const [plan, setPlan] = useState<string | null>(null);
+  const [plan, setPlan] = useState<PlanGate | null>(null);
   const opts = useOptions(text, { included: ds.includedPages(INCLUDED_PAGES), review });
   const quote = useQuote(opts.input);
   const canRun = gate.state === "open" && status !== "running" && (!!file || text.trim().length >= MIN_TEXT) && opts.pagesOk;
@@ -51,8 +52,11 @@ export function useDocAnalysis() {
       setStatus("error");
       const refused = refusal(e);
       const status = e instanceof ApiError ? e.status : 0;
-      if (refused) setError(refused);
-      else if (status === 402) setPlan(e instanceof ApiError ? e.detail ?? "" : "");
+      // The plan's grounds (a 402, the document service's plan codes among them) open the plan sheet; any other document service
+      // refusal is said in words.
+      const pg = planGateOf(e);
+      if (pg) setPlan(pg);
+      else if (refused) setError(refused);
       else if (file && [413, 415, 422].includes(status)) setError((e as ApiError).detail ?? t("docs.unreadable"));
       else setError(status === 0 ? t("common.offline") : status === 429 ? t("common.rateLimited") : t("docs.failed"));
     }

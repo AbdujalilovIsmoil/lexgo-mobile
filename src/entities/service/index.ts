@@ -16,7 +16,7 @@ export type { DetailRenderer } from "./model/slots";
 export { PassportFacts } from "./ui/PassportFacts";
 export { useAllServices, useCategoryServices, useCatalogSearch } from "./model/catalogQueries";
 export * from "./lib/filters";
-export { getTemplateSource, isPlanRequired, type TemplateSource } from "./api/templateApi";
+export { getTemplateSource, type TemplateSource } from "./api/templateApi";
 export { subcatIcon } from "./lib/subcatIcon";
 export { subcatImage, categoryImage } from "./lib/subcatImage";
 export * from "./lib/subcats";

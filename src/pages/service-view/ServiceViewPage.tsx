@@ -1,5 +1,6 @@
 import { StyleSheet, View } from "react-native";
 import { useRouter } from "expo-router";
+import { GateNotice } from "@/entities/plan";
 import { Button, EmptyState, Skeleton } from "@/shared/ui";
 import { PreviewBody } from "@/shared/ui/preview/PreviewBody";
 import { AdminPage } from "@/shared/ui/admin";
@@ -16,9 +17,9 @@ export function ServiceViewPage({ id }: { id: string }) {
     <AdminPage title={f.title || t("csv.docViewTitle")}>
       {f.loading ? (
         <View style={s.pad}><Skeleton height={26} round={12} /><Skeleton height={300} round={18} /></View>
-      ) : f.plan !== null ? (
+      ) : f.gate ? (
         <View style={s.pad}>
-          <EmptyState icon="lock" title={t("csv.planGateTitle")} text={f.plan || t("csv.planRequired")} compact />
+          <GateNotice gate={f.gate} titled />
           <Button title={t("plans.choose")} icon="award" variant="gradient" full onPress={() => router.push("/subscription")} />
         </View>
       ) : f.failed ? (

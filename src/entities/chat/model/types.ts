@@ -1,3 +1,5 @@
+import type { PlanGate } from "@/entities/plan/lib/planGate";
+
 export type Source = { title?: string; url?: string; snippet?: string };
 
 export type Contract = {
@@ -37,10 +39,12 @@ export type GuestLimit = {
   resetsAt?: string;
 };
 
-// Why the server refused a question (limit card state).
+// Why the server refused a question (limit card state). A 402 carries its `gate`: the backend's code (a used-up AI limit, no active
+// subscription, not in the plan), the feature, used / limit and the reset.
 export type ChatLimit = {
-  kind: "guest_daily" | "guest_total" | "quota" | "rate";
+  kind: "guest_daily" | "guest_total" | "quota" | "plan" | "rate";
   guest?: GuestLimit;
+  gate?: PlanGate;
   used?: number;
   monthlyLimit?: number;
   retryAfter?: number;

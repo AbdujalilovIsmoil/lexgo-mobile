@@ -2,15 +2,17 @@ import { StyleSheet, View } from "react-native";
 import { useRouter } from "expo-router";
 import { AnalysisResult } from "@/entities/doc-analysis";
 import { ModeNotice } from "@/entities/doc-settings";
+import { FeatureUsage } from "@/entities/plan";
 import { useIsAuthed } from "@/entities/session";
 import { AnalysisInput, HandoffCard, UpsellCard, useDocAnalysis, useHandoff } from "@/features/doc-analysis";
 import { Button, Header, Screen, Text } from "@/shared/ui";
-import { ManualDocPlanSheet } from "@/features/manual-doc-plan";
+import { PlanGateSheet } from "@/features/plan-gate";
 import { useColors } from "@/shared/theme";
 import { useT } from "@/shared/i18n";
 
 // AI document analysis (TZ 16): file or text → result → optional advocate review.
-// The server measures the pages; a fee past the base allowance waits for Telegram approval.
+// The server measures the pages; a fee past the base allowance waits for Telegram approval. The plan's analysis counter (used / limit,
+// reset) is the backend's; a refusal on the plan's grounds (402) opens the plan sheet with the backend's code.
 // A closed analysis mode (switched off, or not in the plan — TZ.md §4) shows why instead of the form; a result already on screen stays.
 export function DocAnalysisPage() {
   const c = useColors();
@@ -40,10 +42,13 @@ export function DocAnalysisPage() {
             <Button title={t("docs.again")} onPress={d.reset} variant="line" icon="refresh-cw" full />
           </>
         ) : (
-          <AnalysisInput d={d} />
+          <>
+            <FeatureUsage featureKey="ai_document_analysis" onUpgrade={() => router.push("/subscription")} />
+            <AnalysisInput d={d} />
+          </>
         )}
       </Screen>
-      <ManualDocPlanSheet message={d.plan ?? h.plan} onClose={() => (d.plan !== null ? d.closePlan() : h.closePlan())} />
+      <PlanGateSheet gate={d.plan ?? h.plan} onClose={() => (d.plan !== null ? d.closePlan() : h.closePlan())} />
     </View>
   );
 }

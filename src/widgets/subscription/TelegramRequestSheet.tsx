@@ -12,8 +12,9 @@ import { RequestSent } from "./RequestSent";
 
 type Props = { plan: Plan | null; period: BillingPeriod; onClose: () => void };
 
-// Choosing a tariff asks an operator to confirm it in Telegram (no payment provider is connected): the plan card, the
-// period tiles, the three steps and the note, a sticky Cancel / Send bar, then the receipt (SUB-xxxx).
+// Choosing a tariff asks an operator to confirm it in Telegram (no payment provider is connected): the plan card and the
+// period tiles priced by the backend's quote, the three steps and the note, a sticky Cancel / Send bar, then the receipt
+// (SUB-xxxx) with the price breakdown the backend stored.
 export function TelegramRequestSheet({ plan, period, onClose }: Props) {
   const { t } = useT();
   const tg = useTelegramRequest();
@@ -29,7 +30,7 @@ export function TelegramRequestSheet({ plan, period, onClose }: Props) {
       onSubmit={sent ? undefined : () => p && tg.send(p.id, eff)} submitLabel={t(tg.pending ? "tgp.tgSending" : "tgp.tgSubmit")} submitting={tg.pending}>
       {!p ? null : sent ? (
         <View style={{ gap: 14 }}>
-          <RequestSent workId={sent.workId} />
+          <RequestSent workId={sent.workId} pricing={sent.pricing} />
           <TelegramNotice problem={tg.problem} detail={tg.detail} />
           <Button title={t("tgp.tgClose")} variant="gradient" size="lg" full onPress={onClose} />
         </View>

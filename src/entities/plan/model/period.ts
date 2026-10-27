@@ -3,23 +3,7 @@ import type { Plan } from "./types";
 export type BillingPeriod = "monthly" | "six_month" | "yearly" | "prepaid_yearly";
 export const PERIODS: BillingPeriod[] = ["monthly", "six_month", "yearly", "prepaid_yearly"];
 
-export const periodMonths = (p: BillingPeriod): number => (p === "monthly" ? 1 : p === "six_month" ? 6 : 12);
-
-// Total for the period; falls back to monthly × months when the backend has no tier price.
-export function planTotal(plan: Plan, p: BillingPeriod): number {
-  const tier = p === "monthly" ? plan.monthlyPrice : p === "six_month" ? plan.sixMonthPrice : p === "yearly" ? plan.yearlyPrice : plan.prepaidYearlyPrice || plan.yearlyPrice;
-  return tier > 0 ? tier : plan.monthlyPrice * periodMonths(p);
-}
-
-export const planPerMonth = (plan: Plan, p: BillingPeriod): number => Math.round(planTotal(plan, p) / periodMonths(p));
-
-export function planSavingPct(plan: Plan, p: BillingPeriod): number {
-  const full = plan.monthlyPrice * periodMonths(p);
-  const total = planTotal(plan, p);
-  return full > 0 && total < full ? Math.round((1 - total / full) * 100) : 0;
-}
-
-// Periods the backend sells this plan for (an unknown answer means all of them).
+// Periods the backend sells this plan for (an unknown answer means all of them). What a period costs is the quote's (usePlanQuote).
 export function allowedPeriods(plan: Plan): BillingPeriod[] {
   const ok = PERIODS.filter((p) => !plan.allowedBillingPeriods.length || plan.allowedBillingPeriods.includes(p));
   return ok.length ? ok : PERIODS;

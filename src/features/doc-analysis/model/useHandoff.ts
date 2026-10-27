@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { sendToAdvocate, useAdvocateQuote, useRequestState, type DocAnalysis, type HandoffResult, type PickedDoc } from "@/entities/doc-analysis";
 import { useDocRefusal, useDocSettings } from "@/entities/doc-settings";
+import { planGateOf, type PlanGate } from "@/entities/plan";
 import { ApiError } from "@/shared/api";
 import { toast } from "@/shared/ui";
 import { useLocaleStore, useT } from "@/shared/i18n";
@@ -19,7 +20,7 @@ export function useHandoff(file: PickedDoc | null, result: DocAnalysis | null) {
   const [urgent, setUrgent] = useState(false);
   const [note, setNote] = useState("");
   const [sent, setSent] = useState<HandoffResult | null>(null);
-  const [plan, setPlan] = useState<string | null>(null);
+  const [plan, setPlan] = useState<PlanGate | null>(null);
   const quote = useAdvocateQuote(gate.state === "open" ? pages : 0, urgent);
   const state = useRequestState(sent && !sent.alreadyExists ? sent.requestId : "");
 
@@ -32,8 +33,9 @@ export function useHandoff(file: PickedDoc | null, result: DocAnalysis | null) {
     onError: (e) => {
       errorHaptic();
       const refused = refusal(e);
-      if (refused) toast(refused, "err");
-      else if (e instanceof ApiError && e.status === 402) setPlan(e.detail ?? "");
+      const pg = planGateOf(e);
+      if (pg) setPlan(pg);
+      else if (refused) toast(refused, "err");
       else toast(e instanceof ApiError && e.detail ? e.detail : t("docs.sendFailed"), "err");
     },
   });

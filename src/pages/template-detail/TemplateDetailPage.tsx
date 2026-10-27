@@ -6,7 +6,7 @@ import { useTemplateRender } from "@/entities/doc-form";
 import { gateText, useDocSettings } from "@/entities/doc-settings";
 import { useIsAuthed } from "@/entities/session";
 import { useCleanTemplate } from "@/features/template-open";
-import { TemplateGates } from "@/widgets/ai-plan-upgrade";
+import { PlanGateSheet } from "@/features/plan-gate";
 import { categoryLabel, languageLabel } from "@/widgets/doc-catalog";
 import { trackDoc } from "@/shared/analytics";
 import { fmtMoney } from "@/shared/lib/money";
@@ -88,7 +88,7 @@ export function TemplateDetailPage({ id }: { id: string }) {
           <TemplatePreview kicker={categoryLabel(t, tpl.category)} text={text} loading={render.isLoading} error={render.error} onRetry={() => void render.refetch()} open={full} onOpen={() => { setFull(true); trackDoc("document_preview_opened", { category: tpl.category, language: tpl.language }); }} onClose={() => setFull(false)} title={tpl.name} />
         </ScrollView>
       )}
-      <TemplateGates gates={clean.gates} />
+      <PlanGateSheet gate={clean.gates.gate} onClose={clean.gates.closeGate} />
     </AdminPage>
   );
 }

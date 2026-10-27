@@ -1,4 +1,4 @@
-import { http, ApiError } from "@/shared/api";
+import { http } from "@/shared/api";
 import { asDict, asStr } from "@/shared/lib/json";
 import { cleanDocTitle } from "@/shared/lib/doc/cleanTitle";
 
@@ -18,6 +18,3 @@ export async function getTemplateSource(serviceId: string): Promise<TemplateSour
     mime: asStr(d.source_mime_type),
   };
 }
-
-// 402 manual_document_plan_required: the client's plan has no template download / manual filling.
-export const isPlanRequired = (e: unknown): e is ApiError => e instanceof ApiError && e.status === 402 && e.code === "manual_document_plan_required";

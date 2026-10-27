@@ -4,6 +4,7 @@ import {
   classify, draftKey, generateAiDoc, getAiQuestions, toWire, useDraftSync, useSectionWizard,
   type Draft, type DocAnswers, type DocSection, type GeneratedDoc,
 } from "@/entities/doc-form";
+import type { PlanGate } from "@/entities/plan";
 import { toast } from "@/shared/ui";
 import { useT } from "@/shared/i18n";
 import { errorHaptic, successHaptic } from "@/shared/lib/haptics";
@@ -22,7 +23,7 @@ export function useDocAi({ serviceId, userId, draft }: Args) {
   const [answers, setAnswers] = useState<DocAnswers>(draft?.answers ?? {});
   const [sections, setSections] = useState<DocSection[] | null>(null);
   const [doc, setDoc] = useState<GeneratedDoc | null>(null);
-  const [plan, setPlan] = useState<string | null>(null);
+  const [plan, setPlan] = useState<PlanGate | null>(null);
   const wiz = useSectionWizard(sections ?? [], answers, { strict: false });
   const sync = useDraftSync(draftKey(userId, "ai", serviceId), { answers, step: 0, need });
   const wire = useMemo(() => toWire((sections ?? []).flatMap((s) => s.fields), answers), [sections, answers]);
@@ -30,7 +31,7 @@ export function useDocAi({ serviceId, userId, draft }: Args) {
   const fail = (e: unknown, fallback: string) => {
     errorHaptic();
     const f = classify(e);
-    if (f.kind === "plan") setPlan(f.message);
+    if (f.gate) setPlan(f.gate);
     else toast(f.kind === "network" ? t("common.offline") : f.kind === "busy" ? t("common.rateLimited") : f.message || t(fallback), "err");
   };
   const questions = useMutation({
