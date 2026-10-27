@@ -7,8 +7,11 @@ import { useColors } from "@/shared/theme";
 import { useNow } from "@/shared/lib/pay/useNow";
 import { useT } from "@/shared/i18n";
 
+const OUTCOMES = ["rework_required", "refund_required", "rejected", "resolved"];
+
 // TZ §10: the complaint — a separate action from the rating, offered only in the backend's window (with its own countdown) and never
-// twice: a 1–2 star rating opens one by itself, after which this card only says it is with the call center. After the window: gone.
+// twice: a 1–2 star rating opens one by itself, after which this card says it is with the call center, then the call center's ruling.
+// After a rework a fresh window opens and a new complaint may be filed. After the window: gone.
 export function ComplaintCard({ orderId, flow }: { orderId: string; flow: FlowOrder }) {
   const c = useColors();
   const { t } = useT();
@@ -18,10 +21,15 @@ export function ComplaintCard({ orderId, flow }: { orderId: string; flow: FlowOr
   const state = complaintState(flow.complaint, now);
   if (state === "none" || state === "closed") return null;
   if (state === "submitted") {
+    // The call center's ruling once it came (rework, refund, rejection, resolved) with its note; until then "under review".
+    const outcome = OUTCOMES.includes(flow.complaint.status) ? flow.complaint.status : "";
     return (
-      <View style={[s.note, { backgroundColor: c.surface2 }]}>
-        <Icon name="message-square" size={16} tone="gray" />
-        <Text variant="small" tone="gray" style={s.flex}>{t("mf.cp.pending")}</Text>
+      <View style={[s.note, { backgroundColor: outcome === "rejected" ? c.surface2 : outcome ? c.tint2 : c.surface2 }]}>
+        <Icon name={outcome ? "check-square" : "message-square"} size={16} tone="gray" />
+        <View style={s.flex}>
+          <Text variant="small" tone={outcome ? "ink" : "gray"}>{t(outcome ? `mf.cp.out.${outcome}` : "mf.cp.pending")}</Text>
+          {outcome && flow.complaint.resolutionNote ? <Text variant="caption" tone="gray">{flow.complaint.resolutionNote}</Text> : null}
+        </View>
       </View>
     );
   }

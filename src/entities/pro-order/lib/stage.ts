@@ -2,7 +2,7 @@ import type { FlowOrder } from "@/entities/market-flow";
 import type { OrderStage, ProOrder, StageTab } from "../model/types";
 import { isPaused } from "./additional";
 
-const STOPPED = new Set(["cancelled", "canceled", "declined", "rejected", "lost", "refunded"]);
+const STOPPED = new Set(["cancelled", "canceled", "declined", "rejected", "lost", "refunded", "refund_pending"]);
 const DONE = new Set(["completed", "rated", "done", "closed"]);
 const WAITING = new Set(["pending_payment", "waiting_payment", "pending", "new", "seller_selection"]);
 const FRESH = new Set(["paid", "sent_to_seller"]);

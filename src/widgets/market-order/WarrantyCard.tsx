@@ -7,7 +7,7 @@ import { SectionCard } from "@/shared/ui/admin";
 import { useColors } from "@/shared/theme";
 import { useT } from "@/shared/i18n";
 
-const OPEN: FlowPhase[] = ["paid", "in_progress", "review", "completed", "rated"];
+const OPEN: FlowPhase[] = ["paid", "reviewing", "in_progress", "rework", "cancelReview", "attention", "completed", "rated"];
 
 // TZ §11: the LexGo warranty of this order. The request goes to the call center; until it decides, the card only says "under review".
 export function WarrantyCard({ orderId, flow, phase }: { orderId: string; flow: FlowOrder; phase: FlowPhase }) {

@@ -18,6 +18,11 @@ export const sl12 = {
     released: "Chiqarilgan",
     pending: "Kutilmoqda",
     payment_pending: "To'lov kutilmoqda",
+    cancellation_review: "Bekor qilish ko'rib chiqilmoqda",
+    resolution_required: "Operator ko'rib chiqmoqda",
+    refund_pending: "Pul qaytarilmoqda",
+    refunded: "Pul qaytarilgan",
+    expired: "Muddati o'tgan",
   },
   move: { started: "Ishni boshlash", in_progress: "Jarayonga o'tkazish", result_ready: "Natija tayyor", delivered: "Natijani topshirish" },
   track: {

@@ -14,6 +14,8 @@ export function normMarketOrder(v: unknown, clientActions: string[] = []): Marke
   const lawyer = asDict(d.lawyer);
   const payment = asDict(d.payment);
   const roomId = asStr(d.secure_chat_room_id ?? details.secure_chat_room_id) || (ROOM_RE.exec(asStr(d.chat_url))?.[1] ?? "");
+  // A reassigned order waiting for the new seller's answer shows no seller at all (TZ "Reassignment": `lawyer` is null for the client).
+  const hidden = d.waiting_replacement_acceptance === true;
   return {
     id: asStr(d.id ?? d.order_id),
     workId: asStr(d.work_id ?? details.work_id),
@@ -25,9 +27,9 @@ export function normMarketOrder(v: unknown, clientActions: string[] = []): Marke
     note: asStr(details.client_note ?? d.note).trim(),
     preferredChannel: asStr(details.preferred_channel ?? d.preferred_channel).toLowerCase(),
     preferredTime: asStr(details.preferred_time ?? d.preferred_time).trim(),
-    lawyerName: asStr(d.lawyer_name ?? lawyer.name).trim(),
-    lawyerPublicId: asStr(lawyer.public_id ?? d.lawyer_public_id),
-    lawyerUserId: asStr(d.lawyer_user_id ?? lawyer.id),
+    lawyerName: hidden ? "" : asStr(d.lawyer_name ?? lawyer.name).trim(),
+    lawyerPublicId: hidden ? "" : asStr(lawyer.public_id ?? d.lawyer_public_id),
+    lawyerUserId: hidden ? "" : asStr(d.lawyer_user_id ?? lawyer.id),
     roomId,
     // TZ §6: no chat or call before the backend unlocked contact (contact_unlocked=true after the advance).
     canStartChat: d.can_start_chat === true && d.contact_unlocked !== false && !!roomId,

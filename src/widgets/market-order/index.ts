@@ -7,3 +7,5 @@ export { WarrantyCard } from "./WarrantyCard";
 export { ComplaintCard } from "./ComplaintCard";
 export { ResolutionCard } from "./ResolutionCard";
 export { PriceCard } from "./PriceCard";
+export { WorkTimeCard } from "./WorkTimeCard";
+export { RefundCard } from "./RefundCard";

@@ -1,3 +1,4 @@
+import { z } from "zod";
 import { fileOrderComplaint } from "@/entities/market-flow";
 import { FormInput, rules, useAppForm } from "@/shared/form";
 import { FormSheet } from "@/shared/ui/admin";
@@ -6,14 +7,15 @@ import { useSheetReset } from "@/shared/lib/useSheetReset";
 import { useT } from "@/shared/i18n";
 import { useFlowMutation } from "../model/useFlowMutation";
 
-const MIN = 10;
+const MIN = 5;
+const schema = z.object({ reason: rules.text(MIN, 1000) });
 type Props = { visible: boolean; onClose: () => void; orderId: string; url: string };
 
 // TZ §10: the complaint about a finished order — its own action next to the rating, sent while the backend window is open. The call
 // center reviews it and an open complaint holds the seller's settlement.
 export function OrderComplaintSheet({ visible, onClose, orderId, url }: Props) {
   const { t } = useT();
-  const f = useAppForm(rules.reason, { reason: "" });
+  const f = useAppForm(schema, { reason: "" });
   useSheetReset(visible, () => f.reset({ reason: "" }));
   const send = useFlowMutation({ mutationFn: (reason: string) => fileOrderComplaint(orderId, url, reason), success: "mf.cp.pending", onSuccess: onClose });
   return (

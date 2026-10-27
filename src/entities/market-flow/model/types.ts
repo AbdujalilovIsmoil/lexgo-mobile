@@ -28,7 +28,18 @@ export type FlowOrder = {
   checklistProgress: ChecklistProgress | null;
   pricing: PriceSnapshot | null; // details.pricing_snapshot: why the order costs what it costs
   resolution: OrderResolution | null; // the call center's offer after no specialist could take the order
+  workPhase: WorkPhase; // TZ §14: kept apart from the status — the review stage runs inside `in_progress`
+  review: OrderReview | null;
+  duration: FlowDuration | null; // the delivery duration set when the work (or its review) started
+  clientStatusMessage: string; // the backend's own neutral line for the client (never "a lawyer is being searched")
+  waitingReplacement: boolean; // a paid order handed to another seller who has not accepted yet: no seller shown, no chat
+  canRequestCancellation: boolean;
 };
+
+export type WorkPhase = "reviewing" | "execution" | "";
+// The review stage (TZ §6–§7): the seller studies the client's materials before setting the delivery time. Each side gets only its note.
+export type OrderReview = { deadlineAt: string; completedAt: string; clientNote: string; sellerNote: string; value: number | null; unit: string };
+export type FlowDuration = { value: number; unit: string; calendar: string };
 
 // details.pricing_snapshot ("Transparent price explanation"): the components in the backend's order — they sum to finalPrice, the phone
 // never adds them up. Each explains itself in uz / ru / en.
@@ -44,8 +55,21 @@ export type OrderResolution = { canChoose: boolean; offer: ResolutionOffer | nul
 export type PayPart = { percent: number | null; amount: number };
 export type FinalPayment = { id: string; amount: number; status: string; url: string };
 
-// The complaint of a finished order: a separate action from the rating, open only in the backend's window.
-export type OrderComplaint = { available: boolean; deadlineAt: string; submitted: boolean; id: string; url: string; status: string };
+// The complaint of a finished order: a separate action from the rating, open only in the backend's window. After the call center rules
+// a valid complaint the work is reopened for a rework (`reworkRequired`, its own deadline and the operator's note).
+export type OrderComplaint = {
+  available: boolean;
+  deadlineAt: string;
+  submitted: boolean;
+  id: string;
+  url: string;
+  status: string;
+  resolution: string;
+  resolutionNote: string;
+  reworkRequired: boolean;
+  reworkDeadlineAt: string;
+  reworkIteration: number;
+};
 export type OrderWarranty = { status: string; resolution: string; reason: string; decision: string };
 
 // GET …/financials — the payment rows by backend stage/status, the snapshot plan, and (for the seller) commission and settlement.
@@ -97,11 +121,20 @@ export type RuntimeCaps = {
   warrantyChoices: WarrantyResolution[];
 };
 
+// GET …/refund ("Refund state"): pending → processing → succeeded, or failed; not_charged when nothing was paid. `manual` = no payment
+// provider runs it (provider_enabled false): an operator approves it by hand.
+export type RefundStatus = "pending" | "processing" | "succeeded" | "failed" | "not_charged";
+export type OrderRefund = { requestId: string; amount: number; currency: string; status: RefundStatus | string; manual: boolean; updatedAt: string };
+
 // GET …/timeline
 export type FlowEvent = { id: string; type: string; status: string; note: string; at: string };
 
-// The order's place in the flow, for the one-line explanation on top of the detail screen.
-export type FlowPhase = "received" | "assigned" | "advance" | "pending" | "paid" | "in_progress" | "review" | "completed" | "rated" | "cancelled";
+// The order's place in the flow, for the one-line explanation on top of the detail screen, the badge and the track. `cancelReview` is the
+// cancellation review, `reviewing` the seller's review stage, `resolution` the call center's choice for the client, `replacing` a paid
+// order waiting for another seller, `attention` a status the app does not know (the call center has it).
+export type FlowPhase =
+  | "received" | "assigned" | "advance" | "pending" | "paid" | "reviewing" | "in_progress" | "rework" | "cancelReview"
+  | "resolution" | "replacing" | "refund" | "refunded" | "completed" | "rated" | "cancelled" | "attention";
 
 export const WARRANTY_KINDS = ["no_response", "sla_breach", "abandoned", "not_delivered", "seller_restricted"] as const;
 export type WarrantyKind = (typeof WARRANTY_KINDS)[number];

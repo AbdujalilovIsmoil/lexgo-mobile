@@ -2,13 +2,14 @@ import { useEffect, useRef } from "react";
 import { useQuery, useQueryClient, type QueryClient } from "@tanstack/react-query";
 import { useUserEvents } from "@/shared/realtime";
 import { asDict, asStr } from "@/shared/lib/json";
-import { getChecklist, getFinancials, getRuntimeCaps, getTimeline } from "../api/flowApi";
+import { getChecklist, getFinancials, getRefund, getRuntimeCaps, getTimeline } from "../api/flowApi";
 
 export const flowKeys = {
   all: ["mf"] as const,
   fin: (id: string) => ["mf", "fin", id] as const,
   ck: (id: string) => ["mf", "ck", id] as const,
   tl: (id: string) => ["mf", "tl", id] as const,
+  rf: (id: string) => ["mf", "rf", id] as const,
   caps: ["mf-caps"] as const,
 };
 
@@ -20,6 +21,9 @@ export const useChecklist = (orderId: string, url: string, enabled: boolean) =>
 
 export const useFlowTimeline = (orderId: string, enabled = true) =>
   useQuery({ queryKey: flowKeys.tl(orderId), queryFn: () => getTimeline(orderId), enabled: enabled && !!orderId, staleTime: 30 * 1000, retry: 1 });
+
+export const useRefund = (orderId: string, enabled: boolean) =>
+  useQuery({ queryKey: flowKeys.rf(orderId), queryFn: () => getRefund(orderId), enabled: enabled && !!orderId, staleTime: 30 * 1000, retry: 1 });
 
 export const useRuntimeCaps = (enabled = true) => useQuery({ queryKey: flowKeys.caps, queryFn: getRuntimeCaps, enabled, staleTime: 60 * 60 * 1000, retry: 1 });
 

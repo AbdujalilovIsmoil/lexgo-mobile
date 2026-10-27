@@ -1,5 +1,5 @@
 import { asArr, asDict, asNum, asStr, uzs, type Dict } from "@/shared/lib/json";
-import type { CallKind, CheckFile, CheckItem, CheckStatus, Checklist, ChecklistProgress, FinPayment, Financials, FlowEvent, FlowOrder, OrderComplaint, OrderResolution, PayKind, PayPart, PriceComponent, PriceSnapshot, ResolutionChoice, RuntimeCaps, WarrantyResolution } from "../model/types";
+import type { CallKind, CheckFile, CheckItem, CheckStatus, Checklist, ChecklistProgress, FinPayment, Financials, FlowDuration, FlowEvent, FlowOrder, OrderComplaint, OrderRefund, OrderResolution, OrderReview, PayKind, PayPart, PriceComponent, PriceSnapshot, ResolutionChoice, RuntimeCaps, WarrantyResolution } from "../model/types";
 
 const bool = (...v: unknown[]): boolean | null => {
   for (const x of v) if (typeof x === "boolean") return x;
@@ -59,10 +59,16 @@ export function normFlow(v: unknown): FlowOrder {
   const complaint: OrderComplaint = {
     available: c.available === true || c.can_complain === true,
     deadlineAt: first(c.deadline_at, d.complaint_deadline_at, det.complaint_deadline_at),
-    submitted: c.submitted === true || !!asStr(c.complaint_id),
-    id: first(c.complaint_id, c.id),
+    // After a rework the old complaint id stays while `submitted` is false again: the backend's flag wins over the id.
+    submitted: typeof c.submitted === "boolean" ? c.submitted : !!asStr(c.complaint_id),
+    id: first(c.active_complaint_id, c.complaint_id, c.id),
     url: path(c.url ?? d.complaint_url),
     status: asStr(c.status).toLowerCase(),
+    resolution: asStr(c.resolution).toLowerCase(),
+    resolutionNote: asStr(c.resolution_note).trim(),
+    reworkRequired: c.rework_required === true,
+    reworkDeadlineAt: first(c.rework_deadline_at),
+    reworkIteration: num(c.rework_iteration) ?? 0,
   };
   const w = asDict(d.warranty ?? d.warranty_claim ?? det.warranty_claim);
   const fp = asDict(d.final_payment ?? det.final_payment);
@@ -93,7 +99,38 @@ export function normFlow(v: unknown): FlowOrder {
     checklistProgress: d.checklist_progress !== undefined || asDict(d.checklist).progress !== undefined ? progressOf(d.checklist_progress ?? asDict(d.checklist).progress) : null,
     pricing: normPricing(det.pricing_snapshot ?? d.pricing_snapshot),
     resolution: normResolution(d.resolution ?? det.resolution),
+    workPhase: phaseWord(first(d.work_phase, det.work_phase)),
+    review: normReview(d, det),
+    duration: normDuration(d.duration ?? det.duration),
+    clientStatusMessage: first(d.client_status_message, det.client_status_message),
+    waitingReplacement: d.waiting_replacement_acceptance === true,
+    canRequestCancellation: d.can_request_cancellation === true,
   };
+}
+
+const phaseWord = (s: string): FlowOrder["workPhase"] => (s.toLowerCase() === "reviewing" ? "reviewing" : s.toLowerCase() === "execution" ? "execution" : "");
+
+// review_deadline_at / review_duration / review_*_note (TZ §6.3, §7): on the order once the work started with a review stage.
+function normReview(d: Dict, det: Dict): OrderReview | null {
+  const deadlineAt = first(d.review_deadline_at, det.review_deadline_at);
+  const dur = asDict(d.review_duration ?? det.review_duration);
+  if (!deadlineAt && !Object.keys(dur).length) return null;
+  return {
+    deadlineAt,
+    completedAt: first(d.review_completed_at, det.review_completed_at),
+    clientNote: first(d.review_client_note, det.review_client_note),
+    sellerNote: first(d.review_seller_note, det.review_seller_note),
+    value: num(dur.value),
+    unit: asStr(dur.unit).toLowerCase(),
+  };
+}
+
+// `duration`: { value, unit minute|hour|day, calendar calendar|business_days } — null until the delivery time is known.
+export function normDuration(v: unknown): FlowDuration | null {
+  const r = asDict(v);
+  const value = num(r.value, r.duration_value);
+  if (value === null || value <= 0) return null;
+  return { value, unit: asStr(r.unit ?? r.duration_unit).toLowerCase() || "day", calendar: asStr(r.calendar ?? r.duration_calendar).toLowerCase() || "calendar" };
 }
 
 // details.pricing_snapshot: the components exactly as listed (order kept, nothing summed); null when there are none.
@@ -238,4 +275,20 @@ export function normTimeline(v: unknown): FlowEvent[] {
     const data = asDict(r.data ?? r.payload);
     return { id: asStr(r.id), type: asStr(r.type).toLowerCase(), status: first(data.status, data.event, r.event, r.status).toLowerCase(), note: asStr(data.note ?? data.comment).trim(), at: first(r.at, r.created_at) };
   }).filter((e) => e.status || e.note).sort((a, b) => (a.at < b.at ? -1 : 1));
+}
+
+// GET …/refund: { refund: { request_id, amount, currency, status, provider_mode, provider_enabled, updated_at }, provider_enabled }.
+export function normRefund(v: unknown): OrderRefund | null {
+  const d = asDict(v);
+  const r = asDict(d.refund);
+  if (!Object.keys(r).length) return null;
+  const enabled = typeof r.provider_enabled === "boolean" ? r.provider_enabled : d.provider_enabled;
+  return {
+    requestId: first(r.request_id, r.id),
+    amount: num(r.amount) ?? 0,
+    currency: asStr(r.currency, "UZS").toUpperCase() || "UZS",
+    status: asStr(r.status).toLowerCase() || "pending",
+    manual: enabled === false || asStr(r.provider_mode).toLowerCase() === "manual",
+    updatedAt: first(r.updated_at, r.created_at),
+  };
 }

@@ -1,6 +1,6 @@
 import { StyleSheet, View } from "react-native";
 import type { ProOrder } from "@/entities/pro-order";
-import { callTypesOf, chatModeOf, type FlowPhase } from "@/entities/market-flow";
+import { callTypesOf, chatModeOf, isPaidStatus, type FlowPhase } from "@/entities/market-flow";
 import { Avatar, Button, Icon, Text } from "@/shared/ui";
 import { SectionCard } from "@/shared/ui/admin";
 import { useT } from "@/shared/i18n";
@@ -28,7 +28,7 @@ export function BuyerCard({ order: o, phase, onChat, onCall, calling }: Props) {
       </View>
       {chat === "open" ? <Button title={t("sl9.openChat")} icon="message-circle" variant="soft" size="sm" onPress={onChat} /> : null}
       {chat === "readOnly" ? <Button title={t("mf.ct.viewChat")} icon="message-circle" variant="line" size="sm" onPress={onChat} /> : null}
-      {chat === "locked" ? <Text variant="caption" tone="gray">{t("mf.pay.advanceWaitSeller")}</Text> : null}
+      {chat === "locked" ? <Text variant="caption" tone="gray">{t(phase === "replacing" || isPaidStatus(o.paymentStatus) ? "mf.ct.lockedSeller" : "mf.pay.advanceWaitSeller")}</Text> : null}
       {calls.length && onCall ? (
         <View style={s.row}>
           {calls.includes("audio") ? <Button title={t("mk7.audio")} icon="phone" variant="soft" size="sm" disabled={calling} onPress={() => onCall("audio")} style={s.col} /> : null}

@@ -1,5 +1,6 @@
 import type { ProOrder } from "../model/types";
 import { actionsOf } from "./moves";
+import { stageOf } from "./stage";
 
 export type OrderHint = "accept" | "complete" | "work" | "paused";
 
@@ -9,5 +10,6 @@ export function hintOf(o: ProOrder): OrderHint | null {
   if (a.paused) return "paused";
   if (a.accept) return "accept";
   if (a.complete) return "complete";
-  return a.start || a.moves.length ? "work" : null;
+  // Work under way (or ready to begin) — but not while the client's advance still keeps contact locked.
+  return a.start || a.review || (stageOf(o) === "active" && o.flow?.contactUnlocked !== false) ? "work" : null;
 }

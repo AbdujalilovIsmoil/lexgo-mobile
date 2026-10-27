@@ -2,37 +2,28 @@ import { stageOf } from "./stage";
 import type { ProOrder } from "../model/types";
 import { isPaused } from "./additional";
 
-// Mirror of the backend ORDER_TRANSITIONS rows that matter after payment, narrowed to the moves a
-// seller may make (law-main lib/orderStatus.ts). The server still has the last word (409).
-const NEXT: Record<string, string[]> = {
-  paid: ["started", "in_progress"],
-  accepted: ["started", "in_progress", "result_ready"],
-  started: ["in_progress", "result_ready"],
-  in_progress: ["result_ready", "delivered"],
-  result_ready: ["delivered"],
-  quality_check: ["delivered", "in_progress"],
-};
+export type OrderActions = { accept: boolean; decline: boolean; start: boolean; review: boolean; complete: boolean; cancelRequest: boolean; chat: boolean; extra: boolean; paused: boolean };
 
-export type OrderActions = { accept: boolean; decline: boolean; start: boolean; moves: string[]; complete: boolean; chat: boolean; extra: boolean; paused: boolean };
-
-// An assignment with a backend answer deadline (TZ.md §5) is answered on its own card (countdown, expiry), not from this bar. When the
-// backend offers `start_url` the work is started with it (TZ §9) and the plain "started / in progress" moves are not offered next to it.
+// What the seller may do now, from the backend's flags (TZ §4.2: never from the status alone). An assignment with a backend answer
+// deadline (TZ §5) is answered on its own card. The work starts with the order's start action (TZ §6); during the review stage the main
+// action sets the delivery time (TZ §7) and completion waits for it. The old hand-made status moves (result ready, delivered …) are gone:
+// a marketplace order is finished through completion, which checks the checklist.
 export function actionsOf(o: ProOrder, acceptAllowed = true): OrderActions {
   const stage = stageOf(o);
   const open = stage === "new" || stage === "active";
   const paused = isPaused(o);
   const assignment = !!o.flow?.acceptanceDeadlineAt;
-  // Accepted but the client's advance is not confirmed yet (contact still locked): nothing to start or move (TZ §6).
+  // Accepted but the client's advance is not confirmed yet (contact still locked): nothing to start (TZ §6).
   const waitingAdvance = o.flow?.contactUnlocked === false;
-  const start = acceptAllowed && !paused && open && !waitingAdvance && !!o.flow?.canStart;
-  const moves = open && acceptAllowed && !paused && !waitingAdvance ? (NEXT[o.status] ?? []) : [];
+  const reviewing = o.flow?.workPhase === "reviewing";
   return {
     accept: acceptAllowed && !assignment && (o.status === "sent_to_seller" || o.status === "paid"),
     decline: acceptAllowed && !assignment && o.status === "sent_to_seller",
-    start,
-    moves: start ? moves.filter((m) => m !== "started" && m !== "in_progress") : moves,
+    start: acceptAllowed && !paused && open && !waitingAdvance && !!o.flow?.canStart,
+    review: acceptAllowed && !paused && open && reviewing,
     // The backend's can_complete decides when it is sent; complete_url alone only when the flag is missing (normFlow).
-    complete: acceptAllowed && stage === "active" && !paused && (o.flow ? o.flow.canComplete : o.canComplete),
+    complete: acceptAllowed && stage === "active" && !paused && !reviewing && (o.flow ? o.flow.canComplete : o.canComplete),
+    cancelRequest: acceptAllowed && !!o.flow?.canRequestCancellation,
     extra: acceptAllowed && !paused && (stage === "active" || stage === "new") && !!(o.serviceId || o.packageId),
     paused,
     chat: o.canChat && (open || stage === "completed"),

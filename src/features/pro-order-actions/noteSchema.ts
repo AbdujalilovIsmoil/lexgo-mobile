@@ -3,8 +3,6 @@ import * as rules from "@/shared/form/rules";
 
 const note = z.string().max(500, rules.m("max", 500));
 
-// Optional note for the client (sent as typed).
-export const noteSchema = z.object({ note });
 // Decline: a reason, and a note that is required when the reason is "other".
 export const declineSchema = z
   .object({ reason: z.string().min(1, rules.m("pick")), note })

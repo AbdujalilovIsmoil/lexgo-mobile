@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { createOrderWarranty, useRuntimeCaps, WARRANTY_KINDS, type WarrantyKind, type WarrantyResolution } from "@/entities/market-flow";
+import { z } from "zod";
+import { codeOf, createOrderWarranty, WARRANTY_KINDS, type WarrantyKind } from "@/entities/market-flow";
 import { FormInput, rules, useAppForm } from "@/shared/form";
 import { FormSheet, SelectField } from "@/shared/ui/admin";
 import { Text } from "@/shared/ui";
@@ -8,34 +9,36 @@ import { useT } from "@/shared/i18n";
 import { useFlowMutation } from "../model/useFlowMutation";
 
 type Props = { visible: boolean; onClose: () => void; orderId: string; url: string; onSent: () => void };
-const FALLBACK: WarrantyResolution[] = ["replacement", "full_refund"];
+const schema = z.object({ reason: rules.text(5, 1000) });
 
-// TZ §11: the LexGo warranty of one order — what went wrong, what the client asks for (another specialist or a full refund, as the
-// platform allows), and the details. It goes to the call center: the screen then says "under review", never an immediate success.
+// The LexGo warranty of one order ("Warranty queue"): what went wrong and the details. The call center decides the outcome (another
+// specialist or a full refund), so the client does not pick it; the screen then says "under review", never an immediate success. A claim
+// that is already open (409 warranty_already_open) is shown as such.
 export function OrderWarrantySheet({ visible, onClose, orderId, url, onSent }: Props) {
   const { t } = useT();
-  const caps = useRuntimeCaps(visible);
-  const choices = caps.data?.warrantyChoices.length ? caps.data.warrantyChoices : FALLBACK;
   const [kind, setKind] = useState<WarrantyKind | "">("");
-  const [resolution, setResolution] = useState<WarrantyResolution | "">("");
   const [tried, setTried] = useState(false);
-  const f = useAppForm(rules.reason, { reason: "" });
-  useSheetReset(visible, () => { f.reset({ reason: "" }); setKind(""); setResolution(""); setTried(false); });
+  const f = useAppForm(schema, { reason: "" });
+  useSheetReset(visible, () => { f.reset({ reason: "" }); setKind(""); setTried(false); });
+  const done = () => {
+    onClose();
+    onSent();
+  };
   const send = useFlowMutation({
-    mutationFn: (reason: string) => createOrderWarranty(orderId, url, { kind: kind as WarrantyKind, resolution: resolution as WarrantyResolution, reason }),
-    onSuccess: () => {
-      onClose();
-      onSent();
+    mutationFn: (reason: string) => createOrderWarranty(orderId, url, { kind: kind as WarrantyKind, reason }),
+    onSuccess: done,
+    onError: (e) => {
+      if (codeOf(e) === "warranty_already_open") done();
+      return false;
     },
   });
   const submit = () => {
     setTried(true);
-    void f.handleSubmit((v) => kind && resolution && send.mutate(v.reason))();
+    void f.handleSubmit((v) => kind && send.mutate(v.reason))();
   };
   return (
-    <FormSheet visible={visible} onClose={send.isPending ? () => undefined : onClose} title={t("mf.wr.dialogTitle")} subtitle={t("mf.wr.dialogLead")} onSubmit={submit} submitLabel={t("mf.wr.submit")} submitting={send.isPending} snaps={[0.8, 0.95]}>
+    <FormSheet visible={visible} onClose={send.isPending ? () => undefined : onClose} title={t("mf.wr.dialogTitle")} subtitle={t("mf.wr.dialogLead")} onSubmit={submit} submitLabel={t("mf.wr.submit")} submitting={send.isPending} snaps={[0.75, 0.95]}>
       <SelectField label={t("mf.wr.whyLabel")} value={kind} onChange={setKind} placeholder={t("mf.wr.pickReason")} error={tried && !kind ? t("mf.wr.pickReason") : undefined} options={WARRANTY_KINDS.map((k) => ({ value: k, label: t(`mf.wr.why.${k}`) }))} />
-      <SelectField label={t("mf.wr.resolutionLabel")} value={resolution} onChange={setResolution} error={tried && !resolution ? t("mf.wr.resolutionLabel") : undefined} options={choices.map((r) => ({ value: r, label: t(`mf.wr.resolution.${r}`) }))} />
       <FormInput control={f.control} name="reason" label={t("mf.wr.reasonLabel")} placeholder={t("mf.wr.reasonPh")} multiline maxLength={1000} style={{ minHeight: 100, textAlignVertical: "top" }} />
       <Text variant="caption" tone="gray">{t("mf.wr.reasonHelp")}</Text>
     </FormSheet>

@@ -1,7 +1,7 @@
 import { canCancelOrder, canCompleteOrder, orderNumber } from "./actions";
 import { mergeOrders, entryText } from "./merge";
 import { serviceStageOf } from "./serviceStage";
-import { isOrderPending, marketStageOf, STAGE_STEP } from "./stage";
+import { isOrderPending, marketStageOf } from "./stage";
 import { isOpenOrder, isTakenOrder } from "./status";
 import { buildTimeline } from "./timeline";
 import type { MarketOrder } from "../model/marketTypes";
@@ -23,8 +23,11 @@ describe("marketStageOf", () => {
     expect(isOrderPending({ status: "pending", paymentStatus: "" })).toBe(true);
     expect(isOrderPending({ status: "pending", paymentStatus: "paid" })).toBe(false);
   });
-  it("step track: stopped is -1, done is past the last step", () => {
-    expect(STAGE_STEP).toEqual({ pending: 1, active: 2, completed: 4, cancelled: -1 });
+  it("TZ §3: an order before the seller's acceptance and the advance waits — it is never 'in work'; a refund ends it", () => {
+    for (const status of ["seller_selection", "sent_to_seller", "accepted"]) expect(marketStageOf(m({ status, paymentStatus: "pending" }))).toBe("pending");
+    expect(marketStageOf(m({ status: "sent_to_seller", paymentStatus: "paid" }))).toBe("active");
+    expect(marketStageOf(m({ status: "refund_pending", paymentStatus: "paid" }))).toBe("cancelled");
+    expect(marketStageOf(m({ status: "cancelled", paymentStatus: "refunded" }))).toBe("cancelled");
   });
 });
 

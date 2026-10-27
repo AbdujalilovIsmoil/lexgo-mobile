@@ -2,16 +2,14 @@ import { StyleSheet, View } from "react-native";
 import { useColors } from "@/shared/theme";
 import { Text } from "@/shared/ui";
 import { useT } from "@/shared/i18n";
-import { STAGE_STEP } from "../lib/stage";
-import type { MarketStage } from "../model/marketTypes";
 
 const STEPS = ["request", "confirm", "work", "done"] as const;
 
-// Request → payment → work → done. A stopped order shows nothing: its state is the badge.
-export function OrderTrack({ stage, labels }: { stage: MarketStage; labels?: boolean }) {
+// Request → payment → work → done; `step` is the current one (phaseStep: 4 = all done). A stopped order (-1) shows nothing: its state is
+// the badge.
+export function OrderTrack({ step: at, labels }: { step: number; labels?: boolean }) {
   const c = useColors();
   const { t } = useT();
-  const at = STAGE_STEP[stage];
   if (at < 0) return null;
   return (
     <View style={s.row}>

@@ -1,7 +1,8 @@
 import { ApiError } from "@/shared/api";
 import { asArr, asDict, asStr } from "@/shared/lib/json";
 
-// The backend codes of TZ.md §16 that the order screens explain in their own words (mf.err.*).
+// The backend codes of TZ.md (§16 of the order flow, §18 of the review/checklist contract, the cancellation and warranty contracts) that
+// the order screens explain in their own words (mf.err.*).
 export const FLOW_CODES = [
   "assignment_response_deadline_expired",
   "assignment_not_accepting",
@@ -11,6 +12,18 @@ export const FLOW_CODES = [
   "marketplace_order_already_completed",
   "rating_window_closed",
   "complaint_window_closed",
+  "payment_required",
+  "order_start_not_allowed",
+  "order_not_in_review",
+  "delivery_duration_invalid",
+  "cancellation_review_already_open",
+  "active_marketplace_order_not_found",
+  "warranty_already_open",
+  "checklist_status_invalid",
+  "skip_reason_required",
+  "checklist_comment_required",
+  "checklist_image_required",
+  "checklist_file_required",
 ] as const;
 export type FlowCode = (typeof FLOW_CODES)[number];
 

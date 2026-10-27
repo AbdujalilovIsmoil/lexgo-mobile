@@ -1,9 +1,10 @@
 import { useState } from "react";
 import { StyleSheet, View } from "react-native";
 import { useRouter } from "expo-router";
-import { canCancelOrder, canCompleteOrder, useRatingWindow, type MarketOrder } from "@/entities/order";
-import { callTypesOf, chatModeOf, phaseOf } from "@/entities/market-flow";
+import { canCancelOrder, canCompleteOrder, orderPhase, useRatingWindow, type MarketOrder } from "@/entities/order";
+import { callTypesOf, chatModeOf, phaseFinished } from "@/entities/market-flow";
 import { CallButtons, CancelOrderSheet, CompleteOrderSheet } from "@/features/order-actions";
+import { CancelRequestSheet } from "@/features/market-flow";
 import { Button, Icon, Text } from "@/shared/ui";
 import { useColors } from "@/shared/theme";
 import { useT } from "@/shared/i18n";
@@ -17,11 +18,13 @@ export function DetailActions({ order }: { order: MarketOrder }) {
   const router = useRouter();
   const [cancel, setCancel] = useState<MarketOrder | null>(null);
   const [complete, setComplete] = useState<MarketOrder | null>(null);
-  const phase = phaseOf({ status: order.status, paymentStatus: order.paymentStatus, flow: order.flow, rated: order.ratingStars > 0 });
+  const [asking, setAsking] = useState(false);
+  const phase = orderPhase(order);
   const chat = chatModeOf(order, phase);
   const calls = callTypesOf(order, phase);
   const rate = useRatingWindow(order).open;
-  const extra = calls.length > 0 || canCancelOrder(order) || canCompleteOrder(order) || rate;
+  const askCancel = order.flow.canRequestCancellation && !canCancelOrder(order);
+  const extra = calls.length > 0 || canCancelOrder(order) || canCompleteOrder(order) || rate || askCancel;
   if (chat === "none" && !extra) return null;
   const openChat = () => router.push({ pathname: "/chat/[roomId]", params: { roomId: order.roomId } });
   return (
@@ -31,7 +34,7 @@ export function DetailActions({ order }: { order: MarketOrder }) {
       {chat === "readOnly" || chat === "locked" ? (
         <View style={s.note}>
           <Icon name="lock" size={13} color={c.gray} />
-          <Text variant="caption" tone="gray" style={s.half}>{t(chat === "readOnly" ? "mf.ct.readOnly" : "mf.ct.locked")}</Text>
+          <Text variant="caption" tone="gray" style={s.half}>{t(chat === "readOnly" ? (phaseFinished(phase) ? "mf.ct.readOnly" : "mf.ct.readOnlyNow") : phase === "replacing" ? "mf.ct.lockedAccept" : "mf.ct.locked")}</Text>
         </View>
       ) : null}
       {calls.length ? <CallButtons order={order} types={calls} /> : null}
@@ -40,7 +43,9 @@ export function DetailActions({ order }: { order: MarketOrder }) {
         {rate ? <Button title={t("mk4.rate")} onPress={() => router.push(`/rate/${order.workId}` as never)} variant="soft" icon="star" style={s.half} /> : null}
         {canCancelOrder(order) ? <Button title={t("mk5.cancelBtn")} onPress={() => setCancel(order)} variant="line" icon="x" style={s.half} /> : null}
       </View>
+      {askCancel ? <Button title={t("mf.cr.button")} onPress={() => setAsking(true)} variant="line" icon="slash" full /> : null}
       <CancelOrderSheet order={cancel} onClose={() => setCancel(null)} />
+      <CancelRequestSheet orderId={order.id} visible={asking} onClose={() => setAsking(false)} />
       <CompleteOrderSheet order={complete} onClose={() => setComplete(null)} />
     </View>
   );

@@ -46,3 +46,29 @@ describe("normFlow", () => {
     expect(f.resolution?.offer?.options).toEqual(["refund"]);
   });
 });
+
+describe("normRefund", () => {
+  it("reads the refund and says when an operator approves it by hand", () => {
+    const { normRefund } = jest.requireActual("./norm") as typeof import("./norm");
+    expect(normRefund({ order_id: "o", refund: { request_id: "r1", amount: 8000, currency: "UZS", status: "pending", provider_mode: "manual", provider_enabled: false, updated_at: "2026-10-26T15:59:59Z" }, provider_enabled: false }))
+      .toEqual({ requestId: "r1", amount: 8000, currency: "UZS", status: "pending", manual: true, updatedAt: "2026-10-26T15:59:59Z" });
+    expect(normRefund({ refund: { status: "SUCCEEDED", amount: 5, provider_enabled: true } })?.manual).toBe(false);
+    expect(normRefund({ refund: null })).toBeNull();
+  });
+});
+
+describe("duration and time left", () => {
+  const { durationText, leftText } = jest.requireActual("../lib/duration") as typeof import("../lib/duration");
+  const t = (k: string, p?: Record<string, string | number>) => `${k}:${p ? Object.values(p).join(",") : ""}`;
+  it("words the delivery time in the app's own language, business days apart", () => {
+    expect(durationText({ value: 5, unit: "day", calendar: "business_days" }, t)).toBe("mf.dur.dayBiz:5");
+    expect(durationText({ value: 2, unit: "hour", calendar: "calendar" }, t)).toBe("mf.dur.hour:2");
+    expect(durationText({ value: 3, unit: "hour", calendar: "business_days" }, t)).toBe("mf.dur.biz:mf.dur.hour:3");
+    expect(durationText({ value: 1, unit: "weeks", calendar: "calendar" }, t)).toBe("mf.dur.day:1");
+  });
+  it("shows mm:ss in the last hour and days/hours before it", () => {
+    expect(leftText(65_000, t)).toBe("01:05");
+    expect(leftText(2 * 86_400_000 + 5 * 3_600_000, t)).toBe("mf.dur.day:2 mf.dur.hour:5");
+    expect(leftText(3 * 3_600_000 + 12 * 60_000, t)).toBe("mf.dur.hour:3 mf.dur.minute:12");
+  });
+});

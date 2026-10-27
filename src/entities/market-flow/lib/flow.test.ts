@@ -28,7 +28,7 @@ describe("normFlow", () => {
     expect(f.advance).toEqual({ percent: 10, amount: 52500 });
     expect(f.final).toEqual({ percent: 90, amount: 472500 });
     expect(f.finalPayment).toBeNull();
-    expect(f.complaint).toEqual({ available: false, deadlineAt: "", submitted: false, id: "", url: "", status: "" });
+    expect(f.complaint).toEqual({ available: false, deadlineAt: "", submitted: false, id: "", url: "", status: "", resolution: "", resolutionNote: "", reworkRequired: false, reworkDeadlineAt: "", reworkIteration: 0 });
   });
   it("narrows calls to the allowed types and reads an assignment deadline and the final payment", () => {
     const f = normFlow({ ...PAID, allowed_call_types: ["audio"], acceptance_deadline_at: "2026-10-24T10:30:00Z", final_payment_id: "p9", final_amount: 472500, can_start: true, start_url: "/marketplace/orders/o1/start" });
@@ -42,8 +42,26 @@ describe("normFlow", () => {
     expect(normFlow({ ...PAID, final_payment: { id: "p", amount: 1, payment_url: "http://x.test/pay" } }).finalPayment?.url).toBe("");
     expect(normFlow({ ...PAID, start_url: "javascript:alert(1)", can_start: true }).canStart).toBe(false);
   });
-  it("treats a submitted complaint as used", () => {
-    expect(normFlow({ ...PAID, complaint: { available: false, submitted: false, complaint_id: "c1" } }).complaint.submitted).toBe(true);
+  it("treats a complaint as used from the backend's flag, the id only when the flag is missing", () => {
+    expect(normFlow({ ...PAID, complaint: { available: false, complaint_id: "c1" } }).complaint.submitted).toBe(true);
+    // After a rework the old ruling stays (latest_resolved_complaint_id) while a new complaint may be filed in the fresh window.
+    expect(normFlow({ ...PAID, complaint: { available: true, submitted: false, complaint_id: "c1", latest_resolved_complaint_id: "c1" } }).complaint.submitted).toBe(false);
+  });
+  it("reads the rework, the review stage, the delivery duration and the reassignment flags", () => {
+    const f = normFlow({
+      ...PAID, status: "in_progress", work_phase: "reviewing", review_deadline_at: "2026-10-22T12:00:00Z", review_duration: { value: 2, unit: "hour" },
+      review_client_note: "Mutaxassis hujjatlaringizni o'rganmoqda", review_seller_note: "Muddatni tasdiqlang", duration: { value: 5, unit: "day", calendar: "business_days" },
+      client_status_message: " So'rovingiz ko'rib chiqilmoqda ", waiting_replacement_acceptance: true, can_request_cancellation: true,
+      complaint: { available: false, submitted: true, complaint_id: "c1", status: "rework_required", resolution: "valid_rework", resolution_note: "4-bo'lim", rework_required: true, rework_iteration: 1, rework_deadline_at: "2026-10-27T09:30:00Z" },
+    });
+    expect(f.workPhase).toBe("reviewing");
+    expect(f.review).toEqual({ deadlineAt: "2026-10-22T12:00:00Z", completedAt: "", clientNote: "Mutaxassis hujjatlaringizni o'rganmoqda", sellerNote: "Muddatni tasdiqlang", value: 2, unit: "hour" });
+    expect(f.duration).toEqual({ value: 5, unit: "day", calendar: "business_days" });
+    expect(f.clientStatusMessage).toBe("So'rovingiz ko'rib chiqilmoqda");
+    expect(f.waitingReplacement).toBe(true);
+    expect(f.canRequestCancellation).toBe(true);
+    expect(f.complaint).toMatchObject({ reworkRequired: true, reworkIteration: 1, reworkDeadlineAt: "2026-10-27T09:30:00Z", resolutionNote: "4-bo'lim", status: "rework_required" });
+    expect(normFlow(PAID)).toMatchObject({ workPhase: "", review: null, duration: null, waitingReplacement: false, canRequestCancellation: false });
   });
 });
 
@@ -126,6 +144,34 @@ describe("phase & contact gates", () => {
     expect(phaseOf({ status: "new", paymentStatus: "paid", flow: normFlow(PAID) })).toBe("paid");
     expect(chatModeOf({ ...base, roomId: "", flow: open }, "received")).toBe("locked");
   });
+  it("reads the call center's states, the refund, the review stage and the rework from the backend — an unknown status is never 'paid'", () => {
+    const f = normFlow(PAID);
+    const at = (status: string, paymentStatus = "paid", flow = f) => phaseOf({ status, paymentStatus, flow });
+    expect(at("refund_pending")).toBe("refund");
+    expect(at("refunded", "refunded")).toBe("refunded");
+    expect(at("cancelled", "refunded")).toBe("refunded");
+    expect(at("cancellation_review")).toBe("cancelReview");
+    expect(at("resolution_required")).toBe("resolution");
+    expect(at("sent_to_seller", "paid", normFlow({ ...PAID, waiting_replacement_acceptance: true }))).toBe("replacing");
+    expect(at("sent_to_seller", "paid", normFlow({ ...PAID, acceptance_deadline_at: "2026-10-26T18:30:00Z" }))).toBe("replacing");
+    expect(at("in_progress", "paid", normFlow({ ...PAID, work_phase: "reviewing" }))).toBe("reviewing");
+    expect(at("in_progress", "paid", normFlow({ ...PAID, complaint: { rework_required: true } }))).toBe("rework");
+    expect(at("something_new")).toBe("attention");
+  });
+  it("puts each phase on the request → payment → work → done track", () => {
+    const { phaseStep } = jest.requireActual("./phase") as typeof import("./phase");
+    expect(["received", "assigned", "advance", "pending"].map((p) => phaseStep(p as never))).toEqual([1, 1, 1, 1]);
+    expect(["paid", "reviewing", "in_progress", "rework", "cancelReview", "resolution", "replacing", "attention"].map((p) => phaseStep(p as never))).toEqual([2, 2, 2, 2, 2, 2, 2, 2]);
+    expect(["completed", "rated"].map((p) => phaseStep(p as never))).toEqual([4, 4]);
+    expect(["cancelled", "refund", "refunded"].map((p) => phaseStep(p as never))).toEqual([-1, -1, -1]);
+  });
+  it("keeps a refunded or reassigned order's chat readable and its calls closed", () => {
+    const f = normFlow({ ...PAID, chat_read_only: true, calls_enabled: false });
+    expect(chatModeOf({ ...base, flow: f }, "refund")).toBe("readOnly");
+    expect(chatModeOf({ ...base, flow: f }, "replacing")).toBe("readOnly");
+    expect(chatModeOf({ ...base, roomId: "", flow: f }, "replacing")).toBe("locked");
+    expect(callTypesOf({ ...base, flow: normFlow(PAID) }, "resolution")).toEqual([]);
+  });
   it("opens chat and calls only once the backend unlocked contact", () => {
     const locked = normFlow({ ...PAID, contact_unlocked: false });
     expect(chatModeOf({ ...base, flow: locked }, "advance")).toBe("locked");
@@ -151,7 +197,7 @@ describe("windows", () => {
     expect(clock(3723000)).toBe("01:02:03");
   });
   it("closes the complaint after its deadline and never offers it twice", () => {
-    const c = { available: true, deadlineAt: "2026-10-24T10:05:00Z", submitted: false, id: "", url: "", status: "" };
+    const c = { available: true, deadlineAt: "2026-10-24T10:05:00Z", submitted: false, id: "", url: "", status: "", resolution: "", resolutionNote: "", reworkRequired: false, reworkDeadlineAt: "", reworkIteration: 0 };
     expect(complaintState(c, now)).toBe("open");
     expect(complaintState(c, now + 6 * 60000)).toBe("closed");
     expect(complaintState({ ...c, submitted: true }, now)).toBe("submitted");

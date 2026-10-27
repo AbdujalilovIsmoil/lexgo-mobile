@@ -5,7 +5,7 @@ export { useMarketOrders, useMarketOrder, useStatusHistory, marketKeys } from ".
 export { useMarketSync, useMarketSignals } from "./model/useMarketSync";
 export { useRatingWindow } from "./model/useRatingWindow";
 export { topicOf, type MarketSignal, type MarketTopic } from "./lib/signal";
-export { marketStageOf, isOrderPending, STAGE_STEP, MARKET_DONE, MARKET_STOPPED } from "./lib/stage";
+export { marketStageOf, orderPhase, isOrderPending, MARKET_DONE, MARKET_STOPPED } from "./lib/stage";
 export { canCancelOrder, canCompleteOrder, orderNumber } from "./lib/actions";
 export { buildTimeline, type TimelineItem } from "./lib/timeline";
 export { mergeOrders, entryText, type OrderEntry } from "./lib/merge";
@@ -21,5 +21,5 @@ export { OrderRowSkeleton } from "./ui/OrderRowSkeleton";
 export { MarketOrderCard } from "./ui/MarketOrderCard";
 export { MarketOrderSkeleton } from "./ui/MarketOrderSkeleton";
 export { OrderTrack } from "./ui/OrderTrack";
-export { StageBadge, STAGE_TONE } from "./ui/StageBadge";
+export { StageBadge } from "./ui/StageBadge";
 export { canChatWith, chatRoomWith, orderGivesChat } from "./lib/chatAccess";

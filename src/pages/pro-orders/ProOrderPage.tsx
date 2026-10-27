@@ -1,11 +1,11 @@
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { callPath } from "@/entities/call";
 import { actionsOf, useOrderLive, useProOrder, useProOrders } from "@/entities/pro-order";
-import { phaseFinished, phaseOf, useFlowLive } from "@/entities/market-flow";
+import { phaseBeforePayment, phaseFinished, phaseOf, useFlowLive } from "@/entities/market-flow";
 import { useCabinet } from "@/entities/pro-onboarding";
 import { OrderActionsBar, useSellerCall } from "@/features/pro-order-actions";
 import { AdditionalCard, BuyerCard, OrderFactsCard, OrderQuoteCard, OrderResultCard, OrderSummaryCard, OrderTimeline } from "@/widgets/pro-order";
-import { AssignmentCard, ChecklistCard, FlowLead, PaymentsCard } from "@/widgets/market-order";
+import { AssignmentCard, ChecklistCard, FlowLead, PaymentsCard, RefundCard, WorkTimeCard } from "@/widgets/market-order";
 import { ActiveCallBar } from "@/widgets/secure-chat";
 import { EmptyState } from "@/shared/ui";
 import { AdminPage, QueryBoundary } from "@/shared/ui/admin";
@@ -29,7 +29,7 @@ export default function ProOrderPage() {
   const sc = useSellerCall(order);
   const allowed = cabinet.data?.actions.acceptOrders ?? true;
   const a = order ? actionsOf(order, allowed) : null;
-  const hasActions = !!a && (a.accept || a.decline || a.start || a.complete || a.extra || a.moves.length > 0);
+  const hasActions = !!a && (a.accept || a.decline || a.start || a.review || a.complete || a.extra || a.cancelRequest);
   const phase = order ? phaseOf({ status: order.status, paymentStatus: order.paymentStatus, flow: order.flow, rated: order.rating.stars > 0 }) : null;
   const refresh = () => {
     void one.refetch();
@@ -43,10 +43,12 @@ export default function ProOrderPage() {
             <OrderSummaryCard order={order} />
             <AssignmentCard order={order} flow={order.flow} acceptAllowed={allowed} />
             {phase !== "assigned" ? <FlowLead phase={phase} role="seller" /> : null}
+            <WorkTimeCard flow={order.flow} phase={phase} role="seller" />
+            <RefundCard orderId={order.id} enabled={phase === "refund" || phase === "refunded"} />
             {order.canChat && !phaseFinished(phase) ? <ActiveCallBar roomId={order.roomId} onJoin={(id) => router.push(callPath(order.roomId, id) as never)} style={{ borderRadius: 14 }} /> : null}
             <AdditionalCard order={order} />
             <BuyerCard order={order} phase={phase} onChat={() => router.push(`/chat/${order.roomId}` as never)} onCall={(k) => void sc.call(k)} calling={sc.calling} />
-            <ChecklistCard orderId={order.id} url={order.flow.checklistUrl} role="seller" roomId={order.roomId} editable={phase === "in_progress"} locked={phaseFinished(phase)} enabled={phase !== "assigned" && phase !== "advance" && phase !== "cancelled"} />
+            <ChecklistCard orderId={order.id} url={order.flow.checklistUrl} role="seller" roomId={order.roomId} editable={phase === "in_progress" || phase === "rework"} locked={phaseFinished(phase)} enabled={!phaseBeforePayment(phase) && phase !== "replacing" && phase !== "cancelled"} />
             <OrderQuoteCard order={order} />
             <OrderResultCard order={order} />
             <PaymentsCard orderId={order.id} url={order.flow.financialsUrl} role="seller" enabled={phase !== "assigned"} />

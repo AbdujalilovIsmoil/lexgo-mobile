@@ -1,7 +1,7 @@
 export type { ProOrder, OrderStage, StageTab, OrderStep, Milestone } from "./model/types";
 export type { SnapOption, QuoteSnap, PackSnap, ResultFile, OrderResult, OrderRating, AdditionalPay } from "./model/extraTypes";
 export { useProOrders, useProOrder, useOrderHistory, useOrderMilestones, orderKeys } from "./model/queries";
-export { acceptOrder, declineOrder, moveOrder } from "./api/orderApi";
+export { acceptOrder, declineOrder } from "./api/orderApi";
 export { useRequestAdditional } from "./model/writeQueries";
 export { useOrderLive } from "./model/useLive";
 export { stageOf, TABS, countStages, forSeller } from "./lib/stage";

@@ -58,12 +58,20 @@ describe("seller actions of the marketplace flow (TZ.md §5, §6, §9)", () => {
   it("nothing to start before the advance unlocked contact", () => {
     const a = actionsOf(order({ status: "accepted", payment_status: "pending", contact_unlocked: false, can_start: true, start_url: "/marketplace/orders/o1/start" }));
     expect(a.start).toBe(false);
-    expect(a.moves).toEqual([]);
   });
-  it("start_url replaces the plain start moves", () => {
-    const a = actionsOf(order({ status: "paid", payment_status: "paid", contact_unlocked: true, can_start: true, start_url: "/marketplace/orders/o1/start" }));
-    expect(a.start).toBe(true);
-    expect(a.moves).toEqual([]);
+  it("starts only with the backend's start action — no hand-made status moves", () => {
+    expect(actionsOf(order({ status: "paid", payment_status: "paid", contact_unlocked: true, can_start: true, start_url: "/marketplace/orders/o1/start" })).start).toBe(true);
+    expect(actionsOf(order({ status: "paid", payment_status: "paid", contact_unlocked: true, can_start: false })).start).toBe(false);
+  });
+  it("TZ §7: during the review stage the delivery time is set first and completion waits", () => {
+    const a = actionsOf(order({ status: "in_progress", work_phase: "reviewing", can_complete: true, complete_url: "/x" }));
+    expect(a.review).toBe(true);
+    expect(a.complete).toBe(false);
+    expect(actionsOf(order({ status: "in_progress", work_phase: "execution", can_complete: true })).review).toBe(false);
+  });
+  it("offers a cancellation request only when the backend allows it", () => {
+    expect(actionsOf(order({ status: "in_progress", can_request_cancellation: true })).cancelRequest).toBe(true);
+    expect(actionsOf(order({ status: "in_progress" })).cancelRequest).toBe(false);
   });
   it("can_complete=false wins over a complete_url", () => {
     expect(actionsOf(order({ status: "in_progress", can_complete: false, complete_url: "/x" })).complete).toBe(false);

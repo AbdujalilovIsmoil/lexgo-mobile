@@ -20,6 +20,11 @@ export const sl12: Messages["sl12"] = {
     released: "Released",
     pending: "Pending",
     payment_pending: "Awaiting payment",
+    cancellation_review: "Cancellation under review",
+    resolution_required: "With an operator",
+    refund_pending: "Refund in progress",
+    refunded: "Refunded",
+    expired: "Expired",
   },
   move: { started: "Start work", in_progress: "Mark in progress", result_ready: "Result is ready", delivered: "Deliver the result" },
   track: {
