@@ -3,7 +3,7 @@ export const mk3 = {
   channel: "Qanday bog'lanish qulay?",
   channelShort: "Bog'lanish usuli",
   timeShort: "Qulay vaqt",
-  channels: { chat: "Chat", audio: "Audio qo'ng'iroq", video: "Video qo'ng'iroq" },
+  channels: { chat: "Chat", audio: "Audio", video: "Video" },
   note: "Vaziyatingizni qisqacha yozing",
   notePh: "Masalan: ijara shartnomasi bo'yicha maslahat kerak",
   time: "Qulay vaqt",

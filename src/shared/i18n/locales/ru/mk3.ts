@@ -5,7 +5,7 @@ export const mk3: Messages["mk3"] = {
   channel: "Как удобнее связаться?",
   channelShort: "Способ связи",
   timeShort: "Удобное время",
-  channels: { chat: "Чат", audio: "Аудиозвонок", video: "Видеозвонок" },
+  channels: { chat: "Чат", audio: "Аудио", video: "Видео" },
   note: "Кратко опишите ситуацию",
   notePh: "Например: нужна консультация по договору аренды",
   time: "Удобное время",
