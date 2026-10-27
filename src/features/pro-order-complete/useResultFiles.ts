@@ -1,7 +1,6 @@
 import { useState } from "react";
-import { CHAT_EXTS, MAX_MB, uploadMessage, type PickedFile } from "@/entities/secure-chat";
+import { pickChecked, uploadMessage, type PickedFile } from "@/entities/secure-chat";
 import { fileIdFromPath, type ResultFile } from "@/entities/pro-order";
-import { pickDocuments, pickImages } from "@/shared/lib/upload";
 import { useT } from "@/shared/i18n";
 import { toast } from "@/shared/ui";
 
@@ -27,10 +26,8 @@ export function useResultFiles(roomId: string) {
     }
   };
   const pick = async (photo: boolean) => {
-    const res = photo ? await pickImages({ maxMb: MAX_MB, multiple: true }) : await pickDocuments({ maxMb: MAX_MB, exts: CHAT_EXTS, multiple: true });
-    if (!res) return;
-    if (res.error) return toast(t(res.error === "tooBig" ? "ntd.sellerV2.done.tooBig" : "ms3.badType", { mb: MAX_MB }), "err");
-    res.files.slice(0, 6).forEach((f) => void upload(f));
+    // Only what the server takes is uploaded (its types and per-type sizes, as in the chat); the rest is named in a toast.
+    (await pickChecked(photo ? "photo" : "file", t)).slice(0, 6).forEach((f) => void upload(f));
   };
   return { items, pick, remove: (key: string) => setItems((c) => c.filter((x) => x.key !== key)), reset: () => setItems([]), busy: items.some((x) => x.busy), files: items.flatMap((x) => (x.file ? [x.file] : [])) };
 }

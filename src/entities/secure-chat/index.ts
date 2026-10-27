@@ -13,7 +13,8 @@ export { callIdOf, previewText } from "./model/preview";
 export { maskContacts } from "./lib/maskContacts";
 export { fmtSize } from "./lib/fmtSize";
 
-export { MAX_MB, CHAT_EXTS, screenFiles } from "./lib/fileRules";
+export { screenFiles } from "./lib/fileRules";
+export { pickChecked } from "./lib/pickChecked";
 export { uploadRefusal, refusalText, REFUSAL_MS, type Refusal } from "./lib/refusal";
 export { roleKey } from "./lib/roleLabel";
 export { listStamp } from "./lib/stamp";
