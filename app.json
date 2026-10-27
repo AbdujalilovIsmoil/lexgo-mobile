@@ -5,7 +5,7 @@
     "version": "1.1.0",
     "scheme": "lexgo",
     "orientation": "portrait",
-    "icon": "./logos/app-store/lexgo-app-store-1024.png",
+    "icon": "./assets/icon.png",
     "userInterfaceStyle": "automatic",
     "ios": {
       "supportsTablet": true,
@@ -33,10 +33,8 @@
       "package": "org.cognilabs.lexgo",
       "allowBackup": false,
       "adaptiveIcon": {
-        "foregroundImage": "./logos/android/adaptive-foreground.png",
-        "backgroundImage": "./logos/android/adaptive-background.png",
-        "monochromeImage": "./logos/android/adaptive-monochrome.png",
-        "backgroundColor": "#0A4B40"
+        "backgroundColor": "#0B1F45",
+        "foregroundImage": "./assets/android-icon-foreground.png"
       },
       "predictiveBackGestureEnabled": false,
       "intentFilters": [
@@ -153,8 +151,8 @@
       [
         "expo-notifications",
         {
-          "icon": "./logos/android/notification-icon.png",
-          "color": "#14866E",
+          "icon": "./assets/android-icon-monochrome.png",
+          "color": "#3B82F6",
           "defaultChannel": "default",
           "enableBackgroundRemoteNotifications": true
         }

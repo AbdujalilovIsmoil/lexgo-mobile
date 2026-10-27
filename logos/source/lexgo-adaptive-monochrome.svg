@@ -1,8 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024"><defs><mask id="hole"><rect width="1024" height="1024" fill="black"/><path d="M346.4 280.4 L677.6 280.4 Q728.7 280.4 728.7 331.4 L728.7 524.7 C728.7 684.1 590 758.5 512 811.6 C434 758.5 295.3 684.1 295.3 524.7 L295.3 331.4 Q295.3 280.4 346.4 280.4 Z" fill="white"/>
-    <circle cx="512" cy="403.9" r="19.4" fill="black"/>
-    <rect x="500.5" y="403.9" width="23.1" height="242.9" rx="7.3" fill="black"/>
-    <rect x="366.9" y="443.3" width="290.2" height="18.2" rx="9.1" fill="black"/>
-    <path d="M375.4 458.5 L325.6 543.5 M375.4 458.5 L425.2 543.5 M648.6 458.5 L598.8 543.5 M648.6 458.5 L698.4 543.5" stroke="black" stroke-width="6.7" stroke-linecap="round" fill="none"/>
-    <path d="M319.5 543.5 A55.9 43.6 0 0 0 431.2 543.5 Z M592.8 543.5 A55.9 43.6 0 0 0 704.5 543.5 Z" fill="black"/>
-    <rect x="433.1" y="640.7" width="157.9" height="24.3" rx="8.5" fill="black"/>
-    <rect x="463.4" y="627.3" width="97.2" height="18.2" rx="6.1" fill="black"/></mask></defs><rect width="1024" height="1024" fill="#FFFFFF" mask="url(#hole)"/></svg>
