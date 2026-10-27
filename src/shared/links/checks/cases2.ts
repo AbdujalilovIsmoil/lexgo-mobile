@@ -40,4 +40,8 @@ export const MORE_CASES: Case[] = [
   ["experience reviewed (notification name), seller", "seller", ev("marketplace_experience_reviewed", { experience_id: "e1" }), { href: "/pro/experience" }],
   ["experience reviewed, client", "client", ev("marketplace.experience_reviewed", { experience_id: "e1" }), { kind: "none" }],
   ["experience reviewed in a notification's data", "seller", { data: { event: "marketplace.experience_reviewed", experience_id: "e1" } }, { href: "/pro/experience" }],
+  // TZ.md §10: a rule acceptance opens the seller's services, never an order without an id.
+  ["rule accepted, seller", "seller", ev("marketplace.rule_accepted", { rule_id: "r1" }), { href: "/pro/services", fallback: "/pro/services" }],
+  ["rule accepted (underscore), seller", "seller", ev("marketplace_rule_accepted"), { href: "/pro/services" }],
+  ["rule accepted, client", "client", ev("marketplace.rule_accepted", { rule_id: "r1" }), { kind: "none" }],
 ];

@@ -1,60 +1,37 @@
-import { http } from "@/shared/api";
-import { asArr, asDict, asStr, uzs } from "@/shared/lib/json";
+import { ApiError, http } from "@/shared/api";
+import { normConfig } from "./normConfig";
+import type { ConfigPatch, ServiceConfig } from "./types";
 
-export type ConfigPatch = { enabled?: boolean; selectedPrice?: number; negotiationAllowed?: boolean };
+const url = (serviceId: string) => `/marketplace/me/services/${encodeURIComponent(serviceId)}/configuration`;
 
-export type ServiceConfig = {
-  serviceId: string;
-  enabled: boolean | null;
-  selectedPrice: number;
-  negotiationAllowed: boolean | null;
-  priceExplanation: string;
-  priceExplanationLines: string[];
-};
-
-const str = (v: unknown): string => asStr(v).trim();
-const bool = (v: unknown): boolean | null => (typeof v === "boolean" ? v : null);
-const line = (v: unknown): string => (typeof v === "string" || typeof v === "number" ? String(v).trim() : str(asDict(v).text ?? asDict(v).label ?? asDict(v).message ?? asDict(v).title));
-
-// Body exactly like the web: only the fields that were given; the price is rounded.
-export function configBody(p: ConfigPatch): Record<string, boolean | number> {
-  const b: Record<string, boolean | number> = {};
+// Body exactly like the web: only the fields that were given; the price is rounded, rule ids trimmed and unique.
+export function configBody(p: ConfigPatch): Record<string, boolean | number | string[]> {
+  const b: Record<string, boolean | number | string[]> = {};
   if (typeof p.enabled === "boolean") b.enabled = p.enabled;
   if (typeof p.selectedPrice === "number" && Number.isFinite(p.selectedPrice)) b.selected_price = Math.round(p.selectedPrice);
   if (typeof p.negotiationAllowed === "boolean") b.negotiation_allowed = p.negotiationAllowed;
+  if (Array.isArray(p.selectedRuleIds)) b.selected_rule_ids = [...new Set(p.selectedRuleIds.map((x) => x.trim()).filter(Boolean))];
   return b;
 }
 
-// price_explanation is a string, a list of strings/objects, or { text|message|summary|explanation, lines|items|steps|breakdown }.
-function normExplanation(v: unknown): { text: string; lines: string[] } {
-  if (typeof v === "string") return { text: v.trim(), lines: [] };
-  if (Array.isArray(v)) {
-    const lines = v.map(line).filter(Boolean);
-    return { text: lines.join(" "), lines };
-  }
-  const d = asDict(v);
-  const src = [d.lines, d.items, d.steps, d.breakdown].find(Array.isArray);
-  const lines = asArr(src).map(line).filter(Boolean);
-  return { text: str(d.text ?? d.message ?? d.summary ?? d.explanation) || lines.join(" "), lines };
-}
+// The picks to send back: only rules still selectable (a removed one would be refused); unknown when the answer listed none.
+export const selectedToSend = (c: ServiceConfig): string[] | undefined =>
+  c.selectedRuleIds && c.selectableRules.length ? c.selectedRuleIds.filter((id) => c.selectableRules.some((r) => r.id === id)) : undefined;
 
-// PATCH answer: the config may sit under configuration | config | seller_service, or at the top level.
-export function normConfig(raw: unknown, serviceId = ""): ServiceConfig {
-  const a = asDict(raw);
-  const inner = asDict(a.configuration ?? a.config ?? a.seller_service);
-  const n = Object.keys(inner).length ? inner : a;
-  const ex = normExplanation(a.price_explanation ?? n.price_explanation);
-  return {
-    serviceId: str(n.service_id ?? a.service_id) || serviceId,
-    enabled: bool(n.enabled ?? n.is_enabled ?? n.is_active),
-    selectedPrice: uzs(n, "selected_price", "configured_price", "price"),
-    negotiationAllowed: bool(n.negotiation_allowed),
-    priceExplanation: ex.text,
-    priceExplanationLines: ex.lines,
-  };
-}
+// Switching on sends the whole configuration in one PATCH (TZ.md §5.3): enabled, the price, negotiation and the rule picks.
+export const enableBody = (c: ServiceConfig): ConfigPatch => ({
+  enabled: true,
+  selectedPrice: c.selectedPrice > 0 ? c.selectedPrice : undefined,
+  negotiationAllowed: c.negotiationAllowed ?? undefined,
+  selectedRuleIds: selectedToSend(c),
+});
 
-// PATCH /marketplace/me/services/{id}/configuration
-export async function patchServiceConfig(serviceId: string, p: ConfigPatch): Promise<ServiceConfig> {
-  return normConfig(await http(`/marketplace/me/services/${encodeURIComponent(serviceId)}/configuration`, { method: "PATCH", body: configBody(p) }), serviceId);
-}
+// No configuration endpoint for this service (an older backend: 404 without a code, 405, 501): the status endpoint alone is used.
+export const configUnsupported = (e: unknown): boolean => e instanceof ApiError && (e.status === 405 || e.status === 501 || (e.status === 404 && !e.code));
+
+// GET /marketplace/me/services/{id}/configuration — read only through useServiceConfiguration (one reader).
+export const getServiceConfig = async (serviceId: string): Promise<ServiceConfig> => normConfig(await http(url(serviceId)), serviceId);
+
+// PATCH the same URL; the answer is the same contract, so the caller puts it straight into the cache.
+export const patchServiceConfig = async (serviceId: string, p: ConfigPatch): Promise<ServiceConfig> =>
+  normConfig(await http(url(serviceId), { method: "PATCH", body: configBody(p) }), serviceId);

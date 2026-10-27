@@ -17,7 +17,7 @@ type Props = {
 };
 
 // A lean service card: name and category, the quick on/off switch, then one line with the price and the few facts worth a glance
-// (listed or not, promoted, price capped). Notes, the corridor and the reasons live in the sheet that opens on tap.
+// (listed or not, waiting for the rules, promoted, price capped). Notes, the corridor and the reasons live in the sheet that opens on tap.
 export function ServiceRow({ item, onPress, onToggle, toggleDisabled, waiting, extra }: Props) {
   const { t } = useT();
   const c = useColors();
@@ -27,7 +27,7 @@ export function ServiceRow({ item, onPress, onToggle, toggleDisabled, waiting, e
   const on = item.status === "active";
   const sub = [item.categoryTitle, item.subcategory].filter(Boolean).join(" · ") || t("proSvc.card.service");
   return (
-    <Card onPress={onPress} accessibilityRole="button" accessibilityLabel={t("proSvc.rowA11y", { name: item.name, status, price })} style={s.card}>
+    <Card onPress={onPress} accessibilityRole="button" accessibilityLabel={[t("proSvc.rowA11y", { name: item.name, status, price }), item.rulesPending ? t("svcRules.rulesLockReason") : ""].filter(Boolean).join(". ")} style={s.card}>
       <View style={s.head}>
         <View style={s.col}>
           <Text variant="body" weight="bold" numberOfLines={2}>{item.name || "—"}</Text>
@@ -40,6 +40,7 @@ export function ServiceRow({ item, onPress, onToggle, toggleDisabled, waiting, e
         <View style={s.facts}>
           {item.status !== "active" ? <Pill label={status} tone={item.status === "paused" ? "warn" : "gray"} small /> : null}
           {on ? <Icon name={item.visible ? "eye" : "eye-off"} size={16} color={item.visible ? c.ok : c.warn} /> : null}
+          {item.rulesPending ? <Icon name="lock" size={16} color={c.warn} /> : null}
           {isCapped(item) ? <Icon name="alert-triangle" size={16} color={c.warn} /> : null}
           {item.promotion ? <Pill label={t("proSvc.card.promotedDays", { days: item.promotion.daysLeft })} tone="cy" icon="radio" small /> : waiting ? <Icon name="clock" size={16} color={c.warn} /> : null}
         </View>

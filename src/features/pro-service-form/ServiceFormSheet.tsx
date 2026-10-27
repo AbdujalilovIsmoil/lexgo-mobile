@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { useState, type ReactNode } from "react";
 import { StyleSheet, View } from "react-native";
 import type { ProSeller, ProService } from "@/entities/pro-service";
 import { NOTE_MAX, serviceErrorKey } from "@/entities/pro-service";
+import type { RulesTarget } from "@/entities/service-rules";
 import { useColors } from "@/shared/theme";
 import { useInsets } from "@/shared/lib/insets";
 import { useSheetReset } from "@/shared/lib/useSheetReset";
@@ -19,16 +20,17 @@ import { StatusCards } from "./StatusCards";
 import { PreviewSheet } from "./preview/PreviewSheet";
 import { useServiceForm } from "./useServiceForm";
 
-type Props = { visible: boolean; onClose: () => void; item: ProService | null; taken: Set<string>; sellerId: string; region: string; yurist: boolean; seller: ProSeller; services?: ProService[] };
+// `onRules` opens the rules sheet of the picked service; `overlay` is where the page puts that sheet while this form is on top.
+type Props = { visible: boolean; onClose: () => void; item: ProService | null; taken: Set<string>; sellerId: string; region: string; yurist: boolean; seller: ProSeller; services?: ProService[]; onRules?: (t: RulesTarget) => void; overlay?: ReactNode };
 
 // Add or edit one service, laid out as on the web: Xizmat, Narx, Tajriba izohi, Holat, the price policy and a sticky action bar.
 // Fields that need a service stay visible but disabled until one is picked. The price is checked against the server's corridor
-// before and after sending (422 text is shown).
-export function ServiceFormSheet({ visible, onClose, item, taken, sellerId, region, yurist, seller, services = [] }: Props) {
+// before and after sending (422 text is shown). "Active" waits for the service's rules: a note and the rules button say so.
+export function ServiceFormSheet({ visible, onClose, item, taken, sellerId, region, yurist, seller, services = [], onRules, overlay }: Props) {
   const { t } = useT();
   const c = useColors();
   const insets = useInsets();
-  const f = useServiceForm({ visible, item, sellerId, region, onDone: onClose });
+  const f = useServiceForm({ visible, item, sellerId, region, onDone: onClose, onRules });
   const [preview, setPreview] = useState(false);
   useSheetReset(visible, () => setPreview(false));
   const band = f.band;
@@ -57,12 +59,18 @@ export function ServiceFormSheet({ visible, onClose, item, taken, sellerId, regi
           </Section>
           <Section icon="play" label={t("proSvc.form.status")} muted={none}>
             <StatusCards value={f.values.status} onChange={(v) => f.set("status", v)} disabled={none} />
+            {f.locked ? (
+              <View style={s.lock}>
+                <Notice tone="warn" icon="lock" text={t("svcRules.rulesLockReason")} />
+                <Button title={t("svcRules.rulesLockAction")} variant="soft" size="sm" onPress={f.openRules} />
+              </View>
+            ) : null}
           </Section>
           <View style={none ? s.dim : undefined}>
             <PolicyCheck checked={f.agreed} onChange={f.setAgreed} error={f.policyMissing} disabled={none} />
           </View>
           {none ? <Text variant="caption" tone="gray2" center>{t("proSvc.formUi.pickFirst")}</Text> : null}
-          {e && e.kind !== "range" ? <Notice tone="err" text={text} /> : null}
+          {e && e.kind !== "range" && !(e.kind === "rules" && f.locked) ? <Notice tone="err" text={text} /> : null}
         </SheetScroll>
         <View style={[s.bar, { borderTopColor: c.line, backgroundColor: c.surface, paddingBottom: insets.bottom + 10 }]}>
           <Button title={t("proSvc.preview.open")} icon="eye" variant="soft" size="sm" full onPress={() => setPreview(true)} />
@@ -73,6 +81,7 @@ export function ServiceFormSheet({ visible, onClose, item, taken, sellerId, regi
         </View>
         {/* Inside the form sheet, not beside it: a native Modal can only be presented from the one that is already on screen. */}
         <PreviewSheet visible={visible && preview} onClose={() => setPreview(false)} subtitle={title} seller={seller} sellerId={sellerId} region={region} items={services} editingId={item?.id ?? ""} picked={picked} price={f.n} note={f.values.note} />
+        {overlay}
       </BottomSheet>
     </>
   );
@@ -81,6 +90,7 @@ export function ServiceFormSheet({ visible, onClose, item, taken, sellerId, regi
 const s = StyleSheet.create({
   body: { paddingTop: 12, paddingBottom: 20, gap: 22 },
   note: { minHeight: 120, textAlignVertical: "top" },
+  lock: { gap: 8 },
   dim: { opacity: 0.55 },
   bar: { paddingHorizontal: 18, paddingTop: 10, gap: 10, borderTopWidth: 1 },
   pair: { flexDirection: "row", gap: 10 },

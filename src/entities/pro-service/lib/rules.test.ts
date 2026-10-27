@@ -2,7 +2,7 @@ import { bandLine, canEdit, canPromote, countBy, filterServices, hiddenReasons, 
 import type { ProService } from "../model/types";
 
 const band = { recommended: 100, min: 70, max: 100, base: null, currency: "UZS", modifiers: null };
-const svc = (o: Partial<ProService> = {}): ProService => ({ id: "1", name: "Divorce", categoryTitle: "Family", subcategory: "", catalogPrice: 100, catalogActive: true, advokatRequired: false, status: "active", selectedPrice: 0, effectivePrice: 100, priceCapped: false, note: "", visible: true, promotion: null, profileBoost: null, limits: band, ...o });
+const svc = (o: Partial<ProService> = {}): ProService => ({ id: "1", name: "Divorce", categoryTitle: "Family", subcategory: "", catalogPrice: 100, catalogActive: true, advokatRequired: false, status: "active", selectedPrice: 0, effectivePrice: 100, priceCapped: false, note: "", visible: true, promotion: null, profileBoost: null, limits: band, negotiationAllowed: null, rulesPending: false, ...o });
 const promo = { id: "p", serviceId: "1", packageTitle: "", daysLeft: 3, endsAt: "" };
 
 describe("seller service price (TZ 5.1)", () => {

@@ -2,9 +2,17 @@ import { asArr, asDict, asNum, asStr, uzs } from "@/shared/lib/json";
 import type { Promo, ProSeller, ProService, ProServices, ServiceStatus } from "../model/types";
 import { normBand } from "./normBand";
 
+// "Switched on, waiting for the rules" (web RULES_PENDING): the service takes no orders, so it reads as paused.
+const RULES_PENDING = /^(rules?_pending|pending_rules?|rules?_acceptance_required)$/;
+
 const statusOf = (v: unknown): ServiceStatus => {
   const s = asStr(v).trim().toLowerCase();
-  return s === "active" || s === "paused" ? s : "inactive";
+  return s === "active" || s === "paused" ? s : RULES_PENDING.test(s) ? "paused" : "inactive";
+};
+
+const rulesPendingOf = (d: Record<string, unknown>): boolean => {
+  const r = asStr(d.rules_status ?? d.rules_state).trim().toLowerCase();
+  return d.rules_pending === true || d.rules_accepted === false || r === "pending" || RULES_PENDING.test(r) || RULES_PENDING.test(asStr(d.status).trim().toLowerCase());
 };
 
 function normPromo(v: unknown): Promo | null {
@@ -34,6 +42,8 @@ export function normService(v: unknown): ProService {
     promotion: promo && promo.serviceId === id ? promo : null,
     profileBoost: promo && !promo.serviceId ? promo : null,
     limits: normBand(d.pricing_limits),
+    negotiationAllowed: typeof d.negotiation_allowed === "boolean" ? d.negotiation_allowed : null,
+    rulesPending: rulesPendingOf(d),
   };
 }
 

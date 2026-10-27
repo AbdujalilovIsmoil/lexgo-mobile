@@ -1,37 +1,22 @@
-import { getPolicies, http } from "@/shared/api";
-import { asDict, asNum, asStr, uzs } from "@/shared/lib/json";
-import { normModifiers } from "./normBand";
+import { http } from "@/shared/api";
+import { asDict, uzs } from "@/shared/lib/json";
+import { normBand, normModifiers } from "./normBand";
 import type { PriceBand } from "../model/types";
 
-// Platform corridor (percent of the recommended price); 70–100 unless admins changed it.
-export async function getPercents(): Promise<{ min: number; max: number }> {
-  try {
-    const raw = asDict((await getPolicies()).marketplace_pricing);
-    const min = asNum(raw.default_min_percent, 70);
-    const max = asNum(raw.default_max_percent, 100);
-    return min > 0 && min <= max ? { min, max } : { min: 70, max: 100 };
-  } catch {
-    return { min: 70, max: 100 };
-  }
-}
-
-// GET /pricing/quote for this seller → the corridor for a service not added yet.
-// The server's own limits win; the percent corridor is the fallback (law-main fetchPriceBand).
+// GET /pricing/quote for this seller → the corridor for a service not added yet: the server's own pricing_limits only, completed
+// with the quote's total, base price and factors. Without limits the corridor stays unknown and the server checks the price on
+// save (its 422 carries the limits) — no local formula.
 export async function quoteBand(serviceId: string, sellerId: string, region: string): Promise<PriceBand | null> {
   const qs = new URLSearchParams({ service_id: serviceId, apply_referral: "false", region });
   if (sellerId) qs.set("seller_user_id", sellerId);
-  const [raw, pct] = await Promise.all([http(`/pricing/quote?${qs}`), getPercents()]);
-  const q = asDict(raw);
-  const total = uzs(q, "total_amount");
-  if (!total) return null;
+  const q = asDict(await http(`/pricing/quote?${qs}`));
   const lim = asDict(q.pricing_limits);
-  const maxL = lim.max_allowed != null ? uzs(lim, "max_allowed") : 0;
+  const band = normBand(lim);
+  if (!band) return null;
   return {
-    recommended: uzs(lim, "recommended_price", "recommended") || total,
-    min: lim.min_allowed != null ? uzs(lim, "min_allowed") : Math.floor((total * pct.min) / 100),
-    max: maxL || Math.floor((total * pct.max) / 100),
-    base: uzs(q, "base_amount", "base_price") || null,
-    currency: asStr(q.currency) || "UZS",
-    modifiers: Array.isArray(q.modifiers) ? normModifiers(q.modifiers) : null,
+    ...band,
+    recommended: uzs(lim, "recommended_price", "recommended") || uzs(q, "total_amount") || band.recommended,
+    base: band.base ?? (uzs(q, "base_amount", "base_price") || null),
+    modifiers: band.modifiers ?? (Array.isArray(q.modifiers) ? normModifiers(q.modifiers) : null),
   };
 }

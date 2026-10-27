@@ -3,8 +3,8 @@ import { RefreshControl, ScrollView } from "react-native";
 import { useRouter } from "expo-router";
 import { usePending, usePromotionLive } from "@/entities/promotion";
 import { ServiceRow, filterServices, useProServices, useServiceStatus, type ProSeller, type ProService, type ServiceFilter, type ServiceStatus } from "@/entities/pro-service";
-import { ConfigPanel } from "@/entities/pro-service/config";
-import { RulesBanner, useRulesGate } from "@/entities/service-rules";
+import { ConfigPanel, useServiceConfiguration } from "@/entities/pro-service/config";
+import { RulesBanner, pendingCount, useRulesGate, useRulesLive, useServiceRules } from "@/entities/service-rules";
 import { useSession } from "@/entities/session";
 import { ServiceFormSheet } from "@/features/pro-service-form";
 import { ServiceSheet } from "@/features/pro-service-actions";
@@ -22,17 +22,18 @@ type Sheet = { kind: "view" | "form"; item: ProService | null; open: boolean };
 type Props = { packages?: ReactNode; aboveList?: ReactNode };
 
 // The seller's services (GET/POST/PATCH/DELETE /lawyers/me/services/manage): list, add / edit with the price corridor, status, promote.
-// Service rules (accept them before a service can be switched on) and the marketplace configuration (negotiation, price explanation) plug into the sheet slots.
+// Each service's marketplace configuration (TZ.md §5.3: its rules, price limits, growth requirements, negotiation) shows in its sheet.
+// Switching a service on checks that service's rules: missing ones open in the rules sheet, drawn inside whichever sheet is on top.
 export default function ProServicesPage({ packages, aboveList }: Props = {}) {
   const { t } = useT();
   const insets = useInsets();
   const [tab, setTab] = useServicesTab();
   const router = useRouter();
   const q = useProServices();
-  const gate = useRulesGate();
-  const statusChange = useServiceStatus();
-  // The card switch: on needs the rules accepted (it opens them instead), off pauses.
-  const toggle = (x: ProService, next: ServiceStatus) => (next === "active" && gate.blocked ? gate.open() : statusChange.mutate({ id: x.id, status: next }));
+  const rules = useRulesGate();
+  useRulesLive();
+  const statusChange = useServiceStatus(rules.open);
+  const toggle = (x: ProService, next: ServiceStatus) => statusChange.mutate({ id: x.id, status: next });
   const uid = useSession()?.user.id ?? "";
   const pending = usePending(uid).pending;
   const waitingFor = new Set(pending.map((p) => p.target));
@@ -43,15 +44,19 @@ export default function ProServicesPage({ packages, aboveList }: Props = {}) {
   const close = () => setSheet((x) => ({ ...x, open: false }));
   const d = q.data;
   const refetch = q.refetch;
-  const seen = useRef(gate.pending);
+  const rulesLeft = pendingCount(useServiceRules().data);
+  const seen = useRef(rulesLeft);
   useEffect(() => {
-    if (seen.current === gate.pending) return;
-    seen.current = gate.pending;
+    if (seen.current === rulesLeft) return;
+    seen.current = rulesLeft;
     void refetch(); // services that were switched on come back on their own once the rules are accepted
-  }, [gate.pending, refetch]);
+  }, [rulesLeft, refetch]);
   const shown = useMemo(() => filterServices(d?.items ?? [], filter, search), [d, filter, search]);
   // The sheet shows the live service of the list (not the copy taken when it opened), so a status change moves its switch at once.
   const viewing = sheet.open && sheet.kind === "view" ? ((d?.items ?? []).find((x) => x.id === sheet.item?.id) ?? sheet.item) : null;
+  const cfg = useServiceConfiguration(viewing?.id ?? "").data;
+  const locked = viewing ? (cfg ? cfg.rulesPending : viewing.rulesPending) : false;
+  const openRules = (x: ProService) => rules.open({ serviceId: x.id, focus: cfg?.missingRuleIds ?? [], extra: cfg?.requiredRules });
   const open = (kind: "view" | "form", item: ProService | null) => setSheet({ kind, item, open: true });
   const boost = d?.items.find((x) => x.profileBoost)?.profileBoost ?? null;
   const verified = d?.verified ?? true;
@@ -59,8 +64,10 @@ export default function ProServicesPage({ packages, aboveList }: Props = {}) {
   const none = !q.isLoading && !q.isError && (d?.items.length ?? 0) === 0;
   const tabs = <ServicesTabs value={tab} onChange={setTab} />;
   const header = (toolbar: boolean) => (
-    <ServicesHeader before={tabs} aboveList={aboveList} rules={<RulesBanner onOpen={gate.open} />} items={d?.items ?? []} loading={q.isLoading} filter={filter} onFilter={setFilter} search={search} onSearch={setSearch} verified={verified} boostDays={boost ? boost.daysLeft : null} waiting={pending.length} toolbar={toolbar} onAdd={() => open("form", null)} onPromoteProfile={() => promote()} />
+    <ServicesHeader before={tabs} aboveList={aboveList} rules={<RulesBanner onOpen={() => rules.open()} />} items={d?.items ?? []} loading={q.isLoading} filter={filter} onFilter={setFilter} search={search} onSearch={setSearch} verified={verified} boostDays={boost ? boost.daysLeft : null} waiting={pending.length} toolbar={toolbar} onAdd={() => open("form", null)} onPromoteProfile={() => promote()} />
   );
+  // A native modal is presented only from the one on screen: the rules sheet goes inside the open sheet, else on the page.
+  const place = sheet.open ? sheet.kind : "page";
   return (
     <AdminPage title={t("proSvc.title")} right={<IconButton icon="refresh-cw" label={t("proSvc.refresh")} onPress={() => void q.refetch()} />}>
       {tab === "packages" ? (
@@ -83,9 +90,21 @@ export default function ProServicesPage({ packages, aboveList }: Props = {}) {
           header={header(true)}
         />
       )}
-      <ServiceSheet item={viewing} verified={verified} waiting={sheet.item ? waitingFor.has(`service:${sheet.item.id}`) : false} lock={gate.blocked ? { reason: t("svcRules.rulesLockReason"), actionLabel: t("svcRules.rulesLockAction"), onOpen: () => { close(); afterSheet(gate.open); } } : null} extra={(x) => <ConfigPanel serviceId={x.id} status={x.status} negotiationAllowed={null} onSaved={() => void refetch()} />} onClose={close} onEdit={(s) => { close(); afterSheet(() => open("form", s)); }} onPromote={(s) => { close(); afterSheet(() => promote(s.id)); }} />
-      <ServiceFormSheet visible={sheet.open && sheet.kind === "form"} onClose={close} item={sheet.kind === "form" ? sheet.item : null} taken={new Set((d?.items ?? []).map((x) => x.id))} sellerId={d?.sellerId ?? ""} region={d?.region ?? ""} yurist={d?.sellerType === "yurist"} seller={d?.seller ?? BLANK} services={d?.items ?? []} />
-      {gate.sheet}
+      <ServiceSheet
+        item={viewing}
+        verified={verified}
+        waiting={sheet.item ? waitingFor.has(`service:${sheet.item.id}`) : false}
+        lock={viewing && locked ? { reason: t("svcRules.rulesLockReason"), actionLabel: t("svcRules.rulesLockAction"), onOpen: () => openRules(viewing) } : null}
+        onStatus={toggle}
+        statusBusy={statusChange.isPending}
+        extra={(x) => <ConfigPanel serviceId={x.id} status={x.status} onRules={(focus, extra) => rules.open({ serviceId: x.id, focus, extra })} />}
+        overlay={place === "view" ? rules.sheet : null}
+        onClose={close}
+        onEdit={(s) => { close(); afterSheet(() => open("form", s)); }}
+        onPromote={(s) => { close(); afterSheet(() => promote(s.id)); }}
+      />
+      <ServiceFormSheet visible={sheet.open && sheet.kind === "form"} onClose={close} item={sheet.kind === "form" ? sheet.item : null} taken={new Set((d?.items ?? []).map((x) => x.id))} sellerId={d?.sellerId ?? ""} region={d?.region ?? ""} yurist={d?.sellerType === "yurist"} seller={d?.seller ?? BLANK} services={d?.items ?? []} onRules={rules.open} overlay={place === "form" ? rules.sheet : null} />
+      {place === "page" ? rules.sheet : null}
     </AdminPage>
   );
 }

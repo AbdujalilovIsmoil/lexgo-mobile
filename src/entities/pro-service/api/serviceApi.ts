@@ -4,7 +4,15 @@ import type { ProServices, ServiceInput, ServiceStatus } from "../model/types";
 
 const enc = encodeURIComponent;
 const BASE = "/lawyers/me/services";
-const body = (i: ServiceInput) => ({ selected_price: Math.max(0, Math.round(i.selectedPrice || 0)), experience_note: i.note.trim().slice(0, 2000), status: i.status });
+// The request model defaults a missing negotiation_allowed to false (and the rule picks to none), so the known choices always go
+// back with an edit; unknown ones are left out.
+const body = (i: ServiceInput) => ({
+  selected_price: Math.max(0, Math.round(i.selectedPrice || 0)),
+  experience_note: i.note.trim().slice(0, 2000),
+  status: i.status,
+  ...(typeof i.negotiationAllowed === "boolean" ? { negotiation_allowed: i.negotiationAllowed } : {}),
+  ...(i.selectedRuleIds ? { selected_rule_ids: i.selectedRuleIds } : {}),
+});
 
 // GET …/manage?include_inactive=true — every service of the seller with its corridor and visibility.
 export const listServices = async (): Promise<ProServices> => normServices(await http(`${BASE}/manage?include_inactive=true`));

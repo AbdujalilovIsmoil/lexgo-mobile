@@ -28,6 +28,8 @@ export type ProService = {
   promotion: Promo | null; // boosts this service
   profileBoost: Promo | null; // boosts the whole profile
   limits: PriceBand | null;
+  negotiationAllowed: boolean | null; // null = the list did not say
+  rulesPending: boolean; // switched on, but held back until the seller accepts the service rules
 };
 
 // The seller as clients see them (profile header of the live preview): every number may be unknown.
@@ -58,5 +60,6 @@ export type ProServices = {
   accountStatus: string;
 };
 
-export type ServiceInput = { serviceId: string; selectedPrice: number; note: string; status: ServiceStatus };
+// negotiationAllowed / selectedRuleIds: the current marketplace choices, sent back so an edit keeps them (null = unknown, not sent).
+export type ServiceInput = { serviceId: string; selectedPrice: number; note: string; status: ServiceStatus; negotiationAllowed: boolean | null; selectedRuleIds: string[] | null };
 export const NOTE_MAX = 2000;

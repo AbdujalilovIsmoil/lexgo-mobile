@@ -29,6 +29,8 @@ export function routesMore(s: Subject, v: Viewer): Target | null {
       return seller ? tg("/pro/calendar", "/pro/calendar", "calendar") : null;
     case "promotion":
       return seller ? tg("/pro/promotions", "/pro/promotions", "promotion") : null;
+    case "service":
+      return seller ? tg("/pro/services", "/pro/services", "list") : null;
     case "registration":
       return seller ? tg("/pro/onboarding", "/pro/onboarding", "registration") : null;
     case "experience":

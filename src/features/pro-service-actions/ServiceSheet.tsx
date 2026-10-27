@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 import { StyleSheet, View } from "react-native";
-import { SERVICE_STATUSES, canEdit, canPromote, useRemoveService, useServiceStatus, type ProService, type ServiceStatus } from "@/entities/pro-service";
+import { SERVICE_STATUSES, canEdit, canPromote, useRemoveService, type ProService, type ServiceStatus } from "@/entities/pro-service";
 import { BottomSheet, Button, Icon, PressableScale, Pill, Segmented, SheetScroll, Text, confirmDialog, type IconName } from "@/shared/ui";
 import { Notice } from "@/shared/ui/sel";
 import { useKept } from "@/shared/lib/useKept";
@@ -11,7 +11,9 @@ import { PriceGauge } from "./PriceGauge";
 import { VisibilityCard } from "./VisibilityCard";
 
 // Integration slots (texts come from the caller): `banner` sits above the status control (e.g. a rules banner), `extra` under the note
-// (marketplace configuration: negotiation, price explanation, requirements), `lock` blocks switching a service to "active".
+// (marketplace configuration: rules, price limits, requirements, negotiation), `lock` holds back switching the service to "active"
+// (choosing it opens the rules instead), `overlay` is a sheet shown on top of this one (the rules sheet: a native modal is presented
+// only from the one on screen). The status itself changes through `onStatus` (the page's switch, which checks the rules).
 export type SheetLock = { reason: string; actionLabel: string; onOpen: () => void };
 type Props = {
   item: ProService | null;
@@ -20,6 +22,9 @@ type Props = {
   banner?: ReactNode;
   extra?: (item: ProService) => ReactNode;
   lock?: SheetLock | null;
+  overlay?: ReactNode;
+  onStatus: (item: ProService, next: ServiceStatus) => void;
+  statusBusy?: boolean;
   onClose: () => void;
   onEdit: (s: ProService) => void;
   onPromote: (s: ProService) => void;
@@ -37,14 +42,17 @@ function RoundAction({ icon, label, onPress, disabled, danger }: { icon: IconNam
 
 // One service in detail, as blocks: the status switch, the price on its corridor bar, the "why is it (not) listed" checklist, the note,
 // the marketplace settings (slot), and a sticky bar with Edit (primary), Promote and Remove (round icon buttons).
-export function ServiceSheet({ item: current, verified, waiting = false, banner, extra, lock, onClose, onEdit, onPromote }: Props) {
+export function ServiceSheet({ item: current, verified, waiting = false, banner, extra, lock, overlay, onStatus, statusBusy, onClose, onEdit, onPromote }: Props) {
   const { t } = useT();
   const c = useColors();
   const insets = useInsets();
   const item = useKept(current);
-  const status = useServiceStatus();
   const remove = useRemoveService();
-  const change = (next: ServiceStatus) => item && next !== item.status && !(lock && next === "active") && status.mutate({ id: item.id, status: next });
+  const change = (next: ServiceStatus) => {
+    if (!item || next === item.status || statusBusy) return;
+    if (lock && next === "active") return lock.onOpen();
+    onStatus(item, next);
+  };
   const ask = () =>
     item &&
     confirmDialog({
@@ -103,6 +111,7 @@ export function ServiceSheet({ item: current, verified, waiting = false, banner,
           <RoundAction icon="trash-2" label={t("proSvc.card.remove")} danger disabled={remove.isPending} onPress={ask} />
         </View>
       ) : null}
+      {overlay}
     </BottomSheet>
   );
 }

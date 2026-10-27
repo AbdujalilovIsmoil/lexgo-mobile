@@ -1,18 +1,26 @@
-import { useCallback, useMemo, useState, type ReactNode } from "react";
+import { useCallback, useState, type ReactNode } from "react";
+import { useQueryClient } from "@tanstack/react-query";
 import { RulesSheet } from "../ui/RulesSheet";
-import { pendingCount } from "../lib/normalize";
-import { useServiceRules } from "./queries";
+import { refreshRules } from "./queries";
+import type { ServiceRule } from "./types";
 
-export type RulesGate = { pending: number; blocked: boolean; loading: boolean; error: boolean; open: () => void; sheet: ReactNode };
+// Which rules the sheet shows: one service's (`focus` = the missing ones a configuration or a 409 named, `extra` = rules the
+// list may not carry), or every rule of the seller when no service is given.
+export type RulesTarget = { serviceId?: string; focus?: string[]; extra?: ServiceRule[] };
+export type RulesGate = { open: (t?: RulesTarget) => void; sheet: ReactNode };
 
-// For a screen that activates services: `blocked` while rules are pending (use i18n svcRules.rulesLockReason /
-// rulesLockAction on the disabled button), `open()` shows the sheet, `sheet` must be rendered once. On a load
-// error `blocked` stays false: the server re-checks when the service is switched on (web behaviour).
-export function useRulesGate(serviceId?: string): RulesGate {
-  const q = useServiceRules(serviceId);
-  const [visible, setVisible] = useState(false);
-  const open = useCallback(() => setVisible(true), []);
-  const pending = pendingCount(q.data);
-  const sheet = useMemo(() => <RulesSheet visible={visible} onClose={() => setVisible(false)} serviceId={serviceId} />, [visible, serviceId]);
-  return { pending, blocked: pending > 0, loading: q.isPending, error: q.isError, open, sheet };
+// One rules sheet for a screen. Render `sheet` once, inside the sheet that is on top (a native modal is presented only from
+// the one on screen). Opening it for named rules reads the rules and configurations again: a refusal means they are stale.
+export function useRulesGate(): RulesGate {
+  const qc = useQueryClient();
+  const [s, setS] = useState<RulesTarget & { visible: boolean }>({ visible: false });
+  const open = useCallback(
+    (t: RulesTarget = {}) => {
+      if (t.focus?.length) refreshRules(qc);
+      setS({ ...t, visible: true });
+    },
+    [qc],
+  );
+  const sheet = <RulesSheet visible={s.visible} onClose={() => setS((x) => ({ ...x, visible: false }))} serviceId={s.serviceId} focus={s.focus} extra={s.extra} />;
+  return { open, sheet };
 }

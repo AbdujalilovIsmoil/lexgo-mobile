@@ -5,7 +5,7 @@ import { Text } from "@/shared/ui";
 
 type Props = { text: string; lines?: string[] };
 
-// LexGo's note from the last save (config.explanationTitle/Hint); renders nothing without text.
+// LexGo's explanation of the price (price_explanation of the configuration); renders nothing without text.
 export function PriceExplanation({ text, lines = [] }: Props) {
   const c = useColors();
   const { t } = useT();

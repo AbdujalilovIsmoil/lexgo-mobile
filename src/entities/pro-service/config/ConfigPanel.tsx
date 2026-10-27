@@ -1,55 +1,42 @@
-import { useState } from "react";
 import { StyleSheet, View } from "react-native";
-import { useT } from "@/shared/i18n";
-import { Text, Toggle } from "@/shared/ui";
-import type { ServiceConfig } from "./configApi";
-import { useServiceConfig } from "./useServiceConfig";
-import { PriceExplanation } from "./PriceExplanation";
+import { ErrorView, Skeleton } from "@/shared/ui";
+import type { ServiceRule } from "@/entities/service-rules";
+import { configUnsupported } from "./configApi";
+import { GrowthCard } from "./GrowthCard";
+import { NegotiationRow } from "./NegotiationRow";
+import { PriceCard } from "./PriceCard";
+import { useServiceConfiguration } from "./queries";
+import { RulesCard } from "./RulesCard";
 
 type Props = {
   serviceId: string;
   status: string; // "active" | "paused" | "inactive"
-  negotiationAllowed: boolean | null; // null → the current choice is unknown
-  onSaved?: (c: ServiceConfig) => void;
+  onRules: (missing: string[], rules: ServiceRule[]) => void; // open the rules sheet for this service
 };
 
-// Marketplace settings of one service: the negotiation switch PATCHes on change (reverts on failure) and the
-// answer's price explanation shows under it. Factors / Requirements are separate blocks the caller places.
-export function ConfigPanel({ serviceId, status, negotiationAllowed, onSaved }: Props) {
-  const { t } = useT();
-  const m = useServiceConfig();
-  const [value, setValue] = useState<boolean | null>(negotiationAllowed);
-  const [saved, setSaved] = useState<ServiceConfig | null>(null);
-  const [synced, setSynced] = useState(negotiationAllowed);
-  if (synced !== negotiationAllowed) { // the parent refetched: follow it
-    setSynced(negotiationAllowed);
-    setValue(negotiationAllowed);
-  }
-  const change = (next: boolean) => {
-    const prev = value;
-    setValue(next);
-    m.mutate({ serviceId, patch: { negotiationAllowed: next } }, {
-      onSuccess: (c) => { setSaved(c); setValue(c.negotiationAllowed ?? next); onSaved?.(c); },
-      onError: () => setValue(prev),
-    });
-  };
-  return (
-    <View style={s.box}>
-      <View style={s.row}>
-        <View style={s.flex}>
-          <Text variant="h4">{t("svcRules.cfgNegotiation")}</Text>
-          <Text variant="caption" tone="gray">{t("svcRules.cfgNegotiationHint")}</Text>
-          {value === null ? <Text variant="caption" tone="warn">{t("svcRules.cfgNegotiationUnknown")}</Text> : null}
-          {status !== "active" ? <Text variant="caption" tone="gray">{t("svcRules.cfgNegotiationActiveOnly")}</Text> : null}
-        </View>
-        <Toggle value={!!value} onChange={change} disabled={m.isPending} label={t("svcRules.cfgNegotiation")} />
+// The marketplace configuration of one service (GET …/configuration: TZ.md §5.3 and "Pricing Growth" §2) as blocks of the
+// service sheet: its rules, the price limits with LexGo's explanation, the negotiation switch, and how far the ceiling can still
+// grow and what that takes. Every value is the server's; a change PATCHes and the answer replaces the cached configuration.
+export function ConfigPanel({ serviceId, status, onRules }: Props) {
+  const q = useServiceConfiguration(serviceId);
+  if (q.isPending) {
+    return (
+      <View style={s.col}>
+        <Skeleton height={120} round={20} />
+        <Skeleton height={160} round={20} />
       </View>
-      {saved ? <PriceExplanation text={saved.priceExplanation} lines={saved.priceExplanationLines} /> : null}
+    );
+  }
+  if (q.isError) return configUnsupported(q.error) ? null : <ErrorView error={q.error} onRetry={() => void q.refetch()} compact />;
+  const c = q.data;
+  return (
+    <View style={s.col}>
+      <RulesCard serviceId={serviceId} config={c} onRules={onRules} />
+      <PriceCard config={c} />
+      <NegotiationRow serviceId={serviceId} config={c} status={status} onRules={(missing) => onRules(missing.length ? missing : c.missingRuleIds, c.requiredRules)} />
+      <GrowthCard config={c} />
     </View>
   );
 }
 
-// Chip wording for a list card when negotiation is on.
-export const negotiationChipKey = "svcRules.cfgNegotiationChip";
-
-const s = StyleSheet.create({ box: { gap: 12 }, row: { flexDirection: "row", alignItems: "center", gap: 12, minHeight: 44 }, flex: { flex: 1, gap: 2 } });
+const s = StyleSheet.create({ col: { gap: 14 } });
