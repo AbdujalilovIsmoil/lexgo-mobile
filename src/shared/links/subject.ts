@@ -10,6 +10,8 @@ const EXACT: Record<string, SubjectKind> = {
   "subscription.renewal_consent_required": "subscription", subscription_renewal_consent_required: "subscription",
   // The call center's decision on the seller's experience (Gaps Closed §3.13) is not about an order: it opens the experience page.
   "marketplace.experience_reviewed": "experience", marketplace_experience_reviewed: "experience",
+  // The same for the seller's achievements (contract §6, §17): it opens the achievements page, never Orders.
+  "marketplace.achievement_reviewed": "achievement", marketplace_achievement_reviewed: "achievement",
   // TZ.md §10: a seller accepted a service rule — it is about their services, not an order (it carries no order id).
   "marketplace.rule_accepted": "service", marketplace_rule_accepted: "service",
 };

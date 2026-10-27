@@ -41,6 +41,11 @@ describe("appHref", () => {
     expect(mayOpen("/pro/experience", v("client"))).toBe(false);
     expect(mayOpen("/pro/experience", v("seller"))).toBe(true);
   });
+  it("opens the seller's achievements page (contract §17), only for sellers", () => {
+    expect(appHref("/pro/achievements")).toBe("/pro/achievements");
+    expect(mayOpen("/pro/achievements", v("client"))).toBe(false);
+    expect(mayOpen("/pro/achievements", v("seller"))).toBe(true);
+  });
   it("opens the scanner (no outside parameters), only for sellers", () => {
     expect(appHref("/pro/scan", { folder: "f1" })).toBe("/pro/scan"); // outside links never choose the folder
     expect(mayOpen("/pro/scan", v("client"))).toBe(false);

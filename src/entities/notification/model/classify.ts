@@ -10,6 +10,7 @@ const EXACT: Record<string, NotifCategory> = {
   secure_chat_message: "chat", meeting_invite: "chat", contract_signature_otp: "documents",
   // The call center's decision on a seller's experience is about the profile, not an order.
   "marketplace.experience_reviewed": "system", marketplace_experience_reviewed: "system",
+  "marketplace.achievement_reviewed": "system", marketplace_achievement_reviewed: "system",
 };
 
 const EVENT_RULES: [RegExp, NotifCategory][] = [

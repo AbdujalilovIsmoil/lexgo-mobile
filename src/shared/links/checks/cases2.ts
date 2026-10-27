@@ -40,6 +40,12 @@ export const MORE_CASES: Case[] = [
   ["experience reviewed (notification name), seller", "seller", ev("marketplace_experience_reviewed", { experience_id: "e1" }), { href: "/pro/experience" }],
   ["experience reviewed, client", "client", ev("marketplace.experience_reviewed", { experience_id: "e1" }), { kind: "none" }],
   ["experience reviewed in a notification's data", "seller", { data: { event: "marketplace.experience_reviewed", experience_id: "e1" } }, { href: "/pro/experience" }],
+  // Contract §6, §17: the achievement decision opens the achievements page for a seller, nothing for a client (it has no order_id either).
+  ["achievement reviewed, seller", "seller", ev("marketplace.achievement_reviewed", { achievement_id: "a1", decision: "approve" }), { href: "/pro/achievements", fallback: "/pro/achievements", label: "link" }],
+  ["achievement reviewed (notification name), seller", "seller", ev("marketplace_achievement_reviewed", { achievement_id: "a1" }), { href: "/pro/achievements" }],
+  ["achievement reviewed, client", "client", ev("marketplace.achievement_reviewed", { achievement_id: "a1" }), { kind: "none" }],
+  ["achievement reviewed in a notification's data", "seller", { data: { event: "marketplace.achievement_reviewed", achievement_id: "a1" } }, { href: "/pro/achievements" }],
+  ["achievement reviewed with an order id still opens the page", "seller", ev("marketplace.achievement_reviewed", { order_id: "o1" }), { href: "/pro/achievements" }],
   // TZ.md §10: a rule acceptance opens the seller's services, never an order without an id.
   ["rule accepted, seller", "seller", ev("marketplace.rule_accepted", { rule_id: "r1" }), { href: "/pro/services", fallback: "/pro/services" }],
   ["rule accepted (underscore), seller", "seller", ev("marketplace_rule_accepted"), { href: "/pro/services" }],

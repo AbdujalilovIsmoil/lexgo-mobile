@@ -16,6 +16,7 @@ describe("categoryOf", () => {
     expect(categoryOf("meeting_invite", [], "")).toBe("chat");
     expect(categoryOf("contract_signature_otp", [], "")).toBe("documents");
     expect(categoryOf("marketplace_experience_reviewed", [], "")).toBe("system"); // not an order (TZ Gaps Closed §3.13)
+    expect(categoryOf("marketplace.achievement_reviewed", [], "")).toBe("system"); // nor is an achievement (contract §17)
   });
   it("prefix rules", () => {
     expect(categoryOf("order_status_changed", [], "")).toBe("orders");
