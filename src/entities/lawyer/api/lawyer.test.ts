@@ -21,15 +21,19 @@ describe("normLawyer", () => {
     expect(l).toMatchObject({ id: "s1", userId: "u1", name: "Ali Valiyev", kind: "advocate", verified: true, badge: "LexGo tomonidan tasdiqlangan", rated: true, basePrice: 50000, priceTo: 100000 });
     expect(l.services).toHaveLength(2);
   });
-  it("takes the LexGo badge from is_verified alone (TZ.md public lawyer privacy)", () => {
+  it("takes the LexGo badge from is_verified, else lexgo_verified (contract §22)", () => {
     expect(normLawyer({ is_verified: true, lexgo_verified: false }).verified).toBe(true);
-    expect(normLawyer({ verification_status: "approved" }).verified).toBe(false);
-    expect(normLawyer({ verification_status: "verified", lexgo_verified: true, verified: true, verification_badge: { visible: true } }).verified).toBe(false);
+    expect(normLawyer({ lexgo_verified: true }).verified).toBe(true);
     expect(normLawyer({ is_verified: false, lexgo_verified: true }).verified).toBe(false);
+    expect(normLawyer({ verification_status: "approved" }).verified).toBe(false);
+    expect(normLawyer({ verification_status: "verified", verified: true, verification_badge: { visible: true } }).verified).toBe(false);
     expect(normLawyer({ is_verified: "true" }).verified).toBe(false);
   });
-  it("never reads the private fields, keeps the organization", () => {
-    const l = normLawyer({ education: "TDYU", license_number: "L-1", bar_association: "Toshkent", organization_name: " Adliya byurosi " });
+  it("never reads the private or ranking fields, keeps the organization", () => {
+    const l = normLawyer({ education: "TDYU", license_number: "L-1", bar_association: "Toshkent", verification_status: "approved", ranking_score: 91, organization_name: " Adliya byurosi " });
+    expect(JSON.stringify(l)).not.toMatch(/TDYU|L-1|Toshkent|approved|91/);
+    expect(l).not.toHaveProperty("verificationStatus");
+    expect(l).not.toHaveProperty("rankingScore");
     expect(l).not.toHaveProperty("education");
     expect(l).not.toHaveProperty("licenseNumber");
     expect(l).not.toHaveProperty("barAssociation");
@@ -64,8 +68,9 @@ describe("normService / normReview / normPromo", () => {
     expect(hasPromoTarget(normPromo({ id: "p" }))).toBe(false);
     expect(normPromo({ seller_profile: { is_verified: true, rating: 4.5 } })).toMatchObject({ sellerVerified: true, sellerRating: 4.5 });
   });
-  it("promo seller: the badge from is_verified alone, the rating only when rated", () => {
-    expect(normPromo({ seller_profile: { verification_status: "approved", lexgo_verified: true } }).sellerVerified).toBe(false);
+  it("promo seller: the badge from is_verified / lexgo_verified, the rating only when rated", () => {
+    expect(normPromo({ seller_profile: { verification_status: "approved" } }).sellerVerified).toBe(false);
+    expect(normPromo({ seller_profile: { lexgo_verified: true } }).sellerVerified).toBe(true);
     // The live demo banner: 2.35 with no reviews is not a rating.
     expect(normPromo({ seller_profile: { rating: 2.35, reviews_count: 0 } })).toMatchObject({ sellerRating: 2.35, sellerRated: false });
     expect(normPromo({ seller_profile: { rating: 4.5, reviews_count: 7 } }).sellerRated).toBe(true);
@@ -103,9 +108,9 @@ describe("listActivePromos", () => {
 });
 
 describe("listLawyers", () => {
-  it("lists only is_verified sellers and keeps only banners from `banners`", async () => {
+  it("lists only badged sellers and keeps only banners from `banners`", async () => {
     mockHttp.mockResolvedValueOnce({
-      items: [{ user_id: "a", lawyer_name: "A", is_verified: true }, { user_id: "b", lawyer_name: "B", verification_status: "approved", lexgo_verified: true, verification_badge: { visible: true } }],
+      items: [{ user_id: "a", lawyer_name: "A", is_verified: true }, { user_id: "b", lawyer_name: "B", verification_status: "approved", verification_badge: { visible: true } }],
       total: 2,
       banners: [{ id: "p", placement: "banner", seller_user_id: "a" }, { id: "q", placement: "profile_boost", seller_user_id: "b" }],
       sponsored_profiles: [{ id: "s", placement: "profile_boost", seller_user_id: "a" }],
@@ -124,6 +129,7 @@ describe("isRated / hasEnded", () => {
     expect(isRated("rated", 0, 3)).toBe(false);
     expect(isRated("", 5, 4)).toBe(false);
     expect(isRated("", 4.9, 5)).toBe(true);
+    expect(isRated(" Unrated ", 5, 3)).toBe(false);
   });
   it("a placement without an end date never ends", () => {
     expect(hasEnded("")).toBe(false);

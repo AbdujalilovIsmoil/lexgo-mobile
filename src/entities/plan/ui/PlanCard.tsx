@@ -5,6 +5,7 @@ import { useT } from "@/shared/i18n";
 import type { BillingPeriod } from "../model/period";
 import type { Plan } from "../model/types";
 import { PlanFeatures } from "./PlanFeatures";
+import { PlanMeta } from "./PlanMeta";
 import { PlanPrice } from "./PlanPrice";
 
 type Props = { plan: Plan; period: BillingPeriod; featured?: boolean; active?: boolean; selected?: boolean; onChoose: () => void; onDetails?: () => void; ctaLabel?: string };
@@ -22,6 +23,7 @@ export function PlanCard({ plan, period, featured, active, selected, onChoose, o
       </View>
       {plan.description ? <Text variant="small" tone="gray">{plan.description}</Text> : null}
       <PlanPrice plan={plan} period={period} />
+      <PlanMeta plan={plan} />
       <View style={[s.features, { borderTopColor: c.line }]}>
         <PlanFeatures items={plan.features} limit={6} />
         {onDetails ? (

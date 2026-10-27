@@ -14,6 +14,8 @@ export { getMyFeatures, acceptRenewal } from "./api/featuresApi";
 export { planGateOf, gateOfFeature, liftsGate, type PlanGate } from "./lib/planGate";
 export { PlanCard } from "./ui/PlanCard";
 export { PlanFeatures } from "./ui/PlanFeatures";
+export { PlanMeta } from "./ui/PlanMeta";
+export { forViewer, viewerOf, type PlanViewer } from "./lib/planInfo";
 export { PlanPrice, CampaignLine, PERIOD_KEY } from "./ui/PlanPrice";
 export { PlanCardSkeleton } from "./ui/PlanCardSkeleton";
 export { GateNotice } from "./ui/GateNotice";

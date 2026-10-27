@@ -4,7 +4,7 @@ import { useRouter } from "expo-router";
 import Animated, { FadeInLeft, FadeInRight } from "react-native-reanimated";
 import { useIsAuthed } from "@/entities/session";
 import { chatRoomWith, useMarketOrders } from "@/entities/order";
-import { useLawyerServices, useSellerPromos, type Lawyer, type LawyerService } from "@/entities/lawyer";
+import { useLawyerServices, useSellerPromos, useSellerRating, type Lawyer, type LawyerService } from "@/entities/lawyer";
 import { PurchaseFlow } from "@/features/market-purchase";
 import { ProfileTabs, type TabDef } from "@/widgets/client-profile";
 import { PriceExplainer, useBuyGate } from "@/widgets/lawyer-sheet";
@@ -26,7 +26,11 @@ const TAB_LABEL: TabDef<SpecialistTab>[] = [{ ...TABS[0], label: "spf.services" 
 // A specialist's page as the web shows it, in the client profile's build: cover and identity, the six numbers, three
 // gliding tabs (services and prices · about · reviews), a bar with the picked service's price and "Sotib olish" — which opens
 // the purchase flow in a sheet — plus the chat button (only with a running order) and the price explainer.
-export function SpecialistView({ lawyer: l, initialTab }: { lawyer: Lawyer; initialTab: SpecialistTab }) {
+export function SpecialistView({ lawyer: base, initialTab }: { lawyer: Lawyer; initialTab: SpecialistTab }) {
+  // Rating v3: the public rating and review count come from GET /marketplace/lawyers/{id}/rating (one cached read, never polled); until it
+  // answers, or when the seller has none, the profile's own fields stay. Unrated shows the backend's text, never 5.0.
+  const pub = useSellerRating(base.userId).data;
+  const l: Lawyer = pub ? { ...base, rated: pub.rated, rating: pub.rating, reviews: pub.reviews } : base;
   const c = useColors();
   const insets = useInsets();
   const router = useRouter();
@@ -58,7 +62,7 @@ export function SpecialistView({ lawyer: l, initialTab }: { lawyer: Lawyer; init
           <ProfileCover />
           <View style={s.back} pointerEvents="box-none"><Header transparent light /></View>
         </View>
-        <SpecialistIdentity lawyer={l} top={top} />
+        <SpecialistIdentity lawyer={l} top={top} unrated={pub?.unratedText} />
         <SpecialistStats lawyer={l} />
         <View style={s.body}>
           <Reveal i={2}><ProfileTabs value={nav.tab} onChange={go} tabs={TAB_LABEL} /></Reveal>

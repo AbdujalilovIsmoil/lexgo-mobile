@@ -1,5 +1,6 @@
 import { http } from "@/shared/api";
 import { asArr, asDict, asNum, asStr } from "@/shared/lib/json";
+import { isLexgoVerified } from "@/shared/lib/lexgoBadge";
 import type { PackageSeller, SellerPage } from "../model/sellerTypes";
 
 export const SELLERS_PAGE = 30;
@@ -16,7 +17,7 @@ export function normSeller(v: unknown): PackageSeller {
     completed: asNum(d.completed_orders),
     trust: asNum(d.trust_score),
     online: d.online_now === true,
-    verified: d.lexgo_verified === true || el.extended_verified === true,
+    verified: isLexgoVerified(d) || el.extended_verified === true,
     badge: asStr(asDict(d.verification_badge).label),
     eligible: el.eligible !== false,
     reasons: asArr(el.reasons).map((x) => asStr(x)).filter(Boolean),

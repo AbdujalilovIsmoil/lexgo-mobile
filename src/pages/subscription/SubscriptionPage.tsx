@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { StyleSheet, View } from "react-native";
 import { useColors } from "@/shared/theme";
-import { isAiPlan, isClientPlan, isGiftPlan, orderPlans, PlanCardSkeleton, termPeriod, useEntitlements, usePlans, type Term } from "@/entities/plan";
+import { forViewer, isAiPlan, isGiftPlan, orderPlans, PlanCardSkeleton, termPeriod, useEntitlements, usePlans, viewerOf, type Term } from "@/entities/plan";
 import { useClientProfile } from "@/entities/profile-extras";
-import { useIsAuthed } from "@/entities/session";
+import { useIsAuthed, useSession } from "@/entities/session";
 import { useChoosePlan } from "@/features/choose-plan";
 import { AiPlansSection, AutopayPanel, Benefits, BillingHistory, CompareTable, FaqList, MyPlanCard, OtherPlansSection, PendingRequests, TelegramRequestSheet, TopCards } from "@/widgets/subscription";
 import { EmptyState, ErrorView, Header, Screen } from "@/shared/ui";
@@ -24,7 +24,9 @@ export function SubscriptionPage() {
   const signedIn = useIsAuthed();
   const [term, setTerm] = useState<Term>(1);
   const [upfront, setUpfront] = useState(false);
-  const sellable = orderPlans((data ?? []).filter((p) => !isGiftPlan(p)), isClientPlan);
+  // Each person sees the plans meant for them (contract §21); the gift plan keeps its own card, from the whole list.
+  const viewer = viewerOf(useSession()?.user.role);
+  const sellable = orderPlans((data ?? []).filter((p) => !isGiftPlan(p) && forViewer(p, viewer)), () => true);
   const ai = sellable.filter(isAiPlan);
   const other = sellable.filter((p) => !isAiPlan(p));
   const cur = useClientProfile().data?.planName;

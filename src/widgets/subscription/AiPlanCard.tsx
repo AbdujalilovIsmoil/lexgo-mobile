@@ -1,5 +1,5 @@
 import { View } from "react-native";
-import { FEATURED_SLUG, PlanFeatures, PlanPrice, termPeriod, useFeature, type Plan, type Term } from "@/entities/plan";
+import { FEATURED_SLUG, PlanFeatures, PlanMeta, PlanPrice, termPeriod, useFeature, type Plan, type Term } from "@/entities/plan";
 import { brand } from "@/shared/theme";
 import { Button, Card, Pill, Text } from "@/shared/ui";
 import { useT } from "@/shared/i18n";
@@ -23,6 +23,7 @@ export function AiPlanCard({ plan, term, upfront, featured, current, onChoose }:
           {current ? <Pill label={t("cs.cur")} tone="ok" icon="check" small /> : featured ? <Pill label={t("cs.rec")} tone="cy" icon="star" small /> : null}
         </View>
         <PlanPrice plan={plan} period={termPeriod(term, upfront)} />
+        <PlanMeta plan={plan} />
         {usage ? <Text variant="caption" tone="gray">{t("cs.usage", usage)}</Text> : null}
         <PlanFeatures items={plan.features} limit={6} />
         <View {...ra.choose}>

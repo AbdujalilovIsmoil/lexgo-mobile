@@ -20,11 +20,10 @@ import { svc } from "./svc";
 import { flt } from "./flt";
 import { lw } from "./lw";
 import { guest } from "./guest";
-import { rbd } from "./rbd";
 import { pas } from "./pas";
 import { admBundleA } from "./admBundleA";
 import { admBundleB } from "./admBundleB";
 import { admBundleC } from "./admBundleC";
 import { tzBundle } from "./tzBundle";
 
-export const en: Messages = { common, cdash, ntd, tabs, home, lawyers, services, ai, plans, auth, profile, seller, subp, notif, ord, docs, stats, svc, flt, lw, guest, rbd, pas, ...admBundleA, ...admBundleB, ...admBundleC, ...tzBundle };
+export const en: Messages = { common, cdash, ntd, tabs, home, lawyers, services, ai, plans, auth, profile, seller, subp, notif, ord, docs, stats, svc, flt, lw, guest, pas, ...admBundleA, ...admBundleB, ...admBundleC, ...tzBundle };

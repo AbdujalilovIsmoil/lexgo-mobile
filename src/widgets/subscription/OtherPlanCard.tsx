@@ -1,5 +1,5 @@
 import { View } from "react-native";
-import { PlanFeatures, PlanPrice, termPeriod, type Plan } from "@/entities/plan";
+import { PlanFeatures, PlanMeta, PlanPrice, termPeriod, type Plan } from "@/entities/plan";
 import { brand } from "@/shared/theme";
 import { Button, Card, Pill, Text } from "@/shared/ui";
 import { useT } from "@/shared/i18n";
@@ -19,6 +19,7 @@ export function OtherPlanCard({ plan, term, upfront, featured, current, onChoose
           {current ? <Pill label={t("cs.cur")} tone="ok" icon="check" small /> : null}
         </View>
         <PlanPrice plan={plan} period={termPeriod(term, upfront)} />
+        <PlanMeta plan={plan} />
         <PlanFeatures items={plan.features} limit={6} />
         <View {...ra.choose}>
           {current ? <Button title={t("cs.cur")} icon="check" variant="soft" full disabled /> : <Button title={t("cs.choose")} icon={featured ? "award" : undefined} variant={featured ? "gradient" : "line"} full onPress={onChoose} />}

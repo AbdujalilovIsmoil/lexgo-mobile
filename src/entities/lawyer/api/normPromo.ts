@@ -1,5 +1,6 @@
 import { API_BASE, isApiUrl } from "@/shared/config/env";
 import { asDict, asNum, asStr } from "@/shared/lib/json";
+import { isLexgoVerified } from "@/shared/lib/lexgoBadge";
 import { cleanTitle } from "../lib/cleanTitle";
 import { isRated } from "../lib/rating";
 import type { PromoSurface } from "../model/marketTypes";
@@ -13,7 +14,7 @@ function pictureUrl(v: string): string {
 }
 
 // A paid placement (banner / profile boost / service boost) as the list and /promotions/active return it. Only the seller's public
-// card is read: the LexGo badge is `is_verified` alone and the rating counts only when the backend rates him.
+// card is read: the LexGo badge is `is_verified` / `lexgo_verified` and the rating counts only when the backend rates him.
 export function normPromo(v: unknown): PromoSurface {
   const d = asDict(v);
   const seller = asDict(d.seller);
@@ -33,7 +34,7 @@ export function normPromo(v: unknown): PromoSurface {
     sellerReviews: reviews,
     sellerRated: isRated(asStr(profile.rating_status), rating, reviews),
     sellerYears: asNum(profile.experience_years),
-    sellerVerified: profile.is_verified === true,
+    sellerVerified: isLexgoVerified(profile),
     serviceId: asStr(d.service_id ?? service.id),
     serviceTitle: cleanTitle(asStr(d.service_title ?? service.title ?? service.name)),
     title: asStr(d.title),

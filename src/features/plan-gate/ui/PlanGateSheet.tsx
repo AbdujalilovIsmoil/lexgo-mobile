@@ -2,7 +2,8 @@ import { useEffect, useState } from "react";
 import { View } from "react-native";
 import { useRouter } from "expo-router";
 import { useQueryClient } from "@tanstack/react-query";
-import { allowedPeriods, CampaignLine, featureKeys, GateNotice, isGiftPlan, liftsGate, PERIODS, useEntitlements, useGateText, useMyFeatures, usePlans, type BillingPeriod, type PlanGate } from "@/entities/plan";
+import { allowedPeriods, CampaignLine, featureKeys, forViewer, GateNotice, isGiftPlan, liftsGate, PERIODS, useEntitlements, useGateText, useMyFeatures, usePlans, viewerOf, type BillingPeriod, type PlanGate } from "@/entities/plan";
+import { useSession } from "@/entities/session";
 import { PeriodChips, TelegramNotice, useTelegramRequest } from "@/features/choose-plan";
 import { FormSheet } from "@/shared/ui/admin";
 import { Notice } from "@/shared/ui/sel/Notice";
@@ -39,7 +40,8 @@ export function PlanGateSheet({ gate, onClose }: { gate: PlanGate | null; onClos
   const toPlans = () => go(() => router.push("/subscription"));
   // The client's own tariffs are left out: the one that stopped the action cannot lift it.
   const mine = new Set([...(ent?.planIds ?? []), mineId ?? ""]);
-  const list = (plans.data ?? []).filter((p) => p.isActive && !isGiftPlan(p) && p.monthlyPrice > 0 && !mine.has(p.id) && liftsGate(p, g));
+  const viewer = viewerOf(useSession()?.user.role);
+  const list = (plans.data ?? []).filter((p) => p.isActive && !isGiftPlan(p) && forViewer(p, viewer) && p.monthlyPrice > 0 && !mine.has(p.id) && liftsGate(p, g));
   const sel = list.find((p) => p.id === id);
   const periods = tg.only ?? (sel ? allowedPeriods(sel) : PERIODS);
   const eff = periods.includes(per) ? per : periods[0];

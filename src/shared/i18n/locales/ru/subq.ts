@@ -49,6 +49,11 @@ export const subq = {
       download: "{n, plural, one {# скачивание} few {# скачивания} other {# скачиваний}}",
       template: "{n, plural, one {# шаблон} few {# шаблона} other {# шаблонов}}",
     },
+    plan: {
+      for: { client: "Для клиентов", pro: "Для специалистов" },
+      version: "версия {n}",
+      since: "с {date}",
+    },
     contract: {
       now: "Условия этого периода",
       next: "Новые условия",

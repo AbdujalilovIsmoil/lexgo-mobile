@@ -1,13 +1,14 @@
 import { asArr, asDict, asNum, asStr, uzs } from "@/shared/lib/json";
+import { isLexgoVerified } from "@/shared/lib/lexgoBadge";
 import { isRated } from "../lib/rating";
 import { normReview, normService } from "./normService";
 import type { Lawyer } from "../model/types";
 
 const NEW_DAYS = 60;
 
-// Read like normMarketSeller() in lib/services/marketplace.ts on the web, with two rules of TZ.md "Public lawyer privacy": the LexGo
-// badge comes from `is_verified` alone (never verification_status, lexgo_verified or the badge object), and the private fields
-// (education, licence, bar association) are not read at all.
+// Read like normMarketSeller() in lib/services/marketplace.ts on the web, with two rules of the public-profile privacy (contract §22): the
+// LexGo badge comes from `is_verified` or `lexgo_verified` (never verification_status or the badge object), and the private fields
+// (education, licence, bar association) and the ranking data are not read at all.
 export function normLawyer(v: unknown): Lawyer {
   const d = asDict(v);
   const user = asDict(d.user);
@@ -36,7 +37,7 @@ export function normLawyer(v: unknown): Lawyer {
     basePrice: from || uzs(d, "base_hourly_price", "price"),
     priceTo: uzs(d, "price_to") || (prices.length ? Math.max(...prices) : 0),
     bio: asStr(d.bio).trim() || undefined,
-    verified: d.is_verified === true,
+    verified: isLexgoVerified(d),
     badge: asStr(asDict(d.verification_badge).label), // only the wording of the badge; whether it shows is `verified`
     kind: sellerType.includes("advokat") || sellerType.includes("advocate") ? "advocate" : "lawyer",
     totalCases: asNum(d.total_cases),

@@ -1,5 +1,6 @@
 import { useMemo, useState } from "react";
 import { RefreshControl, ScrollView, StyleSheet, View } from "react-native";
+import { useMyRating } from "@/entities/lawyer";
 import { useCases } from "@/entities/pro-cases";
 import { isNewSeller, val } from "@/entities/pro-stats";
 import { usePayouts, useStats } from "@/entities/pro-workspace";
@@ -10,6 +11,7 @@ import { Card, EmptyState, ErrorView, Icon, Segmented, Text } from "@/shared/ui"
 import { useColors } from "@/shared/theme";
 import { CaseMix } from "./CaseMix";
 import { Hero } from "./Hero";
+import { MyRating } from "./MyRating";
 import { Payouts } from "./Payouts";
 import { Performance } from "./Performance";
 import { Tiles } from "./Tiles";
@@ -25,6 +27,7 @@ export function ProStats() {
   const q = useStats();
   const pay = usePayouts();
   const cases = useCases();
+  const rating = useMyRating(true);
   const [period, setPeriod] = useState<Period>("month");
   const rows = useMemo(() => [...(pay.data ?? [])].sort((a, b) => (b.createdAt || "").localeCompare(a.createdAt || "")), [pay.data]);
   if (q.isError) return isForbidden(q.error) ? <EmptyState icon="lock" title={t("aw9.forbidden")} /> : <ErrorView error={q.error} onRetry={() => void q.refetch()} />;
@@ -33,7 +36,7 @@ export function ProStats() {
   const key = period === "today" ? "earnings_today" : "earnings_month";
   const series = rows.slice(0, 6).map((p) => p.amount).reverse();
   const fresh = !!d && !pay.isLoading && !cases.isLoading && isNewSeller({ workload: d.workload, finance: d.finance, performance: d.performance, payouts: rows.length, cases: (cases.data ?? []).length, totalCases: d.totalCases });
-  const refresh = () => { void q.refetch(); void pay.refetch(); void cases.refetch(); };
+  const refresh = () => { void q.refetch(); void pay.refetch(); void cases.refetch(); void rating.refetch(); };
   return (
     <ScrollView contentContainerStyle={[s.body, { paddingBottom: insets.bottom + 40 }]} refreshControl={<RefreshControl refreshing={q.isRefetching} onRefresh={refresh} />} showsVerticalScrollIndicator={false}>
       <View style={s.period} accessibilityLabel={t("statUx.period")}>
@@ -52,6 +55,7 @@ export function ProStats() {
       <Tiles kind="w" stats={d} loading={loading} />
       <Tiles kind="f" stats={d} loading={loading} />
       <Performance stats={d} loading={loading} />
+      <MyRating q={rating} />
       <CaseMix />
       <Payouts rows={rows} loading={pay.isLoading} />
     </ScrollView>

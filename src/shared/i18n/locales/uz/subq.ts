@@ -49,6 +49,11 @@ export const subq = {
       download: "{n} ta yuklab olish",
       template: "{n} ta shablon",
     },
+    plan: {
+      for: { client: "Mijozlar uchun", pro: "Mutaxassislar uchun" },
+      version: "{n}-versiya",
+      since: "{date} dan",
+    },
     contract: {
       now: "Shu davr shartlari",
       next: "Yangi shartlar",

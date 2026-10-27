@@ -18,7 +18,7 @@ export type PromoSurface = {
   sellerReviews: number;
   sellerRated: boolean; // the rating is shown only when true ("not rated yet" otherwise, never 5.0)
   sellerYears: number;
-  sellerVerified: boolean; // `is_verified` only
+  sellerVerified: boolean; // `is_verified` / `lexgo_verified`
   serviceId: string;
   serviceTitle: string;
   title: string;

@@ -1,1 +1,1 @@
-export { RatingBreakdownView } from "./RatingBreakdownView";
+export { MyRatingView } from "./MyRatingView";

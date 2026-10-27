@@ -11,7 +11,8 @@ const LANG: Record<string, string> = { "uz-latn": "O'zbek", "uz-cyrl": "Ўзбе
 
 // Under the cover, laid out like the client's profile header: the avatar sits on the cover's lower edge with a
 // ring in the page colour (verified seal on it); name, kind · region, the star row and the chips are left-aligned.
-export function SpecialistIdentity({ lawyer: l, top }: { lawyer: Lawyer; top?: boolean }) {
+// `unrated` is the backend's own "not rated yet" text (rating v3), used when the specialist has no public rating.
+export function SpecialistIdentity({ lawyer: l, top, unrated }: { lawyer: Lawyer; top?: boolean; unrated?: string }) {
   const c = useColors();
   const { t } = useT();
   const geo = useGeoLabels();
@@ -31,7 +32,7 @@ export function SpecialistIdentity({ lawyer: l, top }: { lawyer: Lawyer; top?: b
           {[0, 1, 2, 3, 4].map((i) => (
             <Animated.View key={i} entering={FadeIn.delay(240 + i * 70)}><Ionicons name="star" size={15} color={i < stars ? c.warn : c.line} /></Animated.View>
           ))}
-          <Text variant="small" tone="gray">{l.rated ? `${l.rating.toFixed(1).replace(".", ",")} · ${t("lw.reviews", { n: l.reviews })}` : t("lawyers.card.unrated")}</Text>
+          <Text variant="small" tone="gray">{l.rated ? `${l.rating.toFixed(1).replace(".", ",")} · ${t("lw.reviews", { n: l.reviews })}` : unrated || t("lawyers.card.unrated")}</Text>
         </View>
         <View style={s.pills}>
           <Pill label={t(l.kind === "advocate" ? "lawyers.card.kindAdvocate" : "lawyers.card.kindLawyer")} tone="blue" icon="user" small />

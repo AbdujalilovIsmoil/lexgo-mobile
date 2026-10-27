@@ -1,5 +1,6 @@
 import { asArr, asDict, asNum, asStr, uzs } from "@/shared/lib/json";
-import { pickLoc, pickLocArr } from "../lib/localized";
+import { pickLoc } from "../lib/localized";
+import { audiencesOf, benefitLines, normVersion } from "../lib/planInfo";
 import { normTerms } from "../lib/terms";
 import type { Plan, PlanFunction } from "../model/types";
 
@@ -27,13 +28,14 @@ export function normPlan(v: unknown, locale: string): Plan {
     yearlyPrice: uzs(d, "yearly_price"),
     prepaidYearlyPrice: uzs(d, "prepaid_yearly_price"),
     audience: asStr(d.audience),
+    audiences: audiencesOf(d),
     targetRoles: asArr(d.target_roles).map((x) => asStr(x)),
     description: pickLoc(d.description, locale, ""),
-    features: pickLocArr(d.features, locale, d.benefits),
+    features: benefitLines(d, locale),
     functions: asArr(d.functions).map((x) => normFunction(x, locale)).filter((f) => f.key),
     entitlements: asDict(d.entitlements),
     contract: normTerms(asArr(d.entitlement_contract).length ? d.entitlement_contract : d.entitlements),
-    version: asNum(d.current_version, 1),
+    ...normVersion(d),
     isGiftable: Boolean(d.is_giftable),
     isActive: d.is_active !== false,
     sortOrder: asNum(d.sort_order),

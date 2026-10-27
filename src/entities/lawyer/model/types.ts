@@ -30,7 +30,7 @@ export type Lawyer = {
   basePrice: number; // cheapest service ("from" price)
   priceTo: number;
   bio?: string;
-  verified: boolean; // the public LexGo badge: `is_verified` only
+  verified: boolean; // the public LexGo badge: `is_verified` / `lexgo_verified`
   badge: string; // verification badge label from the backend
   kind: LawyerKind;
   totalCases: number;
