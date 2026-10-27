@@ -1,4 +1,9 @@
-import { task } from "./teamTaskApi";
+import { http } from "@/shared/api";
+import { EMPTY_FILTER } from "../model/types";
+import { getStats, listTasks, task } from "./teamTaskApi";
+
+jest.mock("@/shared/api", () => ({ ...jest.requireActual("@/shared/api"), http: jest.fn() }));
+const mockHttp = http as jest.MockedFunction<typeof http>;
 
 const sample = {
   id: "t1", task_code: "TSK-210740", title: "Production deploy", description: "Deploy and test", status: "in_progress", deadline_at: "2026-10-21T12:00:00+00:00", is_overdue: false,
@@ -19,5 +24,27 @@ describe("a task from the API", () => {
     expect(t.status).toBe("new");
     expect(t.actions.canChangeStatus).toBe(false);
     expect(t.actions.next).toEqual([]);
+  });
+});
+
+describe("the period contract (TZ.md task list period)", () => {
+  beforeEach(() => mockHttp.mockResolvedValue({ items: [], status_counts: { new: 2, ready: 1 } }));
+
+  it("sends inclusive days with the date they filter on, never the legacy deadline range", async () => {
+    const r = await listTasks({ ...EMPTY_FILTER, from: "2026-09-01", to: "2026-09-30", field: "created" }, 30, 0);
+    expect(mockHttp).toHaveBeenLastCalledWith("/task-management?date_from=2026-09-01&date_to=2026-09-30&period_field=created&limit=30&offset=0");
+    expect(r.counts).toEqual({ new: 2, in_progress: 0, testing: 0, ready: 1 });
+  });
+
+  it("takes one day for a range with no end, and sends no period without a start", async () => {
+    await listTasks({ ...EMPTY_FILTER, from: "2026-10-27" }, 30, 0);
+    expect(mockHttp).toHaveBeenLastCalledWith("/task-management?date_from=2026-10-27&date_to=2026-10-27&period_field=deadline&limit=30&offset=0");
+    await listTasks({ ...EMPTY_FILTER, status: "testing" }, 30, 30);
+    expect(mockHttp).toHaveBeenLastCalledWith("/task-management?status=testing&limit=30&offset=30");
+  });
+
+  it("asks the stats for the day the cards name", async () => {
+    await getStats("2026-10-27");
+    expect(mockHttp).toHaveBeenLastCalledWith("/task-management/stats?date_from=2026-10-27&date_to=2026-10-27");
   });
 });

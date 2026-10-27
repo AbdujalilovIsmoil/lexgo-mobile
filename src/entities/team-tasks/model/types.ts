@@ -25,7 +25,10 @@ export type TeamTask = {
 export type HistoryItem = { id: string; event: string; from: string; to: string; comment: string; actor: Person | null; createdAt: string };
 export type TaskStats = { created: number; readyInPeriod: number; total: number; active: number; ready: number; overdue: number; unassigned: number; byStatus: Record<TaskStatus, number> };
 export type TaskMeta = { canCreate: boolean; canAssign: boolean; canApproveReady: boolean; canDeleteReady: boolean };
-// `assignee`: "", "me", "unassigned" or a user id.
-export type TaskFilter = { status: TaskStatus | ""; assignee: string; q: string; from: string; to: string };
-export const EMPTY_FILTER: TaskFilter = { status: "", assignee: "", q: "", from: "", to: "" };
+// The date a period filters on (TZ.md task list period): the deadline, the creation, or the move to Ready.
+export type TaskPeriodField = "deadline" | "created" | "completed";
+export const PERIOD_FIELDS: TaskPeriodField[] = ["deadline", "created", "completed"];
+// `assignee`: "", "me", "unassigned" or a user id. `from` / `to`: inclusive calendar days (YYYY-MM-DD) of `field`.
+export type TaskFilter = { status: TaskStatus | ""; assignee: string; q: string; from: string; to: string; field: TaskPeriodField };
+export const EMPTY_FILTER: TaskFilter = { status: "", assignee: "", q: "", from: "", to: "", field: "deadline" };
 export type TaskInput = { title: string; description: string; deadlineAt: string; assigneeIds: string[] };

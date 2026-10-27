@@ -1,6 +1,5 @@
 import { http } from "@/shared/api";
 import { asArr, asDict, asNum, asStr } from "@/shared/lib/json";
-import { toIso } from "@/shared/lib/pro/dates";
 import { TASK_STATUSES, type HistoryItem, type Person, type TaskFilter, type TaskInput, type TaskMeta, type TaskStats, type TaskStatus, type TeamTask } from "../model/types";
 
 const enc = encodeURIComponent;
@@ -42,9 +41,12 @@ export function task(raw: unknown): TeamTask {
   };
 }
 
-// GET /task-management — newest updates first; `status_counts` are the server's.
+// GET /task-management — newest updates first; `status_counts` are the server's (every active filter but the status itself). A period goes as
+// inclusive calendar days with the date it filters on (date_from / date_to / period_field, TZ.md); the legacy deadline_from / deadline_to are
+// never sent (the two together are refused).
 export async function listTasks(f: TaskFilter, limit: number, offset: number): Promise<{ items: TeamTask[]; total: number; hasMore: boolean; counts: Record<TaskStatus, number> }> {
-  const d = asDict(await http(`/task-management${qs({ status: f.status, assignee_user_id: f.assignee, q: f.q.trim(), deadline_from: f.from ? toIso(f.from, "00:00") : "", deadline_to: f.to ? toIso(f.to, "23:59") : "", limit, offset })}`));
+  const period = f.from ? { date_from: f.from, date_to: f.to || f.from, period_field: f.field } : {};
+  const d = asDict(await http(`/task-management${qs({ status: f.status, assignee_user_id: f.assignee, q: f.q.trim(), ...period, limit, offset })}`));
   const items = asArr(d.items).map(task).filter((t) => t.id);
   const c = asDict(d.status_counts);
   return { items, total: asNum(d.total, items.length), hasMore: d.has_more === true, counts: Object.fromEntries(TASK_STATUSES.map((s) => [s, asNum(c[s], 0)])) as Record<TaskStatus, number> };
@@ -61,8 +63,9 @@ export async function getMeta(): Promise<TaskMeta> {
   const c = asDict(asDict(await http("/task-management/meta")).capabilities);
   return { canCreate: bool(c.create), canAssign: bool(c.assign), canApproveReady: bool(c.approve_ready), canDeleteReady: bool(c.delete_ready) };
 }
-export async function getStats(): Promise<TaskStats> {
-  const d = asDict(await http("/task-management/stats"));
+// GET /task-management/stats for one day (the cards say "today"): created that day, moved to Ready that day, and the current snapshot.
+export async function getStats(day: string): Promise<TaskStats> {
+  const d = asDict(await http(`/task-management/stats${qs({ date_from: day, date_to: day })}`));
   const p = asDict(d.period_tasks);
   const s = asDict(d.current_snapshot);
   const by = asDict(s.by_status);

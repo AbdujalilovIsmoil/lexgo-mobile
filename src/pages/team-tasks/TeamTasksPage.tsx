@@ -9,6 +9,7 @@ import { TaskFormSheet } from "@/features/team-task-form";
 import { StatusBar, TaskDetailSheet, TaskFilterSheet, TaskKpis, TaskRow, filterCount } from "@/widgets/team-tasks";
 import { useDebounced } from "@/shared/lib/useDebounced";
 import { fmtDate } from "@/shared/lib/format";
+import { todayKey } from "@/shared/lib/pro/dates";
 import { useT } from "@/shared/i18n";
 
 function Tasks() {
@@ -31,7 +32,13 @@ function Tasks() {
   const { items, counts, query } = useTeamTasks(filter);
   const active = filterCount(f);
   const who = f.assignee === "me" ? t("ttm.filter.me") : f.assignee === "unassigned" ? t("ttm.filter.unassigned") : f.assignee ? t("ttm.filter.assignee") : "";
-  const range = f.from ? `${fmtDate(`${f.from}T12:00:00`, locale)}${f.to && f.to !== f.from ? ` – ${fmtDate(`${f.to}T12:00:00`, locale)}` : ""}` : "";
+  const range = f.from ? `${t(`ttm.filter.field.${f.field}`)}: ${fmtDate(`${f.from}T12:00:00`, locale)}${f.to && f.to !== f.from ? ` – ${fmtDate(`${f.to}T12:00:00`, locale)}` : ""}` : "";
+  // A KPI card opens exactly its tasks: today's, by its own period field, with nothing else narrowing the list.
+  const openKpi = (field: TaskFilter["field"]) => {
+    const day = todayKey();
+    setQ("");
+    setF({ ...EMPTY_FILTER, field, from: day, to: day });
+  };
   const filtered = !!(f.status || active || dq.trim());
   return (
     <AdminPage title={t("ttm.title")} subtitle={t("ttm.lead")} right={meta?.canCreate ? <IconButton icon="plus" label={t("ttm.create")} onPress={() => setCreating(true)} /> : undefined}>
@@ -44,7 +51,7 @@ function Tasks() {
         empty={{ icon: "check-square", title: filtered ? t("ttm.emptyFiltered") : t("ttm.empty"), text: filtered ? undefined : t("ttm.lead") }}
         header={
           <View style={{ gap: 12, paddingBottom: 10 }}>
-            <TaskKpis />
+            <TaskKpis onOpen={openKpi} />
             <View style={{ flexDirection: "row", alignItems: "center", marginHorizontal: -16 }}>
               <View style={{ flex: 1 }}><SearchBox value={q} onChangeText={setQ} placeholder={t("ttm.filter.search")} /></View>
               <View style={{ paddingRight: 16 }}><IconButton icon="sliders" label={t("ttm.filter.title")} badge={active > 0} onPress={() => setFilters(true)} /></View>

@@ -1,5 +1,6 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { usePaged } from "@/shared/lib/usePaged";
+import { todayKey } from "@/shared/lib/pro/dates";
 import { useResync, useUserEvents } from "@/shared/realtime";
 import { getHistory, getMeta, getStats, getTask, listTasks, listUsers } from "../api/teamTaskApi";
 import type { TaskFilter } from "./types";
@@ -15,7 +16,7 @@ export function useTeamTasks(f: TaskFilter) {
 export const useTeamTask = (id: string) => useQuery({ queryKey: [...taskKeys.all, "one", id], queryFn: () => getTask(id), enabled: !!id });
 export const useTaskHistory = (id: string) => useQuery({ queryKey: [...taskKeys.all, "history", id], queryFn: () => getHistory(id), enabled: !!id });
 export const useTaskMeta = () => useQuery({ queryKey: [...taskKeys.all, "meta"], queryFn: getMeta, staleTime: 5 * 60_000 });
-export const useTaskStats = () => useQuery({ queryKey: [...taskKeys.all, "stats"], queryFn: getStats });
+export const useTaskStats = () => useQuery({ queryKey: [...taskKeys.all, "stats"], queryFn: () => getStats(todayKey()) });
 export const useTaskUsers = (q: string, enabled: boolean) => useQuery({ queryKey: [...taskKeys.all, "users", q], queryFn: () => listUsers(q), enabled, staleTime: 60_000 });
 
 // The socket's task events are only a signal: the list, the open task and the numbers are fetched again (never patched from the event),
