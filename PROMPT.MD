@@ -111,3 +111,30 @@ For every direction, deliver **Light, Dark, Glass** of the same layout (identica
 - [ ] Contrast ≥ 4.5:1 on all text, including on gradients and glass.
 - [ ] Tap targets ≥ 44 pt; 16 pt gutters; safe areas respected; content scrolls under the bar.
 - [ ] Marketing (promo, referral) is last and dismissible.
+---
+
+## Short version for Figma AI (≤ 2000 characters)
+
+```text
+LexGo, an Uzbek legal-services app. Design the CLIENT Home tab (iPhone 393×852) in 5 distinct directions, each in Light, Dark and Glass mode plus the tab bar.
+
+Order top→bottom (useful first, marketing last):
+1 Header: LexGo mark, bell, avatar (no Profile tab).
+2 Ask field, primary action: "Muammoni yozing…" → AI; alt "Advokatdan so'rash".
+3 "Faol so'rovlar": status rows ("Mehnat nizosi · Advokat ko'rib chiqmoqda · 2 yangi xabar"); empty = "Hali so'rov yo'q" + "So'rov yuborish".
+4 Urgent: "Tezkor advokat", "Avtohalokat · maslahat"; one tap, calm.
+5 Grid: Mutaxassis topish, Hujjat tahlili, Shablonlar, Xizmatlar.
+6 Trust chips: Litsenziyali advokatlar · 15 daqiqada javob · Maxfiy.
+7 Dismissible promo "Advokat va yuristlar", referral "3/5 · 25% chegirma".
+No extra AI card; AI = ask field + centre tab only.
+
+Tab bar: Asosiy · Xizmatlar · AI (centre, raised circle, flat spark glyph on brand gradient, NO 3D gem/orb/animation) · Ishlarim · Xabarlar (badge). Labels 12pt, icons 24pt, targets ≥44pt. Glass: blurred floating pane + hairline; Light/Dark: opaque. Show active/pressed.
+
+UX: ask, status, urgent above the fold; actions in lower 60% (one hand); 16pt gutter, 4pt grid; labels ≤3 words; contrast ≥4.5:1 on gradient and glass; content scrolls under bar.
+
+Tokens per direction (real values): navy #0B1F45 → blue #0E7FD0 → cyan #00CFE8; canvas/surface/line/ink/accent/ok/warn/err per mode; ≤4 radii (10/14/20/28 + pill); Onest display + Inter UI (alt pair allowed), 28/20/17/15/13/11; 3 elevations. Glass = dim navy-tinted backdrop, frosted cards (translucent fill, 1px top hairline, no shadow), solid fallback.
+
+Directions: 1 Calm Desk (ink-first, hairline cards) · 2 Status First (status card is hero) · 3 Ask Bar (big composer, AI/Advokat switch, 2-col grid) · 4 Soft Tiles (tonal, 20–28 radii) · 5 Disciplined Gradient (navy→cyan band ≤30%, "Salom, Dilnoza" + ask; rest neutral).
+
+Deliver: overview, then per direction 3 modes, tokens, tab bar states, rationale, one pick.
+```
