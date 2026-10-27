@@ -26,6 +26,13 @@ import { dcat } from "./dcat";
 import { dcf } from "./dcf";
 import { dcl } from "./dcl";
 import { mf } from "./mf";
+import { srt } from "./srt";
+import { scfg } from "./scfg";
+import { pxp } from "./pxp";
+import { prm } from "./prm";
+import { subq } from "./subq";
+import { dset } from "./dset";
+import { ra } from "./ra";
 
 // Namespaces pre-registered per work package (see TZ_STATUS.md for owners).
 export const tzBundle = {
@@ -33,4 +40,5 @@ export const tzBundle = {
   ...tzAx, ...tzSp, ...tzDc, ...tzDm, ...tzAd,
   ...tzAw, ...tzSl, ...tzMk, ...tzUg, ...tzPy, ...tzNt, ccs, ...tzCx,
   ...cpA, ...cpC, ...cpD, ...tzCsv, ...tgp, ...so1, ...dcat, ...dcf, ...dcl, ...mf,
+  ...srt, ...scfg, ...pxp, ...prm, ...subq, ...dset, ...ra,
 };
