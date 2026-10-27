@@ -22,8 +22,8 @@
 | Fayl | Joyi |
 |---|---|
 | **AAB** (Play'ga yuklanadigan) | `mobile/play-store/lexgo-1.0.0-v3.aab` |
-| Ilova ikonkasi 512×512 | `mobile/play-store/graphics/icon-512.png` |
-| Feature graphic 1024×500 | `mobile/play-store/graphics/feature-graphic-1024x500.png` |
+| Ilova ikonkasi 512×512 | `mobile/logos/play-market/lexgo-play-icon-512.png` |
+| Feature graphic 1024×500 | `mobile/logos/play-market/lexgo-feature-graphic-1024x500.png` |
 | Skrinshotlar (telefon) | `mobile/play-store/graphics/screenshots/` |
 | Matnlar | `mobile/play-store/listing/uz.txt, ru.txt, en.txt` |
 
