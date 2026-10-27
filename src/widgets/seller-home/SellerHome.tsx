@@ -3,7 +3,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { groupTasks, n, useCabinet } from "@/entities/pro-workspace";
 import { displayName, useSession } from "@/entities/session";
 import { useResync } from "@/shared/realtime";
-import { HeroScroll } from "@/shared/ui";
+import { ErrorView, HeroScroll, Skeleton } from "@/shared/ui";
 import { HeaderExtra } from "@/shared/ui/headerExtra";
 import { useInsets } from "@/shared/lib/insets";
 import { todayKey } from "@/shared/lib/pro/dates";
@@ -44,23 +44,42 @@ export function SellerHome({ bottomPad }: { bottomPad: number }) {
   const name = displayName(session?.user);
   const pad = Math.max(bottomPad, insets.bottom + 24);
   const body = { padding: 16, gap: 14 } as const;
-  if (!c || c.limited) {
+  const meetings = c ? n(c.workload, "courts_today") : 0;
+  const today = c ? groupTasks(c.cases, todayKey()).today.length : 0;
+  const dash = (v: number | undefined) => (c ? String(v ?? 0) : "—");
+  const stats: HeroStat[] = [
+    { key: "clients", icon: "users", tint: "#1668F0", value: dash(c?.clients), label: t("shm.dash.statClients"), to: "/(tabs)/clients" },
+    { key: "cases", icon: "briefcase", tint: "#7A5CFF", value: dash(c?.cases.length), label: t("shm.dash.statCases"), to: "/pro/cases" },
+    { key: "meetings", icon: "calendar", tint: "#00A870", value: dash(meetings), label: t("shm.dash.statMeetingsShort"), to: "/pro/calendar" },
+    { key: "docs", icon: "file-text", tint: "#E0457F", value: dash(c ? n(c.workload, "documents_to_review") : 0), label: t("shm.dash.statDocs"), to: "/pro/files" },
+  ];
+  // The cabinet is not here yet (the first start, or a new build whose saved copy no longer counts) or could not be read: the same page
+  // with its counters still empty and the panels as placeholders — never the pending seller's layout, which an approved professional
+  // used to see for a moment before the real home replaced it.
+  if (!c) {
     return (
-      <HeroScroll contentContainerStyle={{ ...body, paddingBottom: pad }}>
-        <StatusBanner />
-        <ProfileStrengthCard i={0} />
-        <InfoCards />
+      <HeroScroll contentContainerStyle={{ paddingBottom: pad }}>
+        <SellerHero name={name} stats={stats} meetings={0} tasks={0} advocate={advocate} loading />
+        <View style={{ height: 16 }} />
+        <View style={body}>
+          {cabinet.isError ? <ErrorView error={cabinet.error} onRetry={() => void cabinet.refetch()} compact /> : [0, 1, 2].map((i) => <Skeleton key={i} height={i ? 120 : 150} round={22} />)}
+        </View>
       </HeroScroll>
     );
   }
-  const meetings = n(c.workload, "courts_today");
-  const today = groupTasks(c.cases, todayKey()).today.length;
-  const stats: HeroStat[] = [
-    { key: "clients", icon: "users", tint: "#1668F0", value: String(c.clients), label: t("shm.dash.statClients"), to: "/(tabs)/clients" },
-    { key: "cases", icon: "briefcase", tint: "#7A5CFF", value: String(c.cases.length), label: t("shm.dash.statCases"), to: "/pro/cases" },
-    { key: "meetings", icon: "calendar", tint: "#00A870", value: String(meetings), label: t("shm.dash.statMeetingsShort"), to: "/pro/calendar" },
-    { key: "docs", icon: "file-text", tint: "#E0457F", value: String(n(c.workload, "documents_to_review")), label: t("shm.dash.statDocs"), to: "/pro/files" },
-  ];
+  // A seller still being verified: the header row (menu, notifications, profile) stays, then where verification stands.
+  if (c.limited) {
+    return (
+      <HeroScroll contentContainerStyle={{ paddingBottom: pad }}>
+        <SellerHero name={name} stats={[]} meetings={0} tasks={0} advocate={advocate} brief />
+        <View style={body}>
+          <StatusBanner />
+          <ProfileStrengthCard i={0} />
+          <InfoCards />
+        </View>
+      </HeroScroll>
+    );
+  }
   let k = 0;
   return (
     <HeroScroll contentContainerStyle={{ paddingBottom: pad }}>

@@ -17,7 +17,9 @@ export type HeroStat = { key: string; icon: IconName; tint: string; value: strin
 // (yurist) gets violet and a briefcase badge. It colours the glow, the greeting, the plan icon and the badge.
 const ACCENT = { advocate: { main: "#F5C451", glow: "rgba(0,207,232,0.18)", chip: "rgba(245,196,81,0.14)" }, lawyer: { main: "#A99BFF", glow: "rgba(169,155,255,0.22)", chip: "rgba(169,155,255,0.16)" } } as const;
 
-export function SellerHero({ name, stats, tasks, meetings, advocate, license }: { name: string; stats: HeroStat[]; tasks: number; meetings: number; advocate: boolean; license?: string }) {
+// `brief`: only the header row, the greeting and the headline — a seller still being verified has no counters or plan yet. `loading`: the
+// cabinet has not answered yet, so today's plan is left out (its zeros would be wrong) and the counters show a dash.
+export function SellerHero({ name, stats, tasks, meetings, advocate, license, brief, loading }: { name: string; stats: HeroStat[]; tasks: number; meetings: number; advocate: boolean; license?: string; brief?: boolean; loading?: boolean }) {
   const { t } = useT();
   const insets = useInsets();
   const router = useRouter();
@@ -38,8 +40,8 @@ export function SellerHero({ name, stats, tasks, meetings, advocate, license }: 
       </View>
       <Text variant="hx" tone="white">{t("shm.dash.heroTitle")}</Text>
       <Text variant="lead" style={s.sub}>{t("shm.dash.heroSub")}</Text>
-      <View style={s.plan}><Icon name="clock" size={15} color={a.main} /><Text variant="small" style={s.planTx}>{t("shm.dash.greetSub", { meetings, tasks })}</Text></View>
-      <View style={[s.grid, g.row]} onLayout={g.onLayout}>
+      {brief || loading ? null : <View style={s.plan}><Icon name="clock" size={15} color={a.main} /><Text variant="small" style={s.planTx}>{t("shm.dash.greetSub", { meetings, tasks })}</Text></View>}
+      {brief ? null : <View style={[s.grid, g.row]} onLayout={g.onLayout}>
         {g.ready ? stats.map((x, i) => (
           <View key={x.key} style={[s.cell, g.tile]}><Fade i={i}>
             <PressableScale onPress={() => router.push(x.to as never)} accessibilityRole="button" accessibilityLabel={`${x.label}: ${x.value}`}>
@@ -54,7 +56,7 @@ export function SellerHero({ name, stats, tasks, meetings, advocate, license }: 
             </PressableScale>
           </Fade></View>
         )) : null}
-      </View>
+      </View>}
     </GradientBox>
   );
 }

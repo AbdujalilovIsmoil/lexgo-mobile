@@ -3,7 +3,7 @@ import { onlineManager } from "@tanstack/react-query";
 import { addNetworkStateListener, getNetworkStateAsync, NetworkStateType, type NetworkState } from "expo-network";
 import { onReached } from "@/shared/api";
 import { netLog } from "./netLog";
-import { noteReached } from "./reach";
+import { noteReached, reachedWithin } from "./reach";
 import { useNetStore, type NetKind, type OfflineCause } from "./netStore";
 import { describeOsPath, isDenied, readOsPath } from "./osPath";
 import { probeApi, type Probe } from "./probe";
@@ -45,11 +45,12 @@ function commit(online: boolean, type?: NetworkStateType, cause: OfflineCause = 
   }
 }
 
-const TRY_MS = 6000;
+const TRY_MS = 8000;
 const GAP_MS = 1200;
 
 // Our own reachability check: any HTTP answer from the API (even a 404) proves the internet works. Two tries a moment apart, each
-// given 6 s, so a slow first TLS handshake or a network that is still coming up does not read as "no internet".
+// given 8 s, so a slow first TLS handshake, a probe queued behind a screen's requests or a network that is still coming up does not read
+// as "no internet".
 let lastProbe = "";
 function logProbe(p: Probe): void {
   const what = p.ok ? "ok" : `fail: ${p.error}`;
@@ -100,9 +101,11 @@ export function applyNetworkState(s: NetworkState, force = false): void {
   // "no connection". Only when our own API cannot be reached either is the device offline — and then the OS is asked why, so a phone
   // that has internet but does not let LexGo use it (Mobile Data off for the app) is told so instead of "no internet".
   void (async () => {
+    const began = Date.now();
     const probe = await apiReachable();
     if (gen !== generation) return; // a newer state arrived meanwhile
-    if (probe.ok) return commit(true, s.type);
+    // A real request answered while the probes ran (they can wait behind a screen's requests): the internet works.
+    if (probe.ok || reachedWithin(Date.now() - began + 1)) return commit(true, s.type);
     const path = await readOsPath();
     if (gen !== generation) return;
     commit(false, s.type, isDenied(path) ? "denied" : "no_network", `${describeOsPath(path)} · ${probe.error}`);
@@ -139,9 +142,9 @@ export function startNetworkMonitor(): () => void {
   void recheckNetwork();
   const sub = addNetworkStateListener((s) => applyNetworkState(s));
   // A real answer from the API beats any OS flag: if the banner says offline but a request just succeeded, we are online.
-  onReached(() => {
-    noteReached();
-    if (useNetStore.getState().serverDown) useNetStore.setState({ serverDown: false }); // the API just answered: it is not down
+  onReached((status) => {
+    noteReached(status);
+    if (status < 500 && useNetStore.getState().serverDown) useNetStore.setState({ serverDown: false }); // the API just answered: it is not down
     if (!useNetStore.getState().online) {
       generation += 1;
       netLog("reached", "an API request succeeded");

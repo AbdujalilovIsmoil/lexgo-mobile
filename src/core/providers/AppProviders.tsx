@@ -1,5 +1,5 @@
 import { type ReactNode } from "react";
-import { Platform, useColorScheme } from "react-native";
+import { LogBox, Platform, useColorScheme } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { SafeAreaProvider, initialWindowMetrics } from "react-native-safe-area-context";
 import { StatusBar } from "expo-status-bar";
@@ -20,6 +20,11 @@ import { UpdateMount } from "./UpdateMount";
 
 // Dark from the very first frame; SystemChrome later follows the theme.
 void SystemUI.setBackgroundColorAsync("#03102B").catch(() => {});
+
+// expo-router resolves a launch link (in a development build: always, the dev client's own URL) after its navigator has rendered but
+// before it has mounted, and React reports that as a red error at the bottom of every development start. Nothing is lost: LexGo opens
+// links itself (core/links, LinkMount).
+if (__DEV__) LogBox.ignoreLogs(["Can't perform a React state update on a component that hasn't mounted yet"]);
 
 function Chrome({ children }: { children: ReactNode }) {
   const { dark } = useTheme();

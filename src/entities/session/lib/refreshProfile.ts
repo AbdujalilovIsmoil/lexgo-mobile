@@ -3,14 +3,14 @@ import { me } from "../api/authApi";
 import { useSessionStore } from "../model/store";
 import { isMobileAccount } from "../model/types";
 import { mergeUser } from "./accountState";
-import { probeSession } from "./bindHttp";
+import { refreshSession } from "./bindHttp";
 
 export type ProfileResult = "ok" | "restricted" | "failed";
 
 let lastAt = 0;
 export const profileAge = (): number => Date.now() - lastAt;
 
-// First /auth/refresh: a revoked device keeps a valid access token (7 days) and /auth/me still
+// First /auth/refresh (keeping the tokens it answers with): a revoked device keeps a valid access token (7 days) and /auth/me still
 // answers, only the refresh endpoint says the session is gone (→ one sign-out + notice). Then
 // GET /auth/me → the stored profile (role, assigned roles, permissions, account status, 2FA …).
 // A 403 from /auth/me with a live token means the account may not be used: the gate shows it.
@@ -19,7 +19,7 @@ export async function refreshProfile(): Promise<ProfileResult> {
   const st = useSessionStore.getState();
   const cur = st.session?.user;
   if (!cur) return "failed";
-  await probeSession();
+  await refreshSession();
   if (!useSessionStore.getState().session) return "failed";
   try {
     const u = await me();

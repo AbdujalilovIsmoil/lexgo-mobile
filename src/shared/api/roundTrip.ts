@@ -5,9 +5,9 @@
 let hook: ((ms: number) => void) | null = null;
 let inflight = 0;
 
-let reached: (() => void) | null = null;
-/** Called for every HTTP response of any status: proof that the API is reachable right now. */
-export const onReached = (fn: (() => void) | null): void => { reached = fn; };
+let reached: ((status: number) => void) | null = null;
+/** Called for every HTTP response of any status (proof that the API is reachable right now), with that status. */
+export const onReached = (fn: ((status: number) => void) | null): void => { reached = fn; };
 
 export const onRoundTrip = (fn: ((ms: number) => void) | null): void => { hook = fn; };
 
@@ -18,7 +18,7 @@ export async function timed(go: () => Promise<Response>, plain: boolean): Promis
   inflight += 1;
   try {
     const res = await go();
-    reached?.();
+    reached?.(res.status);
     if (solo && plain) hook?.(Date.now() - t0);
     return res;
   } finally {

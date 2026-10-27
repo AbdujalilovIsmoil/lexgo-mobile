@@ -10,8 +10,24 @@ import { useNetStore } from "./netStore";
 
 type Look = { icon: IconName; text: string; bg: string };
 
-// A slim pill under the status bar: offline (with the number of unsent writes), server down, slow
-// link, and a short "back online" confirmation. Never intercepts touches.
+const OFFLINE_AFTER_MS = 3000; // a switch between Wi-Fi and mobile data, or the moment after a return to the app, passes unseen
+const SLOW_AFTER_MS = 6000;
+
+// True once `on` has stayed true for `ms`; false again the moment it turns false.
+function useAfter(on: boolean, ms: number): boolean {
+  const [st, setSt] = useState({ on, ready: false });
+  if (st.on !== on) setSt({ on, ready: false });
+  useEffect(() => {
+    if (!on) return;
+    const id = setTimeout(() => setSt((x) => (x.on ? { on: true, ready: true } : x)), ms);
+    return () => clearTimeout(id);
+  }, [on, ms]);
+  return on && st.ready && st.on === on;
+}
+
+// A slim pill under the status bar: offline (with the number of unsent writes), server down, slow link, and a short "back online"
+// confirmation. A state shows only once it has lasted (offline 3 s, slow 6 s; "server down" is decided over 25 s by health.ts), and
+// "back online" only after an offline pill was actually seen. Never intercepts touches.
 export function OfflineBanner() {
   const { t } = useT();
   const insets = useInsets();
@@ -21,11 +37,16 @@ export function OfflineBanner() {
   const slow = useNetStore((s) => s.slow);
   const down = useNetStore((s) => s.serverDown);
   const restoredAt = useNetStore((s) => s.restoredAt);
+  const offlineShown = useAfter(!online, OFFLINE_AFTER_MS);
+  const slowShown = useAfter(online && !down && slow, SLOW_AFTER_MS);
+  const [seenOffline, setSeenOffline] = useState(false);
   const [seen, setSeen] = useState(restoredAt);
   const [flash, setFlash] = useState(false);
+  if (offlineShown && !seenOffline) setSeenOffline(true);
   if (seen !== restoredAt) {
     setSeen(restoredAt);
-    setFlash(restoredAt > 0);
+    setFlash(restoredAt > 0 && seenOffline);
+    setSeenOffline(false);
   }
   useEffect(() => {
     if (!flash) return;
@@ -35,11 +56,11 @@ export function OfflineBanner() {
 
   const q = queued > 0 ? ` · ${t("nt3.net.queued", { n: queued })}` : "";
   let look: Look | null = null;
-  if (!online) look = { icon: "wifi-off", text: t(cause === "denied" ? "nt3.net.denied" : "nt3.net.offline") + q, bg: "#B42318" };
-  else if (down) look = { icon: "server", text: t("nt3.net.serverDown"), bg: "#B42318" };
-  else if (slow) look = { icon: "activity", text: t("nt3.net.slow"), bg: "#B54708" };
-  else if (queued > 0) look = { icon: "upload-cloud", text: t("nt3.net.syncing", { n: queued }), bg: "#175CD3" };
-  else if (flash) look = { icon: "check-circle", text: t("nt3.net.back") + q, bg: "#067647" };
+  if (offlineShown) look = { icon: "wifi-off", text: t(cause === "denied" ? "nt3.net.denied" : "nt3.net.offline") + q, bg: "#B42318" };
+  else if (online && down) look = { icon: "server", text: t("nt3.net.serverDown"), bg: "#B42318" };
+  else if (slowShown) look = { icon: "activity", text: t("nt3.net.slow"), bg: "#B54708" };
+  else if (queued > 0 && online) look = { icon: "upload-cloud", text: t("nt3.net.syncing", { n: queued }), bg: "#175CD3" };
+  else if (flash && online) look = { icon: "check-circle", text: t("nt3.net.back") + q, bg: "#067647" };
   if (!look) return null;
   return (
     <View pointerEvents="none" style={[s.host, { top: insets.top + 2 }]}>
