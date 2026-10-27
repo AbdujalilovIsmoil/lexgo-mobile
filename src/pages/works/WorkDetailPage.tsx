@@ -6,6 +6,7 @@ import { WorkDetailSkeleton, WorkDetailView } from "@/widgets/work-detail";
 import { WorksGuest } from "@/widgets/works";
 import { AdminPage } from "@/shared/ui/admin";
 import { ErrorView } from "@/shared/ui";
+import { useRaPage } from "@/shared/remote-assist";
 import { useInsets } from "@/shared/lib/insets";
 import { useT } from "@/shared/i18n";
 
@@ -20,6 +21,7 @@ export function WorkDetailPage() {
   const { refetch } = q;
   const seen = useRef(false);
   useWorksRealtime();
+  useRaPage("client.my_works"); // remote assistance: the operator sees which page the client is on
   // Back from the rating / chat screens: the server may have changed the work.
   useFocusEffect(useCallback(() => {
     if (seen.current) void refetch();

@@ -1,7 +1,9 @@
 import { useEffect, useRef, useState } from "react";
+import { View } from "react-native";
 import { useRouter } from "expo-router";
 import { IconButton } from "@/shared/ui";
 import { ActionList, AdminPage } from "@/shared/ui/admin";
+import { RA_OPENER, raOk, useRaControl, useRaPage } from "@/shared/remote-assist";
 import { useT } from "@/shared/i18n";
 import { useKept } from "@/shared/lib/useKept";
 import { useDocSettings } from "@/entities/doc-settings";
@@ -28,6 +30,18 @@ export default function MyDocumentsPage() {
   const timer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
   useDocRealtime();
   useEffect(() => () => clearTimeout(timer.current), []);
+  // Remote assistance (`client.my_documents`): the "new" menu here, the filters and the cards in the list widgets.
+  useRaPage("client.my_documents");
+  const newRa = useRaControl({
+    id: "my_documents.new",
+    label: t("ra.el.docNew"),
+    actions: RA_OPENER,
+    state: menu ? "selected" : "ready",
+    open: () => {
+      setMenu(true);
+      return raOk();
+    },
+  });
   const go = (path: string) => router.push(path as never);
   const later = (fn: () => void) => { setOpen(""); clearTimeout(timer.current); timer.current = setTimeout(fn, HAND_OFF); };
   const filtered = !!(l.group || l.mode || l.status || l.q.trim());
@@ -41,7 +55,7 @@ export default function MyDocumentsPage() {
     ...modes.map((m) => ({ key: m.key, label: m.label, icon: m.gate.state === "locked" ? ("lock" as const) : m.icon, onPress: () => go(m.path) })),
   ];
   return (
-    <AdminPage title={t("dm1.title")} subtitle={l.countsLoading ? t("dm1.lead") : t("docSheet.count", { n: l.counts.all ?? 0 })} right={<IconButton icon="plus" label={t("dm1.new")} onPress={() => setMenu(true)} />}>
+    <AdminPage title={t("dm1.title")} subtitle={l.countsLoading ? t("dm1.lead") : t("docSheet.count", { n: l.counts.all ?? 0 })} right={<View {...newRa}><IconButton icon="plus" label={t("dm1.new")} onPress={() => setMenu(true)} /></View>}>
       <DocList
         rows={l.items}
         query={l.query}

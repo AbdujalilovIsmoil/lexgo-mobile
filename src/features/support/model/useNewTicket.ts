@@ -34,7 +34,7 @@ export function useNewTicket(initial: { message: string; topic: string }, onCrea
   });
   const reset = (i: { message: string; topic: string }) => { form.reset({ message: i.message }); setTopic(i.topic); setUrgent(false); queueMicrotask(create.reset); };
   return {
-    reset, control: form.control, message, topic, setTopic, urgent, setUrgent, topics, auto, error, submit, ai,
+    reset, form, control: form.control, message, topic, setTopic, urgent, setUrgent, topics, auto, error, submit, ai,
     ready: message.trim().length >= 3, pending: create.isPending, shared: ai.turns.some((x) => x.state === "done"),
   };
 }

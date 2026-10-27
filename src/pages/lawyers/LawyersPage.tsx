@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-import { StyleSheet, View } from "react-native";
+import { useEffect, useRef, useState } from "react";
+import { StyleSheet, View, type TextInput } from "react-native";
 import { useRouter } from "expo-router";
 import { activeFilterCount, useLawyerPages, usePromoBanners } from "@/entities/lawyer";
 import { ActiveFilters, FilterButton, FilterSheet, MarketHero, useLawyerFilterStore } from "@/features/lawyer-filter";
@@ -9,11 +9,13 @@ import { PromoRail } from "@/widgets/market-promo";
 import { MarketShowcase } from "@/widgets/market-showcase";
 import { TabPage } from "@/widgets/tab-page";
 import { useDebounced } from "@/shared/lib/useDebounced";
+import { RA_FIELD, RA_OPENER, raOk, useRaControl, useRaPage } from "@/shared/remote-assist";
 import { useT } from "@/shared/i18n";
 import { useMarketParams } from "./useMarketParams";
 
 // Marketplace directory (web /portal/client/lawyers): the hero with the AI search ("Topish") and examples, name
 // search (debounced, sent to the server), the filter bar, paid placements, "picked for you", counters, result cards.
+// Remote assistance (`client.marketplace`): the search pill and the filter button are on the operator's map.
 export function LawyersPage() {
   const { t } = useT();
   const router = useRouter();
@@ -22,10 +24,33 @@ export function LawyersPage() {
   const [aiText, setAiText] = useState(aiQuery);
   const [sheet, setSheet] = useState(false);
   const typed = useDebounced(text, 400);
+  const input = useRef<TextInput>(null);
   useMarketParams(setText, setAiText);
   useEffect(() => {
     if (!useLawyerFilterStore.getState().ai && typed !== useLawyerFilterStore.getState().filters.q) set({ q: typed });
   }, [typed, set]);
+  useRaPage("client.marketplace");
+  const searchRa = useRaControl({
+    id: "marketplace.search",
+    label: t("ra.el.search"),
+    actions: RA_FIELD,
+    state: (ai ? aiText : text).trim() ? "filled" : "empty",
+    focus: () => input.current?.focus(),
+    setValue: (v) => {
+      (ai ? setAiText : setText)(v.slice(0, 200));
+      return raOk();
+    },
+  });
+  const filtersRa = useRaControl({
+    id: "marketplace.filters",
+    label: t("ra.el.filters"),
+    actions: RA_OPENER,
+    state: sheet ? "selected" : "ready",
+    open: () => {
+      setSheet(true);
+      return raOk();
+    },
+  });
   const query = useLawyerPages(filters);
   const open = (id: string) => router.push({ pathname: "/specialist/[id]", params: { id } });
   const openServices = (id: string) => router.push({ pathname: "/specialist/[id]", params: { id, tab: "services" } }); // AI hits: straight to what he sells
@@ -40,10 +65,10 @@ export function LawyersPage() {
   const header = (
     <View style={s.head}>
       {ai || !calm ? null : <PromoRail items={banners} onOpenSeller={open} />}
-      <MarketHero value={ai ? aiText : text} onChange={ai ? setAiText : setText} onFind={() => { const v = (ai ? aiText : text).trim(); if (v) { setAiText(v); runAi(v); } }} onClear={() => { setText(""); setAiText(""); setAi(false); }} onExample={(x) => { setText(x); setAiText(x); runAi(x); }} stats={stats}>
+      <MarketHero field={searchRa} inputRef={input} value={ai ? aiText : text} onChange={ai ? setAiText : setText} onFind={() => { const v = (ai ? aiText : text).trim(); if (v) { setAiText(v); runAi(v); } }} onClear={() => { setText(""); setAiText(""); setAi(false); }} onExample={(x) => { setText(x); setAiText(x); runAi(x); }} stats={stats}>
         {ai || !calm ? null : <MarketShowcase items={items} onOpen={open} />}
       </MarketHero>
-      <FilterButton activeCount={activeFilterCount(filters)} onPress={() => setSheet(true)} />
+      <View {...filtersRa}><FilterButton activeCount={activeFilterCount(filters)} onPress={() => setSheet(true)} /></View>
       <ActiveFilters />
     </View>
   );

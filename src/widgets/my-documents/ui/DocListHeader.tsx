@@ -2,6 +2,7 @@ import { useState } from "react";
 import { ScrollView, StyleSheet, View } from "react-native";
 import { Chip, IconButton } from "@/shared/ui";
 import { ChipBar, SearchBox } from "@/shared/ui/admin";
+import { RA_OPENER, RA_PICK, RA_VIEW, raFail, raOk, useRaControl } from "@/shared/remote-assist";
 import { useT } from "@/shared/i18n";
 import type { DocMode } from "@/entities/my-document";
 import { filterChips } from "@/features/my-documents";
@@ -39,13 +40,46 @@ export function DocListHeader({ counts, modeCounts, statusCounts, total, loading
   const word = (v: string) => (t(`dm2.status.${v.toLowerCase()}`) === `dm2.status.${v.toLowerCase()}` ? v : t(`dm2.status.${v.toLowerCase()}`));
   const states = [{ value: "", label: t("dm11.allStatuses") }, ...seen.map((v) => ({ value: v, label: word(v) }))];
   const chips = filterChips({ mode, status }, { mode: (m) => t(`docSheet.modeShort.${m}`), status: word });
+  // Remote assistance: the mode switch, the search and the filter sheet are on the operator's map (`my_documents.*`).
+  const modeRa = useRaControl({
+    id: "my_documents.mode",
+    label: t("ra.el.docMode"),
+    actions: RA_PICK,
+    state: mode ? "selected" : "unselected",
+    select: (v) => {
+      const m = modes.find((x) => x.value === v.trim());
+      if (!m) return raFail("option_not_found");
+      onMode(m.value);
+      return raOk();
+    },
+  });
+  const searchRa = useRaControl({
+    id: "my_documents.search",
+    label: t("ra.el.docQuery"),
+    actions: [...RA_VIEW, "form.set_value"],
+    state: q.trim() ? "filled" : "empty",
+    setValue: (v) => {
+      onQuery(v.slice(0, 200));
+      return raOk();
+    },
+  });
+  const filtersRa = useRaControl({
+    id: "my_documents.filters",
+    label: t("ra.el.docFilters"),
+    actions: RA_OPENER,
+    state: open ? "selected" : "ready",
+    open: () => {
+      setOpen(true);
+      return raOk();
+    },
+  });
   return (
     <View style={s.col}>
-      <ChipBar options={modes.map((m) => ({ ...m, count: loading ? undefined : modeCounts[m.value || "all"] ?? 0 }))} value={mode} onChange={onMode} />
+      <View {...modeRa}><ChipBar options={modes.map((m) => ({ ...m, count: loading ? undefined : modeCounts[m.value || "all"] ?? 0 }))} value={mode} onChange={onMode} /></View>
       <DocScope counts={counts} value={group} onChange={onGroup} loading={loading} />
       <View style={s.search}>
-        <View style={s.flex}><SearchBox value={q} onChangeText={onQuery} placeholder={t("dm1.searchPh")} /></View>
-        <IconButton icon="sliders" label={t("docSheet.filter")} badge={!!mode || !!status} onPress={() => setOpen(true)} />
+        <View style={s.flex} {...searchRa}><SearchBox value={q} onChangeText={onQuery} placeholder={t("dm1.searchPh")} /></View>
+        <View {...filtersRa}><IconButton icon="sliders" label={t("docSheet.filter")} badge={!!mode || !!status} onPress={() => setOpen(true)} /></View>
       </View>
       {chips.length ? (
         <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={s.chips}>

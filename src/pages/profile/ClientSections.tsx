@@ -4,8 +4,12 @@ import Animated, { FadeInLeft, FadeInRight } from "react-native-reanimated";
 import { IdentityCard } from "@/widgets/identity";
 import { TelegramCard, TwoFactorCard, NotifPrefsCard } from "@/widgets/security";
 import { ActivityPanel, CardsPanel, ComplaintsPanel, EventsPanel, FamilyPanel, PaymentsPanel, PersonalPanel, PROFILE_TABS, ProfileTabs, SessionsPanel, SubscriptionPanel, type ProfileTab } from "@/widgets/client-profile";
+import { RA_PICK, raFail, raOk, useRaControl } from "@/shared/remote-assist";
+import { useT } from "@/shared/i18n";
 
 const order = (t: ProfileTab) => PROFILE_TABS.findIndex((x) => x.key === t);
+// The tabs remote assistance may switch to. Security, payments and the activity log are never opened by an operator (TZ RA §18).
+const RA_TABS: ProfileTab[] = ["profile", "complaints"];
 
 // The web client profile (portal/client/profile) split into five tabs; inside each tab the sections keep the web order.
 //   Profil:      Shaxsiy ma'lumotlar → Shaxsni tasdiqlash → Oila a'zolari
@@ -15,12 +19,25 @@ const order = (t: ProfileTab) => PROFILE_TABS.findIndex((x) => x.key === t);
 //   Faollik:     Xavfsizlik hodisalari → Harakatlar jurnali
 // Switching slides the new tab's content in from the side the tab lies on, while the tab bar's background glides.
 export function ClientSections() {
+  const { t } = useT();
   const [nav, setNav] = useState<{ tab: ProfileTab; dir: 1 | -1 }>({ tab: "profile", dir: 1 });
   const { tab, dir } = nav;
   const go = (next: ProfileTab) => setNav({ tab: next, dir: order(next) >= order(tab) ? 1 : -1 });
+  const tabsRa = useRaControl({
+    id: "profile.tabs",
+    label: t("ra.el.profileTabs"),
+    actions: RA_PICK,
+    state: "selected",
+    select: (v) => {
+      const next = RA_TABS.find((x) => x === v.trim());
+      if (!next) return raFail("option_not_allowed");
+      go(next);
+      return raOk();
+    },
+  });
   return (
     <View style={{ paddingHorizontal: 16, marginTop: 20, gap: 14 }}>
-      <ProfileTabs value={tab} onChange={go} />
+      <View {...tabsRa}><ProfileTabs value={tab} onChange={go} /></View>
       <Animated.View key={tab} entering={(dir === 1 ? FadeInRight : FadeInLeft).duration(320)} style={{ gap: 14 }}>
         {tab === "profile" ? <><PersonalPanel /><IdentityCard /><FamilyPanel /></> : null}
         {tab === "security" ? <><TwoFactorCard /><TelegramCard /><NotifPrefsCard /><SessionsPanel /></> : null}

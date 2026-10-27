@@ -2,6 +2,7 @@ import type { ReactElement } from "react";
 import { FlatList, StyleSheet, View } from "react-native";
 import { EmptyState, ErrorView, Skeleton } from "@/shared/ui";
 import { useInsets } from "@/shared/lib/insets";
+import { RA_OPENER, raOk, useRaControl } from "@/shared/remote-assist";
 import { useT } from "@/shared/i18n";
 import { sectionize, type DocRow } from "@/entities/my-document";
 import type { PageInfo } from "@/features/my-documents";
@@ -22,6 +23,21 @@ type Props = {
   onBrowse: () => void;
 };
 
+// A card on the remote-assistance map while it is on screen: the operator may point at it or open its detail sheet (named by its public id).
+function Item({ row, index, onOpen, onSend }: { row: DocRow; index: number; onOpen: (id: string) => void; onSend: (id: string) => void }) {
+  const { t } = useT();
+  const ra = useRaControl({
+    id: `my_documents.item.${row.id}`,
+    label: t("ra.el.doc", { id: row.workId || row.id.slice(0, 8) }),
+    actions: RA_OPENER,
+    open: () => {
+      onOpen(row.id);
+      return raOk();
+    },
+  });
+  return <View {...ra}><DocListItem row={row} index={index} onOpen={onOpen} onSend={onSend} /></View>;
+}
+
 // The list body: skeleton cards → error → empty / filtered-empty → sections of cards, pull to refresh, and ten more on
 // scroll-end through the counter footer.
 export function DocList({ rows, query, page, filtered, header, onOpen, onSend, onReset, onBrowse }: Props) {
@@ -39,7 +55,7 @@ export function DocList({ rows, query, page, filtered, header, onOpen, onSend, o
     <FlatList
       data={data}
       keyExtractor={(i) => i.id}
-      renderItem={({ item, index }) => (item.head ? <DocSectionHead kind={item.head} n={item.n ?? 0} /> : item.row ? <DocListItem row={item.row} index={index} onOpen={onOpen} onSend={onSend} /> : <View />)}
+      renderItem={({ item, index }) => (item.head ? <DocSectionHead kind={item.head} n={item.n ?? 0} /> : item.row ? <Item row={item.row} index={index} onOpen={onOpen} onSend={onSend} /> : <View />)}
       ItemSeparatorComponent={() => <View style={s.sep} />}
       ListHeaderComponent={header}
       ListEmptyComponent={empty}

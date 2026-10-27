@@ -1,4 +1,4 @@
-import type { ReactNode } from "react";
+import type { ReactNode, Ref } from "react";
 import { ScrollView, StyleSheet, TextInput, View } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import Animated, { FadeInDown } from "react-native-reanimated";
@@ -8,12 +8,13 @@ import { brand, gradient, radius } from "@/shared/theme";
 import { useT } from "@/shared/i18n";
 import { HeroStats, type Stats } from "./HeroStats";
 
-type Props = { value: string; onChange: (v: string) => void; onFind: () => void; onClear: () => void; onExample: (x: string) => void; stats: Stats; children?: ReactNode };
+// `field` / `inputRef`: the search pill as a remote-assistance control (measured for the outline, focusable).
+type Props = { value: string; onChange: (v: string) => void; onFind: () => void; onClear: () => void; onExample: (x: string) => void; stats: Stats; children?: ReactNode; field?: { ref: Ref<View>; collapsable: false }; inputRef?: Ref<TextInput> };
 
 // The web directory's hero as ONE card: the "Marketplace" kicker, the headline with its gradient words, the lead, the white
 // search pill (AI tile, "->": runs the AI search; a name typed here still filters the list), the popular services, the
 // three counters and — inside the same card — the featured specialists (`children`, the carousel).
-export function MarketHero({ value, onChange, onFind, onClear, onExample, stats, children }: Props) {
+export function MarketHero({ value, onChange, onFind, onClear, onExample, stats, children, field, inputRef }: Props) {
   const { t } = useT();
   const services = useMarketMeta().data?.services ?? [];
   const seen = new Set<string>();
@@ -25,9 +26,9 @@ export function MarketHero({ value, onChange, onFind, onClear, onExample, stats,
         <View style={s.kicker}><Icon name="shield" size={14} color={brand.cy} /><Text variant="caption" weight="bold" style={s.kickT}>{t("mk1.heroKicker")}</Text></View>
         <Text variant="h2" tone="white">{t("mk1.heroA")}<Text variant="h2" style={s.hl}>{t("mk1.heroHl")}</Text>{t("mk1.heroB")}</Text>
         <Text variant="small" style={s.lead}>{t("mk1.heroLead")}</Text>
-        <View style={s.field}>
+        <View style={s.field} {...field}>
           <LinearGradient colors={["#7A5CFF", brand.b600, brand.cy]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={s.ai}><Icon name="star" size={18} color="#FFFFFF" /></LinearGradient>
-          <TextInput value={value} onChangeText={onChange} onSubmitEditing={onFind} returnKeyType="search" placeholder={t("mk1.heroPh")} placeholderTextColor="#7D8CA3" accessibilityLabel={t("mk1.aiChip")} style={[s.input, singleLineText]} />
+          <TextInput ref={inputRef} value={value} onChangeText={onChange} onSubmitEditing={onFind} returnKeyType="search" placeholder={t("mk1.heroPh")} placeholderTextColor="#7D8CA3" accessibilityLabel={t("mk1.aiChip")} style={[s.input, singleLineText]} />
           {value ? <PressableScale onPress={onClear} hitSlop={10} accessibilityLabel={t("flt.clear")}><Icon name="x-circle" size={18} color="#7D8CA3" /></PressableScale> : null}
           <PressableScale onPress={onFind} accessibilityRole="button" accessibilityLabel={t("mk1.find")}>
             <LinearGradient colors={[...gradient.primary]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={s.go}><Icon name="arrow-right" size={20} color="#FFFFFF" /></LinearGradient>

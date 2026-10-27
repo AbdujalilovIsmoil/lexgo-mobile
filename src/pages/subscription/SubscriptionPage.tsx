@@ -7,13 +7,17 @@ import { useIsAuthed } from "@/entities/session";
 import { useChoosePlan } from "@/features/choose-plan";
 import { AiPlansSection, AutopayPanel, Benefits, BillingHistory, CompareTable, FaqList, MyPlanCard, OtherPlansSection, PendingRequests, TelegramRequestSheet, TopCards } from "@/widgets/subscription";
 import { EmptyState, ErrorView, Header, Screen } from "@/shared/ui";
+import { useRaPage, useRaScroller } from "@/shared/remote-assist";
 import { useT } from "@/shared/i18n";
 
 // Client tariffs, in the order of the web page: current state and "my plan" (TZ §12), auto-pay, LexGo.AI, benefits,
 // comparison, FAQ, other tariffs + gift, billing history. Checkout (pay / Telegram) is a sheet.
+// Remote assistance (`client.subscription`): the term switches, the tariff cards and their choose buttons are on the operator's map.
 export function SubscriptionPage() {
   const c = useColors();
   const { t } = useT();
+  useRaPage("client.subscription");
+  const { view, anchor } = useRaScroller();
   const { data, isLoading, error, refetch, isRefetching } = usePlans();
   const ent = useEntitlements();
   const ch = useChoosePlan();
@@ -30,7 +34,8 @@ export function SubscriptionPage() {
   return (
     <View style={[s.fill, { backgroundColor: c.canvas }]}>
       <Header title={t("profile.subscription")} />
-      <Screen topInset={false} refreshing={isRefetching} onRefresh={refresh} contentContainerStyle={s.content}>
+      <Screen {...view} topInset={false} refreshing={isRefetching} onRefresh={refresh} contentContainerStyle={s.content}>
+        <View {...anchor} />
         {signedIn ? <TopCards /> : null}
         {signedIn ? <MyPlanCard /> : null}
         {signedIn && ent.data ? <PendingRequests items={ent.data.pending} /> : null}

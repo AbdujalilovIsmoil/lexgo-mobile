@@ -11,6 +11,7 @@ import { DocCatalog } from "@/widgets/doc-catalog";
 import { MoreWays, NewDocOrder, ServicesHub, useServicesHub } from "@/widgets/services-hub";
 import { TabPage, useTabPad, TabScrollView } from "@/widgets/tab-page";
 import { useColors } from "@/shared/theme";
+import { RA_OPENER, raOk, useRaControl, useRaPage } from "@/shared/remote-assist";
 import { useT } from "@/shared/i18n";
 import { CatalogSheets } from "./CatalogSheets";
 import { useDeepService } from "./useDeepService";
@@ -29,11 +30,26 @@ export function ServicesPage() {
   const [newDoc, setNewDoc] = useState(false);
   const dl = useTemplateDownload();
   useDeepService(String(p.service ?? ""), setOrder);
+  // Remote assistance (`client.documents`): the catalogue's search and filters (DocCatalog) and the new-document order are on the map.
+  useRaPage("client.documents");
+  const newRa = useRaControl(
+    {
+      id: "documents.new_order",
+      label: t("ra.el.newDoc"),
+      actions: RA_OPENER,
+      state: newDoc ? "selected" : "ready",
+      open: () => {
+        setNewDoc(true);
+        return raOk();
+      },
+    },
+    !pre,
+  );
   const sheets = <CatalogSheets order={order} onOrder={setOrder} newDoc={newDoc} onNewDoc={setNewDoc} dl={dl} pre={pre ?? undefined} packageId={p.package ? String(p.package) : undefined} />;
   if (pre) return <AdvocateServices pre={pre} onClear={() => setPre(null)} onOrder={setOrder} onNewDoc={() => setNewDoc(true)} sheets={sheets} />;
   return (
     <TabPage title={t("dcat.title")} subtitle={t("dcat.lead")}>
-      <DocCatalog top={<View style={s.top}><CatalogActions /><NewDocOrder onNewDoc={() => setNewDoc(true)} /></View>} />
+      <DocCatalog top={<View style={s.top}><CatalogActions /><View {...newRa}><NewDocOrder onNewDoc={() => setNewDoc(true)} /></View></View>} />
       {sheets}
     </TabPage>
   );

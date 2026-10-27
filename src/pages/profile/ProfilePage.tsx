@@ -9,6 +9,7 @@ import { ProfileExtrasMenu, ProfileSummary } from "@/widgets/profile-extras";
 import { useTabRole } from "@/widgets/tab-bar/useTabRole";
 import { GuestWelcome } from "@/widgets/guest-welcome";
 import { HeroScroll } from "@/shared/ui";
+import { useRaPage } from "@/shared/remote-assist";
 import { ClientSections } from "./ClientSections";
 
 function ClientHeader({ user }: { user: NonNullable<ReturnType<typeof useSession>>["user"] }) {
@@ -23,6 +24,7 @@ export function ProfilePage() {
   const role = useTabRole();
   const client = role === "client";
   const seller = role === "seller"; // a professional's links live in the sidebar
+  useRaPage(client ? "client.profile" : ""); // remote assistance: the section tabs and the personal-data editor (ClientSections)
   if (!session) return <GuestWelcome />;
   return (
     <HeroScroll style={{ backgroundColor: c.canvas }} contentContainerStyle={{ paddingBottom: insets.bottom + 130 }}>

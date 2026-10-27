@@ -1,11 +1,12 @@
 import { useEffect, useMemo, useRef, useState, type ReactElement } from "react";
-import { ActivityIndicator, FlatList, StyleSheet, View } from "react-native";
+import { ActivityIndicator, FlatList, StyleSheet, View, type TextInput } from "react-native";
 import { useRouter } from "expo-router";
 import { matchTemplates, useCatalogTemplates, useTemplateCategories, type DocTemplate } from "@/entities/doc-template";
 import { isOfflineError } from "@/shared/api";
 import { trackDoc } from "@/shared/analytics";
 import { PAGE, growWindow, nextCount } from "@/shared/lib/pageWindow";
 import { useDebounced } from "@/shared/lib/useDebounced";
+import { RA_FIELD, RA_OPENER, raOk, useRaControl } from "@/shared/remote-assist";
 import { Button, EmptyState, ErrorView, Skeleton, Text } from "@/shared/ui";
 import { useT } from "@/shared/i18n";
 import { useTabClearance, useTabHeader } from "@/widgets/tab-page";
@@ -30,6 +31,29 @@ export function DocCatalog({ top: cards, footer, onOpen }: { top?: ReactElement 
   const [lang, setLang] = useState("");
   const [text, setText] = useState("");
   const [sheet, setSheet] = useState(false);
+  const input = useRef<TextInput>(null);
+  // Remote assistance: the search field and the category / language sheet are on the operator's map.
+  const searchRa = useRaControl({
+    id: "documents.search",
+    label: t("ra.el.docSearch"),
+    actions: RA_FIELD,
+    state: text.trim() ? "filled" : "empty",
+    focus: () => input.current?.focus(),
+    setValue: (v) => {
+      setText(v.slice(0, 200));
+      return raOk();
+    },
+  });
+  const filtersRa = useRaControl({
+    id: "documents.filters",
+    label: t("ra.el.catalogFilters"),
+    actions: RA_OPENER,
+    state: sheet ? "selected" : "ready",
+    open: () => {
+      setSheet(true);
+      return raOk();
+    },
+  });
   const list = useCatalogTemplates(cat);
   const pull = usePullRefresh(list.refetch);
   const needle = useDebounced(text, 300);
@@ -98,7 +122,7 @@ export function DocCatalog({ top: cards, footer, onOpen }: { top?: ReactElement 
         keyboardDismissMode="on-drag"
         showsVerticalScrollIndicator={false}
         renderItem={({ item }) => "kind" in item
-          ? <CatalogSearch value={text} onChange={setText} onFilters={() => setSheet(true)} active={active} chips={chips} line={line} />
+          ? <CatalogSearch value={text} onChange={setText} onFilters={() => setSheet(true)} active={active} chips={chips} line={line} field={searchRa} filters={filtersRa} inputRef={input} />
           : <CatalogRow item={item} cats={info} onOpen={() => open(item)} showLang={languages.length > 1} plain={plain} />}
       />
       <CatalogFilterSheet visible={sheet} onClose={() => setSheet(false)} cats={info} keys={list.keys} languages={languages} cat={cat} lang={lang} onCat={setCat} onLang={setLang} onReset={reset} total={rows.length} />

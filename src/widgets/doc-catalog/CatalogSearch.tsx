@@ -1,23 +1,26 @@
-import { useState } from "react";
+import { useState, type Ref } from "react";
 import { StyleSheet, TextInput, View } from "react-native";
 import { radius, useColors } from "@/shared/theme";
 import { Chip, IconButton, Icon, PressableScale, singleLineText, Text } from "@/shared/ui";
 import { useT } from "@/shared/i18n";
 
-type Props = { value: string; onChange: (v: string) => void; onFilters: () => void; active: number; chips: { key: string; label: string; clear: () => void }[]; line: string };
+type Box = { ref: Ref<View>; collapsable: false };
+// `field` / `filters` / `inputRef`: the search field and the filter button as remote-assistance controls (measured, focusable).
+type Props = { value: string; onChange: (v: string) => void; onFilters: () => void; active: number; chips: { key: string; label: string; clear: () => void }[]; line: string; field?: Box; filters?: Box; inputRef?: Ref<TextInput> };
 
 // The pinned top of the catalogue: the search field, the filter button (a dot while a filter is on), the active filters as chips that clear
 // one by one, and a live line under it ("23 results of 989"). It stays on screen while the list scrolls.
-export function CatalogSearch({ value, onChange, onFilters, active, chips, line }: Props) {
+export function CatalogSearch({ value, onChange, onFilters, active, chips, line, field, filters, inputRef }: Props) {
   const { t } = useT();
   const c = useColors();
   const [focus, setFocus] = useState(false);
   return (
     <View style={[s.wrap, { backgroundColor: c.canvas }]}>
       <View style={s.row}>
-        <View style={[s.field, { backgroundColor: c.surface2, borderColor: focus ? c.accent : c.line }]}>
+        <View style={[s.field, { backgroundColor: c.surface2, borderColor: focus ? c.accent : c.line }]} {...field}>
           <Icon name="search" size={20} color={focus ? c.accent : c.gray} />
           <TextInput
+            ref={inputRef}
             value={value}
             onChangeText={onChange}
             onFocus={() => setFocus(true)}
@@ -35,7 +38,7 @@ export function CatalogSearch({ value, onChange, onFilters, active, chips, line 
             <PressableScale onPress={() => onChange("")} hitSlop={10} accessibilityRole="button" accessibilityLabel={t("dcat.clearSearch")} style={s.clear}><Icon name="x" size={16} tone="gray" /></PressableScale>
           ) : null}
         </View>
-        <IconButton icon="sliders" size={52} label={t("dcat.filters")} badge={active > 0} onPress={onFilters} />
+        <View {...filters}><IconButton icon="sliders" size={52} label={t("dcat.filters")} badge={active > 0} onPress={onFilters} /></View>
       </View>
       {chips.length ? <View style={s.chips}>{chips.map((x) => <Chip key={x.key} label={x.label} active icon="x" onPress={x.clear} />)}</View> : null}
       {line ? <Text variant="caption" tone="gray" accessibilityLiveRegion="polite">{line}</Text> : null}

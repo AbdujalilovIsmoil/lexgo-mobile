@@ -7,9 +7,11 @@ import { Avatar, Button, Text, toast } from "@/shared/ui";
 import { pickImages } from "@/shared/lib/upload";
 import { toAvatarDataUrl } from "@/shared/lib/pay/avatar";
 import { maskPhone } from "@/shared/lib/phone";
+import { RA_FINAL, useRaControl, useRaField } from "@/shared/remote-assist";
 import { useT } from "@/shared/i18n";
 
 // Name, e-mail and photo of the signed-in client (PUT /clients/me), validated by profileSchema. The phone is the login: read-only.
+// Remote assistance: name and e-mail are personal fields on the map, Save can only be shown to the client; the photo never is on it.
 export function ProfileEditForm({ profile, onSaved }: { profile: ClientProfile; onSaved: () => void }) {
   const { t } = useT();
   const f = useAppForm(profileSchema, { name: profile.name, email: profile.email });
@@ -18,6 +20,9 @@ export function ProfileEditForm({ profile, onSaved }: { profile: ClientProfile; 
   const save = useProfileEdit(onSaved);
   const v = f.watch();
   const changed = v.name.trim() !== profile.name || v.email.trim() !== profile.email || photo !== profile.avatarUrl;
+  const nameRa = useRaField(f, "name", { id: "profile.full_name", label: t("ra.el.fullName"), sensitivity: "personal" });
+  const emailRa = useRaField(f, "email", { id: "profile.email", label: t("ra.el.email"), sensitivity: "personal" });
+  const saveRa = useRaControl({ id: "profile.save", label: t("ra.el.save"), actions: RA_FINAL, state: changed ? "ready" : "disabled" });
   const choose = async () => {
     setBusy(true);
     try {
@@ -41,9 +46,9 @@ export function ProfileEditForm({ profile, onSaved }: { profile: ClientProfile; 
           {photo ? <Button title={t("py9.photoRemove")} icon="trash-2" variant="line" size="sm" onPress={() => setPhoto("")} /> : null}
         </View>
       </View>
-      <FormInput control={f.control} name="name" label={t("py9.name")} autoCapitalize="words" placeholder={t("py9.namePh")} />
-      <FormInput control={f.control} name="email" label={t("py9.email")} keyboardType="email-address" autoCapitalize="none" autoCorrect={false} placeholder="you@email.com" />
-      <Button title={t("adm.save")} variant="gradient" full disabled={!changed} loading={save.isPending} onPress={() => void submit()} />
+      <View {...nameRa}><FormInput control={f.control} name="name" label={t("py9.name")} autoCapitalize="words" placeholder={t("py9.namePh")} /></View>
+      <View {...emailRa}><FormInput control={f.control} name="email" label={t("py9.email")} keyboardType="email-address" autoCapitalize="none" autoCorrect={false} placeholder="you@email.com" /></View>
+      <View {...saveRa}><Button title={t("adm.save")} variant="gradient" full disabled={!changed} loading={save.isPending} onPress={() => void submit()} /></View>
     </View>
   );
 }
