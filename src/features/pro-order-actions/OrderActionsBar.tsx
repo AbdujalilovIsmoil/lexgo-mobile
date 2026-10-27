@@ -15,7 +15,7 @@ type Act = { key: string; label: string; icon: IconName; danger?: boolean; onPre
 // The next actions the backend allows (accept · start · set the delivery time after the review · complete · supplemental payment ·
 // request cancellation · decline). The first is the big button, the rest sit under "More". The server has the last word: a TZ code is
 // explained in words and a 409 re-reads the order.
-export function OrderActionsBar({ order, acceptAllowed }: { order: ProOrder; acceptAllowed: boolean }) {
+export function OrderActionsBar({ order, acceptAllowed, onShowItem }: { order: ProOrder; acceptAllowed: boolean; onShowItem?: (itemId: string) => void }) {
   const { t } = useT();
   const a = actionsOf(order, acceptAllowed);
   const [step, setStep] = useState<Step>(null);
@@ -42,7 +42,7 @@ export function OrderActionsBar({ order, acceptAllowed }: { order: ProOrder; acc
       <StartWorkSheet visible={step?.kind === "start"} onClose={() => setStep(null)} orderId={order.id} startUrl={order.flow.startUrl} />
       <ReviewDurationSheet visible={step?.kind === "review"} onClose={() => setStep(null)} orderId={order.id} />
       <CancelRequestSheet visible={step?.kind === "cancel"} onClose={() => setStep(null)} orderId={order.id} />
-      <CompleteSheet order={order} visible={step?.kind === "complete"} onClose={() => setStep(null)} />
+      <CompleteSheet order={order} visible={step?.kind === "complete"} onClose={() => setStep(null)} onShowItem={onShowItem} />
       <AdditionalSheet order={order} visible={step?.kind === "extra"} onClose={() => setStep(null)} />
     </View>
   );

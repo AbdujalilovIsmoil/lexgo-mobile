@@ -6,20 +6,21 @@ import { useFlowMutation } from "@/features/market-flow";
 import { FormInput, useAppForm } from "@/shared/form";
 import { useSheetReset } from "@/shared/lib/useSheetReset";
 import { useColors } from "@/shared/theme";
-import { Button, Icon, Text } from "@/shared/ui";
+import { Button, Icon, PressableScale, Text } from "@/shared/ui";
 import { FormSheet } from "@/shared/ui/admin";
 import { useT } from "@/shared/i18n";
 import { FileChips } from "./FileChips";
 import { completeSchema } from "./schema";
 import { useResultFiles } from "./useResultFiles";
 
-type Props = { order: ProOrder; visible: boolean; onClose: () => void };
+// `onShowItem` takes the seller to a checklist item that blocks the completion (TZ §9.7: the returned items are links).
+type Props = { order: ProOrder; visible: boolean; onClose: () => void; onShowItem?: (itemId: string) => void };
 
 // Seller completion (TZ §9): result text and/or files; empty is blocked here and by the backend (marketplace_result_required). While a
 // required checklist item is still open (or skipped where skipping is not allowed) the sheet lists those items instead of sending; the
 // backend's own refusal (required_checklist_incomplete) is shown the same way. The client does not accept anything: completion opens the
 // 15-minute rating window straight away and asks the client for the final payment.
-export function CompleteSheet({ order, visible, onClose }: Props) {
+export function CompleteSheet({ order, visible, onClose, onShowItem }: Props) {
   const { t } = useT();
   const c = useColors();
   const f = useAppForm(completeSchema, { text: "" });
@@ -44,13 +45,18 @@ export function CompleteSheet({ order, visible, onClose }: Props) {
   const empty = !completionBody(text, refs);
   const submit = f.handleSubmit((v) => { if (!completionBody(v.text, refs)) return; done.mutate({ text: v.text }); });
   if (blocked.length) {
+    const show = (id: string) => {
+      onClose();
+      if (id) onShowItem?.(id);
+    };
     return (
-      <FormSheet visible={visible} onClose={onClose} title={t("mf.ck.blockTitle")} subtitle={t("mf.ck.blockLead", { n: blocked.length })} onSubmit={onClose} submitLabel={t("mf.ck.open")} snaps={[0.6, 0.9]}>
+      <FormSheet visible={visible} onClose={onClose} title={t("mf.ck.blockTitle")} subtitle={t("mf.ck.blockLead", { n: blocked.length })} onSubmit={() => show(blocked.find((b) => b.id)?.id ?? "")} submitLabel={t("mf.ck.open")} snaps={[0.6, 0.9]}>
         {blocked.map((b, i) => (
-          <View key={b.id || b.title || i} style={{ flexDirection: "row", alignItems: "center", gap: 10, padding: 12, borderRadius: 14, backgroundColor: c.warnBg }}>
+          <PressableScale key={b.id || b.title || i} onPress={() => show(b.id)} disabled={!b.id} accessibilityRole="button" style={{ flexDirection: "row", alignItems: "center", gap: 10, padding: 12, borderRadius: 14, backgroundColor: c.warnBg }}>
             <Icon name="alert-circle" size={16} color={c.warn} />
             <Text variant="small" style={{ flex: 1 }}>{b.title || t("mf.ck.blockedItem", { n: i + 1 })}</Text>
-          </View>
+            {b.id ? <Icon name="chevron-right" size={16} color={c.warn} /> : null}
+          </PressableScale>
         ))}
       </FormSheet>
     );

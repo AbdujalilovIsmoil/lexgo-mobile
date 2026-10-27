@@ -13,5 +13,5 @@ export const useMarketOrders = (enabled: boolean) =>
 export const useMarketOrder = (key: string, enabled: boolean, pollMs = 0) =>
   useQuery({ queryKey: marketKeys.detail(key), queryFn: () => getMarketOrder(key), enabled: enabled && !!key, staleTime: 15 * 1000, refetchOnMount: "always", refetchInterval: pollMs || false });
 
-export const useStatusHistory = (orderId: string) =>
-  useQuery({ queryKey: marketKeys.history(orderId), queryFn: () => getStatusHistory(orderId), enabled: !!orderId, staleTime: 30 * 1000 });
+export const useStatusHistory = (orderId: string, enabled = true) =>
+  useQuery({ queryKey: marketKeys.history(orderId), queryFn: () => getStatusHistory(orderId), enabled: enabled && !!orderId, staleTime: 30 * 1000 });

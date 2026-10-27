@@ -22,13 +22,16 @@ export const getRuntimeCaps = async (): Promise<RuntimeCaps> => normCaps(await h
 
 export type CheckPatch = { status: CheckStatus; comment?: string; files?: CheckFile[]; images?: CheckFile[] };
 
-// PATCH one checklist item: done / skipped (the reason goes in `comment`) / back to pending, with its proof. Answers with the item or the
-// whole list; the caller refetches either way.
+// One proof file as TZ §9.5 names it ({file_id, file_name, download_url}) and as the web sends it ({id, name}) — the backend reads either.
+const proof = (f: CheckFile) => ({ id: f.id, name: f.name, file_id: f.id, file_name: f.name, download_url: f.url });
+
+// PATCH one checklist item (TZ §9.5): done (with its comment and proof), skipped (the reason goes in `comment`, no proof) or back to
+// pending (everything cleared). The whole lists are sent, so a removed photo is removed. Answers with the item or the whole list.
 export async function patchCheckItem(orderId: string, itemId: string, p: CheckPatch) {
   const body: Record<string, unknown> = { status: p.status };
   if (p.comment !== undefined) body.comment = p.comment.trim();
-  if (p.files) body.files = p.files.filter((f) => f.id).map((f) => ({ id: f.id, name: f.name }));
-  if (p.images) body.images = p.images.filter((f) => f.id).map((f) => ({ id: f.id, name: f.name }));
+  if (p.files) body.files = p.files.filter((f) => f.id).map(proof);
+  if (p.images) body.images = p.images.filter((f) => f.id).map(proof);
   const d = asDict(await http(`/marketplace/orders/${enc(orderId)}/checklist/${enc(itemId)}`, { method: "PATCH", body }));
   return Object.keys(asDict(d.item)).length ? normCheckItem(d.item) : null;
 }

@@ -122,6 +122,7 @@ export const mf = {
       empty: "No payments yet",
     },
     ck: {
+      file: "File",
       title: "Checklist",
       leadClient: "What the specialist has done shows up here right away.",
       leadSeller: "Finish each item or skip it with a reason. The client sees every change right away.",
@@ -491,6 +492,20 @@ export const mf = {
       manualHint: "An operator approves the refund, not a payment provider. The result will appear here.",
       updated: "Updated: {date}",
       loadFailed: "Couldn't load the refund status.",
+    },
+    tl: {
+      reassignment: "The call center changed the specialist",
+      reason: "Reason: {reason}",
+      refund: "Refund: {status}",
+      by: "{actor}",
+      resolution: {
+        offered: "The call center offered a choice of how to continue",
+        expired: "The time to choose ran out",
+        chose: { reassign: "Chosen: another specialist", refund: "Chosen: full refund" },
+      },
+      cancelOpened: "Cancellation requested",
+      cancelResolved: "The cancellation request was reviewed",
+      cancelAction: { continue: "the order continues", new_price: "new price", cancel: "cancelled", reassign: "specialist changed", refund: "money will be refunded" },
     },
     price: {
       title: "What the price is made of",

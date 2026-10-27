@@ -1,3 +1,5 @@
+import { useEffect, useRef, useState } from "react";
+import { View, type ScrollView } from "react-native";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { callPath } from "@/entities/call";
 import { actionsOf, useOrderLive, useProOrder, useProOrders } from "@/entities/pro-order";
@@ -10,6 +12,7 @@ import { ActiveCallBar } from "@/widgets/secure-chat";
 import { EmptyState } from "@/shared/ui";
 import { AdminPage, QueryBoundary } from "@/shared/ui/admin";
 import { PageScroll } from "@/shared/ui/sel";
+import { afterSheet } from "@/shared/lib/sel";
 import { useT } from "@/shared/i18n";
 
 // One marketplace order (read fresh by id — a push opens it directly): the assignment answer with its countdown, where it stands, the
@@ -35,11 +38,25 @@ export default function ProOrderPage() {
     void one.refetch();
     void list.refetch();
   };
+  // A checklist item that blocks the completion: scroll to the checklist and mark that item for a few seconds (TZ §9.7).
+  const scroll = useRef<ScrollView>(null);
+  const checklistY = useRef(0);
+  const [focus, setFocus] = useState("");
+  const unmark = useRef<ReturnType<typeof setTimeout> | null>(null);
+  useEffect(() => () => {
+    if (unmark.current) clearTimeout(unmark.current);
+  }, []);
+  const showItem = (itemId: string) => {
+    setFocus(itemId);
+    afterSheet(() => scroll.current?.scrollTo({ y: Math.max(0, checklistY.current - 12), animated: true }));
+    if (unmark.current) clearTimeout(unmark.current);
+    unmark.current = setTimeout(() => setFocus(""), 5000);
+  };
   return (
-    <AdminPage title={order?.workId || t("nav1.menu.proOrders")} footer={order && hasActions ? <OrderActionsBar order={order} acceptAllowed={allowed} /> : undefined}>
+    <AdminPage title={order?.workId || t("nav1.menu.proOrders")} footer={order && hasActions ? <OrderActionsBar order={order} acceptAllowed={allowed} onShowItem={showItem} /> : undefined}>
       <QueryBoundary query={q}>
         {order && phase ? (
-          <PageScroll onRefresh={refresh} refreshing={one.isRefetching}>
+          <PageScroll onRefresh={refresh} refreshing={one.isRefetching} scrollRef={scroll}>
             <OrderSummaryCard order={order} />
             <AssignmentCard order={order} flow={order.flow} acceptAllowed={allowed} />
             {phase !== "assigned" ? <FlowLead phase={phase} role="seller" /> : null}
@@ -48,7 +65,11 @@ export default function ProOrderPage() {
             {order.canChat && !phaseFinished(phase) ? <ActiveCallBar roomId={order.roomId} onJoin={(id) => router.push(callPath(order.roomId, id) as never)} style={{ borderRadius: 14 }} /> : null}
             <AdditionalCard order={order} />
             <BuyerCard order={order} phase={phase} onChat={() => router.push(`/chat/${order.roomId}` as never)} onCall={(k) => void sc.call(k)} calling={sc.calling} />
-            <ChecklistCard orderId={order.id} url={order.flow.checklistUrl} role="seller" roomId={order.roomId} editable={phase === "in_progress" || phase === "rework"} locked={phaseFinished(phase)} enabled={!phaseBeforePayment(phase) && phase !== "replacing" && phase !== "cancelled"} />
+            {order.flow.checklistUrl && !phaseBeforePayment(phase) && phase !== "replacing" && phase !== "cancelled" ? (
+              <View onLayout={(e) => (checklistY.current = e.nativeEvent.layout.y)}>
+                <ChecklistCard orderId={order.id} url={order.flow.checklistUrl} role="seller" roomId={order.roomId} editable={phase === "in_progress" || phase === "rework"} locked={phaseFinished(phase)} highlightId={focus} />
+              </View>
+            ) : null}
             <OrderQuoteCard order={order} />
             <OrderResultCard order={order} />
             <PaymentsCard orderId={order.id} url={order.flow.financialsUrl} role="seller" enabled={phase !== "assigned"} />

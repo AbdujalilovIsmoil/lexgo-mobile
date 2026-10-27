@@ -117,6 +117,13 @@ describe("caps & timeline", () => {
     expect(c).toEqual({ advancePercent: 10, finalPercent: 90, providerEnabled: false, sellerResponseMinutes: 30, ratingWindowMinutes: 15, lowRatingAutoComplaint: true, warrantyChoices: ["replacement", "full_refund"] });
     expect(normCaps({}).warrantyChoices).toEqual([]);
   });
+  it("keeps the event's type, actor, choice and the client-visible reason", () => {
+    const t = normTimeline({ items: [
+      { id: "r", type: "reassignment", status: "active", at: "2026-10-26T18:30:00Z", actor: { name: "Call-markaz" }, data: { status: "waiting_seller_response", client_visible_reason: "Mutaxassis band" } },
+      { id: "a", type: "assignment_resolution", status: "active", at: "2026-10-26T18:00:00Z", data: { status: "selected", choice: "refund" } },
+    ] });
+    expect(t.map((e) => [e.type, e.choice, e.note, e.actor])).toEqual([["assignment_resolution", "refund", "", ""], ["reassignment", "", "Mutaxassis band", "Call-markaz"]]);
+  });
   it("takes the step from data.status, oldest first", () => {
     const t = normTimeline({ items: [{ id: "2", type: "status", status: "active", at: "2026-10-16T14:41:53Z", data: { status: "completed", note: "tugadi!" } }, { id: "1", type: "status", status: "active", at: "2026-10-15T10:00:00Z", data: { status: "in_progress" } }] });
     expect(t.map((e) => [e.status, e.note])).toEqual([["in_progress", ""], ["completed", "tugadi!"]]);

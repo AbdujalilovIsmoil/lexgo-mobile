@@ -1,6 +1,6 @@
 import { normFlow } from "@/entities/market-flow";
-import { asDict, asStr, uzs } from "@/shared/lib/json";
-import type { MarketOrder } from "../model/marketTypes";
+import { asArr, asDict, asStr, uzs } from "@/shared/lib/json";
+import type { MarketOrder, Reassignment } from "../model/marketTypes";
 import { normOrderExtra } from "./marketExtra";
 
 const ROOM_RE = /\/secure-chats\/([^/?#]+)/;
@@ -44,5 +44,14 @@ export function normMarketOrder(v: unknown, clientActions: string[] = []): Marke
     secondOpinionUrl: asStr(d.second_opinion_promotion_url) || asStr(asDict(d.actions).second_opinion_promotion),
     ...normOrderExtra(d, details),
     flow: normFlow(d),
+    reassignments: normReassignments(d.reassignment_history ?? details.reassignment_history),
   };
+}
+
+// reassignment_history[]: the client-visible part only (no internal operator notes are sent to the client).
+export function normReassignments(v: unknown): Reassignment[] {
+  return asArr(v).map((x) => {
+    const r = asDict(x);
+    return { at: asStr(r.reassigned_at ?? r.created_at), reason: asStr(r.client_visible_reason).trim(), status: asStr(r.status).toLowerCase(), acceptedAt: asStr(r.accepted_at) };
+  }).filter((r) => r.at);
 }

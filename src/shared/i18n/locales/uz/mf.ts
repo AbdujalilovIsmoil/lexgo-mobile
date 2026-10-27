@@ -124,6 +124,7 @@ export const mf = {
       empty: "Hali to'lov yo'q",
     },
     ck: {
+      file: "Fayl",
       title: "Nazorat ro'yxati",
       leadClient: "Ijrochi bajargan ishlar shu yerda darhol ko'rinadi.",
       leadSeller: "Har bir bandni bajaring yoki sababini yozib o'tkazing. Mijoz o'zgarishlarni darhol ko'radi.",
@@ -493,6 +494,20 @@ export const mf = {
       manualHint: "Qaytarishni to'lov tizimi emas, operator tasdiqlaydi. Natija shu yerda ko'rinadi.",
       updated: "Yangilangan: {date}",
       loadFailed: "Qaytarish holatini yuklab bo'lmadi.",
+    },
+    tl: {
+      reassignment: "Mutaxassis call-markaz tomonidan almashtirildi",
+      reason: "Sabab: {reason}",
+      refund: "Pulni qaytarish: {status}",
+      by: "{actor}",
+      resolution: {
+        offered: "Call-markaz davom etish yo'lini tanlashni taklif qildi",
+        expired: "Tanlov muddati tugadi",
+        chose: { reassign: "Tanlandi: boshqa mutaxassis", refund: "Tanlandi: pulni to'liq qaytarish" },
+      },
+      cancelOpened: "Bekor qilish so'raldi",
+      cancelResolved: "Bekor qilish so'rovi ko'rib chiqildi",
+      cancelAction: { continue: "buyurtma davom etadi", new_price: "yangi narx", cancel: "bekor qilindi", reassign: "mutaxassis almashtirildi", refund: "pul qaytariladi" },
     },
     price: {
       title: "Narx nimadan iborat",

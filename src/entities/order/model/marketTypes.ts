@@ -50,7 +50,10 @@ export type MarketOrder = {
   addPay: OrderAddPay | null;
   secondOpinionUrl: string; // second_opinion_promotion_url / actions.second_opinion_promotion; "" (null) → the promotion is not rendered
   flow: FlowOrder; // TZ.md: contact gate, payment plan, checklist / financials / warranty links, complaint window, assignment deadline
+  reassignments: Reassignment[]; // reassignment_history: when the call center changed the specialist, and the reason the client may see
 };
+
+export type Reassignment = { at: string; reason: string; status: string; acceptedAt: string };
 
 // What POST …/purchase-request answers with.
 export type MarketPurchase = { orderId: string; workId: string; status: string; amount: number; currency: string; telegramSent: boolean };

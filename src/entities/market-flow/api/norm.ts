@@ -268,13 +268,23 @@ export function normCaps(v: unknown): RuntimeCaps {
   };
 }
 
-// GET …/timeline: { items: [{ id, type, status, at, data: { status, note } }] } — the record's `status` is "active", the step is in data.
+// GET …/timeline: { items: [{ id, type, status, at, actor?, data: { status, note, … } }] } — for a status step the record's own `status`
+// is "active" and the step is in data. The client's copy carries no operator-only fields (the backend strips them).
 export function normTimeline(v: unknown): FlowEvent[] {
   return asArr(asDict(v).items).map((x) => {
     const r = asDict(x);
     const data = asDict(r.data ?? r.payload);
-    return { id: asStr(r.id), type: asStr(r.type).toLowerCase(), status: first(data.status, data.event, r.event, r.status).toLowerCase(), note: asStr(data.note ?? data.comment).trim(), at: first(r.at, r.created_at) };
-  }).filter((e) => e.status || e.note).sort((a, b) => (a.at < b.at ? -1 : 1));
+    const actor = asDict(r.actor ?? data.actor);
+    return {
+      id: asStr(r.id),
+      type: asStr(r.type).toLowerCase() || "status",
+      status: first(data.status, data.event, r.event, r.status).toLowerCase(),
+      note: first(data.client_visible_reason, data.note, data.comment, data.reason, data.message),
+      at: first(r.at, r.created_at),
+      actor: first(actor.name, actor.full_name, data.actor_name),
+      choice: first(data.choice, data.action, data.resolution, data.selected_choice).toLowerCase(),
+    };
+  }).filter((e) => e.status || e.note || e.type !== "status").sort((a, b) => (a.at < b.at ? -1 : 1));
 }
 
 // GET …/refund: { refund: { request_id, amount, currency, status, provider_mode, provider_enabled, updated_at }, provider_enabled }.

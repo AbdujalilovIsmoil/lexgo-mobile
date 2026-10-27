@@ -107,3 +107,11 @@ describe("buildTimeline", () => {
     expect(t[0].note).toBe("ok");
   });
 });
+
+describe("reassignment history", () => {
+  it("reads only what the client may see, dated", () => {
+    const { normReassignments } = jest.requireActual("../api/marketNorm") as typeof import("../api/marketNorm");
+    expect(normReassignments([{ reassigned_at: "2026-10-26T18:30:00Z", client_visible_reason: " Mutaxassis band ", status: "accepted", accepted_at: "2026-10-26T18:40:00Z" }, { status: "x" }]))
+      .toEqual([{ at: "2026-10-26T18:30:00Z", reason: "Mutaxassis band", status: "accepted", acceptedAt: "2026-10-26T18:40:00Z" }]);
+  });
+});

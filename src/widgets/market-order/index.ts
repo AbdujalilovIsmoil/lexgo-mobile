@@ -9,3 +9,4 @@ export { ResolutionCard } from "./ResolutionCard";
 export { PriceCard } from "./PriceCard";
 export { WorkTimeCard } from "./WorkTimeCard";
 export { RefundCard } from "./RefundCard";
+export { eventText, eventFailed } from "./timelineText";

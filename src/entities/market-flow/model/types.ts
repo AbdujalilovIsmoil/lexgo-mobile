@@ -126,8 +126,9 @@ export type RuntimeCaps = {
 export type RefundStatus = "pending" | "processing" | "succeeded" | "failed" | "not_charged";
 export type OrderRefund = { requestId: string; amount: number; currency: string; status: RefundStatus | string; manual: boolean; updatedAt: string };
 
-// GET …/timeline
-export type FlowEvent = { id: string; type: string; status: string; note: string; at: string };
+// GET …/timeline: one history for the order — status steps, the call center's offer and the choice, cancellation reviews, reassignments
+// and refunds (`type`), with who did it when the backend says (`actor`) and the choice or action taken.
+export type FlowEvent = { id: string; type: string; status: string; note: string; at: string; actor: string; choice: string };
 
 // The order's place in the flow, for the one-line explanation on top of the detail screen, the badge and the track. `cancelReview` is the
 // cancellation review, `reviewing` the seller's review stage, `resolution` the call center's choice for the client, `replacing` a paid
