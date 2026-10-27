@@ -41,7 +41,9 @@ export type Msg = {
   replyToId: string;
   urgentId: string; // the Tezkor Advokat request a system / result message is about
   pending?: boolean; // optimistic bubble waiting for the server
+  queued?: boolean; // a file / voice note waiting for the upload before it to finish (one file per request, in order)
   failed?: boolean;
+  refused?: boolean; // the server will not take this file (type, size, broken file): sending it again cannot help
   progress?: number; // 0..1 while a file / voice note uploads
   localUri?: string; // the picked / recorded file, playable before the upload finishes
 };

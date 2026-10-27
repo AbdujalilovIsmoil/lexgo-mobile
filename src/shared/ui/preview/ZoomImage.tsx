@@ -2,10 +2,10 @@ import { Image, StyleSheet, useWindowDimensions } from "react-native";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import Animated, { useAnimatedStyle, useSharedValue, withTiming } from "react-native-reanimated";
 
-type Props = { uri: string; width?: number; height?: number };
+type Props = { uri: string; width?: number; height?: number; onError?: () => void };
 
-// Pinch to zoom, drag while zoomed, double-tap to toggle 2.5x.
-export function ZoomImage({ uri, width, height }: Props) {
+// Pinch to zoom, drag while zoomed, double-tap to toggle 2.5x. `onError`: the picture could not be decoded.
+export function ZoomImage({ uri, width, height, onError }: Props) {
   const win = useWindowDimensions();
   const scale = useSharedValue(1);
   const base = useSharedValue(1);
@@ -45,7 +45,7 @@ export function ZoomImage({ uri, width, height }: Props) {
   return (
     <GestureDetector gesture={Gesture.Simultaneous(pinch, pan, tap)}>
       <Animated.View style={[s.box, { width: w, height: h }, style]}>
-        <Image source={{ uri }} style={StyleSheet.absoluteFill} resizeMode="contain" />
+        <Image source={{ uri }} style={StyleSheet.absoluteFill} resizeMode="contain" onError={onError} />
       </Animated.View>
     </GestureDetector>
   );

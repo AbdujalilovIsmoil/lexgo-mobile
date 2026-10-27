@@ -7,12 +7,14 @@ import type { Msg } from "../model/types";
 
 const ICON: Record<FileKind, IconName> = { image: "image", pdf: "file-text", office: "file", audio: "music", video: "film", text: "file-text", other: "paperclip" };
 
-// A document inside a bubble: type icon, name, size — or the upload progress while it is being sent.
+// A document inside a bubble: type icon, name, size — or, while it is being sent, its place in the upload line and the progress.
 export function FileCard({ msg, fg, onOpen }: { msg: Msg; fg: string; onOpen: () => void }) {
   const { t } = useT();
   const f = msg.file;
   const pct = Math.round((msg.progress ?? 0) * 100);
-  const sub = msg.failed ? t("admChat.sendFailed") : msg.pending ? (pct > 0 ? `${pct}%` : t("admChat.sending")) : fmtSize(f?.size ?? 0) || t("admChat.tapOpen");
+  const failed = msg.refused ? t("admChat.refused") : t("admChat.sendFailed");
+  const sending = msg.queued ? t("admChat.queued") : pct > 0 ? `${pct}%` : t("admChat.sending");
+  const sub = msg.failed ? failed : msg.pending ? sending : fmtSize(f?.size ?? 0) || t("admChat.tapOpen");
   return (
     <PressableScale onPress={onOpen} disabled={msg.pending} style={s.row}>
       <View style={[s.icon, { backgroundColor: fg + "26" }]}>{msg.pending ? <ActivityIndicator color={fg} /> : <Icon name={ICON[kindOf(f?.name ?? "", f?.mime)]} size={20} color={fg} />}</View>

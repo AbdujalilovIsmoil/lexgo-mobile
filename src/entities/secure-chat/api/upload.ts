@@ -1,7 +1,6 @@
 import { File, UploadType } from "expo-file-system";
 import { API_BASE } from "@/shared/config/env";
-import { ApiError, accessToken, http } from "@/shared/api";
-import { asDict, asStr } from "@/shared/lib/json";
+import { accessToken, http, parseErrorBody } from "@/shared/api";
 import type { Msg, PickedFile } from "../model/types";
 import { normMsg } from "./normalize";
 import { roomPath } from "./chatApi";
@@ -24,8 +23,9 @@ async function send(roomId: string, file: PickedFile, o: Opts) {
   });
 }
 
-// POST …/messages/upload (multipart) with real upload progress and cancel. A 401 refreshes the token once
-// (any authed call does it) and retries; other refusals surface the server's message (415 executable, 402…).
+// POST …/messages/upload (multipart, one file per request) with real upload progress and cancel. A 401 refreshes the token once
+// (any authed call does it) and retries. A refusal keeps the whole error body (the quota 413 is an object, not a sentence), so
+// uploadRefusal() can explain it in the user's language.
 export async function uploadMessage(roomId: string, file: PickedFile, o: Opts): Promise<Msg> {
   let res = await send(roomId, file, o);
   if (res.status === 401) {
@@ -33,6 +33,6 @@ export async function uploadMessage(roomId: string, file: PickedFile, o: Opts): 
     res = await send(roomId, file, o);
   }
   const body: unknown = (() => { try { return JSON.parse(res.body); } catch { return {}; } })();
-  if (res.status < 200 || res.status >= 300) throw new ApiError(res.status, asStr(asDict(body).detail) || undefined);
+  if (res.status < 200 || res.status >= 300) throw parseErrorBody(res.status, body);
   return normMsg(body);
 }

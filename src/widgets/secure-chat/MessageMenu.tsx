@@ -6,13 +6,15 @@ import { useT } from "@/shared/i18n";
 
 type Props = { msg: Msg | null; onClose: () => void; onReply: (m: Msg) => void; onRetry: (id: string) => void; onDiscard: (id: string) => void };
 
-// Long-press menu of a message: reply, copy, share the attachment — or retry / discard a failed or stuck send.
+// Long-press menu of a message: reply, copy, share the attachment — or retry / discard a failed or stuck send (no retry for a file
+// the server refused by its type or size: it would be refused again).
 // There is no edit / delete here on purpose: the backend has no such endpoint and sends no can_edit / can_delete flag.
 export function MessageMenu({ msg, onClose, onReply, onRetry, onDiscard }: Props) {
   const { t } = useT();
   const actions: ActionItem[] = [];
   if (msg?.failed) {
-    actions.push({ key: "retry", icon: "refresh-cw", label: t("admChat.retry"), onPress: () => onRetry(msg.id) }, { key: "drop", icon: "trash-2", label: t("admChat.discard"), danger: true, onPress: () => onDiscard(msg.id) });
+    if (!msg.refused) actions.push({ key: "retry", icon: "refresh-cw", label: t("admChat.retry"), onPress: () => onRetry(msg.id) });
+    actions.push({ key: "drop", icon: "trash-2", label: t("admChat.discard"), danger: true, onPress: () => onDiscard(msg.id) });
   } else if (msg?.pending) {
     actions.push({ key: "cancel", icon: "x-circle", label: t("ms4.cancelSend"), danger: true, onPress: () => onDiscard(msg.id) });
   } else if (msg) {

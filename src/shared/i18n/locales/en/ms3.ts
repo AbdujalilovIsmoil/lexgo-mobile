@@ -11,5 +11,5 @@ export const ms3: Messages["ms3"] = {
   recordFailed: "Couldn't record. Try again.",
   micDenied: "Microphone access is off",
   micDeniedText: "Turn the microphone on in Settings to send voice messages.",
-  badType: "This file type can't be sent (executables and scripts).",
+  badType: "This file type can't be sent.",
 };

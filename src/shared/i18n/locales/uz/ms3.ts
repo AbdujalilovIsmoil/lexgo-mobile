@@ -9,5 +9,5 @@ export const ms3 = {
   recordFailed: "Yozib bo'lmadi. Qayta urining.",
   micDenied: "Mikrofonga ruxsat yo'q",
   micDeniedText: "Ovozli xabar yuborish uchun sozlamalarda mikrofonni yoqing.",
-  badType: "Bunday fayl yuborilmaydi (bajariladigan fayl yoki skript).",
+  badType: "Bu turdagi fayl yuborilmaydi.",
 };

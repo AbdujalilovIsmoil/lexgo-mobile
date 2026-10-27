@@ -13,7 +13,8 @@ export { callIdOf, previewText } from "./model/preview";
 export { maskContacts } from "./lib/maskContacts";
 export { fmtSize } from "./lib/fmtSize";
 
-export { MAX_MB, CHAT_EXTS } from "./lib/fileRules";
+export { MAX_MB, CHAT_EXTS, screenFiles } from "./lib/fileRules";
+export { uploadRefusal, refusalText, REFUSAL_MS, type Refusal } from "./lib/refusal";
 export { roleKey } from "./lib/roleLabel";
 export { listStamp } from "./lib/stamp";
 export { RoomRow, ROOM_AVATAR } from "./ui/RoomRow";
