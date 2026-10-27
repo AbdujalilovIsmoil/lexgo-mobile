@@ -32,7 +32,8 @@ export type FlowOrder = {
   review: OrderReview | null;
   duration: FlowDuration | null; // the delivery duration set when the work (or its review) started
   clientStatusMessage: string; // the backend's own neutral line for the client (never "a lawyer is being searched")
-  waitingReplacement: boolean; // a paid order handed to another seller who has not accepted yet: no seller shown, no chat
+  waitingReplacement: boolean;
+  assignmentStatus: string; // assignment_status: payment_pending → waiting_seller_response → accepted / declined / expired (lower case) // a paid order handed to another seller who has not accepted yet: no seller shown, no chat
   canRequestCancellation: boolean;
 };
 
@@ -75,6 +76,9 @@ export type OrderWarranty = { status: string; resolution: string; reason: string
 // GET …/financials — the payment rows by backend stage/status, the snapshot plan, and (for the seller) commission and settlement.
 export type PayKind = "advance" | "final" | "full" | "additional" | "refund" | "other";
 export type FinPayment = { id: string; stage: string; kind: PayKind; status: string; amount: number; paid: number; createdAt: string };
+// The seller's payout stages (Enterprise contract §9): acceptance, the first required checklist stage, completion after the rating window.
+// `net` is what reaches the seller (the completion stage after LexGo's commission); every figure is the backend's.
+export type FinPayout = { id: string; stage: string; status: string; gross: number; commission: number; net: number; paidAt: string };
 export type Financials = {
   gross: number;
   currency: string;
@@ -82,6 +86,7 @@ export type Financials = {
   final: PayPart | null;
   commission: { percent: number | null; platform: number; net: number } | null;
   payments: FinPayment[];
+  payouts: FinPayout[]; // only in the seller's (and staff's) copy — the client's financials are privacy-filtered
   settlement: string;
   historical: boolean;
 };
@@ -115,10 +120,14 @@ export type RuntimeCaps = {
   advancePercent: number | null;
   finalPercent: number | null;
   providerEnabled: boolean;
+  providers: string[]; // payments.providers: telegram_manual, payme, click — the online ones are offered only while providerEnabled
   sellerResponseMinutes: number | null;
   ratingWindowMinutes: number | null;
   lowRatingAutoComplaint: boolean;
   warrantyChoices: WarrantyResolution[];
+  materialTransferConsent: boolean; // warranty.material_transfer_requires_client_consent
+  // payouts: the seller's stages as percentages of the order (the money itself always comes from the order's financials).
+  payouts: { acceptance: number; firstChecklist: number; completion: number; commission: number; completionPayable: number } | null;
 };
 
 // GET …/refund ("Refund state"): pending → processing → succeeded, or failed; not_charged when nothing was paid. `manual` = no payment

@@ -1,20 +1,23 @@
 import { StyleSheet, View } from "react-native";
-import { useFinancials, type FinPayment, type Financials } from "@/entities/market-flow";
+import { useFinancials, useRuntimeCaps, type FinPayment, type Financials, type RuntimeCaps } from "@/entities/market-flow";
 import { Button, Pill, Skeleton, Text, type PillTone } from "@/shared/ui";
 import { FactRows, SectionCard } from "@/shared/ui/admin";
 import { fmtMoney } from "@/shared/lib/money";
 import { useT } from "@/shared/i18n";
 
 const TONE: Record<string, PillTone> = { paid: "ok", pending: "warn", failed: "err", cancelled: "gray", reversed: "gray", refunded: "gray", expired: "gray" };
+const PAYOUT_TONE: Record<string, PillTone> = { paid: "ok", pending: "warn", created: "warn", ready: "blue", held: "warn", cancelled: "gray", reversed: "gray", recovery_required: "err" };
 const SETTLE_TONE: Record<string, PillTone> = { settled: "ok", released: "ok", ready_for_release: "ok", held: "warn", pending: "warn", complaint_hold: "err", rework_hold: "warn", refund_required: "err", refunded: "gray" };
 
 type Props = { orderId: string; url: string; role: "client" | "seller"; enabled?: boolean };
 
 // TZ §6 "Financials": the order's payment rows exactly as the backend lists them (stage + status), the plan of the financial snapshot
-// and, for the seller, LexGo's commission, the net and the settlement — all backend figures, nothing is computed here.
+// and, for the seller, the payout stages, LexGo's commission, the net and the settlement — all backend figures, nothing is computed here.
+// The client's copy is privacy-filtered by the backend (Enterprise contract §10) and the seller-only rows are never drawn for them.
 export function PaymentsCard({ orderId, url, role, enabled = true }: Props) {
   const { t } = useT();
   const q = useFinancials(orderId, url, enabled && !!url);
+  const caps = useRuntimeCaps(role === "seller" && enabled).data;
   if (!url || !enabled) return null;
   const money = (n: number) => `${fmtMoney(n)} ${t("common.currency")}`;
   const word = (prefix: string, v: string, tones: Record<string, PillTone>) => {
@@ -30,15 +33,15 @@ export function PaymentsCard({ orderId, url, role, enabled = true }: Props) {
           <Button title={t("common.retry")} size="sm" variant="soft" icon="refresh-cw" onPress={() => void q.refetch()} />
         </View>
       ) : (
-        <Body f={q.data} role={role} money={money} word={word} />
+        <Body f={q.data} role={role} caps={role === "seller" ? caps : undefined} money={money} word={word} />
       )}
     </SectionCard>
   );
 }
 
-type BodyProps = { f: Financials; role: "client" | "seller"; money: (n: number) => string; word: (prefix: string, v: string, tones: Record<string, PillTone>) => React.ReactNode };
+type BodyProps = { f: Financials; role: "client" | "seller"; caps?: RuntimeCaps; money: (n: number) => string; word: (prefix: string, v: string, tones: Record<string, PillTone>) => React.ReactNode };
 
-function Body({ f, role, money, word }: BodyProps) {
+function Body({ f, role, caps, money, word }: BodyProps) {
   const { t } = useT();
   const label = (p: FinPayment) => {
     if (p.kind === "advance" && f.advance?.percent != null) return t("mf.pay.stage.advancePct", { pct: f.advance.percent });
@@ -72,6 +75,7 @@ function Body({ f, role, money, word }: BodyProps) {
         ) : null;
       })}
       {!f.payments.length && !planned.length ? <Text variant="small" tone="gray">{t("mf.pay.empty")}</Text> : null}
+      {role === "seller" ? <Payouts f={f} caps={caps} money={money} word={word} /> : null}
       <FactRows rows={[
         { label: t("mf.pay.total"), value: f.gross > 0 ? money(f.gross) : undefined },
         ...(role === "seller" && f.commission ? [
@@ -82,6 +86,30 @@ function Body({ f, role, money, word }: BodyProps) {
       ]} />
       {split && f.advance?.percent != null && f.final?.percent != null ? <Text variant="caption" tone="gray">{t("mf.pay.plan", { a: f.advance.percent, b: f.final.percent })}</Text> : null}
       <Text variant="caption" tone="gray2">{f.historical ? t("mf.pay.historical") : t("mf.pay.fixed")}</Text>
+    </View>
+  );
+}
+
+// The seller's money in stages (Enterprise contract §9): each payout row as the backend lists it — what reaches the seller (after the
+// commission on the completion stage) and its status; before any row exists, the platform's stage plan in percent from the runtime caps.
+function Payouts({ f, caps, money, word }: Pick<BodyProps, "f" | "caps" | "money" | "word">) {
+  const { t } = useT();
+  const stage = (k: string) => (t(`mf.pay.payout.${k}`) === `mf.pay.payout.${k}` ? t("mf.pay.payout.other") : t(`mf.pay.payout.${k}`));
+  const plan = caps?.payouts;
+  if (!f.payouts.length && !plan) return null;
+  return (
+    <View style={s.col}>
+      <Text variant="small" weight="bold">{t("mf.pay.payouts")}</Text>
+      {f.payouts.map((p) => (
+        <View key={p.id || p.stage} style={s.row}>
+          <View style={s.flex}>
+            <Text variant="small" weight="semibold">{stage(p.stage)}</Text>
+            <Text variant="caption" tone="gray">{money(p.net > 0 ? p.net : p.gross)}{p.commission > 0 ? ` · ${t("mf.pay.commission")}: ${money(p.commission)}` : ""}</Text>
+          </View>
+          {word("mf.pay.status", p.status, PAYOUT_TONE)}
+        </View>
+      ))}
+      {plan ? <Text variant="caption" tone="gray">{t("mf.pay.payoutPlan", { a: plan.acceptance, b: plan.firstChecklist, c: plan.completion, k: plan.commission })}</Text> : null}
     </View>
   );
 }

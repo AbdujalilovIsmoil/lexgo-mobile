@@ -2,7 +2,7 @@ import { useState } from "react";
 import { z } from "zod";
 import { codeOf, createOrderWarranty, WARRANTY_KINDS, type WarrantyKind } from "@/entities/market-flow";
 import { FormInput, rules, useAppForm } from "@/shared/form";
-import { FormSheet, SelectField } from "@/shared/ui/admin";
+import { FormSheet, SelectField, SwitchField } from "@/shared/ui/admin";
 import { Text } from "@/shared/ui";
 import { useSheetReset } from "@/shared/lib/useSheetReset";
 import { useT } from "@/shared/i18n";
@@ -13,19 +13,21 @@ const schema = z.object({ reason: rules.text(5, 1000) });
 
 // The LexGo warranty of one order ("Warranty queue"): what went wrong and the details. The call center decides the outcome (another
 // specialist or a full refund), so the client does not pick it; the screen then says "under review", never an immediate success. A claim
-// that is already open (409 warranty_already_open) is shown as such.
+// that is already open (409 warranty_already_open) is shown as such. Handing the materials to a replacement specialist needs the client's
+// own consent (Enterprise contract §14): off until they switch it on.
 export function OrderWarrantySheet({ visible, onClose, orderId, url, onSent }: Props) {
   const { t } = useT();
   const [kind, setKind] = useState<WarrantyKind | "">("");
   const [tried, setTried] = useState(false);
+  const [transfer, setTransfer] = useState(false);
   const f = useAppForm(schema, { reason: "" });
-  useSheetReset(visible, () => { f.reset({ reason: "" }); setKind(""); setTried(false); });
+  useSheetReset(visible, () => { f.reset({ reason: "" }); setKind(""); setTried(false); setTransfer(false); });
   const done = () => {
     onClose();
     onSent();
   };
   const send = useFlowMutation({
-    mutationFn: (reason: string) => createOrderWarranty(orderId, url, { kind: kind as WarrantyKind, reason }),
+    mutationFn: (reason: string) => createOrderWarranty(orderId, url, { kind: kind as WarrantyKind, reason, allowTransfer: transfer }),
     onSuccess: done,
     onError: (e) => {
       if (codeOf(e) === "warranty_already_open") done();
@@ -41,6 +43,7 @@ export function OrderWarrantySheet({ visible, onClose, orderId, url, onSent }: P
       <SelectField label={t("mf.wr.whyLabel")} value={kind} onChange={setKind} placeholder={t("mf.wr.pickReason")} error={tried && !kind ? t("mf.wr.pickReason") : undefined} options={WARRANTY_KINDS.map((k) => ({ value: k, label: t(`mf.wr.why.${k}`) }))} />
       <FormInput control={f.control} name="reason" label={t("mf.wr.reasonLabel")} placeholder={t("mf.wr.reasonPh")} multiline maxLength={1000} style={{ minHeight: 100, textAlignVertical: "top" }} />
       <Text variant="caption" tone="gray">{t("mf.wr.reasonHelp")}</Text>
+      <SwitchField label={t("mf.wr.transfer")} hint={t("mf.wr.transferHint")} value={transfer} onChange={setTransfer} />
     </FormSheet>
   );
 }

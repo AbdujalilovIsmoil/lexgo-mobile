@@ -13,28 +13,30 @@ const THREE_HOURS = 3 * 3600_000;
 type Props = { flow: FlowOrder; phase: FlowPhase; role: "client" | "seller" };
 
 // The time the order runs on, from the backend's own timestamps: the review stage's countdown (TZ §7, §16.1 — neutral, a warning under
-// three hours, then "the call center is resolving this delay", never below zero), the rework's deadline with the call center's note, or
-// the delivery deadline of the work with the agreed duration. Each side sees only its own review note.
+// three hours, then "the call center is resolving this delay", never below zero), the rework's deadline with the call center's note, the
+// delivery deadline of the work with the agreed duration, or — for the client of a paid order not accepted yet — the seller's answer window
+// (Enterprise contract §4, §7: past it the call center carries the order on, never "no lawyer found"). Each side sees only its own note.
 export function WorkTimeCard({ flow, phase, role }: Props) {
   const { t, locale } = useT();
   const rework = phase === "rework" ? flow.complaint : null;
   const review = phase === "reviewing" ? flow.review : null;
   const due = phase === "in_progress" ? flow.expectedCompletedAt : "";
-  const deadline = review?.deadlineAt || rework?.reworkDeadlineAt || due;
-  if (!review && !rework && !due) return null;
+  const answer = role === "client" && (phase === "assigned" || phase === "replacing") ? flow.acceptanceDeadlineAt : "";
+  const deadline = review?.deadlineAt || rework?.reworkDeadlineAt || due || answer;
+  if (!review && !rework && !due && !answer) return null;
   const note = review ? (role === "seller" ? review.sellerNote : review.clientNote) : rework?.resolutionNote ?? "";
   return (
     <Countdown
       deadline={deadline}
-      icon={review ? "search" : rework ? "rotate-cw" : "calendar"}
-      title={t(review ? "mf.rv.title" : rework ? "mf.work.reworkTitle" : "mf.work.dueTitle")}
+      icon={review ? "search" : rework ? "rotate-cw" : answer ? "user-check" : "calendar"}
+      title={t(review ? "mf.rv.title" : rework ? "mf.work.reworkTitle" : answer ? "mf.work.answerTitle" : "mf.work.dueTitle")}
       warnUnder={review ? THREE_HOURS : 0}
-      tick={review || rework ? 1000 : 30_000}
-      expiredText={t(review ? "mf.rv.expired" : "mf.work.overdue")}
+      tick={review || rework || answer ? 1000 : 30_000}
+      expiredText={t(review ? "mf.rv.expired" : answer ? "mf.work.answerExpired" : "mf.work.overdue")}
       lines={[
         rework && rework.reworkIteration > 1 ? t("mf.work.reworkRound", { n: rework.reworkIteration }) : "",
-        !review && deadline ? t(rework ? "mf.work.reworkDue" : "mf.work.due", { date: fmtDateTime(deadline, locale) }) : "",
-        !review && !rework && flow.duration ? t("mf.work.duration", { d: durationText(flow.duration, t) }) : "",
+        !review && !answer && deadline ? t(rework ? "mf.work.reworkDue" : "mf.work.due", { date: fmtDateTime(deadline, locale) }) : "",
+        !review && !rework && !answer && flow.duration ? t("mf.work.duration", { d: durationText(flow.duration, t) }) : "",
       ]}
       note={note}
       noteTitle={t(rework ? "mf.work.reworkNote" : "mf.rv.note")}

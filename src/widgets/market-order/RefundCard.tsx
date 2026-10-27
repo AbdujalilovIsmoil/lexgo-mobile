@@ -7,7 +7,7 @@ import { fmtMoney } from "@/shared/lib/money";
 import { fmtDateTime } from "@/shared/lib/format";
 import { useT } from "@/shared/i18n";
 
-const TONE: Record<string, PillTone> = { pending: "warn", processing: "blue", succeeded: "ok", failed: "err", not_charged: "gray" };
+const TONE: Record<string, PillTone> = { pending: "warn", processing: "blue", operator_required: "warn", succeeded: "ok", refunded: "ok", failed: "err", not_charged: "gray" };
 
 // "Refund state" (TZ): where the order's refund stands — the amount in the response currency, the status, and "Manual processing" while
 // no payment provider runs refunds (provider_enabled false). Shown while the order is being refunded and after; realtime refund events
@@ -32,7 +32,7 @@ export function RefundCard({ orderId, enabled }: { orderId: string; enabled: boo
             <Text variant="h4" style={s.flex}>{`${fmtMoney(r.amount)} ${r.currency === "UZS" ? t("common.currency") : r.currency}`}</Text>
             <Pill label={word(r.status)} tone={TONE[r.status] ?? "gray"} small />
           </View>
-          {r.manual && (r.status === "pending" || r.status === "processing") ? (
+          {r.manual && (r.status === "pending" || r.status === "processing" || r.status === "operator_required") ? (
             <View style={[s.note, { backgroundColor: c.warnBg }]}>
               <Icon name="user-check" size={15} color={c.warn} />
               <View style={s.flex}>

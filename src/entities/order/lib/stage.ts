@@ -3,7 +3,7 @@ import type { MarketOrder, MarketStage } from "../model/marketTypes";
 
 export const MARKET_DONE = new Set(["completed", "rated", "done", "closed"]);
 export const MARKET_STOPPED = new Set(["cancelled", "canceled", "declined", "rejected", "lost", "refunded"]);
-// Before a seller holds the order and the advance is paid (TZ §3–§6): the order waits, it is not "in work".
+// Not paid yet (Enterprise contract §4: a request is paid in full before a seller gets it; an older order may have been assigned first).
 const BEFORE_PAYMENT = new Set(["seller_selection", "sent_to_seller", "new", "created", "assigned", "awaiting_acceptance", "pending_acceptance", "accepted", "awaiting_advance", "advance_pending", "awaiting_payment"]);
 const PAID = new Set(["paid", "held", "partially_paid", "advance_paid"]);
 
@@ -11,7 +11,7 @@ type S = Pick<MarketOrder, "status" | "paymentStatus">;
 
 // Still waiting for the payment approval (Telegram inline button).
 export const isOrderPending = (o: S): boolean =>
-  o.status === "pending_payment" || o.status === "pending_confirmation" || o.status === "waiting_payment" || (o.status === "pending" && o.paymentStatus !== "paid");
+  o.status === "pending_payment" || o.status === "payment_pending" || o.status === "pending_confirmation" || o.status === "waiting_payment" || (o.status === "pending" && o.paymentStatus !== "paid");
 
 // The list's four groups. A refund (pending or done) ends the order for the client; an order a seller has not taken and paid for yet waits.
 export function marketStageOf(o: S): MarketStage {

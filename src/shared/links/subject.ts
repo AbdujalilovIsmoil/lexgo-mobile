@@ -34,9 +34,9 @@ const ID_KEYS: Partial<Record<SubjectKind, string[]>> = {
   order: ["order_id", "marketplace_order_id", "target_id"], payment: ["payment_id"], doc: ["document_request_id"], case: ["case_id"],
 };
 
-// TZ.md §13–14: the call center's separate cancellation discussion opens its own room (read-only once closed) — the order only when the
-// event names no room.
-const ROOM_FIRST = /^marketplace[._]cancellation_chat_(created|closed)$/;
+// TZ.md §13–14: the call center's separate cancellation discussion opens its own room (read-only once closed), and so does the service chat
+// a seller's acceptance opened (Enterprise contract §6 marketplace.service_chat_opened) — the order only when the event names no room.
+const ROOM_FIRST = /^marketplace[._](cancellation_chat_(created|closed)|service_chat_opened)$/;
 
 function idFor(kind: SubjectKind, data: Dict): string {
   for (const k of ID_KEYS[kind] ?? []) if (str(data[k])) return str(data[k]);

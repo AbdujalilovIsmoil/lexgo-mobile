@@ -1,9 +1,9 @@
 export const mf = {
   mf: {
     phase: {
-      assigned: "With the specialist",
+      assigned: "Waiting for the specialist",
       received: "Received",
-      advance: "Advance payment due",
+      advance: "Awaiting payment",
       pending: "Awaiting payment",
       paid: "Paid",
       reviewing: "Reviewing materials",
@@ -21,11 +21,11 @@ export const mf = {
     },
     lead: {
       client: {
-        assigned: "Your order is with the specialist. Once they accept it, you'll get the advance payment request.",
-        received: "Your order is received. Once a specialist confirms it, you'll get the advance payment request.",
-        advance: "The specialist accepted your order. Secure chat and calls open once the advance payment is confirmed.",
+        assigned: "Payment confirmed. Your order went to the specialist, who answers within the set time. Secure chat opens once they accept.",
+        received: "Your order is received. Once the payment is confirmed, it goes to a specialist.",
+        advance: "The specialist accepted your order. Secure chat and calls open once the payment is confirmed.",
         completedClosed: "The work is done. The result and files stay in this order.",
-        pending: "The payment is being confirmed in Telegram. Once confirmed, the specialist starts the work.",
+        pending: "The payment is being confirmed in Telegram. Once confirmed, your order goes to the specialist.",
         paid: "Payment confirmed. Once the specialist starts, the deadline shows on this order.",
         reviewing: "The specialist is reviewing your request and materials. Then they set the delivery time.",
         in_progress: "The specialist is working. Finished items show up in the checklist right away.",
@@ -41,9 +41,9 @@ export const mf = {
         attention: "An operator is looking into your order. The outcome will appear here.",
       },
       seller: {
-        assigned: "This order was assigned to you. Accept or decline it in time.",
+        assigned: "A paid order was sent to you. Accept or decline it in time.",
         received: "This order is not assigned to you yet.",
-        advance: "Waiting for the client's advance payment. Chat and calls open once it is confirmed.",
+        advance: "Waiting for the client's payment. Chat and calls open once it is confirmed.",
         pending: "Waiting for the client's payment to be confirmed.",
         paid: "Payment confirmed. Start the work — if there is a review stage, you set the deadline after it.",
         reviewing: "Review the client's materials and set the delivery time. The checklist opens after that.",
@@ -71,6 +71,9 @@ export const mf = {
     },
     pay: {
       title: "Payment stages",
+      payouts: "Your payouts",
+      payout: { acceptance: "Accepting the order", first_checklist: "First required stage", completion: "Completion", other: "Payout" },
+      payoutPlan: "{a}% on acceptance, {b}% for the first required stage, {c}% on completion — LexGo's commission ({k}%) comes off the last stage.",
       stage: {
         advance: "Advance payment",
         advancePct: "Advance ({pct}%)",
@@ -82,6 +85,7 @@ export const mf = {
         other: "Payment",
       },
       status: {
+        created: "Created", ready: "Ready to pay", held: "On hold", recovery_required: "Recovery needed",
         paid: "Paid",
         pending: "Pending",
         failed: "Failed",
@@ -109,8 +113,8 @@ export const mf = {
       },
       commission: "LexGo commission",
       net: "You receive",
-      advanceWait: "Waiting for the advance payment to be confirmed. Protected chat and calls with the specialist open once it is.",
-      advanceWaitSeller: "Waiting for the client's advance payment. Chat and calls open once it is confirmed.",
+      advanceWait: "Waiting for the payment to be confirmed. Protected chat and calls with the specialist open once it is.",
+      advanceWaitSeller: "Waiting for the client's payment. Chat and calls open once it is confirmed.",
       finalTitle: "Final payment requested",
       finalText: "The work is done. Pay the remaining amount — the order is settled once the payment is confirmed.",
       finalPaid: "Final payment confirmed",
@@ -215,6 +219,8 @@ export const mf = {
       declined: "Declined",
     },
     wr: {
+      transfer: "I agree to hand my materials to a new specialist",
+      transferHint: "If the call center assigns another specialist, your chat files go to them. Without your consent the new specialist does not see them.",
       title: "LexGo guarantee",
       orderHint: "A warranty request for a marketplace order is sent from that order's page.",
       toOrders: "My orders",
@@ -293,6 +299,22 @@ export const mf = {
       lockedSeller: "The chat opens once you accept the order.",
     },
     err: {
+      marketplace_client_required: "Sign in as a client to place an order.",
+      marketplace_seller_unavailable: "This specialist is not taking orders right now. Choose another one.",
+      marketplace_order_already_active: "You already have an active order with this specialist for this service.",
+      marketplace_package_order_already_active: "You already have an active order for this package.",
+      marketplace_full_payment_required: "The full payment has to be confirmed first.",
+      marketplace_payment_provider_invalid: "This payment method is not accepted. You can send it via Telegram.",
+      marketplace_currency_not_supported: "Payments are accepted in UZS only.",
+      payment_provider_not_configured: "This payment method is not working yet. You can send it via Telegram.",
+      payment_provider_unavailable: "The payment system is not responding. You can send it via Telegram.",
+      payment_invoice_rejected: "The payment system rejected the invoice. You can send it via Telegram.",
+      purchase_attachments_limit: "Too many attachments.",
+      preferred_channel_invalid: "Choose the contact channel again: chat, voice or video.",
+      contact_speed_invalid: "Choose the contact time again.",
+      assignment_not_declinable: "This order can no longer be declined — its status was updated.",
+      decline_reason_required: "Choose a reason for declining.",
+      complaint_reason_required: "Describe the reason for the complaint more precisely.",
       assignment_response_deadline_expired: "The time to respond has passed — the call center will reassign the order",
       assignment_not_accepting: "This order no longer takes a response — its status was refreshed.",
       marketplace_advance_payment_required: "The advance payment has to be confirmed first.",
@@ -460,6 +482,8 @@ export const mf = {
       biz: "{d} (business days)",
     },
     work: {
+      answerTitle: "Specialist's answer",
+      answerExpired: "The answer time is over — the call center carries the order on.",
       dueTitle: "Deadline",
       due: "Due: {date}",
       duration: "Agreed time: {d}",
@@ -482,7 +506,7 @@ export const mf = {
     },
     rf: {
       title: "Refund",
-      status: { pending: "Awaiting approval", processing: "Processing", succeeded: "Refunded", failed: "Rejected", not_charged: "Not charged" },
+      status: { operator_required: "An operator refunds it", refunded: "Refunded", pending: "Awaiting approval", processing: "Processing", succeeded: "Refunded", failed: "Rejected", not_charged: "Not charged" },
       manual: "Manual processing",
       manualHint: "An operator approves the refund, not a payment provider. The result will appear here.",
       updated: "Updated: {date}",

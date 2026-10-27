@@ -48,4 +48,9 @@ export const MORE_CASES: Case[] = [
   ["cancellation chat opened, client", "client", ev("marketplace.cancellation_chat_created", { order_id: "o5", room_id: "r9" }), { href: "/chat/r9", fallback: "/(tabs)/messages", probe: "/secure-chats/r9" }],
   ["cancellation chat closed (raw frame), seller", "seller", ev("marketplace_cancellation_chat_closed", { order_id: "o5", room_id: "r9" }), { href: "/chat/r9" }],
   ["cancellation chat without a room, client", "client", ev("marketplace.cancellation_chat_created", { order_id: "o5" }), { href: "/orders/o5" }],
+  // Enterprise contract §6: the seller's events — the opened service chat goes to its room, a payout or a rating to the order.
+  ["service chat opened, seller", "seller", ev("marketplace.service_chat_opened", { order_id: "o5", room_id: "r7" }), { href: "/chat/r7" }],
+  ["payout paid, seller", "seller", ev("marketplace.payout_paid", { order_id: "o5", payout_id: "p1" }), { href: "/pro/orders/o5" }],
+  ["order rated, seller", "seller", ev("marketplace.order_rated", { order_id: "o5" }), { href: "/pro/orders/o5" }],
+  ["full payment paid, client", "client", ev("marketplace.full_payment_paid", { order_id: "o5" }), { href: "/orders/o5" }],
 ];

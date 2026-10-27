@@ -3,9 +3,9 @@
 export const mf = {
   mf: {
     phase: {
-      assigned: "Mutaxassis ko'rib chiqmoqda",
+      assigned: "Mutaxassis javobi kutilmoqda",
       received: "Qabul qilindi",
-      advance: "Oldindan to'lov kutilmoqda",
+      advance: "To'lov kutilmoqda",
       pending: "To'lov kutilmoqda",
       paid: "To'langan",
       reviewing: "Materiallar o'rganilmoqda",
@@ -23,11 +23,11 @@ export const mf = {
     },
     lead: {
       client: {
-        assigned: "Buyurtma mutaxassisga yuborildi. U qabul qilgach, oldindan to'lov so'rovi keladi.",
-        received: "Buyurtmangiz qabul qilindi. Mutaxassis tasdiqlagach, oldindan to'lov so'rovi keladi.",
-        advance: "Mutaxassis buyurtmani qabul qildi. Oldindan to'lov tasdiqlangach himoyalangan chat va qo'ng'iroq ochiladi.",
+        assigned: "To'lov tasdiqlandi. Buyurtma mutaxassisga yuborildi — u belgilangan vaqt ichida javob beradi. Qabul qilgach himoyalangan chat ochiladi.",
+        received: "Buyurtmangiz qabul qilindi. To'lov tasdiqlangach mutaxassisga yuboriladi.",
+        advance: "Mutaxassis buyurtmani qabul qildi. To'lov tasdiqlangach himoyalangan chat va qo'ng'iroq ochiladi.",
         completedClosed: "Ish yakunlandi. Natija va fayllar shu buyurtmada saqlanadi.",
-        pending: "To'lov Telegram orqali tasdiqlanmoqda. Tasdiqlangach ijrochi ishni boshlaydi.",
+        pending: "To'lov Telegram orqali tasdiqlanmoqda. Tasdiqlangach buyurtma mutaxassisga yuboriladi.",
         paid: "To'lov tasdiqlandi. Mutaxassis ishni boshlagach, muddat shu buyurtmada ko'rinadi.",
         reviewing: "Mutaxassis so'rovingiz va materiallaringizni o'rganmoqda. Shundan keyin ish muddatini belgilaydi.",
         in_progress: "Ijrochi ishlamoqda. Bajarilgan bandlar nazorat ro'yxatida darhol ko'rinadi.",
@@ -43,9 +43,9 @@ export const mf = {
         attention: "Buyurtmangizni operator ko'rib chiqmoqda. Natija shu yerda ko'rinadi.",
       },
       seller: {
-        assigned: "Buyurtma sizga biriktirildi. Belgilangan vaqt ichida qabul qiling yoki rad eting.",
+        assigned: "To'langan buyurtma sizga yuborildi. Belgilangan vaqt ichida qabul qiling yoki rad eting.",
         received: "Buyurtma hali sizga biriktirilmagan.",
-        advance: "Mijozning boshlang'ich to'lovi kutilmoqda. Chat va qo'ng'iroq to'lov tasdiqlangandan keyin ochiladi.",
+        advance: "Mijoz to'lovi kutilmoqda. Chat va qo'ng'iroq to'lov tasdiqlangandan keyin ochiladi.",
         pending: "Mijoz to'lovi tasdiqlanishi kutilmoqda.",
         paid: "To'lov tasdiqlandi. Ishni boshlang — o'rganish bosqichi bo'lsa, muddatni u tugagach belgilaysiz.",
         reviewing: "Mijoz materiallarini o'rganing va ish muddatini belgilang. Nazorat ro'yxati shundan keyin ochiladi.",
@@ -73,6 +73,9 @@ export const mf = {
     },
     pay: {
       title: "To'lov bosqichlari",
+      payouts: "Sizga to'lovlar",
+      payout: { acceptance: "Buyurtmani qabul qilish", first_checklist: "Birinchi majburiy bosqich", completion: "Yakun", other: "To'lov" },
+      payoutPlan: "Qabul qilganda {a}%, birinchi majburiy bosqichda {b}%, yakunda {c}% — LexGo komissiyasi ({k}%) yakuniy bosqichdan ushlanadi.",
       stage: {
         advance: "Oldindan to'lov",
         advancePct: "Oldindan to'lov ({pct}%)",
@@ -84,6 +87,7 @@ export const mf = {
         other: "To'lov",
       },
       status: {
+        created: "Yaratildi", ready: "To'lashga tayyor", held: "Ushlab turilgan", recovery_required: "Qaytarish kerak",
         paid: "To'langan",
         pending: "Kutilmoqda",
         failed: "Amalga oshmadi",
@@ -111,8 +115,8 @@ export const mf = {
       },
       commission: "LexGo komissiyasi",
       net: "Sizga tushadi",
-      advanceWait: "Boshlang'ich to'lov tasdiqlanishi kutilmoqda. Mutaxassis bilan himoyalangan chat va qo'ng'iroq to'lov tasdiqlangandan keyin ochiladi.",
-      advanceWaitSeller: "Mijozning boshlang'ich to'lovi kutilmoqda. Chat va qo'ng'iroq to'lov tasdiqlangandan keyin ochiladi.",
+      advanceWait: "To'lov tasdiqlanishi kutilmoqda. Mutaxassis bilan himoyalangan chat va qo'ng'iroq to'lov tasdiqlangandan keyin ochiladi.",
+      advanceWaitSeller: "Mijoz to'lovi kutilmoqda. Chat va qo'ng'iroq to'lov tasdiqlangandan keyin ochiladi.",
       finalTitle: "Yakuniy to'lov so'raldi",
       finalText: "Ish yakunlandi. Qolgan summani to'lang — to'lov tasdiqlangach buyurtma hisob-kitobi yopiladi.",
       finalPaid: "Yakuniy to'lov tasdiqlandi",
@@ -217,6 +221,8 @@ export const mf = {
       declined: "Rad etildi",
     },
     wr: {
+      transfer: "Materiallarimni yangi mutaxassisga berishga roziman",
+      transferHint: "Call-markaz boshqa mutaxassis tayinlasa, chatdagi fayllaringiz unga beriladi. Rozilik bermasangiz, yangi mutaxassis ularni ko'rmaydi.",
       title: "LexGo kafolati",
       orderHint: "Marketplace buyurtmasi bo'yicha kafolat so'rovi o'sha buyurtma sahifasidan yuboriladi.",
       toOrders: "Buyurtmalarim",
@@ -295,6 +301,22 @@ export const mf = {
       lockedSeller: "Chat buyurtmani qabul qilganingizdan keyin ochiladi.",
     },
     err: {
+      marketplace_client_required: "Buyurtma berish uchun mijoz sifatida kiring.",
+      marketplace_seller_unavailable: "Bu mutaxassis hozir buyurtma qabul qilmaydi. Boshqa mutaxassisni tanlang.",
+      marketplace_order_already_active: "Bu mutaxassis va xizmat bo'yicha faol buyurtmangiz bor.",
+      marketplace_package_order_already_active: "Bu paket bo'yicha faol buyurtmangiz bor.",
+      marketplace_full_payment_required: "Avval to'liq to'lov tasdiqlanishi kerak.",
+      marketplace_payment_provider_invalid: "Bu to'lov usuli qabul qilinmaydi. Telegram orqali yuborishingiz mumkin.",
+      marketplace_currency_not_supported: "To'lov faqat so'mda qabul qilinadi.",
+      payment_provider_not_configured: "Bu to'lov usuli hozircha ishlamayapti. Telegram orqali yuborishingiz mumkin.",
+      payment_provider_unavailable: "To'lov tizimi hozir javob bermayapti. Telegram orqali yuborishingiz mumkin.",
+      payment_invoice_rejected: "To'lov tizimi hisobni qabul qilmadi. Telegram orqali yuborishingiz mumkin.",
+      purchase_attachments_limit: "Biriktirilgan fayllar soni chegaradan oshdi.",
+      preferred_channel_invalid: "Bog'lanish usulini qayta tanlang: chat, audio yoki video.",
+      contact_speed_invalid: "Bog'lanish vaqtini qayta tanlang.",
+      assignment_not_declinable: "Bu buyurtmani endi rad etib bo'lmaydi — holati yangilandi.",
+      decline_reason_required: "Rad etish sababini tanlang.",
+      complaint_reason_required: "Shikoyat sababini aniq yozing.",
       assignment_response_deadline_expired: "Javob berish vaqti tugadi — buyurtmani call-markaz boshqa mutaxassisga beradi",
       assignment_not_accepting: "Bu buyurtma endi qabul qilinmaydi — holati yangilandi.",
       marketplace_advance_payment_required: "Avval oldindan to'lov tasdiqlanishi kerak.",
@@ -462,6 +484,8 @@ export const mf = {
       biz: "{d} (ish kunlari)",
     },
     work: {
+      answerTitle: "Mutaxassis javobi",
+      answerExpired: "Javob vaqti tugadi — call-markaz buyurtmani davom ettiradi.",
       dueTitle: "Bajarish muddati",
       due: "Muddat: {date}",
       duration: "Belgilangan muddat: {d}",
@@ -484,7 +508,7 @@ export const mf = {
     },
     rf: {
       title: "Pulni qaytarish",
-      status: { pending: "Tasdiq kutilmoqda", processing: "Jarayonda", succeeded: "Qaytarildi", failed: "Rad etildi", not_charged: "To'lov olinmagan" },
+      status: { operator_required: "Operator qaytaradi", refunded: "Qaytarildi", pending: "Tasdiq kutilmoqda", processing: "Jarayonda", succeeded: "Qaytarildi", failed: "Rad etildi", not_charged: "To'lov olinmagan" },
       manual: "Qo'lda ko'rib chiqilmoqda",
       manualHint: "Qaytarishni to'lov tizimi emas, operator tasdiqlaydi. Natija shu yerda ko'rinadi.",
       updated: "Yangilangan: {date}",

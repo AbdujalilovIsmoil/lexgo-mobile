@@ -1,5 +1,5 @@
 import { ApiError } from "@/shared/api";
-import { normCaps, normChecklist, normFinancials, normFlow, normTimeline, payKindOf } from "../api/norm";
+import { normCaps, normChecklist, normFinancials, normFlow, normRefund, normTimeline, payKindOf } from "../api/norm";
 import { blockingItems, codeOf, flowErrorKey, needsRefetch } from "./codes";
 import { callTypesOf, chatModeOf, phaseOf } from "./phase";
 import { answerState, clock, complaintState, msUntil } from "./window";
@@ -86,6 +86,23 @@ describe("financials", () => {
     expect(payKindOf("x")).toBe("other");
     expect(normFinancials({ settlement: { status: "Complaint_Hold" } }).settlement).toBe("complaint_hold");
   });
+  it("reads the seller's payout stages as the backend lists them, and none from a client's filtered copy", () => {
+    const f = normFinancials({ payouts: [
+      { id: "p1", stage: "acceptance", status: "paid", gross_amount: 270000, net_amount: 270000, paid_at: "2026-10-27T10:00:00Z" },
+      { id: "p2", stage: "first_checklist", status: "pending", gross_amount: 270000, net_amount: 270000 },
+      { id: "p3", stage: "completion", status: "held", gross_amount: 360000, commission_amount: 162000, net_amount: 198000 },
+    ] });
+    expect(f.payouts.map((p) => [p.stage, p.status, p.net, p.commission])).toEqual([["acceptance", "paid", 270000, 0], ["first_checklist", "pending", 270000, 0], ["completion", "held", 198000, 162000]]);
+    expect(normFinancials({ snapshot: { gross_amount: 900000 } }).payouts).toEqual([]);
+  });
+});
+
+describe("refund", () => {
+  it("treats a provider refund the backend handed to an operator as manual (Enterprise contract §13)", () => {
+    const r = normRefund({ refund: { request_id: "r1", amount: 900000, currency: "UZS", status: "operator_required", provider_mode: "payme" }, provider_enabled: true });
+    expect(r).toMatchObject({ status: "operator_required", manual: true, amount: 900000 });
+    expect(normRefund({ refund: { request_id: "r2", status: "processing", provider_mode: "payme" }, provider_enabled: true })?.manual).toBe(false);
+  });
 });
 
 describe("checklist", () => {
@@ -114,8 +131,19 @@ describe("checklist", () => {
 describe("caps & timeline", () => {
   it("reads the warranty choices and windows", () => {
     const c = normCaps({ payments: { advance_percent: 10, final_percent: 90, provider_enabled: false }, marketplace_assignment: { seller_response_minutes: 30 }, rating_and_complaint: { window_minutes: 15, low_rating_auto_complaint: true }, warranty: { replacement: true, full_refund: true } });
-    expect(c).toEqual({ advancePercent: 10, finalPercent: 90, providerEnabled: false, sellerResponseMinutes: 30, ratingWindowMinutes: 15, lowRatingAutoComplaint: true, warrantyChoices: ["replacement", "full_refund"] });
+    expect(c).toEqual({ advancePercent: 10, finalPercent: 90, providerEnabled: false, providers: [], sellerResponseMinutes: 30, ratingWindowMinutes: 15, lowRatingAutoComplaint: true, warrantyChoices: ["replacement", "full_refund"], materialTransferConsent: false, payouts: null });
     expect(normCaps({}).warrantyChoices).toEqual([]);
+  });
+  it("reads the Enterprise contract's providers, payout stages and the transfer consent (live runtime-capabilities shape)", () => {
+    const c = normCaps({
+      payments: { collection_percent: 100, advance_percent: 100, final_percent: 0, providers: ["telegram_manual", "payme", "click"], provider_enabled: false },
+      payouts: { acceptance_percent: 30, first_checklist_percent: 30, completion_gross_percent: 40, platform_commission_percent: 18, completion_payable_percent: 22 },
+      warranty: { replacement: true, full_refund: true, material_transfer_requires_client_consent: true },
+    });
+    expect(c.providers).toEqual(["telegram_manual", "payme", "click"]);
+    expect(c.providerEnabled).toBe(false);
+    expect(c.payouts).toEqual({ acceptance: 30, firstChecklist: 30, completion: 40, commission: 18, completionPayable: 22 });
+    expect(c.materialTransferConsent).toBe(true);
   });
   it("keeps the event's type, actor, choice and the client-visible reason", () => {
     const t = normTimeline({ items: [
@@ -141,7 +169,11 @@ describe("phase & contact gates", () => {
     expect(phaseOf({ status: "cancelled", paymentStatus: "cancelled", flow: f })).toBe("cancelled");
     expect(phaseOf({ status: "pending_payment", paymentStatus: "pending", flow: f })).toBe("pending");
     const asg = normFlow({ ...PAID, status: "sent_to_seller", contact_unlocked: false, acceptance_deadline_at: "2026-10-24T10:30:00Z" });
-    expect(phaseOf({ status: "sent_to_seller", paymentStatus: "pending", flow: asg })).toBe("assigned");
+    // Enterprise contract §4: a seller gets the order only after the full payment — then it waits for their answer.
+    expect(phaseOf({ status: "sent_to_seller", paymentStatus: "paid", flow: asg })).toBe("assigned");
+    expect(phaseOf({ status: "sent_to_seller", paymentStatus: "pending", flow: asg })).toBe("received");
+    expect(phaseOf({ status: "payment_pending", paymentStatus: "pending", flow: f })).toBe("pending");
+    expect(phaseOf({ status: "sent_to_seller", paymentStatus: "paid", flow: normFlow({ ...PAID, assignment_status: "waiting_seller_response" }) })).toBe("assigned");
     const acc = normFlow({ ...PAID, status: "accepted", contact_unlocked: false });
     expect(phaseOf({ status: "accepted", paymentStatus: "pending", flow: acc })).toBe("advance");
   });
@@ -160,15 +192,16 @@ describe("phase & contact gates", () => {
     expect(at("cancellation_review")).toBe("cancelReview");
     expect(at("resolution_required")).toBe("resolution");
     expect(at("sent_to_seller", "paid", normFlow({ ...PAID, waiting_replacement_acceptance: true }))).toBe("replacing");
-    expect(at("sent_to_seller", "paid", normFlow({ ...PAID, acceptance_deadline_at: "2026-10-26T18:30:00Z" }))).toBe("replacing");
+    // A paid order with an answer window is the normal first assignment, not a replacement: only the backend's flag says "replacing".
+    expect(at("sent_to_seller", "paid", normFlow({ ...PAID, acceptance_deadline_at: "2026-10-26T18:30:00Z" }))).toBe("assigned");
     expect(at("in_progress", "paid", normFlow({ ...PAID, work_phase: "reviewing" }))).toBe("reviewing");
     expect(at("in_progress", "paid", normFlow({ ...PAID, complaint: { rework_required: true } }))).toBe("rework");
     expect(at("something_new")).toBe("attention");
   });
   it("puts each phase on the request → payment → work → done track", () => {
     const { phaseStep } = jest.requireActual("./phase") as typeof import("./phase");
-    expect(["received", "assigned", "advance", "pending"].map((p) => phaseStep(p as never))).toEqual([1, 1, 1, 1]);
-    expect(["paid", "reviewing", "in_progress", "rework", "cancelReview", "resolution", "replacing", "attention"].map((p) => phaseStep(p as never))).toEqual([2, 2, 2, 2, 2, 2, 2, 2]);
+    expect(["received", "advance", "pending"].map((p) => phaseStep(p as never))).toEqual([1, 1, 1]);
+    expect(["assigned", "paid", "reviewing", "in_progress", "rework", "cancelReview", "resolution", "replacing", "attention"].map((p) => phaseStep(p as never))).toEqual([2, 2, 2, 2, 2, 2, 2, 2, 2]);
     expect(["completed", "rated"].map((p) => phaseStep(p as never))).toEqual([4, 4]);
     expect(["cancelled", "refund", "refunded"].map((p) => phaseStep(p as never))).toEqual([-1, -1, -1]);
   });
@@ -178,6 +211,10 @@ describe("phase & contact gates", () => {
     expect(chatModeOf({ ...base, flow: f }, "replacing")).toBe("readOnly");
     expect(chatModeOf({ ...base, roomId: "", flow: f }, "replacing")).toBe("locked");
     expect(callTypesOf({ ...base, flow: normFlow(PAID) }, "resolution")).toEqual([]);
+  });
+  it("keeps the chat locked and the calls closed until the seller accepts a paid order", () => {
+    expect(chatModeOf({ ...base, roomId: "", flow: normFlow(PAID) }, "assigned")).toBe("locked");
+    expect(callTypesOf({ ...base, flow: normFlow(PAID) }, "assigned")).toEqual([]);
   });
   it("opens chat and calls only once the backend unlocked contact", () => {
     const locked = normFlow({ ...PAID, contact_unlocked: false });

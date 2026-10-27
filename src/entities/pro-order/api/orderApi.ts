@@ -25,6 +25,10 @@ export const getMilestones = async (id: string): Promise<Milestone[]> => listOf(
 
 export const acceptOrder = (id: string) => http(`/orders/${enc(id)}/accept`, { method: "POST" });
 
-// POST /orders/{id}/decline with the reason as the web sends it ({reason_code, reason, note}).
-export const declineOrder = (id: string, reason: string, note = "") => http(`/orders/${enc(id)}/decline`, { method: "POST", body: { reason_code: reason, reason, note: note.trim() || undefined } });
+// POST /orders/{id}/decline: {reason_code, reason_text} of the Enterprise contract §4, plus the web's older {reason, note} so either
+// backend reads the seller's words.
+export const declineOrder = (id: string, reason: string, note = "") => {
+  const text = note.trim();
+  return http(`/orders/${enc(id)}/decline`, { method: "POST", body: { reason_code: reason, reason_text: text || undefined, reason: text || reason, note: text || undefined } });
+};
 

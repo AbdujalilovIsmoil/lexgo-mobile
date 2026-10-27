@@ -43,8 +43,9 @@ export async function fileOrderComplaint(orderId: string, url: string, reason: s
 
 // "Warranty queue" (TZ): the client says what went wrong ({kind, reason}); the call center decides the outcome (another specialist, a full
 // refund or a rejection). The answer is only "received" — the decision comes later. One open claim per order (409 warranty_already_open).
-export async function createOrderWarranty(orderId: string, url: string, v: { kind: WarrantyKind; reason: string }) {
-  const d = asDict(await http(own(url, `${me(orderId)}/warranty`), { method: "POST", body: { kind: v.kind, reason: v.reason.trim() } }));
+// allow_material_transfer: the client's explicit consent to hand the order's materials to a replacement seller (Enterprise contract §14).
+export async function createOrderWarranty(orderId: string, url: string, v: { kind: WarrantyKind; reason: string; allowTransfer: boolean }) {
+  const d = asDict(await http(own(url, `${me(orderId)}/warranty`), { method: "POST", body: { kind: v.kind, reason: v.reason.trim(), allow_material_transfer: v.allowTransfer } }));
   const w = asDict(d.warranty ?? d.claim ?? d);
   return { status: asStr(w.status).toLowerCase() || "new" };
 }

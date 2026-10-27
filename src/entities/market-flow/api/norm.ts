@@ -1,5 +1,5 @@
 import { asArr, asDict, asNum, asStr, uzs, type Dict } from "@/shared/lib/json";
-import type { CallKind, CheckFile, CheckItem, CheckStatus, Checklist, ChecklistProgress, FinPayment, Financials, FlowDuration, FlowEvent, FlowOrder, OrderComplaint, OrderRefund, OrderResolution, OrderReview, PayKind, PayPart, PriceComponent, PriceSnapshot, ResolutionChoice, RuntimeCaps, WarrantyResolution } from "../model/types";
+import type { CallKind, CheckFile, CheckItem, CheckStatus, Checklist, ChecklistProgress, FinPayment, FinPayout, Financials, FlowDuration, FlowEvent, FlowOrder, OrderComplaint, OrderRefund, OrderResolution, OrderReview, PayKind, PayPart, PriceComponent, PriceSnapshot, ResolutionChoice, RuntimeCaps, WarrantyResolution } from "../model/types";
 
 const bool = (...v: unknown[]): boolean | null => {
   for (const x of v) if (typeof x === "boolean") return x;
@@ -104,6 +104,7 @@ export function normFlow(v: unknown): FlowOrder {
     duration: normDuration(d.duration ?? det.duration),
     clientStatusMessage: first(d.client_status_message, det.client_status_message),
     waitingReplacement: d.waiting_replacement_acceptance === true,
+    assignmentStatus: first(d.assignment_status, det.assignment_status).toLowerCase(),
     canRequestCancellation: d.can_request_cancellation === true,
   };
 }
@@ -184,6 +185,18 @@ export function normFinancials(v: unknown): Financials {
     return { id: asStr(p.id), stage, kind: payKindOf(stage), status: asStr(p.status).toLowerCase() || "pending", amount: uzs(p, "amount"), paid: uzs(p, "paid_amount"), createdAt: asStr(p.created_at) };
   });
   const s = d.settlement;
+  const payouts: FinPayout[] = asArr(d.payouts ?? d.seller_payouts ?? asDict(s).payouts).map((x) => {
+    const p = asDict(x);
+    return {
+      id: asStr(p.id),
+      stage: first(p.stage, p.kind, p.payout_stage, p.type).toLowerCase(),
+      status: asStr(p.status).toLowerCase() || "pending",
+      gross: uzs(p, "gross_amount", "amount"),
+      commission: uzs(p, "commission_amount", "platform_amount"),
+      net: uzs(p, "net_amount", "payable_amount", "seller_amount"),
+      paidAt: first(p.paid_at),
+    };
+  }).filter((p) => p.id || p.stage);
   return {
     gross: uzs(snap, "gross_amount"),
     currency: asStr(snap.currency, "UZS") || "UZS",
@@ -191,6 +204,7 @@ export function normFinancials(v: unknown): Financials {
     final: part(pay, "final"),
     commission: Object.keys(com).length && (uzs(com, "platform_amount") > 0 || num(com.effective_percent) !== null) ? { percent: num(com.effective_percent), platform: uzs(com, "platform_amount"), net: uzs(com, "seller_net_amount") } : null,
     payments,
+    payouts,
     settlement: typeof s === "string" ? s.toLowerCase() : asStr(asDict(s).status).toLowerCase(),
     historical: snap.historical_policy_exact === false,
   };
@@ -254,6 +268,8 @@ export function normCaps(v: unknown): RuntimeCaps {
   const asg = asDict(d.marketplace_assignment);
   const rc = asDict(d.rating_and_complaint);
   const w = asDict(d.warranty);
+  const po = asDict(d.payouts);
+  const pct = (k: string) => num(po[k]);
   const choices: WarrantyResolution[] = [];
   if (w.replacement === true) choices.push("replacement");
   if (w.full_refund === true) choices.push("full_refund");
@@ -261,10 +277,15 @@ export function normCaps(v: unknown): RuntimeCaps {
     advancePercent: num(pay.advance_percent),
     finalPercent: num(pay.final_percent),
     providerEnabled: pay.provider_enabled === true,
+    providers: asArr(pay.providers).map((x) => asStr(x).toLowerCase()).filter(Boolean),
     sellerResponseMinutes: num(asg.seller_response_minutes),
     ratingWindowMinutes: num(rc.window_minutes),
     lowRatingAutoComplaint: rc.low_rating_auto_complaint !== false,
     warrantyChoices: choices,
+    materialTransferConsent: w.material_transfer_requires_client_consent === true,
+    payouts: pct("acceptance_percent") !== null && pct("completion_gross_percent") !== null
+      ? { acceptance: pct("acceptance_percent") ?? 0, firstChecklist: pct("first_checklist_percent") ?? 0, completion: pct("completion_gross_percent") ?? 0, commission: pct("platform_commission_percent") ?? 0, completionPayable: pct("completion_payable_percent") ?? 0 }
+      : null,
   };
 }
 
@@ -298,7 +319,8 @@ export function normRefund(v: unknown): OrderRefund | null {
     amount: num(r.amount) ?? 0,
     currency: asStr(r.currency, "UZS").toUpperCase() || "UZS",
     status: asStr(r.status).toLowerCase() || "pending",
-    manual: enabled === false || asStr(r.provider_mode).toLowerCase() === "manual",
+    // Enterprise contract §13: a provider refund that could not finish on its own becomes operator_required — an operator completes it.
+    manual: enabled === false || asStr(r.provider_mode).toLowerCase() === "manual" || asStr(r.status).toLowerCase() === "operator_required",
     updatedAt: first(r.updated_at, r.created_at),
   };
 }
