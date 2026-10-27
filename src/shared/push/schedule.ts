@@ -7,7 +7,7 @@ export type LocalAlert = { id: string; title: string; body: string; category: st
 
 // Only these payload keys travel inside an OS notification (ids needed to open the right screen;
 // no phones, names or message text — the lock screen can be read by anyone).
-const ROUTE_KEYS = ["room_id", "call_id", "order_id", "document_request_id", "record_id", "ticket_id", "payment_id", "work_id", "service_id", "complaint_id", "plan_id", "secure_chat_room_id", "entity_type", "entity_id", "deep_link", "status"];
+const ROUTE_KEYS = ["room_id", "call_id", "order_id", "document_request_id", "record_id", "ticket_id", "payment_id", "work_id", "service_id", "complaint_id", "plan_id", "secure_chat_room_id", "session_id", "entity_type", "entity_id", "deep_link", "status"];
 
 export function routeData(data: Record<string, unknown>): Record<string, string> {
   const out: Record<string, string> = {};

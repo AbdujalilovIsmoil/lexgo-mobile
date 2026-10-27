@@ -3,8 +3,10 @@ import { useRootNavigationState, useRouter } from "expo-router";
 import * as Notifications from "expo-notifications";
 import { useQueryClient } from "@tanstack/react-query";
 import { markIdsRead } from "@/entities/notification";
+import { raEventOf, raSessionIdOf } from "@/entities/remote-assist";
 import { declineFromNotification } from "@/features/call";
 import { currentViewer, openLink } from "@/features/open-link";
+import { openRaRequest } from "@/features/remote-assist";
 import { translate } from "@/shared/i18n/useT";
 import { useLocaleStore } from "@/shared/i18n/localeStore";
 import { asDict, asStr } from "@/shared/lib/json";
@@ -40,6 +42,12 @@ export function useResponseRouter(): void {
       if (event.startsWith("tasks.")) {
         const task = remote.taskId || asStr(d.task_id);
         router.navigate((task ? `/team-tasks?task=${encodeURIComponent(task)}` : "/team-tasks") as never); // a task alert opens that task
+        return;
+      }
+      if (raEventOf({ ...d, type: event })) {
+        // A remote-assistance request opens its consent sheet over the current screen, not the notification list.
+        openRaRequest(remote.sessionId || raSessionIdOf(d));
+        void markIdsRead(qc, asStr(d.nids).split(",").filter(Boolean));
         return;
       }
       const input = { event, category: asStr(d.category), entityType: asStr(d.entity_type), entityId: asStr(d.entity_id), deepLink: asStr(d.deep_link), data: d };

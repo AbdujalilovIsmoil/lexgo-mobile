@@ -1,4 +1,4 @@
-import { useState, type ReactNode } from "react";
+import { useState, type ReactNode, type Ref } from "react";
 import { StyleSheet, TextInput, View, type TextInputProps } from "react-native";
 import { radius, useColors } from "@/shared/theme";
 import { Text } from "./Text";
@@ -10,6 +10,7 @@ type Props = TextInputProps & {
   hint?: string;
   left?: ReactNode;
   right?: ReactNode;
+  ref?: Ref<TextInput>; // reaches the TextInput (React 19: a ref is a prop), so a form can focus the field
 };
 
 // Rounded 14px field with a blue focus ring (:focus-visible outline on the web).

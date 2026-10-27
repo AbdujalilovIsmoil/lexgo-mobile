@@ -1,7 +1,7 @@
-import { type ReactNode } from "react";
+import { type ReactNode, type Ref } from "react";
 import { Platform, RefreshControl, StyleSheet, View, type ScrollViewProps } from "react-native";
 import { useAnimatedScrollHandler } from "react-native-reanimated";
-import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
+import { KeyboardAwareScrollView, type KeyboardAwareScrollViewRef } from "react-native-keyboard-controller";
 import { useInsets } from "@/shared/lib/insets";
 import { useTablet } from "@/shared/lib/useTablet";
 import { usePageChrome, useHeaderHeight } from "@/shared/lib/pageChrome";
@@ -15,6 +15,7 @@ type Props = ScrollViewProps & {
   onRefresh?: () => void;
   bottomInset?: boolean;
   topInset?: boolean;
+  ref?: Ref<KeyboardAwareScrollViewRef>; // the scroll view itself (passed on with the other props)
 };
 
 // Page container: content starts below the status bar and never scrolls under it.

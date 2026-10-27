@@ -20,7 +20,7 @@ export function useFieldError() {
   };
 }
 
-// An Input wired to a react-hook-form field: value, change, blur and the validation message.
+// An Input wired to a react-hook-form field: value, change, blur, the validation message and the input itself (setFocus reaches it).
 export function FormInput<T extends FieldValues>({ control, name, format, ...rest }: Props<T>) {
   const tr = useFieldError();
   return (
@@ -28,7 +28,7 @@ export function FormInput<T extends FieldValues>({ control, name, format, ...res
       control={control}
       name={name}
       render={({ field, fieldState }) => (
-        <Input {...rest} value={String(field.value ?? "")} onChangeText={(v) => field.onChange(format ? format(v) : v)} onBlur={field.onBlur} error={tr(fieldState.error?.message)} />
+        <Input {...rest} ref={field.ref} value={String(field.value ?? "")} onChangeText={(v) => field.onChange(format ? format(v) : v)} onBlur={field.onBlur} error={tr(fieldState.error?.message)} />
       )}
     />
   );

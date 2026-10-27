@@ -2,12 +2,15 @@ import { useEffect, useState } from "react";
 import { ConfirmDialog } from "../dialog/ConfirmDialog";
 import { Toaster } from "../Toaster";
 import { nextHostId, ROOT_HOST, topHost, useOverlayHosts } from "./hosts";
+import { useOverlaySlots } from "./slots";
 
 function Overlays() {
+  const extra = useOverlaySlots((s) => s.list);
   return (
     <>
       <Toaster />
       <ConfirmDialog />
+      {extra.map(({ key, C }) => <C key={key} />)}
     </>
   );
 }

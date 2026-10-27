@@ -8,6 +8,7 @@ export type RemoteData = {
   callerName: string;
   callerId: string;
   callType: string;
+  sessionId: string; // a remote-assistance session (remote_assist.requested)
   action: string; // a notification button the person pressed (a response handed to the background task), "" otherwise
 };
 
@@ -36,6 +37,7 @@ export function remoteDataOf(payload: unknown): RemoteData {
     callerName: pick("caller_name"),
     callerId: pick("caller_user_id"),
     callType: pick("call_type"),
+    sessionId: pick("session_id") || pick("remote_assist_session_id"),
     action: asStr(p.actionIdentifier),
   };
 }

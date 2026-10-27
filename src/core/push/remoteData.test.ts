@@ -1,6 +1,6 @@
 import { dedupeKey, remoteDataOf, type RemoteData } from "./remoteData";
 
-const empty: RemoteData = { type: "", callId: "", taskId: "", roomId: "", callerName: "", callerId: "", callType: "", action: "" };
+const empty: RemoteData = { type: "", callId: "", taskId: "", roomId: "", callerName: "", callerId: "", callType: "", sessionId: "", action: "" };
 
 describe("remoteDataOf", () => {
   it("reads the data bag, a notification response and JSON-encoded FCM data", () => {
@@ -16,6 +16,9 @@ describe("remoteDataOf", () => {
   it("a notification button pressed while the app is not open is the response's action", () => {
     const d = remoteDataOf({ actionIdentifier: "decline", notification: { request: { content: { data: { event: "call.incoming", room_id: "r1", call_id: "c1" } } } } });
     expect(d).toMatchObject({ action: "decline", type: "call.incoming", roomId: "r1", callId: "c1" });
+  });
+  it("a remote-assistance request carries its session id", () => {
+    expect(remoteDataOf({ data: { type: "remote_assist.requested", session_id: "s1" } })).toMatchObject({ type: "remote_assist.requested", sessionId: "s1" });
   });
   it("a local alert's `event` counts as the type; garbage reads as empty", () => {
     expect(remoteDataOf({ request: { content: { data: { event: "tasks.returned", task_id: "t3" } } } })).toMatchObject({ type: "tasks.returned", callId: "", taskId: "t3" });
