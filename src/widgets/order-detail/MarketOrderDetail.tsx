@@ -48,7 +48,7 @@ export function MarketOrderDetail({ order, refreshing, onRefresh }: Props) {
       showsVerticalScrollIndicator={false}
     >
       <DetailHeader order={order} />
-      {phase === "pending" ? <PendingNote onCheck={onRefresh} checking={refreshing} /> : <FlowLead phase={phase} role="client" lead={phase === "completed" && !order.rating?.available ? "completedClosed" : undefined} message={f.clientStatusMessage} />}
+      {phase === "pending" ? <PendingNote onCheck={onRefresh} checking={refreshing} /> : <FlowLead phase={phase} role="client" lead={phase === "completed" && !order.rating?.available ? "completedClosed" : phase === "resolution" && f.resolution?.canChoose ? "resolutionChoose" : undefined} message={f.clientStatusMessage} />}
       {live ? <ActiveCallBar roomId={order.roomId} onJoin={(id) => router.push(callPath(order.roomId, id) as never)} style={s.call} /> : null}
       <ResolutionCard orderId={order.id} flow={f} />
       <WorkTimeCard flow={f} phase={phase} role="client" />

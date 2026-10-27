@@ -28,7 +28,7 @@ export function ComplaintCard({ orderId, flow }: { orderId: string; flow: FlowOr
         <Icon name={outcome ? "check-square" : "message-square"} size={16} tone="gray" />
         <View style={s.flex}>
           <Text variant="small" tone={outcome ? "ink" : "gray"}>{t(outcome ? `mf.cp.out.${outcome}` : "mf.cp.pending")}</Text>
-          {outcome && flow.complaint.resolutionNote ? <Text variant="caption" tone="gray">{flow.complaint.resolutionNote}</Text> : null}
+          {outcome && outcome !== "rework_required" && flow.complaint.resolutionNote ? <Text variant="caption" tone="gray">{flow.complaint.resolutionNote}</Text> : null}
         </View>
       </View>
     );
