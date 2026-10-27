@@ -25,8 +25,6 @@ export const ax1 = {
   fbPlaceholder: "Nima noto'g'ri yoki yetishmadi?",
   longWait: "Murakkab savol: javob bir daqiqagacha cho'zilishi mumkin",
   replyReady: "AI javob berdi — AI bo'limida o'qing",
-  quotaTitle: "Oylik AI limitingiz tugadi",
-  quotaText: "Davom etish uchun tarifni yangilang.",
   dailyTitle: "Bugungi bepul savollar tugadi",
   dailyText: "Ro'yxatdan o'ting va yana {n} ta bepul savol oling yoki limit yangilanishini kuting.",
   dailyTextPlain: "Ro'yxatdan o'ting yoki limit yangilanishini kuting.",

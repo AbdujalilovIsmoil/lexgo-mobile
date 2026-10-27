@@ -5,7 +5,6 @@ export const csv4: typeof Shape = {
   docViewHint: "View only — this document can't be downloaded from here.",
   docViewNoFile: "There's no document sample for this service.",
   docViewError: "Couldn't load the document. Please try again shortly.",
-  planGateTitle: "Plan for manual document filling",
   payTotal: "Total",
   payAdvance: "Advance ({pct}%)",
   payPaid: "Paid",

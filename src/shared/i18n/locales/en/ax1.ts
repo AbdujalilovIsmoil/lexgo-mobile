@@ -27,8 +27,6 @@ export const ax1: Messages["ax1"] = {
   fbPlaceholder: "What was wrong or missing?",
   longWait: "Complex question: the answer can take up to a minute",
   replyReady: "AI replied — read it in the AI tab",
-  quotaTitle: "Your monthly AI limit is used up",
-  quotaText: "Upgrade your plan to continue.",
   dailyTitle: "Today's free questions are used up",
   dailyText: "Sign up for {n} more free questions or wait for the limit to reset.",
   dailyTextPlain: "Sign up or wait for the limit to reset.",

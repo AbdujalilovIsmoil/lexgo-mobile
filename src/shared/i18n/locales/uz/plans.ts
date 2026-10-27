@@ -5,8 +5,6 @@ export const plans = {
   term6: "6 oy",
   term12: "12 oy",
   perMonth: "so'm / oy",
-  totalFor: "{term} uchun jami",
-  youSave: "{pct}% tejaysiz",
   mostChosen: "Eng ko'p tanlanadi",
   choose: "Tanlash",
   chooseLogin: "Tanlash uchun tizimga kiring",

@@ -3,7 +3,6 @@ export const csv4 = {
   docViewHint: "Faqat ko'rish uchun — hujjatni bu yerdan yuklab olib bo'lmaydi.",
   docViewNoFile: "Bu xizmat uchun hujjat namunasi mavjud emas.",
   docViewError: "Hujjatni yuklab bo'lmadi. Birozdan so'ng qayta urinib ko'ring.",
-  planGateTitle: "Qo'lda hujjat to'ldirish uchun paket",
   payTotal: "Umumiy summa",
   payAdvance: "Oldindan to'lov ({pct}%)",
   payPaid: "To'langan",

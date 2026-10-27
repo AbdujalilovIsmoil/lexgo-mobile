@@ -7,8 +7,6 @@ export const plans: Messages["plans"] = {
   term6: "6 мес",
   term12: "12 мес",
   perMonth: "сум / мес",
-  totalFor: "Итого за {term}",
-  youSave: "Экономия {pct}%",
   mostChosen: "Чаще выбирают",
   choose: "Выбрать",
   chooseLogin: "Войдите, чтобы выбрать",
