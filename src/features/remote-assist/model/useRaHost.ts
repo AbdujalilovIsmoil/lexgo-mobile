@@ -7,14 +7,16 @@ import { registerBeforeSignOut } from "@/shared/lib/sessionReset";
 import { useAppActive } from "@/shared/lib/useAppActive";
 import { useResync, useUserEvents } from "@/shared/realtime";
 import { onRaChange } from "@/shared/remote-assist/registry";
+import { callOpen } from "../lib/nav";
 import { refreshRequests } from "./discovery";
 import { env } from "./env";
 import { revokeForSignOut } from "./lifecycle";
 import { raRuntime } from "./runtime";
 import { frameOf } from "./socket";
 
-// Mounted once for a signed-in client (core/providers/mounts/RaMounts): reads the runtime contract once, finds consent requests (at start,
-// on return to the app, after a reconnect, on remote_assist.requested) and feeds the running session the screen, the app state and the
+// Mounted once for a signed-in client (core/providers/mounts/RaMounts): reads the runtime contract once, finds consent requests (on
+// remote_assist.requested and a notification tap; on return to the app and after a reconnect only while a call screen is open — a request
+// needs a live support call, TZ RA §2, so nothing else costs a request) and feeds the running session the screen, the app state and the
 // user-socket events that concern it. A deliberate sign-out revokes the session first.
 export function useRaHost(): void {
   const qc = useQueryClient();
@@ -48,10 +50,12 @@ export function useRaHost(): void {
     env.active = active;
     env.locked = locked;
     raRuntime()?.appChanged();
-    if (active && !locked) void refreshRequests();
+    if (active && !locked && callOpen()) void refreshRequests();
   }, [active, locked]);
 
-  useResync(() => void refreshRequests());
+  useResync(() => {
+    if (callOpen()) void refreshRequests();
+  });
 
   useUserEvents(["remote_assist.", "notification.created"], (e) => {
     if (!raEventOf(e)) return;
