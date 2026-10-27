@@ -13,7 +13,7 @@ export function usePurchase(lawyerId: string, service: LawyerService, onLogin: (
   return usePurchaseCore({
     options: useServiceOptions(service.id),
     quote: (ids) => quoteService(service.id, lawyerId, ids),
-    send: (v) => requestPurchase(lawyerId, service.id, { note: v.note, channel: v.channel, time: v.time, optionIds: v.optionIds }),
+    send: (v) => requestPurchase(lawyerId, service.id, v),
     onLogin,
   });
 }

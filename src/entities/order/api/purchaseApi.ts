@@ -1,10 +1,29 @@
 import { ApiError, http } from "@/shared/api";
 import { asDict, asStr, uzs } from "@/shared/lib/json";
-import type { ActivePurchase, MarketPurchase, PreferredChannel } from "../model/marketTypes";
+import { safeHttpsUrl } from "@/shared/lib/pay/safeUrl";
+import type { ActivePurchase, ContactSpeed, MarketPurchase, PaymentProvider, PreferredChannel, Urgency } from "../model/marketTypes";
 
-export type PurchaseInput = { note: string; channel: PreferredChannel; time: string; optionIds?: string[] };
+export type PurchaseInput = { note: string; channel: PreferredChannel; time: string; optionIds?: string[]; contactSpeed?: ContactSpeed; urgency?: Urgency; provider?: PaymentProvider };
 const enc = encodeURIComponent;
-const body = (i: PurchaseInput) => ({ note: i.note.trim(), preferred_channel: i.channel, preferred_time: i.time.trim(), selected_option_ids: i.optionIds ?? [] });
+
+// The request as the web portal sends it (Enterprise contract §3): the contact speed and the urgency also go into `details` for the
+// seller's card. No amount and no currency: the backend prices the order. No provider unless one was chosen — the backend's default is the
+// Telegram approval.
+export function purchaseBody(i: PurchaseInput): Record<string, unknown> {
+  const note = i.note.trim();
+  const time = i.time.trim();
+  return {
+    selected_option_ids: i.optionIds ?? [],
+    note,
+    preferred_channel: i.channel,
+    ...(time ? { preferred_time: time } : {}),
+    ...(i.contactSpeed ? { contact_speed: i.contactSpeed } : {}),
+    ...(i.urgency ? { urgency: i.urgency } : {}),
+    ...(i.contactSpeed || i.urgency ? { details: { note, contact_channel: i.channel, ...(i.contactSpeed ? { contact_speed: i.contactSpeed } : {}), ...(i.urgency ? { urgency: i.urgency } : {}) } } : {}),
+    ...(i.provider ? { payment_provider: i.provider } : {}),
+  };
+}
+const body = purchaseBody;
 
 // POST /marketplace/lawyers/{id}/services/{sid}/purchase-request. No amount is
 // sent: the backend prices the service and waits for the Telegram approval.
@@ -31,6 +50,8 @@ export function normPurchase(d: ReturnType<typeof asDict>): MarketPurchase {
     amount: uzs(payment, "amount") || uzs(order, "price"),
     currency: asStr(payment.currency ?? order.currency, "UZS") || "UZS",
     telegramSent: d.telegram_sent === true || payment.telegram_sent === true || gate.telegram_sent === true,
+    paymentStatus: asStr(payment.status).toLowerCase(),
+    paymentUrl: safeHttpsUrl(payment.payment_url),
   };
 }
 

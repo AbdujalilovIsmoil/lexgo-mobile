@@ -2,8 +2,14 @@ import type { Quote } from "@/entities/price-option";
 import type { FlowOrder } from "@/entities/market-flow";
 // pending = waiting for the payment approval, active = paid and in work.
 export type MarketStage = "pending" | "active" | "completed" | "cancelled";
-export type PreferredChannel = "chat" | "audio" | "video" | "meeting";
-export const PREFERRED_CHANNELS: PreferredChannel[] = ["chat", "audio", "video", "meeting"];
+// What a purchase request may ask for (Enterprise contract §3): the backend refuses anything else (preferred_channel_invalid, contact_speed_invalid).
+export type PreferredChannel = "chat" | "audio" | "video";
+export const PREFERRED_CHANNELS: PreferredChannel[] = ["chat", "audio", "video"];
+export type ContactSpeed = "within_15_min" | "within_1_hour" | "today" | "tomorrow";
+export const CONTACT_SPEEDS: ContactSpeed[] = ["within_15_min", "within_1_hour", "today", "tomorrow"];
+export type Urgency = "today" | "tomorrow" | "later";
+export const URGENCIES: Urgency[] = ["today", "tomorrow", "later"];
+export type PaymentProvider = "telegram_manual" | "payme" | "click";
 
 // The 15-minute rating window of a completed order, as the backend reports it (`rating`). `fetchedAt` anchors remainingSeconds.
 export type OrderRating = { available: boolean; closed: boolean; reason: string; deadlineAt: string; remainingSeconds: number; fetchedAt: number };
@@ -56,7 +62,9 @@ export type MarketOrder = {
 export type Reassignment = { at: string; reason: string; status: string; acceptedAt: string };
 
 // What POST …/purchase-request answers with.
-export type MarketPurchase = { orderId: string; workId: string; status: string; amount: number; currency: string; telegramSent: boolean };
+// The purchase answer (§4): the order starts as pending_payment with one payment for the full amount. `paymentStatus` is that payment's
+// own status — the only thing that may say "paid"; `paymentUrl` is an online provider's checkout (empty for the Telegram approval).
+export type MarketPurchase = { orderId: string; workId: string; status: string; amount: number; currency: string; telegramSent: boolean; paymentStatus: string; paymentUrl: string };
 
 // A purchase-request that hit 409 marketplace_order_already_active.
 export type ActivePurchase = { orderId: string; workId: string; status: string };

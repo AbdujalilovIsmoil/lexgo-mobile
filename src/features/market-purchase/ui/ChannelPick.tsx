@@ -5,9 +5,9 @@ import { radius, useColors } from "@/shared/theme";
 import { selectHaptic } from "@/shared/lib/haptics";
 import { useT } from "@/shared/i18n";
 
-const ICON: Record<PreferredChannel, IconName> = { chat: "message-circle", audio: "phone", video: "video", meeting: "users" };
+const ICON: Record<PreferredChannel, IconName> = { chat: "message-circle", audio: "phone", video: "video" };
 
-// "How do you want to talk?" as a 2×2 grid of cards (icon tile + name): chat / audio / video / meeting.
+// "How do you want to talk?" as cards (icon tile + name): chat / audio / video — the channels a purchase request may name.
 export function ChannelPick({ value, onChange }: { value: PreferredChannel; onChange: (c: PreferredChannel) => void }) {
   const { t } = useT();
   const c = useColors();
@@ -28,7 +28,7 @@ export function ChannelPick({ value, onChange }: { value: PreferredChannel; onCh
 
 const s = StyleSheet.create({
   grid: { flexDirection: "row", flexWrap: "wrap", gap: 10 },
-  card: { flexBasis: "47%", flexGrow: 1, flexDirection: "row", alignItems: "center", gap: 10, minHeight: 60, padding: 10, borderRadius: radius.r, borderWidth: 1.5 },
+  card: { flexBasis: "30%", flexGrow: 1, flexDirection: "row", alignItems: "center", gap: 10, minHeight: 60, padding: 10, borderRadius: radius.r, borderWidth: 1.5 },
   ico: { width: 38, height: 38, borderRadius: 19, alignItems: "center", justifyContent: "center" },
   flex: { flex: 1 },
 });
