@@ -34,6 +34,10 @@ const ID_KEYS: Partial<Record<SubjectKind, string[]>> = {
   order: ["order_id", "marketplace_order_id", "target_id"], payment: ["payment_id"], doc: ["document_request_id"], case: ["case_id"],
 };
 
+// TZ.md §13–14: the call center's separate cancellation discussion opens its own room (read-only once closed) — the order only when the
+// event names no room.
+const ROOM_FIRST = /^marketplace[._]cancellation_chat_(created|closed)$/;
+
 function idFor(kind: SubjectKind, data: Dict): string {
   for (const k of ID_KEYS[kind] ?? []) if (str(data[k])) return str(data[k]);
   return "";
@@ -43,7 +47,7 @@ export function subjectOf(input: LinkInput): Subject | null {
   const data = dict(input.data);
   const event = (input.event || str(data.event)).toLowerCase();
   const entity = ENTITY[(input.entityType ?? "").toLowerCase()];
-  const kind: SubjectKind | undefined = EXACT[event] ?? PREFIX.find(([re]) => event && re.test(event))?.[1] ?? entity;
+  const kind: SubjectKind | undefined = ROOM_FIRST.test(event) && str(data.room_id) ? "chat" : EXACT[event] ?? PREFIX.find(([re]) => event && re.test(event))?.[1] ?? entity;
   if (!kind) return null;
   const merged = { ...data };
   if (entity === kind && input.entityId) {

@@ -44,4 +44,8 @@ export const MORE_CASES: Case[] = [
   ["rule accepted, seller", "seller", ev("marketplace.rule_accepted", { rule_id: "r1" }), { href: "/pro/services", fallback: "/pro/services" }],
   ["rule accepted (underscore), seller", "seller", ev("marketplace_rule_accepted"), { href: "/pro/services" }],
   ["rule accepted, client", "client", ev("marketplace.rule_accepted", { rule_id: "r1" }), { kind: "none" }],
+  // TZ.md §14: the operator's cancellation discussion opens its room, not the order; without a room id, the order.
+  ["cancellation chat opened, client", "client", ev("marketplace.cancellation_chat_created", { order_id: "o5", room_id: "r9" }), { href: "/chat/r9", fallback: "/(tabs)/messages", probe: "/secure-chats/r9" }],
+  ["cancellation chat closed (raw frame), seller", "seller", ev("marketplace_cancellation_chat_closed", { order_id: "o5", room_id: "r9" }), { href: "/chat/r9" }],
+  ["cancellation chat without a room, client", "client", ev("marketplace.cancellation_chat_created", { order_id: "o5" }), { href: "/orders/o5" }],
 ];
