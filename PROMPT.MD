@@ -1,4 +1,4 @@
-# LexGo — Client Home Screen Redesign Brief
+# PART 1 — LexGo Client Home Screen Redesign Brief
 
 > Paste everything below this line into Claude Design as one prompt.
 
@@ -111,6 +111,172 @@ For every direction, deliver **Light, Dark, Glass** of the same layout (identica
 - [ ] Contrast ≥ 4.5:1 on all text, including on gradients and glass.
 - [ ] Tap targets ≥ 44 pt; 16 pt gutters; safe areas respected; content scrolls under the bar.
 - [ ] Marketing (promo, referral) is last and dismissible.
+
+---
+
+# PART 2 — Client Home: logic, states and backend data
+
+> Part 2 of the same prompt. It tells the designer what is real data, what is conditional, and what each tap does. Everything below is taken from the shipped mobile app code, not invented.
+
+## 0. Who sees Home
+
+| Role | What Home is |
+|---|---|
+| **Guest** (not signed in) | Same page as a client. Personal blocks (active requests, referral) are replaced by one sign-in card. Bell and avatar open sign-in. Tabs `Ishlarim` and `Xabarlar` open sign-in when pressed. |
+| **Client** (signed in) | Full page described below. |
+| **Advokat / Yurist** | Never see this page; they land on their own "Ish maydoni" tab. Ignore for this design. |
+
+Design both **guest** and **signed-in client** states of the page (guest only needs Light mode of one direction).
+
+## 1. Section-by-section logic (top → bottom in the new priority order)
+
+### 1.1 Header row
+- Left: menu button (opens a side drawer with secondary links), greeting line `Assalomu alaykum` + the person's name. Name = `user.name` or `firstName + lastName`; guest sees `Mehmon`.
+- Right, always the same four 40 pt round buttons as every other tab header: demo pill (only in demo accounts; can be omitted), **support headset** (opens a bottom sheet: operator chat, complaint, phone call with today's working hours, help hub), **bell** with an unread dot, **avatar** (opens Profile; there is no Profile tab).
+- Data: `GET /notifications/unread-count` → dot on the bell if > 0. Avatar initials from the name.
+
+### 1.2 Ask field (primary action)
+- One text field. Typing + send (or keyboard "send") opens the **AI tab** with the text prefilled as `?q=`.
+- Secondary: "Advokatdan so'rash" → today a bottom sheet "Kimdan maslahat olasiz?" offers **Advokat** (goes to Urgent advocate flow `/urgent`) or **AI** (goes to AI tab). You may replace the sheet with an inline segmented switch `AI | Advokat` in the field; the two destinations stay the same.
+- Free-tier hint: the AI answers "within the free limit". The limit string comes from `GET /clients/me/entitlements` → `ai_limit` (e.g. `"5"` or `"unlimited"`); show it only as a tiny caption if at all.
+- No data needed to render; the field is always enabled.
+
+### 1.3 Active requests ("Faol so'rovlar")
+- Source: `GET /cases` (the client's own cases). Shown rows = all cases **except** `status ∈ {completed, archived}`. Refetched every 30 s when the tab is open.
+- Row fields (all strings, any may be empty):
+  - `title` / `case_type` → row title (fallback: the case number)
+  - `case_number` → small ID chip, e.g. `CASE-1042`
+  - `stage` → grey subtitle (`request`, `matching`, `payment`, `work`, `done`)
+  - `status` → coloured badge (Uzbek label from the status table below)
+  - `next_action` → one line with an arrow, the thing the client must do now (e.g. "To'lovni tasdiqlang")
+- Status colour rule (keep): green if status matches *done / closed / complete / resolved*; amber if *progress / review / wait / pending*; brand blue otherwise.
+- Tap a row → the case/work detail. "Barchasi" → `Ishlarim` tab.
+- States to design: **loading** (one 64 pt skeleton), **empty** (`Hali so'rov yo'q` + button `So'rov yuborish` that focuses the ask field), **1 row**, **3 rows** (cap the list at 3, rest behind "Barchasi").
+- Unread chat messages per case are not in `/cases`; the global unread count for the `Xabarlar` tab badge comes from the secure-chat rooms (see 2.3). Do not show per-row unread counts unless you label them as optional.
+
+### 1.4 Urgent help
+- **Tezkor advokat** → `/urgent`: a paid "reach an advocate now" request. Catalogue of urgent services: `GET /urgent-advokat/catalog` (service name, price, response time). The client's own urgent requests: `GET /urgent-advokat/requests/me` (status `open_pool` → `claimed` → `in_progress` → `done`). If one is **open or claimed right now**, Home should surface it at the top of Active requests or as a slim live strip ("Advokat 3 daqiqada bog'lanadi"), not as a second card.
+- **Avtohalokat · maslahat** → `/urgent/new?service=traffic_accident_consultation` (a preselected urgent service).
+- **SOS** (`/sos`, `POST /sos`) exists for emergencies but is reached from the drawer; it may be a small text link under Urgent, not a red button.
+
+### 1.5 Quick actions
+Today six illustrated rail cards. Required destinations (order flexible, cut to 4 if needed):
+
+| Label | Goes to | Notes |
+|---|---|---|
+| Mutaxassis topish | Lawyers marketplace (`/(tabs)/lawyers`) | List of verified advokat/yurist with price and rating |
+| Hujjat tahlili | `/doc-analysis` | Upload PDF/DOCX/TXT, AI + advocate check |
+| Shablonlar / Xizmatlar | `Xizmatlar` tab (`/services`) | Document templates and online services catalogue |
+| Muammoni tavsiflash | the ask field | Redundant with 1.2; drop it |
+| AI'dan so'rash | AI tab | Redundant with 1.2 and the centre tab; drop it |
+
+No data needed. Icons only; no illustrations required.
+
+### 1.6 Trust line
+Static, three short chips: `Maxfiy` · `Bir necha daqiqada javob` · `Tasdiqlangan mutaxassislar`. One line, never a section.
+
+### 1.7 Upsell banner ("nudge") — conditional
+- Only for signed-in clients, hidden on chat/urgent/SOS screens. One of four messages is picked at random per session and can be dismissed (stays dismissed for the session):
+  - `gift` → `/profile/gifts`
+  - `pro` (crown) → `/subscription`, hidden if the client already has plan `lexgo-ai-pro`
+  - `lite` (gem) → `/subscription`, hidden if the client has `lexgo-ai-lite` or `lexgo-ai-pro`
+  - `lawyers` → `/lawyers`
+- Data: `GET /subscription-plans` (list, has `id`, `slug`, prices) + `GET /clients/me/entitlements` → `active_subscriptions[].plan_id`, `has_active_subscription`, `ends_at`.
+- Design it as **one** compact dismissible card, low on the page, warm tint, with an icon, a bold one-liner and a small CTA. It must never push the ask field or the status section down.
+
+### 1.8 Lawyers promo — conditional
+- Appears **2.2 s after** Home opens (fades in), hidden for **3 days** once closed or tapped. CTA → lawyers marketplace.
+- No backend data. Keep it under the status section; it may merge with the `lawyers` nudge above into one slot.
+
+### 1.9 Referral progress — conditional
+- Source: `GET /referrals/me` →
+  - `joined_count`, `invited_count`, `eligible_after` (default 5), `remaining_to_unlock`
+  - `discount_percent` (e.g. 25), `discount_unlocked` (bool)
+  - `code`, `link`, `qr_url` (used on the referral page, not on Home)
+- Home shows: title `Do'stlarni taklif qiling`, progress bar `joined / eligible_after`, caption `3/5 · 25% chegirma` or, once unlocked, `25% chegirma faol`. Tap → `/profile/referral`.
+- Hidden while loading or if the request fails. Lowest block on the page.
+
+### 1.10 Removed
+- The dark "Yordam kerakmi? → AI bilan suhbatlashish" card at the bottom. AI is already the ask field and the centre tab button.
+
+## 2. Bottom tab bar logic
+
+| Slot | Label | Route | Badge | Guest |
+|---|---|---|---|---|
+| 1 | Asosiy (today "Bosh sahifa") | Home | — | yes |
+| 2 | Xizmatlar (today "Hujjatlar") | Services / templates catalogue | — | yes |
+| 3 | **AI** (centre, raised) | AI chat | — | yes |
+| 4 | Ishlarim (today "Ishlar") | My works: orders + cases | — | opens sign-in |
+| 5 | Xabarlar | Secure chats | unread count | opens sign-in |
+
+- 2.1 The AI tab hides the tab bar on its own screen (the chat composer sits on the bottom edge). Design the bar for Home only.
+- 2.2 The AI button today is a Skia-drawn animated "neuron spark" with an optional 3D gem. **Replace with a flat glyph**; a 10 s idle animation is not wanted. Press = scale 0.96 + light haptic.
+- 2.3 `Xabarlar` badge = number of unread secure-chat messages (client-side sum over chat rooms, kept live by a socket). Show `1`, `12`, `99+`.
+- 2.4 Bell dot in the header = unread notifications (separate from chat).
+- 2.5 Content scrolls under the bar; Home's last block has bottom padding ≈ bar height + 24.
+
+## 3. Loading, errors, offline
+- Session and entitlements are cached; Home renders immediately with the last known data, then refreshes.
+- Each block fails independently: if `/cases` fails, show the empty state with a small "Qayta urinish" link; if `/referrals/me` or `/clients/me/entitlements` fails, the block is simply absent. Never block the whole page on one request.
+- Offline: a thin banner under the header `Server bilan bog'lanib bo'lmadi. Internet aloqasini tekshirib, qayta urining.` (existing text; may be shortened); the ask field still accepts text and sends when back online.
+
+## 4. Backend endpoints used by Home (summary)
+
+| Endpoint | Used for | Key fields |
+|---|---|---|
+| session (cached login) | greeting, avatar, role | `name`, `first_name`, `last_name`, `phone`, `role` |
+| `GET /notifications/unread-count` | bell dot | number |
+| `GET /cases` | Active requests | `id`, `case_number`, `title`/`case_type`, `stage`, `status`, `next_action` |
+| `GET /urgent-advokat/requests/me` | live urgent strip (optional) | `status`, `service`, `created_at` |
+| `GET /urgent-advokat/catalog` | urgent services (on the urgent screen) | name, price, response time |
+| `GET /clients/me/entitlements` | AI free limit, which nudge to hide | `ai_limit`, `has_active_subscription`, `active_subscriptions[].plan_id`, `ends_at` |
+| `GET /subscription-plans` | plan slugs for the nudge rule | `id`, `slug` |
+| `GET /referrals/me` | referral progress | `joined_count`, `invited_count`, `eligible_after`, `discount_percent`, `discount_unlocked` |
+| secure-chat rooms (socket) | `Xabarlar` badge | unread sum |
+
+Base URL: `https://lexgo.api.cognilabs.org`. Responses are JSON; many fields are optional, so every block must tolerate an empty string.
+
+## 5. Status labels (Uzbek) for the request rows
+Use these exact strings for the badge; the raw key is what the backend sends.
+
+| key | label |
+|---|---|
+| `new` | Yangi |
+| `pending` | Kutilmoqda |
+| `matching` / `seller_selection` | Ijrochi tanlash / Buyurtma qabul qilindi |
+| `awaiting_payment` / `pending_payment` / `payment_required` | To'lov kutilmoqda |
+| `paid` | To'langan |
+| `accepted` | Qabul qilindi |
+| `in_progress` / `started` | Jarayonda / Ish boshlandi |
+| `lawyer_review` | Advokat ko'rib chiqmoqda |
+| `waiting_info` / `waiting_docs` | Ma'lumot kutilmoqda / Hujjatlar kutilmoqda |
+| `result_ready` / `file_ready` | Natija tayyor / Hujjat tayyor |
+| `client_confirmation` | Tasdiqlashingiz kutilmoqda |
+| `completed` | Yakunlangan (hidden from Home) |
+| `archived` | Arxivlangan (hidden from Home) |
+| `cancelled` / `declined` / `rejected` | Bekor qilindi / Rad etildi / Rad etilgan |
+| `open_pool` / `claimed` (urgent) | Bo'sh navbatda / Olingan |
+
+## 6. Sample data for the mockups (realistic, use as-is)
+
+```json
+{
+  "user": { "name": "Dilnoza Karimova", "phone": "+998 90 123 45 67" },
+  "unread_notifications": 2,
+  "unread_chats": 3,
+  "cases": [
+    { "case_number": "CASE-1042", "title": "Mehnat nizosi", "stage": "work", "status": "lawyer_review", "next_action": "Hujjatlarni yuklang" },
+    { "case_number": "CASE-1039", "title": "Ijara shartnomasi", "stage": "payment", "status": "awaiting_payment", "next_action": "To'lovni tasdiqlang" },
+    { "case_number": "CASE-1021", "title": "Avtohalokat", "stage": "done", "status": "completed", "next_action": "" }
+  ],
+  "urgent_active": { "status": "claimed", "service": "Avtohalokat · maslahat", "eta_min": 3 },
+  "entitlements": { "ai_limit": "5", "has_active_subscription": false, "active_subscriptions": [] },
+  "referral": { "joined_count": 3, "invited_count": 5, "eligible_after": 5, "discount_percent": 25, "discount_unlocked": false }
+}
+```
+
+Note: `CASE-1021` is `completed`, so it must **not** appear in Active requests. The urgent request is `claimed`, so a live strip is appropriate.
+
 ---
 
 ## Short version for Figma AI (≤ 2000 characters)
