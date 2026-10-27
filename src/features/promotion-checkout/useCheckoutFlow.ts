@@ -1,7 +1,7 @@
 import { useRef, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { ApiError } from "@/shared/api";
-import { PLACEMENTS, bannerBlock, chosenPackage, isRetryable, promotionErrorCode, promotionKeys, useCheckout, usePackages, usePending, type CheckoutResult, type Placement } from "@/entities/promotion";
+import { PLACEMENTS, advertisingMode, bannerBlock, chosenPackage, isRetryable, promotionErrorCode, promotionKeys, useCheckout, usePackages, usePending, type CheckoutResult, type Placement, type PromotionErrorCode } from "@/entities/promotion";
 import { useProServices } from "@/entities/pro-service";
 import { randomUUID } from "expo-crypto";
 import { errorHaptic, successHaptic } from "@/shared/lib/haptics";
@@ -15,9 +15,18 @@ const asPlacement = (v?: string): Placement | null => (PLACEMENTS as readonly st
 // Where each placement shows (the web's default when the catalog does not say).
 const SURFACE: Record<Placement, string> = { banner: "marketplace_top_banner", profile_boost: "marketplace_list_card", service_boost: "category_search_sponsored_service" };
 
+// The text key of a known checkout error. Marketplace advertising closed (409: test or paused mode, or readiness lost) and a locale the
+// server refused (422) have their own plain texts; the rest are the web's list.
+function codeKey(code: PromotionErrorCode, e: unknown): string {
+  if (code === "marketplace_advertising_not_active") return { test: "prm.adTest", paused: "prm.adPaused", "": "prm.adOff" }[advertisingMode(e)];
+  if (code === "marketplace_advertising_not_ready") return "prm.adNotReady";
+  if (code === "promotion_language_invalid") return "prm.languageInvalid";
+  return `promoSeller.ck.errors.${code}`;
+}
+
 // State of the promotion wizard: placement (+ service) → package → banner → checkout (provider telegram_manual, pending until approved).
 export function useCheckoutFlow(uid: string, preset: { service?: string; placement?: string }) {
-  const { t } = useT();
+  const { t, locale } = useT();
   const errorText = useErrorText();
   const qc = useQueryClient();
   const [flow, setFlow] = useState<Flow>({ placement: preset.service ? "service_boost" : (asPlacement(preset.placement) ?? "profile_boost"), serviceId: preset.service ?? "", packageId: "", banner: NO_BANNER });
@@ -61,6 +70,7 @@ export function useCheckoutFlow(uid: string, preset: { service?: string; placeme
         previewSurface: options?.surface || SURFACE[placement],
         serviceTitle: needsService ? svc?.name : undefined,
         idempotencyKey: attempt.current.key,
+        language: locale,
       });
       if (r.telegramSent) pending.add({ requestId: r.requestId, target: needsService ? `service:${flow.serviceId}` : placement, packageTitle: pkg.title, amount: r.amount || pkg.price, currency: r.currency, telegramSent: true, at: Date.now() });
       attempt.current = null;
@@ -70,7 +80,7 @@ export function useCheckoutFlow(uid: string, preset: { service?: string; placeme
       errorHaptic();
       if (!isRetryable(e)) attempt.current = null;
       const code = promotionErrorCode(e);
-      setError(code ? t(`promoSeller.ck.errors.${code}`) : e instanceof ApiError && e.status === 404 ? t("promoSeller.ck.notFound") : e instanceof ApiError ? errorText(e) : t("sl11.error"));
+      setError(code ? t(codeKey(code, e)) : e instanceof ApiError && e.status === 404 ? t("promoSeller.ck.notFound") : e instanceof ApiError ? errorText(e) : t("sl11.error"));
       // The state moved on the server (already running, package or service gone): show the fresh one.
       if (code === "promotion_already_exists" || (e instanceof ApiError && e.status === 404)) void qc.invalidateQueries({ queryKey: promotionKeys.all });
     }

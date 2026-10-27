@@ -101,12 +101,6 @@ export const promoSeller = {
       "environmental-professional": "In a work setting",
     },
     bannerRules: "At least 720×720, up to 12 MB. A clear face, good light, professional clothing and little ad text.",
-    bannerStatus: {
-      active: "The photo passed the check",
-      manual_review: "The photo is in manual review — it can't be used until approved",
-      rejected: "The photo was rejected — upload another",
-    },
-    bannerSuggest: "Suggestions:",
     bannerNoFile: "No file chosen · JPG, PNG, WEBP, HEIC · up to {mb} MB",
     bannerUploading: "Uploading…",
     bannerPick: "Choose image",

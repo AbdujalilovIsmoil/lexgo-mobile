@@ -3,19 +3,20 @@ import { EmptyState, PressableScale, Text } from "@/shared/ui";
 import { ProfileSection } from "@/shared/ui/profile";
 import { useColors } from "@/shared/theme";
 import { useT } from "@/shared/i18n";
-import { usePromoActive, type LawyerService } from "@/entities/lawyer";
+import { useSellerPromos, type LawyerService } from "@/entities/lawyer";
 import { SafeDeal } from "@/widgets/lawyer-sheet";
 import { ServiceOption } from "./ServiceOption";
 
-type Props = { services: LawyerService[]; selected: string; blocked: string; onSelect: (id: string) => void; onExplain: () => void };
+type Props = { sellerId: string; services: LawyerService[]; selected: string; blocked: string; onSelect: (id: string) => void; onExplain: () => void };
 
 // "Xizmatlar va narxlar": the price explainer link, the lead, the radio list of services, why a purchase is closed (if it
 // is) and the "Xavfsiz xarid" guarantees.
-export function ServicesPanel({ services, selected, blocked, onSelect, onExplain }: Props) {
+export function ServicesPanel({ sellerId, services, selected, blocked, onSelect, onExplain }: Props) {
   const { t } = useT();
   const c = useColors();
-  // A service is «Tavsiya etilgan» when the server flags it or a running service boost (GET /promotions/active) names it; those come first.
-  const boosted = new Set((usePromoActive().data ?? []).filter((p) => p.placement === "service_boost" && p.serviceId).map((p) => p.serviceId));
+  // A service is «Tavsiya etilgan» when the server flags it or one of his running service boosts (GET /promotions/active?seller_user_id)
+  // names it; those come first.
+  const boosted = new Set((useSellerPromos(sellerId).data ?? []).filter((p) => p.placement === "service_boost" && p.serviceId).map((p) => p.serviceId));
   const list = services.map((sv) => ({ ...sv, sponsored: sv.sponsored || boosted.has(sv.id) })).sort((a, b) => Number(b.sponsored) - Number(a.sponsored));
   return (
     <View style={{ gap: 14 }}>

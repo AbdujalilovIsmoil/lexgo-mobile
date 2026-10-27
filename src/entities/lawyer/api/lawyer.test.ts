@@ -1,11 +1,14 @@
 import { http } from "@/shared/api";
+import { API_BASE } from "@/shared/config/env";
 import { listLawyers } from "./lawyerApi";
 import { getMyMatches } from "./matchApi";
 import { normLawyer } from "./normalize";
 import { hasPromoTarget, normPromo } from "./normPromo";
 import { normReview, normService } from "./normService";
+import { listActivePromos } from "./promoApi";
 import { buildQuery, isLocalMode } from "./query";
 import { activeFilterCount, defaultLawyerFilters } from "../model/filters";
+import { hasEnded } from "../lib/promo";
 import { isRated } from "../lib/rating";
 
 jest.mock("@/shared/api", () => ({ ...jest.requireActual("@/shared/api"), http: jest.fn() }));
@@ -61,19 +64,59 @@ describe("normService / normReview / normPromo", () => {
     expect(hasPromoTarget(normPromo({ id: "p" }))).toBe(false);
     expect(normPromo({ seller_profile: { is_verified: true, rating: 4.5 } })).toMatchObject({ sellerVerified: true, sellerRating: 4.5 });
   });
-  it("promo seller: the badge from is_verified alone", () => {
+  it("promo seller: the badge from is_verified alone, the rating only when rated", () => {
     expect(normPromo({ seller_profile: { verification_status: "approved", lexgo_verified: true } }).sellerVerified).toBe(false);
+    // The live demo banner: 2.35 with no reviews is not a rating.
+    expect(normPromo({ seller_profile: { rating: 2.35, reviews_count: 0 } })).toMatchObject({ sellerRating: 2.35, sellerRated: false });
+    expect(normPromo({ seller_profile: { rating: 4.5, reviews_count: 7 } }).sellerRated).toBe(true);
+    expect(normPromo({ seller_profile: { rating: 4.5, reviews_count: 1, rating_status: "rated" } }).sellerRated).toBe(true);
+  });
+});
+
+describe("normPromo banner picture", () => {
+  it("makes the asset path of our API absolute and keeps an https picture", () => {
+    expect(normPromo({ image_url: "/promotions/assets/a1/file", banner_mode: "image" })).toMatchObject({ imageUrl: `${API_BASE}/promotions/assets/a1/file`, bannerMode: "image" });
+    expect(normPromo({ image_url: "https://cdn.lexgo.uz/b.jpg" }).imageUrl).toBe("https://cdn.lexgo.uz/b.jpg");
+    expect(normPromo({ image_url: `${API_BASE}/promotions/assets/a2/file` }).imageUrl).toBe(`${API_BASE}/promotions/assets/a2/file`);
+    expect(normPromo({ image_url: "", banner_image_url: "https://cdn.lexgo.uz/c.jpg" }).imageUrl).toBe("https://cdn.lexgo.uz/c.jpg");
+  });
+  it("drops a picture the phone cannot load and reads the mode as given", () => {
+    expect(normPromo({ image_url: "http://cdn.lexgo.uz/b.jpg" }).imageUrl).toBe("");
+    expect(normPromo({ image_url: "//cdn.lexgo.uz/b.jpg" }).imageUrl).toBe("");
+    expect(normPromo({ image_url: "", banner_mode: " Profile_Card " })).toMatchObject({ imageUrl: "", bannerMode: "profile_card" });
+    expect(normPromo({}).bannerMode).toBe("");
+  });
+  it("keeps the seller's headline to tell it from his own subtitle", () => {
+    expect(normPromo({ subtitle: "Advokat • oila • samarkand", seller_profile: { headline: "Advokat • oila • samarkand" } }).sellerHeadline).toBe("Advokat • oila • samarkand");
+  });
+});
+
+describe("listActivePromos", () => {
+  it("asks for the banners alone, or for one seller", async () => {
+    mockHttp.mockResolvedValueOnce({ items: [{ id: "p", placement: "banner", seller_user_id: "u" }, { id: "x" }] });
+    expect((await listActivePromos({ placement: "banner", limit: 6 })).map((p) => p.id)).toEqual(["p"]);
+    expect(mockHttp).toHaveBeenLastCalledWith("/promotions/active?limit=6&placement=banner");
+    mockHttp.mockResolvedValueOnce({ items: [] });
+    await listActivePromos({ sellerUserId: "u 1", limit: 20 });
+    expect(mockHttp).toHaveBeenLastCalledWith("/promotions/active?limit=20&seller_user_id=u+1");
   });
 });
 
 describe("listLawyers", () => {
-  it("lists only is_verified sellers", async () => {
-    mockHttp.mockResolvedValueOnce({ items: [{ user_id: "a", lawyer_name: "A", is_verified: true }, { user_id: "b", lawyer_name: "B", verification_status: "approved", lexgo_verified: true, verification_badge: { visible: true } }], total: 2 });
-    expect((await listLawyers({}, { limit: 10 })).items.map((l) => l.userId)).toEqual(["a"]);
+  it("lists only is_verified sellers and keeps only banners from `banners`", async () => {
+    mockHttp.mockResolvedValueOnce({
+      items: [{ user_id: "a", lawyer_name: "A", is_verified: true }, { user_id: "b", lawyer_name: "B", verification_status: "approved", lexgo_verified: true, verification_badge: { visible: true } }],
+      total: 2,
+      banners: [{ id: "p", placement: "banner", seller_user_id: "a" }, { id: "q", placement: "profile_boost", seller_user_id: "b" }],
+      sponsored_profiles: [{ id: "s", placement: "profile_boost", seller_user_id: "a" }],
+    });
+    const page = await listLawyers({}, { limit: 10 });
+    expect(page.items.map((l) => l.userId)).toEqual(["a"]);
+    expect(page.banners.map((p) => p.id)).toEqual(["p"]);
   });
 });
 
-describe("isRated", () => {
+describe("isRated / hasEnded", () => {
   it("rated only by the backend's status, else by five reviews", () => {
     expect(isRated("rated", 4.2, 1)).toBe(true);
     expect(isRated(" Rated ", 4.2, 1)).toBe(true);
@@ -81,6 +124,12 @@ describe("isRated", () => {
     expect(isRated("rated", 0, 3)).toBe(false);
     expect(isRated("", 5, 4)).toBe(false);
     expect(isRated("", 4.9, 5)).toBe(true);
+  });
+  it("a placement without an end date never ends", () => {
+    expect(hasEnded("")).toBe(false);
+    expect(hasEnded("2020-01-01T00:00:00Z")).toBe(true);
+    expect(hasEnded(new Date(Date.now() + 3_600_000).toISOString())).toBe(false);
+    expect(hasEnded("not a date")).toBe(false);
   });
 });
 

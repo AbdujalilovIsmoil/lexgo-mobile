@@ -1,4 +1,5 @@
-import { isRetryable, promotionErrorCode } from "./errors";
+import { ApiError, parseErrorBody } from "@/shared/api";
+import { advertisingMode, isRetryable, promotionErrorCode } from "./errors";
 
 describe("promotionErrorCode", () => {
   it("reads the code from code, detail.code, detail.error or detail", () => {
@@ -7,10 +8,29 @@ describe("promotionErrorCode", () => {
     expect(promotionErrorCode({ data: { detail: { error: "promotion_placement_invalid" } } })).toBe("promotion_placement_invalid");
     expect(promotionErrorCode({ detail: " promotion_already_exists " })).toBe("promotion_already_exists");
   });
+  it("knows the advertising gate (409) and the locale check (422) of the backend", () => {
+    expect(promotionErrorCode(parseErrorBody(409, { detail: { code: "marketplace_advertising_not_active", mode: "test" } }))).toBe("marketplace_advertising_not_active");
+    expect(promotionErrorCode(parseErrorBody(409, { detail: { code: "marketplace_advertising_not_ready" } }))).toBe("marketplace_advertising_not_ready");
+    expect(promotionErrorCode(parseErrorBody(422, { detail: { code: "promotion_language_invalid" } }))).toBe("promotion_language_invalid");
+  });
   it("ignores everything else", () => {
     expect(promotionErrorCode({ code: "other" })).toBe("");
     expect(promotionErrorCode(null)).toBe("");
     expect(promotionErrorCode("service_id_required")).toBe("");
+    expect(promotionErrorCode(parseErrorBody(422, { detail: [{ loc: ["body", "days"], msg: "bad" }] }))).toBe("");
+  });
+});
+
+describe("advertisingMode", () => {
+  it("reads test / paused from detail.mode", () => {
+    expect(advertisingMode(parseErrorBody(409, { detail: { code: "marketplace_advertising_not_active", mode: "test" } }))).toBe("test");
+    expect(advertisingMode(parseErrorBody(409, { detail: { code: "marketplace_advertising_not_active", mode: " PAUSED " } }))).toBe("paused");
+  });
+  it("is empty for any other mode or answer", () => {
+    expect(advertisingMode(parseErrorBody(409, { detail: { code: "marketplace_advertising_not_active", mode: "active" } }))).toBe("");
+    expect(advertisingMode(parseErrorBody(409, { detail: { code: "marketplace_advertising_not_ready" } }))).toBe("");
+    expect(advertisingMode(new ApiError(409, "x"))).toBe("");
+    expect(advertisingMode(null)).toBe("");
   });
 });
 

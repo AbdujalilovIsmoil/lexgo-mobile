@@ -24,7 +24,7 @@ export function SpecialistPreview({ lawyer, selected }: { lawyer: Lawyer; select
       <SpecialistStats lawyer={lawyer} />
       <View style={s.body}>
         <ProfileTabs value={tab} onChange={setTab} tabs={TABS} />
-        {tab === "services" ? <ServicesPanel services={lawyer.services} selected={selected ?? ""} blocked="" onSelect={() => undefined} onExplain={() => undefined} /> : <AboutPanel lawyer={lawyer} />}
+        {tab === "services" ? <ServicesPanel sellerId={lawyer.userId} services={lawyer.services} selected={selected ?? ""} blocked="" onSelect={() => undefined} onExplain={() => undefined} /> : <AboutPanel lawyer={lawyer} />}
       </View>
     </View>
   );

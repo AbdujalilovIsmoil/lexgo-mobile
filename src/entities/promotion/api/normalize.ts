@@ -34,16 +34,25 @@ function normPlacement(v: unknown): PlacementOption {
   return { value, requiresService: d.requires_service === true || value === "service_boost", requiresBanner: d.requires_banner === true, acceptsBanner: d.accepts_banner_asset === true || value === "banner", surface: asStr(d.preview_surface) };
 }
 
-const messages = (v: unknown): string[] => asArr(v).map((x) => (typeof x === "string" ? x : asStr(asDict(x).message ?? asDict(x).text ?? asDict(x).reason))).filter(Boolean);
+const messages = (v: unknown): string[] => asArr(v).map((x) => (typeof x === "string" ? x : asStr(asDict(x).message ?? asDict(x).text ?? asDict(x).reason)).trim()).filter(Boolean);
 
-// The banner-asset answer: a stored file plus the picture check. Anything but rejected / manual review counts as passed.
+// The banner-asset answer: a stored file plus the picture check. Anything but rejected / manual review counts as passed. Only the
+// backend's localized texts are kept — vision_validation.message, reasons[] and suggestions[] — never the technical reason_codes;
+// a reason that repeats the message is dropped.
 export function normBannerCheck(v: unknown): BannerCheck {
   const n = asDict(v);
   const a = asDict(n.asset ?? n.data);
   const vision = asDict(n.vision_validation ?? a.vision_validation);
   const raw = asStr(n.status ?? a.status).toLowerCase();
   const status: BannerStatus = raw === "rejected" ? "rejected" : raw === "manual_review" || raw === "pending_review" ? "manual_review" : "active";
-  return { fileUrl: asStr(n.file_url ?? a.file_url), status, reasons: messages(vision.reasons ?? n.reasons), suggestions: messages(vision.suggestions ?? n.suggestions) };
+  const message = asStr(vision.message).trim();
+  return {
+    fileUrl: asStr(n.file_url ?? a.file_url),
+    status,
+    message,
+    reasons: messages(vision.reasons ?? n.reasons).filter((r) => r !== message),
+    suggestions: messages(vision.suggestions ?? n.suggestions),
+  };
 }
 
 // POST /promotions/checkout answer. `payment_required:false` (or an active status) means it is live already, no Telegram step.

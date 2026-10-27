@@ -16,4 +16,10 @@ export const useMyMatches = (enabled: boolean) => useQuery({ queryKey: ["my-matc
 
 export const usePricingPolicy = (enabled: boolean) => useQuery({ queryKey: ["pricing-policy"], queryFn: getPricingPolicy, enabled, staleTime: 30 * 60 * 1000 });
 
-export const usePromoActive = () => useQuery({ queryKey: ["promo-active"], queryFn: () => listActivePromos(6), staleTime: 5 * 60 * 1000 });
+// Running promotions live under ["promo-active", …]: refreshed together after a promotion goes live (entities/promotion).
+// The marketplace's top banners only — boosted profiles and services show on their own cards, not in the banner rail.
+export const usePromoBanners = () => useQuery({ queryKey: ["promo-active", "banner"], queryFn: () => listActivePromos({ placement: "banner", limit: 6 }), staleTime: 5 * 60 * 1000 });
+
+// Everything one specialist runs now (banner, profile or service boost): the "Top" mark on his page and his boosted services.
+export const useSellerPromos = (sellerUserId: string) =>
+  useQuery({ queryKey: ["promo-active", "seller", sellerUserId], queryFn: () => listActivePromos({ sellerUserId, limit: 20 }), enabled: !!sellerUserId, staleTime: 5 * 60 * 1000 });

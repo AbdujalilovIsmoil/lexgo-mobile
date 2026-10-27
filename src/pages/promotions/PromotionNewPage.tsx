@@ -32,7 +32,8 @@ export default function PromotionNewPage() {
   const last = at === steps.length - 1;
   const name = account?.name || profile?.name || "";
   const ok = canLeave(step, { placement: !!p, needsService: f.needsService, hasService: !!f.svc, hasPackage: !!f.pkg, bannerBlocked: f.bannerBlocked, ready: f.ready });
-  const hint = step === "place" && f.hint === "service" ? "promoSeller.ck.pickServiceFirst" : step === "banner" && f.hint === "needed" ? "promoSeller.ck.bannerNeeded" : step === "banner" && f.hint === "review" ? "promoSeller.ck.bannerStatus.manual_review" : "";
+  // Why "next" is off. A picture that did not pass gets no verdict of the app's own here: the server's words are under the picture.
+  const hint = step === "place" && f.hint === "service" ? "promoSeller.ck.pickServiceFirst" : step === "banner" && f.hint === "needed" ? "promoSeller.ck.bannerNeeded" : step === "banner" && f.hint === "review" ? "prm.bannerBlocked" : "";
   const note = last ? f.error : hint ? t(hint) : "";
   const go = (to: number) => setWant(steps[Math.max(0, Math.min(steps.length - 1, to))]);
   const rows = p && f.pkg

@@ -2,7 +2,7 @@ import { bannerBlock, isBannerUrl } from "./banner";
 import type { BannerCheck } from "../model/types";
 
 const base = { required: false, accepts: true, url: "", fileUrl: "", check: null, uploading: false };
-const check = (status: BannerCheck["status"]): BannerCheck => ({ fileUrl: "f", status, reasons: [], suggestions: [] });
+const check = (status: BannerCheck["status"], fileUrl = "f"): BannerCheck => ({ fileUrl, status, message: "", reasons: [], suggestions: [] });
 
 describe("isBannerUrl", () => {
   it("wants https with a dotted host", () => {
@@ -27,6 +27,10 @@ describe("bannerBlock", () => {
     expect(bannerBlock({ ...base, fileUrl: "f", check: check("manual_review") })).toBe("review");
     expect(bannerBlock({ ...base, fileUrl: "f", check: check("rejected") })).toBe("review");
     expect(bannerBlock({ ...base, fileUrl: "f", check: check("active") })).toBeNull();
+  });
+  it("blocks a picture the server refused without storing it", () => {
+    expect(bannerBlock({ ...base, check: check("rejected", "") })).toBe("review");
+    expect(bannerBlock({ ...base, required: true, check: check("manual_review", "") })).toBe("review");
   });
   it("rejects a bad link", () => expect(bannerBlock({ ...base, url: "ftp://x" })).toBe("badUrl"));
 });

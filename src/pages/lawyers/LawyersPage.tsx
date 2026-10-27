@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { StyleSheet, View } from "react-native";
 import { useRouter } from "expo-router";
-import { activeFilterCount, useLawyerPages, usePromoActive, type PromoSurface } from "@/entities/lawyer";
+import { activeFilterCount, useLawyerPages, usePromoBanners } from "@/entities/lawyer";
 import { ActiveFilters, FilterButton, FilterSheet, MarketHero, useLawyerFilterStore } from "@/features/lawyer-filter";
 import { AiResults } from "@/widgets/ai-results";
 import { LawyerResults } from "@/widgets/lawyer-results";
@@ -30,15 +30,16 @@ export function LawyersPage() {
   const open = (id: string) => router.push({ pathname: "/specialist/[id]", params: { id } });
   const openServices = (id: string) => router.push({ pathname: "/specialist/[id]", params: { id, tab: "services" } }); // AI hits: straight to what he sells
   const first = query.data?.pages[0];
-  const active = usePromoActive().data;
-  const promos: PromoSurface[] = active?.length ? active : [...(first?.banners ?? []), ...(first?.sponsored ?? [])];
+  // The rail holds banners only (GET /promotions/active?placement=banner, else the list's own `banners`); boosted sellers are TOP cards in the list.
+  const live = usePromoBanners().data;
+  const banners = live?.length ? live : (first?.banners ?? []);
   const items = query.data?.pages.flatMap((p) => p.items) ?? [];
   const prices = items.map((l) => l.basePrice).filter((p) => p > 0);
   const stats = { sellers: first?.total ?? items.length, services: new Set(items.flatMap((l) => l.services.map((x) => x.id))).size, min: prices.length ? Math.min(...prices) : 0, loading: query.isPending };
   const calm = !filters.q && !activeFilterCount(filters) && !filters.area;
   const header = (
     <View style={s.head}>
-      {ai || !calm ? null : <PromoRail items={promos} onOpenSeller={open} />}
+      {ai || !calm ? null : <PromoRail items={banners} onOpenSeller={open} />}
       <MarketHero value={ai ? aiText : text} onChange={ai ? setAiText : setText} onFind={() => { const v = (ai ? aiText : text).trim(); if (v) { setAiText(v); runAi(v); } }} onClear={() => { setText(""); setAiText(""); setAi(false); }} onExample={(x) => { setText(x); setAiText(x); runAi(x); }} stats={stats}>
         {ai || !calm ? null : <MarketShowcase items={items} onOpen={open} />}
       </MarketHero>

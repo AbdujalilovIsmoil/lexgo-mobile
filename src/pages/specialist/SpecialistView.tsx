@@ -4,7 +4,7 @@ import { useRouter } from "expo-router";
 import Animated, { FadeInLeft, FadeInRight } from "react-native-reanimated";
 import { useIsAuthed } from "@/entities/session";
 import { chatRoomWith, useMarketOrders } from "@/entities/order";
-import { useLawyerServices, usePromoActive, type Lawyer, type LawyerService } from "@/entities/lawyer";
+import { useLawyerServices, useSellerPromos, type Lawyer, type LawyerService } from "@/entities/lawyer";
 import { PurchaseFlow } from "@/features/market-purchase";
 import { ProfileTabs, type TabDef } from "@/widgets/client-profile";
 import { PriceExplainer, useBuyGate } from "@/widgets/lawyer-sheet";
@@ -35,7 +35,7 @@ export function SpecialistView({ lawyer: l, initialTab }: { lawyer: Lawyer; init
   // The chat button appears only while the client has a running order with this specialist whose chat the backend opened,
   // and it goes straight into that order's room (nothing to pay again, no chat at all for a finished or unbought service).
   const room = chatRoomWith(l.userId, useMarketOrders(authed).data);
-  const top = (usePromoActive().data ?? []).some((p) => p.sellerUserId === l.userId);
+  const top = (useSellerPromos(l.userId).data ?? []).some((p) => p.sellerUserId === l.userId); // runs any promotion now
   const services = useLawyerServices(l.userId).data ?? l.services;
   const [nav, setNav] = useState<{ tab: SpecialistTab; dir: 1 | -1 }>({ tab: initialTab, dir: 1 });
   const [picked, setPicked] = useState("");
@@ -63,7 +63,7 @@ export function SpecialistView({ lawyer: l, initialTab }: { lawyer: Lawyer; init
         <View style={s.body}>
           <Reveal i={2}><ProfileTabs value={nav.tab} onChange={go} tabs={TAB_LABEL} /></Reveal>
           <Animated.View key={nav.tab} entering={(nav.dir === 1 ? FadeInRight : FadeInLeft).duration(320)}>
-            {nav.tab === "services" ? <ServicesPanel services={services} selected={sel?.id ?? ""} blocked={blocked} onSelect={setPicked} onExplain={() => setExplain(true)} /> : null}
+            {nav.tab === "services" ? <ServicesPanel sellerId={l.userId} services={services} selected={sel?.id ?? ""} blocked={blocked} onSelect={setPicked} onExplain={() => setExplain(true)} /> : null}
             {nav.tab === "about" ? <AboutPanel lawyer={l} /> : null}
             {nav.tab === "reviews" ? <ReviewsPanel lawyer={l} /> : null}
           </Animated.View>

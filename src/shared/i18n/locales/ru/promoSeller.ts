@@ -101,12 +101,6 @@ export const promoSeller = {
       "environmental-professional": "В рабочей обстановке",
     },
     bannerRules: "Минимум 720×720, до 12 МБ. Лицо хорошо видно, свет хороший, одежда деловая, без лишнего рекламного текста.",
-    bannerStatus: {
-      active: "Фото прошло проверку",
-      manual_review: "Фото на ручной проверке — до одобрения использовать нельзя",
-      rejected: "Фото не принято — загрузите другое",
-    },
-    bannerSuggest: "Советы:",
     bannerNoFile: "Файл не выбран · JPG, PNG, WEBP, HEIC · до {mb} МБ",
     bannerUploading: "Загрузка…",
     bannerPick: "Выбрать изображение",

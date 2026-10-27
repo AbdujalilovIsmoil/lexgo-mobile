@@ -1,4 +1,4 @@
-import { useUploadBanner, BANNER_MAX_MB, type BannerCheck } from "@/entities/promotion";
+import { useUploadBanner, BANNER_MAX_MB, promotionErrorCode, type BannerCheck } from "@/entities/promotion";
 import { ApiError } from "@/shared/api";
 import { pickImages } from "@/shared/lib/upload";
 import { toast } from "@/shared/ui";
@@ -20,9 +20,10 @@ export const NO_BANNER: Banner = { imageUrl: "", fileUrl: "", localUri: "", file
 /** Patch that removes the picture (file or link) but keeps the texts. */
 export const NO_PICTURE: Partial<Banner> = { imageUrl: "", fileUrl: "", localUri: "", fileName: "", check: null };
 
-// Gallery picture → POST /promotions/banner-assets (multipart) → stored file + the picture check (active · manual review · rejected).
+// Gallery picture → POST /promotions/banner-assets (multipart, with the app's language) → stored file + the picture check (active ·
+// manual review · rejected) in that language. A refused picture stays on screen with the server's reasons until it is replaced.
 export function useBannerPick(onChange: (patch: Partial<Banner>) => void) {
-  const { t } = useT();
+  const { t, locale } = useT();
   const up = useUploadBanner();
   const pick = async () => {
     const r = await pickImages({ maxMb: BANNER_MAX_MB, exts: /\.(jpe?g|png|webp|heic)$/i });
@@ -31,12 +32,12 @@ export function useBannerPick(onChange: (patch: Partial<Banner>) => void) {
     if (r.error || !f) return toast(r.error === "tooBig" ? t("promoSeller.ck.bannerTooBig", { mb: BANNER_MAX_MB }) : t("promoSeller.ck.bannerType"), "err");
     onChange({ ...NO_PICTURE, uploading: true, fileName: f.name, localUri: /\.heic$/i.test(f.name) ? "" : f.uri });
     try {
-      const check = await up.mutateAsync({ uri: f.uri, name: f.name });
-      if (!check.fileUrl) throw new Error("no url");
+      const check = await up.mutateAsync({ file: { uri: f.uri, name: f.name }, language: locale });
+      if (check.status === "active" && !check.fileUrl) throw new Error("no url"); // a passed picture must come with its stored file
       onChange({ uploading: false, fileUrl: check.fileUrl, check });
     } catch (e) {
       onChange({ ...NO_PICTURE, uploading: false });
-      toast(e instanceof ApiError && e.detail ? e.detail : t("promoSeller.ck.bannerUploadError"), "err");
+      toast(promotionErrorCode(e) === "promotion_language_invalid" ? t("prm.languageInvalid") : e instanceof ApiError && e.detail ? e.detail : t("promoSeller.ck.bannerUploadError"), "err");
     }
   };
   return { pick: () => void pick() };

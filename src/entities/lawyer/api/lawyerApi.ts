@@ -7,19 +7,21 @@ import type { Lawyer } from "../model/types";
 import type { LawyerFilters } from "../model/filters";
 import type { PromoSurface } from "../model/marketTypes";
 
-export type LawyerPage = { items: Lawyer[]; total: number; sponsored: PromoSurface[]; banners: PromoSurface[] };
+// `banners`: the top banners the list sends along (the rail's fallback). Boosted profiles need no list of their own: those sellers come
+// in `items` with their promotion and show as TOP cards.
+export type LawyerPage = { items: Lawyer[]; total: number; banners: PromoSurface[] };
 export type PageOpts = { limit?: number; offset?: number };
 
 const MAX = 100; // server limit per request
-const surfaces = (...lists: unknown[]): PromoSurface[] => lists.flatMap((l) => asArr(l)).map(normPromo).filter(hasPromoTarget);
 
-// Public marketplace shows only LexGo-approved professionals (web: s.verified).
+// Public marketplace shows only LexGo-verified professionals (`is_verified`, TZ.md public lawyer privacy).
 async function fetchPage(f: Partial<LawyerFilters>, limit: number, offset: number): Promise<LawyerPage> {
   const data = await http(`/marketplace/lawyers?${buildQuery(f, limit, offset)}`);
   const d = asDict(data);
   const items = listFrom(data, "items", "data", "lawyers").map(normLawyer).filter((l) => l.userId && l.name && l.verified);
   if (f.sort === "price_asc") items.sort((a, b) => (a.basePrice || Infinity) - (b.basePrice || Infinity)); // no price → last
-  return { items, total: asNum(d.total, items.length), sponsored: surfaces(d.sponsored, d.sponsored_profiles), banners: surfaces(d.banners) };
+  const banners = asArr(d.banners).map(normPromo).filter((p) => hasPromoTarget(p) && (!p.placement || p.placement === "banner"));
+  return { items, total: asNum(d.total, items.length), banners };
 }
 
 // Whole result for a local sort/filter: read once per minute and cut into pages here.

@@ -9,12 +9,13 @@ export type BannerBlock = "needed" | "uploading" | "review" | "badUrl";
 
 type State = { required: boolean; accepts: boolean; url: string; fileUrl: string; check: BannerCheck | null; uploading: boolean };
 
-// The picture is optional unless the package requires it; an uploaded file must pass the check, a link must look like one.
+// The picture is optional unless the package requires it; an uploaded file must pass the check (a refused one, stored or not, blocks
+// until it is removed or replaced), a link must look like one.
 export function bannerBlock(s: State): BannerBlock | null {
   if (!s.accepts) return null;
   if (s.uploading) return "uploading";
   if (s.url.trim() && !isBannerUrl(s.url)) return "badUrl";
-  if (s.fileUrl && s.check?.status !== "active") return "review";
+  if ((s.fileUrl || s.check) && s.check?.status !== "active") return "review";
   if (s.required && !s.fileUrl && !s.url.trim()) return "needed";
   return null;
 }

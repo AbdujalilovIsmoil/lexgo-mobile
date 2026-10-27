@@ -7,15 +7,17 @@ import { promotionAnswers } from "../api/inboxApi";
 import { matches, signalOf } from "../lib/signal";
 import { usePendingStore } from "./pendingStore";
 import { isRunning } from "../lib/settle";
-import { promotionKeys, usePromoStatus } from "./queries";
+import { PROMO_ACTIVE, promotionKeys, usePromoStatus } from "./queries";
 
-// Settles pending checkouts: the realtime answer first, the notification inbox after a missed event.
+// Settles pending checkouts: the realtime answer first, the notification inbox after a missed event. Whatever settles also reads
+// the running promotions again (GET /promotions/active), so an approved banner or boost shows on the marketplace at once.
 export function usePromotionLive(uid: string): void {
   const qc = useQueryClient();
   const { t } = useT();
   const refresh = () => {
     void qc.invalidateQueries({ queryKey: promotionKeys.all });
     void qc.invalidateQueries({ queryKey: ["pro-service"] });
+    void qc.invalidateQueries({ queryKey: PROMO_ACTIVE });
   };
   const announce = (kind: "approved" | "rejected", n: number) => {
     if (n > 0) toast(t(kind === "approved" ? "sl10.toast.approved" : "sl10.toast.rejected"), kind === "approved" ? "ok" : "err");
@@ -49,7 +51,9 @@ export function usePromotionLive(uid: string): void {
     running.current = () => {
       const items = status.data?.items;
       if (!uid || !items?.length) return;
-      announce("approved", usePendingStore.getState().drop(uid, (p) => isRunning(p, items)).length);
+      const live = usePendingStore.getState().drop(uid, (p) => isRunning(p, items)).length;
+      announce("approved", live);
+      if (live) void qc.invalidateQueries({ queryKey: PROMO_ACTIVE });
     };
   });
   useEffect(() => running.current(), [status.data, uid]);

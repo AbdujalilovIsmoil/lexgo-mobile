@@ -101,12 +101,6 @@ export const promoSeller = {
       "environmental-professional": "Ish muhitida",
     },
     bannerRules: "Kamida 720×720, ko'pi bilan 12 MB. Yuz aniq ko'rinsin, yorug'lik yaxshi, kiyim rasmiy, ortiqcha reklama matni bo'lmasin.",
-    bannerStatus: {
-      active: "Rasm tekshiruvdan o'tdi",
-      manual_review: "Rasm qo'lda tekshirilmoqda — tasdiqlanguncha foydalanib bo'lmaydi",
-      rejected: "Rasm qabul qilinmadi — boshqasini yuklang",
-    },
-    bannerSuggest: "Tavsiyalar:",
     bannerNoFile: "Fayl tanlanmagan · JPG, PNG, WEBP, HEIC · {mb} MB gacha",
     bannerUploading: "Yuklanmoqda…",
     bannerPick: "Rasm tanlash",

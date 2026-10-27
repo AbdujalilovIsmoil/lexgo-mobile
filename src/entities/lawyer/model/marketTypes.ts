@@ -5,7 +5,7 @@ export type MarketCategory = { id: string; title: string };
 export type MarketMetaService = { id: string; title: string; categoryId: string; basePrice: number };
 export type MarketMeta = { categories: MarketCategory[]; services: MarketMetaService[] };
 
-// A paid placement from `sponsored`, `sponsored_profiles`, `banners` or /promotions/active.
+// A paid placement from the list's `banners`, the AI search or /promotions/active.
 export type PromoSurface = {
   id: string;
   placement: string; // banner | profile_boost | service_boost
@@ -13,17 +13,20 @@ export type PromoSurface = {
   sellerName: string;
   sellerKind: string; // advokat | yurist | …
   sellerRegion: string;
+  sellerHeadline: string; // the backend's "Advokat • area • region" line; a subtitle equal to it is not the seller's own text
   sellerRating: number;
   sellerReviews: number;
+  sellerRated: boolean; // the rating is shown only when true ("not rated yet" otherwise, never 5.0)
   sellerYears: number;
-  sellerVerified: boolean;
+  sellerVerified: boolean; // `is_verified` only
   serviceId: string;
   serviceTitle: string;
   title: string;
   subtitle: string;
   ctaLabel: string;
   ctaUrl: string;
-  imageUrl: string;
+  imageUrl: string; // absolute https link of the banner picture, "" when there is none
+  bannerMode: string; // "image" | "profile_card" | "" (older answers: an image when there is one)
   endsAt: string; // ISO, "" when open-ended
 };
 

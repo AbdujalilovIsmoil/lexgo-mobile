@@ -1,9 +1,13 @@
+import type { Locale } from "@/shared/i18n";
+
 export const PLACEMENTS = ["banner", "profile_boost", "service_boost"] as const;
 export type Placement = (typeof PLACEMENTS)[number];
 
-// A checked banner picture (POST /promotions/banner-assets): only an "active" one may be used in a request.
+// A checked banner picture (POST /promotions/banner-assets): only an "active" one may be used in a request. `message`, `reasons` and
+// `suggestions` are the backend's own texts in the language the upload asked for; they are shown as they are, nothing is added.
 export type BannerStatus = "active" | "manual_review" | "rejected";
-export type BannerCheck = { fileUrl: string; status: BannerStatus; reasons: string[]; suggestions: string[] };
+export type BannerCheck = { fileUrl: string; status: BannerStatus; message: string; reasons: string[]; suggestions: string[] };
+export type BannerUpload = { file: { uri: string; name: string }; language: Locale };
 
 export type PlacementOption = { value: Placement; requiresService: boolean; requiresBanner: boolean; acceptsBanner: boolean; surface: string };
 
@@ -48,6 +52,7 @@ export type CheckoutInput = {
   previewSurface?: string;
   serviceTitle?: string;
   idempotencyKey: string;
+  language: Locale; // the app's language: the backend checks a linked picture and answers in it
 };
 // `telegramSent=false` means nobody was asked to approve it: the seller is told so.
 // `activated=true`: no payment was needed and the promotion is already live.

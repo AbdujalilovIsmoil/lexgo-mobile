@@ -6,7 +6,7 @@ export { usePending } from "./model/usePending";
 export { rangeError, type RangeError } from "./lib/range";
 export { placementState, type PlacementState } from "./lib/placementState";
 export { popularId, chosenPackage } from "./lib/packages";
-export { promotionErrorCode, isRetryable, type PromotionErrorCode } from "./lib/errors";
+export { promotionErrorCode, advertisingMode, isRetryable, type PromotionErrorCode } from "./lib/errors";
 export { bannerBlock, isBannerUrl, BANNER_MAX_MB, type BannerBlock } from "./lib/banner";
 export { sparkBars } from "./lib/spark";
 export { PlacementArt } from "./ui/PlacementArt";
