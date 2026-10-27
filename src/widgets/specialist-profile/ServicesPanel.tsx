@@ -10,7 +10,7 @@ import { ServiceOption } from "./ServiceOption";
 type Props = { sellerId: string; services: LawyerService[]; selected: string; blocked: string; onSelect: (id: string) => void; onExplain: () => void };
 
 // "Xizmatlar va narxlar": the price explainer link, the lead, the radio list of services, why a purchase is closed (if it
-// is) and the "Xavfsiz xarid" guarantees.
+// is) and the backend's guarantees of the picked service (one request for the picked one, not one per row).
 export function ServicesPanel({ sellerId, services, selected, blocked, onSelect, onExplain }: Props) {
   const { t } = useT();
   const c = useColors();
@@ -30,7 +30,7 @@ export function ServicesPanel({ sellerId, services, selected, blocked, onSelect,
         ) : <EmptyState compact icon="briefcase" title={t("mkd.noServices")} />}
         {blocked ? <Text variant="small" tone="warn">{blocked}</Text> : null}
       </ProfileSection>
-      <SafeDeal />
+      <SafeDeal serviceId={selected} />
     </View>
   );
 }

@@ -42,9 +42,6 @@ export const py10 = {
     sentId: "So'rovingiz qabul qilindi ({id})",
     claim: "Almashtirish so'rovi",
     empty: "Hali so'rov yo'q",
-    p1: "Sifatsiz xizmatda bepul advokat almashtirish",
-    p2: "Har bir ish LexGo nazoratida",
-    p3: "Adolatli yechim kafolati",
     status: { new: "Yangi", reviewing: "Ko'rib chiqilmoqda", approved: "Tasdiqlandi", rejected: "Rad etildi" },
   },
 };

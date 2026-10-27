@@ -10,12 +10,14 @@ import { useT } from "@/shared/i18n";
 import { ServiceDocActions } from "./ServiceDocActions";
 import { ServiceFacts } from "./ServiceFacts";
 import { ServiceHero } from "./ServiceHero";
+import { ServiceTerms } from "./ServiceTerms";
 
 type Props = { data: PassportBundle; packageId?: string; preSeller?: { id: string; name: string } };
 const now = (fn: () => void) => fn();
 
-// A service as a page: the hero, the three facts, what it is, the papers to bring (a checklist), then the way to order it —
-// a document service offers its four buttons, any other is ordered from an advocate right here — and the full passport folded away.
+// A service as a page: the hero, the three facts, what it is, the papers to bring (a checklist), the marketplace's terms (review, what
+// the specialist will do, rules, guarantees), then the way to order it — a document service offers its four buttons, any other is ordered
+// from an advocate right here — and the full passport folded away.
 export function ServicePageView({ data: { service: sv, passport }, packageId, preSeller }: Props) {
   const { t } = useT();
   const c = useColors();
@@ -33,6 +35,7 @@ export function ServicePageView({ data: { service: sv, passport }, packageId, pr
           {docs.map((d, i) => <View key={i} style={s.doc}><Icon name="check-circle" size={16} color={c.ok} /><Text variant="small" style={s.flex}>{d}</Text></View>)}
         </Animated.View>
       ) : null}
+      <ServiceTerms serviceId={sv.id} />
       <Animated.View entering={FadeInDown.delay(300).duration(300)} style={s.col}>
         <Text variant="h4">{t("svh.order")}</Text>
         {hasTemplate(sv) ? <ServiceDocActions service={sv} navigate={now} /> : authed ? <OrderPanel service={sv} packageId={packageId} preSeller={preSeller} onChat={() => router.navigate("/(tabs)/orders")} /> : (

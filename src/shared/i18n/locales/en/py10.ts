@@ -44,9 +44,6 @@ export const py10: Messages["py10"] = {
     sentId: "Request received ({id})",
     claim: "Replacement request",
     empty: "No requests yet",
-    p1: "Free lawyer replacement for poor service",
-    p2: "Every case supervised by LexGo",
-    p3: "Guarantee of a fair resolution",
     status: { new: "New", reviewing: "Reviewing", approved: "Approved", rejected: "Rejected" },
   },
 };
