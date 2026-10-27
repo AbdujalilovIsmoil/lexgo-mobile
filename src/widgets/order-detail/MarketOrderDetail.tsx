@@ -48,7 +48,8 @@ export function MarketOrderDetail({ order, refreshing, onRefresh }: Props) {
       showsVerticalScrollIndicator={false}
     >
       <DetailHeader order={order} />
-      {phase === "pending" ? <PendingNote onCheck={onRefresh} checking={refreshing} /> : <FlowLead phase={phase} role="client" lead={phase === "completed" && !order.rating?.available ? "completedClosed" : phase === "resolution" && f.resolution?.canChoose ? "resolutionChoose" : undefined} message={f.clientStatusMessage} />}
+      {/* While the client is to choose, the resolution card below is the lead: the same words twice would only push the buttons down. */}
+      {phase === "pending" ? <PendingNote onCheck={onRefresh} checking={refreshing} /> : f.resolution?.canChoose ? null : <FlowLead phase={phase} role="client" lead={phase === "completed" && !order.rating?.available ? "completedClosed" : undefined} message={f.clientStatusMessage} />}
       {live ? <ActiveCallBar roomId={order.roomId} onJoin={(id) => router.push(callPath(order.roomId, id) as never)} style={s.call} /> : null}
       <ResolutionCard orderId={order.id} flow={f} />
       <WorkTimeCard flow={f} phase={phase} role="client" />
