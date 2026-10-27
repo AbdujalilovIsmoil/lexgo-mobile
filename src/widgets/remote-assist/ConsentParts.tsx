@@ -25,7 +25,9 @@ export function OperatorHead({ person, left }: { person: RaPerson; left: number 
       <Avatar name={name} size={46} />
       <View style={s.fill}>
         <Text variant="h4" numberOfLines={1}>{name}</Text>
-        <Text variant="caption" tone="gray" numberOfLines={1}>{person.lexgoId ? `${t("ra.fromSupport")} · ${t("ra.lexgoId", { id: person.lexgoId })}` : t("ra.fromSupport")}</Text>
+        <Text variant="caption" tone="gray" numberOfLines={1}>{t("ra.fromSupport")}</Text>
+        {/* TZ RA §8: the operator's LexGo identity is shown in full, on its own line (beside the timer it was cut to "LexGo ID: L…"). */}
+        {person.lexgoId ? <Text variant="caption" weight="semibold" tone="gray">{t("ra.lexgoId", { id: person.lexgoId })}</Text> : null}
       </View>
       {left > 0 ? (
         <View style={[s.timer, { backgroundColor: c.warnBg }]} accessibilityLabel={`${t("ra.expires")}: ${mmss(left)}`}>

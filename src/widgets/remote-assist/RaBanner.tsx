@@ -66,7 +66,8 @@ function Banner({ s }: { s: RaSession }) {
           <PressableScale onPress={() => setOpen((v) => !v)} haptic={false} style={st.who} accessibilityRole="button" accessibilityLabel={`${live ? t("ra.live", { name }) : t("ra.paused")}. ${sub}`} accessibilityState={{ expanded: open }}>
             <View style={[st.dot, { backgroundColor: live ? "#3DDC97" : "#FBC15E" }]} />
             <View style={st.fill}>
-              <Text variant="small" weight="bold" tone="white" numberOfLines={1}>{live ? t("ra.live", { name }) : t("ra.paused")}</Text>
+              {/* Two lines: who helps is never cut off ("Dilnoza Karimova yordam ber…" on a phone). */}
+              <Text variant="small" weight="bold" tone="white" numberOfLines={2}>{live ? t("ra.live", { name }) : t("ra.paused")}</Text>
               <Text variant="caption" style={{ color: SUB }} numberOfLines={1}>{sub}</Text>
             </View>
             <Icon name={open ? "chevron-up" : "chevron-down"} size={18} color={SUB} />
