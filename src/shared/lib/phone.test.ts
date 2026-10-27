@@ -1,4 +1,4 @@
-import { formatAnyPhone, formatUzPhone, isUzPhone, maskPhone, normPhone, normUzPhone, splitPhone } from "./phone";
+import { formatAnyPhone, formatUzPhone, isUzPhone, maskPhone, normPhone, normUzPhone, phoneFromInput, splitPhone } from "./phone";
 
 describe("normUzPhone", () => {
   it("accepts every common way of writing a number", () => {
@@ -55,5 +55,21 @@ describe("international numbers", () => {
   it("an empty field is just the default prefix", () => {
     expect(formatAnyPhone("")).toBe("+998 ");
     expect(formatAnyPhone("+7")).toBe("+7 ");
+  });
+});
+
+describe("phoneFromInput", () => {
+  const uz = splitPhone("+998").country;
+  const ru = splitPhone("+7 912").country;
+  it("puts typed digits after the chosen country's code", () => {
+    expect(phoneFromInput(uz, "90 123 45 6")).toBe("+998 90 123 45 6");
+    expect(phoneFromInput(ru, "912 345 67 89")).toBe("+7 912 345 67 89");
+  });
+  it("takes the country from a whole number that was pasted or filled in by AutoFill", () => {
+    expect(phoneFromInput(uz, "+998 90 123 45 67")).toBe("+998 90 123 45 67");
+    expect(phoneFromInput(uz, "+998901234567")).toBe("+998 90 123 45 67");
+    expect(phoneFromInput(uz, "998901234567")).toBe("+998 90 123 45 67");
+    expect(phoneFromInput(uz, "00998901234567")).toBe("+998 90 123 45 67");
+    expect(phoneFromInput(uz, "+7 912 345 67 89")).toBe("+7 912 345 67 89");
   });
 });

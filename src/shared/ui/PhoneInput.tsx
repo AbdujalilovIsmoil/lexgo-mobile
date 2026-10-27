@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { StyleSheet, View } from "react-native";
 import { COUNTRIES, type Country } from "@/shared/lib/countries";
-import { formatIntl, splitPhone } from "@/shared/lib/phone";
+import { formatIntl, phoneFromInput, splitPhone } from "@/shared/lib/phone";
 import { selectHaptic } from "@/shared/lib/haptics";
 import { useT } from "@/shared/i18n";
 import { useColors } from "@/shared/theme";
@@ -24,13 +24,14 @@ export function PhoneInput({ label, value, onChange, error, hint, autoFocus, pla
   const { country, national } = splitPhone(value || "+998");
   const shown = formatIntl(country, national).slice(country.dial.length + 2);
   const pick = (next: Country) => { selectHaptic(); onChange(formatIntl(next, national)); setOpen(false); };
+
   const lang = locale === "ru" ? "ru" : locale === "en" ? "en" : "uz";
   return (
     <>
       <Input
         label={label}
         value={shown}
-        onChangeText={(v) => onChange(formatIntl(country, v))}
+        onChangeText={(v) => onChange(phoneFromInput(country, v))}
         placeholder={placeholder ?? "90 123 45 67"}
         keyboardType="phone-pad"
         textContentType="telephoneNumber"

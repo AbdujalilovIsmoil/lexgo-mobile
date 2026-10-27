@@ -11,6 +11,7 @@ import { errorHaptic, successHaptic } from "@/shared/lib/haptics";
 import { useSheetReset } from "@/shared/lib/useSheetReset";
 import { useT } from "@/shared/i18n";
 import { claimSchema } from "./claimSchema";
+import { lxCodeFrom } from "@/shared/lib/pasted";
 
 // Claim a gift with its code: starts the subscription term for the signed-in user.
 export function ClaimSheet({ visible, onClose, initial = "" }: { visible: boolean; onClose: () => void; initial?: string }) {
@@ -41,7 +42,7 @@ export function ClaimSheet({ visible, onClose, initial = "" }: { visible: boolea
           <Text variant="small" tone="gray">{t("py8.claim.okText", { to: fmtDate(done.endsAt, locale) || "—" })}</Text>
         </>
       ) : (
-        <FormInput control={f.control} name="code" label={t("py8.claim.code")} format={(v) => v.toUpperCase().replace(/\s/g, "")} autoCapitalize="characters" autoCorrect={false} placeholder="LX-12345678" maxLength={24} />
+        <FormInput control={f.control} name="code" label={t("py8.claim.code")} format={lxCodeFrom} autoCapitalize="characters" autoCorrect={false} placeholder="LX-12345678" />
       )}
     </FormSheet>
   );

@@ -43,4 +43,5 @@ export const auth = {
   pendingText: "Hisobingiz administrator tasdig'idan keyin faollashadi.",
   welcome: "Xush kelibsiz, {name}!",
   sessionExpired: "Sessiya muddati tugadi. Qayta kiring.",
+  paste: "Qo'yish",
 };

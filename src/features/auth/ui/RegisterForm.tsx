@@ -12,6 +12,7 @@ import { ConsentRow } from "./ConsentRow";
 import { NameFields } from "./NameFields";
 import { FormPassword, FormPhone } from "./FormFields";
 import { RoleTiles } from "./RoleTiles";
+import { lxCodeFrom } from "@/shared/lib/pasted";
 
 // Sign-up for every account kind: kind → names → region → phone → password → referral → documents.
 export function RegisterForm({ referral, role }: { referral?: string; role?: string }) {
@@ -28,7 +29,7 @@ export function RegisterForm({ referral, role }: { referral?: string; role?: str
       <Controller control={c} name="region" render={({ field, fieldState }) => <SelectField label={t("au1.region")} placeholder={t("au1.regionPh")} value={field.value} options={REGIONS.map((r) => ({ value: r, label: t(`lawyers.regions.${r}`) }))} onChange={field.onChange} error={tr(fieldState.error?.message)} />} />
       <FormPhone control={c} name="phone" />
       <FormPassword control={c} name="password" hint={t("auth.passwordHint")} newPassword />
-      <FormInput control={c} name="code" format={(v) => v.toUpperCase()} label={`${t("au1.referral")} · ${t("adm.optional")}`} placeholder="LX…" autoCapitalize="characters" autoCorrect={false} maxLength={32} left={<Icon name="gift" size={18} tone="gray" />} />
+      <FormInput control={c} name="code" format={lxCodeFrom} label={`${t("au1.referral")} · ${t("adm.optional")}`} placeholder="LX…" autoCapitalize="characters" autoCorrect={false} left={<Icon name="gift" size={18} tone="gray" />} />
       <Controller control={c} name="agreed" render={({ field, fieldState }) => <ConsentRow value={field.value} onChange={field.onChange} docs={f.docs} error={tr(fieldState.error?.message)} />} />
       {f.serverError ? <Text variant="small" tone="err" center>{f.serverError}</Text> : null}
       {f.exists ? <Button title={t("au1.goLogin")} onPress={() => router.replace("/auth/login")} variant="soft" full icon="log-in" /> : null}

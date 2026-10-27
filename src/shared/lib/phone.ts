@@ -77,3 +77,16 @@ export function normPhone(raw: string): string {
 }
 
 export const isPhone = (raw: string): boolean => normPhone(raw) !== "";
+
+/** The field's value from what is now in its number part: typed digits go after `country`'s code. A whole number pasted or put in by
+ *  AutoFill ("+998 90 123 45 67", "998901234567", "00998…") brings its own country — its digits used to be added after the current
+ *  code ("+998 99 890 12 34"). */
+export function phoneFromInput(country: Country, typed: string): string {
+  const raw = typed.trim();
+  const d = raw.replace(DIGITS, "");
+  if (raw.startsWith("+")) return formatAnyPhone(raw);
+  if (d.startsWith("00") && d.length > 9) return formatAnyPhone(`+${d.slice(2)}`);
+  const max = country.code === "UZ" ? 9 : MAX_TOTAL - country.dial.length;
+  if (d.length > max && d.startsWith(country.dial)) return formatIntl(country, d.slice(country.dial.length));
+  return formatIntl(country, typed);
+}

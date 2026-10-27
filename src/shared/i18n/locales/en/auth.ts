@@ -45,4 +45,5 @@ export const auth: Messages["auth"] = {
   pendingText: "Your account activates after an administrator approves it.",
   welcome: "Welcome, {name}!",
   sessionExpired: "Your session expired. Please sign in again.",
+  paste: "Paste",
 };

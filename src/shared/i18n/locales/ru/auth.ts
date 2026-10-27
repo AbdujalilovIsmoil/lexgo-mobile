@@ -45,4 +45,5 @@ export const auth: Messages["auth"] = {
   pendingText: "Аккаунт активируется после подтверждения администратором.",
   welcome: "Добро пожаловать, {name}!",
   sessionExpired: "Сессия истекла. Войдите снова.",
+  paste: "Вставить",
 };
