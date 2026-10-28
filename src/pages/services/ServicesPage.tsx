@@ -6,7 +6,7 @@ import { useOfferedServiceIds } from "@/entities/lawyer";
 import { useResponseNote } from "@/entities/response-window";
 import type { Service } from "@/entities/service";
 import { useTemplateDownload } from "@/features/service-open";
-import { CatalogActions, PreSellerBanner } from "@/widgets/services-catalog";
+import { PreSellerBanner } from "@/widgets/services-catalog";
 import { DocCatalog } from "@/widgets/doc-catalog";
 import { MoreWays, NewDocOrder, ServicesHub, useServicesHub } from "@/widgets/services-hub";
 import { TabPage, useTabPad, TabScrollView } from "@/widgets/tab-page";
@@ -18,8 +18,8 @@ import { useDeepService } from "./useDeepService";
 
 type Params = { cat?: string; subcat?: string; q?: string; lawyer?: string; name?: string; service?: string; package?: string };
 
-// The Services tab — "Huquqiy hujjatlar": the ready-documents catalogue (every template, search and filters, a tap opens the template's own page),
-// then the other ways in (AI intake, urgent advocate, a document written from scratch). When a directory advocate was picked (?lawyer=…) the tab
+// The Services tab — "Hujjatlar": the ready-documents catalogue (search pinned, category chips, the two quiet pills to the AI intake and urgent
+// help, every template ten at a time; a tap opens the template's own page), closed by the "new document" order. When a directory advocate was picked (?lawyer=…) the tab
 // is that advocate's service list instead (the old hub), narrowed to what they sell.
 // Sheets: new-document order, the order form (advocate, price, payment), the download plan gates.
 export function ServicesPage() {
@@ -48,8 +48,8 @@ export function ServicesPage() {
   const sheets = <CatalogSheets order={order} onOrder={setOrder} newDoc={newDoc} onNewDoc={setNewDoc} dl={dl} pre={pre ?? undefined} packageId={p.package ? String(p.package) : undefined} />;
   if (pre) return <AdvocateServices pre={pre} onClear={() => setPre(null)} onOrder={setOrder} onNewDoc={() => setNewDoc(true)} sheets={sheets} />;
   return (
-    <TabPage title={t("dcat.title")} subtitle={t("dcat.lead")}>
-      <DocCatalog top={<View style={s.top}><CatalogActions /><View {...newRa}><NewDocOrder onNewDoc={() => setNewDoc(true)} /></View></View>} />
+    <TabPage title={t("tabs.services")}>
+      <DocCatalog footer={<View {...newRa} style={s.foot}><NewDocOrder onNewDoc={() => setNewDoc(true)} /></View>} />
       {sheets}
     </TabPage>
   );
@@ -88,4 +88,4 @@ function AdvocateServices({ pre, onClear, onNewDoc, sheets }: Advocate) {
   );
 }
 
-const s = StyleSheet.create({ top: { gap: 10 }, content: { paddingTop: 4, paddingHorizontal: 16, gap: 14 } });
+const s = StyleSheet.create({ foot: { alignSelf: "stretch" }, content: { paddingTop: 4, paddingHorizontal: 16, gap: 14 } });

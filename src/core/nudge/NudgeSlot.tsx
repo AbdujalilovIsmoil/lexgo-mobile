@@ -6,8 +6,9 @@ import { useTabRole } from "@/widgets/tab-bar/useTabRole";
 
 // What the shared page header shows for signed-in clients: the upsell banner under it and the
 // support headset at its right end (sellers get the headset too, without the complaint row).
-// A conversation (or the emergency / order page) needs the whole screen, so no banner sits above it.
-const CHAT = /^\/(support\/(?!new)[^/]+|chat\/|manage\/chat|manage\/support\/ticket|cc\/assist\/|sos$|urgent(\/new)?$|services\/direction$)/;
+// A conversation (or the emergency / order page) needs the whole screen, so no banner sits above it; neither does the documents
+// catalogue, whose search has to be the first thing under the title.
+const CHAT = /^\/(support\/(?!new)[^/]+|chat\/|manage\/chat|manage\/support\/ticket|cc\/assist\/|sos$|urgent(\/new)?$|services$|services\/direction$)/;
 
 function NudgeSlot() {
   const inChat = CHAT.test(usePathname());

@@ -2,7 +2,6 @@
 export const dcat = {
   dcat: {
     title: "Legal documents",
-    lead: "Ready document templates: find one, fill it in yourself or ask the duty lawyer for help",
     search: "Search by document name…",
     filters: "Filters",
     category: "Category",
@@ -21,6 +20,10 @@ export const dcat = {
     offline: "No internet connection",
     offlineText: "The list loads when the connection is back.",
     priceSum: "{price} UZS",
+    free: "Free",
+    all: "All",
+    quickAi: "Ask AI",
+    quickUrgent: "Urgent help",
     sourceFile: "Source file",
     loadingMore: "Loading more documents…",
     docTitle: "Document",

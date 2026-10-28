@@ -2,7 +2,6 @@
 export const dcat = {
   dcat: {
     title: "Huquqiy hujjatlar",
-    lead: "Tayyor hujjat shablonlari: toping, o'zingiz to'ldiring yoki navbatchi advokatdan yordam oling",
     search: "Hujjat nomi bo'yicha qidirish…",
     filters: "Filtrlar",
     category: "Yo'nalish",
@@ -21,6 +20,10 @@ export const dcat = {
     offline: "Internetga ulanib bo'lmadi",
     offlineText: "Aloqa tiklangach ro'yxat yuklanadi.",
     priceSum: "{price} so'm",
+    free: "Bepul",
+    all: "Hammasi",
+    quickAi: "AI ga yozish",
+    quickUrgent: "Tezkor yordam",
     sourceFile: "Fayl mavjud",
     loadingMore: "Boshqa hujjatlar yuklanmoqda…",
     docTitle: "Hujjat",

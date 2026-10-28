@@ -10,21 +10,26 @@ import { RA_FIELD, RA_OPENER, raOk, useRaControl } from "@/shared/remote-assist"
 import { Button, EmptyState, ErrorView, Skeleton, Text } from "@/shared/ui";
 import { useT } from "@/shared/i18n";
 import { useTabClearance, useTabHeader } from "@/widgets/tab-page";
+import { CatalogChips } from "./CatalogChips";
 import { CatalogFilterSheet } from "./CatalogFilterSheet";
+import { CatalogPills } from "./CatalogPills";
 import { CatalogRow } from "./CatalogRow";
 import { CatalogSearch } from "./CatalogSearch";
-import { boilerplate, categoryLabel, languageLabel } from "./labels";
+import { languageLabel } from "./labels";
 import { usePullRefresh } from "@/shared/lib/usePullRefresh";
 
 const SEARCH = { kind: "search" } as const;
-type Item = typeof SEARCH | DocTemplate;
+const TOOLS = { kind: "tools" } as const;
+type Item = typeof SEARCH | typeof TOOLS | DocTemplate;
 
-// The ready-documents catalogue (README): the page IS the catalogue — search pinned on top, a category / language sheet, the documents ten
-// at a time, and an explained state for loading, an empty category, no search match, an error and being offline. `top` (the AI-intake and urgent-advocate cards) sits above the search, `footer` closes the list. The search field is the list's first row, kept on screen by `stickyHeaderIndices`.
-export function DocCatalog({ top: cards, footer, onOpen }: { top?: ReactElement | null; footer?: ReactElement | null; onOpen?: (t: DocTemplate) => void }) {
+// The ready-documents catalogue (README): the page IS the catalogue — search pinned on top, under it one row of category chips (with counts)
+// and the two quiet pills (AI intake, urgent help), the documents ten at a time, and an explained state for loading, an empty category, no search
+// match, an error and being offline. `top` sits above the search, `footer` closes the list. The search field is the list's first row, kept on
+// screen by `stickyHeaderIndices`; the chips and pills are the second row and scroll away with the list.
+export function DocCatalog({ top, footer, onOpen }: { top?: ReactElement | null; footer?: ReactElement | null; onOpen?: (t: DocTemplate) => void }) {
   const { t } = useT();
   const router = useRouter();
-  const top = useTabHeader(16);
+  const header = useTabHeader(16);
   const clearance = useTabClearance();
   const cats = useTemplateCategories();
   const [cat, setCat] = useState("");
@@ -59,7 +64,6 @@ export function DocCatalog({ top: cards, footer, onOpen }: { top?: ReactElement 
   const needle = useDebounced(text, 300);
   const info = useMemo(() => cats.data ?? [], [cats.data]);
   const languages = useMemo(() => [...new Set([...info.flatMap((c) => c.languages), ...list.rows.map((r) => r.language)].filter(Boolean))], [info, list.rows]);
-  const plain = useMemo(() => boilerplate(list.rows.map((r) => r.description.trim())), [list.rows]); // sentences many documents share
   const byLang = useMemo(() => (lang ? list.rows.filter((r) => r.language === lang) : list.rows), [list.rows, lang]);
   const rows = useMemo(() => matchTemplates(byLang, needle), [byLang, needle]);
   // The window of shown rows belongs to one (category, language, search): another one starts again at the first ten.
@@ -69,10 +73,8 @@ export function DocCatalog({ top: cards, footer, onOpen }: { top?: ReactElement 
   const shown = rows.slice(0, n);
   const more = () => n < rows.length && setWin({ key, n: growWindow(n, rows.length) });
   const active = (cat ? 1 : 0) + (lang ? 1 : 0);
-  const chips = [
-    ...(cat ? [{ key: "cat", label: categoryLabel(t, cat, info.find((c) => c.key === cat)?.title), clear: () => setCat("") }] : []),
-    ...(lang ? [{ key: "lang", label: languageLabel(t, lang), clear: () => setLang("") }] : []),
-  ];
+  // The category shows as the selected chip in the row under the search; only the language needs a removable chip.
+  const chips = lang ? [{ key: "lang", label: languageLabel(t, lang), clear: () => setLang("") }] : [];
   const total = cat ? info.find((c) => c.key === cat)?.count ?? list.rows.length : info.reduce((a, c) => a + c.count, 0) || list.rows.length;
   const line = list.loading || list.error ? "" : needle.trim() || lang ? t("dcat.countOf", { n: rows.length, total: total || byLang.length }) : t("dcat.count", { n: total || rows.length });
   const reset = () => { setCat(""); setLang(""); };
@@ -86,7 +88,7 @@ export function DocCatalog({ top: cards, footer, onOpen }: { top?: ReactElement 
   }, [needle, cat, lang]);
 
   const state = list.loading ? (
-    <View style={s.skeletons}>{[0, 1, 2, 3, 4, 5].map((i) => <Skeleton key={i} height={92} round={20} />)}</View>
+    <View style={s.skeletons}>{[0, 1, 2, 3, 4, 5].map((i) => <Skeleton key={i} height={76} round={20} />)}</View>
   ) : list.error ? (
     isOfflineError(list.error) ? <EmptyState icon="wifi-off" title={t("dcat.offline")} text={t("dcat.offlineText")} actionLabel={t("common.retry")} onAction={list.refetch} /> : <ErrorView error={list.error} onRetry={list.refetch} />
   ) : !rows.length ? (
@@ -107,10 +109,10 @@ export function DocCatalog({ top: cards, footer, onOpen }: { top?: ReactElement 
   return (
     <>
       <FlatList<Item>
-        data={[SEARCH, ...(list.loading || list.error ? [] : shown)]}
-        keyExtractor={(x) => ("kind" in x ? "search" : x.id)}
+        data={[SEARCH, TOOLS, ...(list.loading || list.error ? [] : shown)]}
+        keyExtractor={(x) => ("kind" in x ? x.kind : x.id)}
         stickyHeaderIndices={[1]}
-        ListHeaderComponent={<>{top}{cards ? <View style={s.cards}>{cards}</View> : null}</>}
+        ListHeaderComponent={<>{header}{top ? <View style={s.cards}>{top}</View> : null}</>}
         ListFooterComponent={foot}
         ItemSeparatorComponent={Sep}
         contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: clearance }}
@@ -121,16 +123,19 @@ export function DocCatalog({ top: cards, footer, onOpen }: { top?: ReactElement 
         keyboardShouldPersistTaps="handled"
         keyboardDismissMode="on-drag"
         showsVerticalScrollIndicator={false}
-        renderItem={({ item }) => "kind" in item
-          ? <CatalogSearch value={text} onChange={setText} onFilters={() => setSheet(true)} active={active} chips={chips} line={line} field={searchRa} filters={filtersRa} inputRef={input} />
-          : <CatalogRow item={item} cats={info} onOpen={() => open(item)} showLang={languages.length > 1} plain={plain} />}
+        renderItem={({ item }) => !("kind" in item)
+          ? <CatalogRow item={item} cats={info} onOpen={() => open(item)} />
+          : item.kind === "search"
+            ? <CatalogSearch value={text} onChange={setText} onFilters={() => setSheet(true)} active={active} chips={chips} line={line} field={searchRa} filters={filtersRa} inputRef={input} />
+            : <><CatalogChips cats={info} keys={list.keys} value={cat} onChange={setCat} /><CatalogPills /></>}
       />
       <CatalogFilterSheet visible={sheet} onClose={() => setSheet(false)} cats={info} keys={list.keys} languages={languages} cat={cat} lang={lang} onCat={setCat} onLang={setLang} onReset={reset} total={rows.length} />
     </>
   );
 }
 
-const Sep = () => <View style={s.gap} />;
+// No gap after the search and the tools rows: they carry their own spacing.
+const Sep = ({ leadingItem }: { leadingItem: Item }) => ("kind" in leadingItem ? null : <View style={s.gap} />);
 const s = StyleSheet.create({
   cards: { paddingTop: 4, paddingBottom: 8 },
   skeletons: { gap: 10, alignSelf: "stretch" },
