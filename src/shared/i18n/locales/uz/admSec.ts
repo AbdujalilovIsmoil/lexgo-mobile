@@ -36,4 +36,13 @@ export const admSec = {
   noAuthApp: "Authenticator ilova topilmadi — kalitni qo'lda kiriting.",
   qrMissing: "QR kodni ko'rsatib bo'lmadi — kalitni qo'lda kiriting.",
   totpCode: "Ilovadagi 6 xonali kod",
+  delTitle: "Hisobni o'chirish",
+  delRow: "Hisobni butunlay o'chirish",
+  delSub: "So'rov yuboriladi, hisob va shaxsiy ma'lumotlar 30 kun ichida o'chiriladi.",
+  delConfirmTitle: "Hisob o'chirilsinmi?",
+  delConfirmText: "Hisobingiz, buyurtmalar tarixi va suhbatlar qaytarib bo'lmaydigan tarzda o'chiriladi. So'rov yuborilgach, ilovadan chiqasiz.",
+  delConfirm: "O'chirishni so'rash",
+  delMessage: "Hisobimni va unga bog'liq barcha shaxsiy ma'lumotlarni butunlay o'chirishni so'rayman (ilovadagi \"Hisobni o'chirish\" orqali yuborildi).",
+  delSent: "So'rov qabul qilindi. Hisob 30 kun ichida o'chiriladi.",
+  delErr: "So'rovni yuborib bo'lmadi. Qayta urining yoki yordam markaziga yozing.",
 };

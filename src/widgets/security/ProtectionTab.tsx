@@ -4,11 +4,12 @@ import { useQueryClient } from "@tanstack/react-query";
 import { secKeys } from "@/entities/security";
 import { useInsets } from "@/shared/lib/insets";
 import { AppLockCard } from "./AppLockCard";
+import { DeleteAccountCard } from "./DeleteAccountCard";
 import { NotifPrefsCard } from "./NotifPrefsCard";
 import { TelegramCard } from "./TelegramCard";
 import { TwoFactorCard } from "./TwoFactorCard";
 
-// "Protection" tab: 2FA, Telegram link, app lock and notification preferences; pull to refresh re-reads them.
+// "Protection" tab: 2FA, Telegram link, app lock, notification preferences and account deletion; pull to refresh re-reads them.
 export function ProtectionTab() {
   const insets = useInsets();
   const qc = useQueryClient();
@@ -29,6 +30,7 @@ export function ProtectionTab() {
       <TelegramCard />
       <AppLockCard />
       <NotifPrefsCard />
+      <DeleteAccountCard />
     </ScrollView>
   );
 }

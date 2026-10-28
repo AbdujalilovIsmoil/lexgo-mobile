@@ -15,7 +15,24 @@
       "android": {
         "buildType": "app-bundle"
       },
-      "channel": "production"
+      "channel": "production",
+      "ios": {
+        "autoIncrement": true
+      }
+    },
+    "development": {
+      "developmentClient": true,
+      "distribution": "internal",
+      "channel": "development"
+    }
+  },
+  "submit": {
+    "production": {
+      "ios": {
+        "appleId": "<Apple ID email of the App Store Connect account>",
+        "ascAppId": "<App Store Connect app id (numbers)>",
+        "appleTeamId": "<Team ID>"
+      }
     }
   }
 }

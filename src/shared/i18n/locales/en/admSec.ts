@@ -38,4 +38,13 @@ export const admSec: Messages["admSec"] = {
   noAuthApp: "No authenticator app found — enter the key manually.",
   qrMissing: "The QR code couldn't be shown — enter the key manually.",
   totpCode: "6-digit code from the app",
+  delTitle: "Delete account",
+  delRow: "Delete my account",
+  delSub: "A request is sent; the account and personal data are deleted within 30 days.",
+  delConfirmTitle: "Delete the account?",
+  delConfirmText: "Your account, order history and chats will be deleted permanently. You are signed out once the request is sent.",
+  delConfirm: "Request deletion",
+  delMessage: "Please delete my account and every personal data linked to it (sent from \"Delete account\" in the app).",
+  delSent: "Request received. The account is deleted within 30 days.",
+  delErr: "Could not send the request. Try again or write to support.",
 };

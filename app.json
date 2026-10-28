@@ -11,6 +11,7 @@
       "supportsTablet": true,
       "requireFullScreen": true,
       "bundleIdentifier": "org.cognilabs.lexgo",
+      "buildNumber": "1",
       "backgroundColor": "#03102B",
       "associatedDomains": [
         "applinks:lexgo.uz"
@@ -165,7 +166,10 @@
         {
           "locationWhenInUsePermission": "LexGo yaqin atrofdagi mijozlarga sizni taxminiy masofa bilan ko'rsatish uchun, ilova ochiq turganda joylashuvingizdan foydalanadi.",
           "isAndroidBackgroundLocationEnabled": false,
-          "isIosBackgroundLocationEnabled": false
+          "isIosBackgroundLocationEnabled": false,
+          "locationAlwaysAndWhenInUsePermission": false,
+          "locationAlwaysPermission": false,
+          "motionUsagePermission": false
         }
       ],
       [
