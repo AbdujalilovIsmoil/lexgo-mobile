@@ -394,3 +394,27 @@ Directions: 1 Calm Desk (ink-first, hairline cards) · 2 Status First (status ca
 
 Deliver: overview, then per direction 3 modes, tokens, tab bar states, rationale, one pick.
 ```
+
+## Short version for Figma AI — Services tab (≤ 2000 characters)
+
+```text
+LexGo, Uzbek legal app. Design the CLIENT "Xizmatlar" tab (bottom bar slot 2): a catalogue of ~1,000 ready legal document templates. Same 5 directions, Light/Dark/Glass, tokens and tab bar as Home. 393×852.
+
+Goal: find the right document fast, see cost and time, start. Search is the hero.
+
+Order top→bottom:
+1 Header: title "Xizmatlar", support, bell, avatar. No subtitle.
+2 Pinned search: "Hujjat nomini yozing…", clear ×, filter button with dot when active; line "23 ta natija (989 tadan)".
+3 Category chips with counts: Hammasi · Fuqarolik 412 · Iqtisodiy 298 · Ma'muriy 171 · Jinoiy 108. Selected chip in its colour (civil blue, economic green, admin amber, criminal red).
+4 Small 2-up row ≤64pt: "AI ga yozish" · "Tezkor yordam". Not a hero.
+5 List, 10 rows then "Yana ko'rsatish". Row = small category-coloured paper glyph · 2-line title · "Fuqarolik · ≈5 daqiqa · 45 000 so'm" (or "Bepul") · chevron. No description.
+6 Last row, outlined: "+ Yangi hujjatga buyurtma" → sheet: "0 dan hujjat tayyorlash", "Hujjatimni tekshirtirish", "Sun'iy intellekt tahlili" (one locked: "Tarif talab qilinadi").
+
+States: default · typing · no match ("Hech narsa topilmadi", "Qidiruvni tozalash") · empty category ("Bu yo'nalishda hujjat yo'q") · loading (3 skeletons) · offline ("Internetga ulanib bo'lmadi"). Filter sheet "Filtrlar": radio lists Yo'nalish (counts) and Til (O'zbek lotin/kirill, Ruscha), pinned bar reset + "Natijalarni ko'rsatish · 23". Advocate mode banner "Faqat <Ism> xizmatlari ×" replaces chips.
+
+Template page: preview "Hujjat ko'rinishi", "O'zim to'ldiraman" (primary), "Navbatchi advokat bilan tayyorlash", "Toza shablonni yuklab olish".
+
+Sample rows: Ijara shartnomasi (turar joy) · ≈5 daqiqa · 45 000 so'm; Mehnat shartnomasini bekor qilish arizasi · ≈3 daqiqa · Bepul; Yetkazib berish shartnomasi · ≈7 daqiqa · 60 000 so'm.
+
+Rules: search + chips + ≥3 rows in first viewport; 16pt gutter; targets ≥44pt; labels ≤3 words; contrast ≥4.5:1; content scrolls under the bar.
+```
