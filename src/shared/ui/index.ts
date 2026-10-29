@@ -50,3 +50,4 @@ export { PhoneInput } from "./PhoneInput";
 export { DatePickerField, TimePickerField } from "./pick";
 export { FocusStatusBar } from "./FocusStatusBar";
 export { singleLineText, multiLineText } from "./inputText";
+export { LiquidGlass, useLiquidGlass } from "./LiquidGlass";
