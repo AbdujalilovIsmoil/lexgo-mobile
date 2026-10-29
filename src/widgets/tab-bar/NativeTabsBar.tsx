@@ -1,5 +1,5 @@
 import { memo, useEffect, useState } from "react";
-import { DynamicColorIOS, useWindowDimensions, View } from "react-native";
+import { DynamicColorIOS, Platform, useWindowDimensions, View } from "react-native";
 import { NativeTabs } from "expo-router/unstable-native-tabs";
 import { useRouter } from "expo-router";
 import { useIsAuthed } from "@/entities/session";
@@ -16,6 +16,7 @@ import { installTabReach, setBarRoutes } from "./tabReach";
 import { TABS, type TabDef } from "./tabConfig";
 import { useTabRole } from "./useTabRole";
 import { useVisibleTabs } from "./useTabItems";
+import { useBarImages } from "./useBarImages";
 
 // Feather names of tabConfig → SF Symbols of the system tab bar: the outline at rest, the filled one when selected.
 const SF: Record<string, string> = {
@@ -24,7 +25,8 @@ const SF: Record<string, string> = {
 };
 const sfIcon = (icon: string) => ({ default: SF[icon], selected: `${SF[icon]}.fill` }) as never;
 // The selected tab in ink (white in the dark), as the design has it; Liquid Glass picks the rest of the colours itself.
-const INK = DynamicColorIOS({ light: "#0A1526", dark: "#FFFFFF" });
+// Only on iOS: this module is imported by the tabs layout on Android too, where DynamicColorIOS throws.
+const INK = Platform.OS === "ios" ? DynamicColorIOS({ light: "#0A1526", dark: "#FFFFFF" }) : "#0A1526";
 
 installTabReach();
 
@@ -54,6 +56,7 @@ export const NativeTabsBar = memo(function NativeTabsBar({ bar }: { bar: boolean
     const row = [...others.slice(0, left), ai, ...others.slice(left)];
     return visible.length % 2 === 0 ? [...row.slice(0, left + 1), GAP, ...row.slice(left + 1)] : row;
   })();
+  const images = useBarImages(shown.filter((d) => !d.center && d.route !== GAP.route).map((d) => d.icon));
   const centerAt = shown.findIndex((d) => d.center);
   const barKey = shown.map((d) => d.route).join(",");
   useEffect(() => { setBarRoutes(barKey ? barKey.split(",") : []); }, [barKey]); // links to any other tab page open it as a stack screen
@@ -91,7 +94,7 @@ export const NativeTabsBar = memo(function NativeTabsBar({ bar }: { bar: boolean
             disabled={guard} // a visitor's tap on a personal tab never switches it: the (still emitted) press sends them to sign in
             listeners={guard && def.route !== GAP.route ? { tabPress: () => router.push("/auth/login") } : undefined}
           >
-            {def.center || def.route === GAP.route ? <NativeTabs.Trigger.Icon src={AI_SLOT} renderingMode="original" /> : <NativeTabs.Trigger.Icon sf={sfIcon(def.icon)} />}
+            {def.center || def.route === GAP.route ? <NativeTabs.Trigger.Icon src={AI_SLOT} renderingMode="original" /> : images?.[def.icon] ? <NativeTabs.Trigger.Icon src={images[def.icon] as never} renderingMode="template" /> : <NativeTabs.Trigger.Icon sf={sfIcon(def.icon)} />}
             <NativeTabs.Trigger.Label hidden={def.center || def.route === GAP.route || fit.mode === "hidden"}>{caption(t(def.labelKey))}</NativeTabs.Trigger.Label>
             {n ? <NativeTabs.Trigger.Badge>{n > 99 ? "99+" : String(n)}</NativeTabs.Trigger.Badge> : null}
           </NativeTabs.Trigger>

@@ -6,7 +6,7 @@ import { HeaderActions } from "@/widgets/tab-page";
 
 // Menu button + greeting on the left; on the right the very same round buttons as every other page header (demo, support, bell,
 // avatar) with the same sizes and gaps, so nothing moves when you switch between Home and the other tabs.
-export function HeroTopRow({ name }: { name?: string }) {
+export function HeroTopRow({ name, demo }: { name?: string; demo?: boolean }) {
   const { t } = useT();
   return (
     <View style={s.row}>
@@ -21,7 +21,7 @@ export function HeroTopRow({ name }: { name?: string }) {
           </Text>
         </View>
       </View>
-      <HeaderActions glass />
+      <HeaderActions glass demo={demo} />
     </View>
   );
 }
@@ -30,5 +30,5 @@ const s = StyleSheet.create({
   row: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", gap: 8, minHeight: 44 },
   brand: { flexDirection: "row", alignItems: "center", gap: 10, flex: 1, minWidth: 0 },
   who: { flex: 1, minWidth: 0 },
-  hi: { color: "#93C6FF" },
+  hi: { color: "#B4C3EE" },
 });
