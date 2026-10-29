@@ -7,12 +7,12 @@ const t = (route: string, icon: IconName, labelKey: string, badge?: string): Tab
 const ai: TabDef = { route: "ai", icon: "zap", labelKey: "tabs.ai", center: true };
 const messages = t("messages", "message-circle", "tabs.messages", "messages");
 
-// The mobile app's roles: a visitor, a client and a professional (advokat or yurist). Both bars keep the AI centre button, so Profil
+// The bar's captions are short ones of their own (tabs.bar.*); the pages keep their titles. The mobile app's roles: a visitor, a client and a professional (advokat or yurist). Both bars keep the AI centre button, so Profil
 // lives behind the avatar in the page headers.
 export const TABS: Record<TabRole, TabDef[]> = {
   // A visitor gets the client's bar and pages; the two tabs that hold personal data (`auth`) send them to sign in when pressed.
-  guest: [t("index", "home", "tabs.home"), t("services", "file-text", "tabs.services"), ai, { ...t("works", "briefcase", "tabs.works"), auth: true }, { ...messages, auth: true }],
-  client: [t("index", "home", "tabs.home"), t("services", "file-text", "tabs.services"), ai, t("works", "briefcase", "tabs.works"), messages],
+  guest: [t("index", "home", "tabs.bar.home"), t("services", "grid", "tabs.bar.services"), ai, { ...t("works", "briefcase", "tabs.bar.works"), auth: true }, { ...messages, auth: true }],
+  client: [t("index", "home", "tabs.bar.home"), t("services", "grid", "tabs.bar.services"), ai, t("works", "briefcase", "tabs.bar.works"), messages],
   seller: [t("workspace", "layers", "tabs.workspace"), t("requests", "inbox", "tabs.requests", "requests"), ai, t("clients", "users", "tabs.clients"), messages],
 };
 
@@ -31,3 +31,6 @@ export function sellerTabHidden(route: string, limited: boolean, actions?: { sec
 
 // The tab a role lands on (also where a role switch / sign-out sends the user).
 export const homeRoute = (role: TabRole): string => TABS[role][0].route;
+
+// The bar is drawn by the app (FlatBar) everywhere except on an iPad, which keeps the system bar (NativeTabsBar) beside its sidebar.
+export const systemBar = (ios: boolean, tablet: boolean): boolean => ios && tablet;

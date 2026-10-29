@@ -14,6 +14,6 @@ export function TabBadge({ id }: { id?: string }) {
 }
 
 const s = StyleSheet.create({
-  badge: { position: "absolute", top: -5, right: -10, minWidth: 16, height: 16, borderRadius: 8, paddingHorizontal: 4, backgroundColor: "#EF4444", alignItems: "center", justifyContent: "center" },
-  text: { fontSize: 9.5, lineHeight: 12 },
+  badge: { position: "absolute", top: -7, right: -12, minWidth: 20, height: 20, borderRadius: 10, paddingHorizontal: 5, backgroundColor: "#E53935", borderWidth: 2, borderColor: "#FFFFFF", alignItems: "center", justifyContent: "center" },
+  text: { fontSize: 10.5, lineHeight: 13 },
 });

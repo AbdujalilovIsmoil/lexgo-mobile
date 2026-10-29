@@ -1,27 +1,36 @@
-import { StyleSheet } from "react-native";
-import { useColors } from "@/shared/theme";
-import { GradientBox, Icon, PressableScale, Text } from "@/shared/ui";
+import { Platform, StyleSheet, View } from "react-native";
+import { LinearGradient } from "expo-linear-gradient";
+import { Ionicons } from "@expo/vector-icons";
+import { PressableScale } from "@/shared/ui";
+import { useTheme } from "@/shared/theme";
 import { useT } from "@/shared/i18n";
 
 type Props = { focused: boolean; onPress: () => void; labelKey: string };
 
-// The AI destination: same place and size as its neighbours, but its indicator pill is always filled with the brand gradient.
+const SIZE = 56;
+const RING = 6;
+
+// The AI destination in the middle of the bar: a deep navy disc with the sparkle, in a ring of the bar's own colour, standing half above the bar.
+// It has no caption; the label is for the screen reader.
 export function AiButton({ focused, onPress, labelKey }: Props) {
-  const c = useColors();
+  const { colors: c, dark } = useTheme();
   const { t } = useT();
   return (
-    <PressableScale onPress={onPress} scale={0.94} style={s.item} accessibilityRole="button" accessibilityState={{ selected: focused }}>
-      <GradientBox round={16} style={s.pill}>
-        <Icon name="zap" size={22} tone="white" />
-      </GradientBox>
-      <Text variant="caption" weight={focused ? "bold" : "medium"} style={{ color: focused ? c.ink : c.gray, fontSize: 12 }}>
-        {t(labelKey)}
-      </Text>
-    </PressableScale>
+    <View style={s.slot}>
+      <PressableScale onPress={onPress} scale={0.92} style={[s.ring, { backgroundColor: dark ? c.surface : "#FFFFFF" }]} accessibilityRole="button" accessibilityLabel={t(labelKey)} accessibilityState={{ selected: focused }}>
+        <LinearGradient colors={["#2A4C9C", "#13275E", "#0A1638"]} start={{ x: 0.2, y: 0 }} end={{ x: 0.8, y: 1 }} style={s.disc}>
+          <Ionicons name="sparkles" size={22} color="#FFFFFF" />
+        </LinearGradient>
+      </PressableScale>
+    </View>
   );
 }
 
 const s = StyleSheet.create({
-  item: { flex: 1, alignItems: "center", gap: 4, minHeight: 56 },
-  pill: { width: 64, height: 32, alignItems: "center", justifyContent: "center" },
+  slot: { flex: 1, alignItems: "center", minHeight: 56 },
+  ring: {
+    position: "absolute", top: -SIZE / 2 - RING, width: SIZE + RING * 2, height: SIZE + RING * 2, borderRadius: SIZE / 2 + RING, padding: RING,
+    ...Platform.select({ ios: { shadowColor: "#0B1F45", shadowOpacity: 0.18, shadowRadius: 14, shadowOffset: { width: 0, height: 6 } }, default: { elevation: 10 } }),
+  },
+  disc: { flex: 1, borderRadius: SIZE / 2, alignItems: "center", justifyContent: "center" },
 });

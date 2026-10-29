@@ -1,4 +1,5 @@
 export const tabs = {
+  bar: { home: "Asosiy", services: "Xizmatlar", works: "Ishlarim" },
   ceo: "CEO",
   hrm: "HRM",
   analytics: "Tahlil",

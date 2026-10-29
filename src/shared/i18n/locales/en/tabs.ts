@@ -1,6 +1,7 @@
 import type { Messages } from "../uz";
 
 export const tabs: Messages["tabs"] = {
+  bar: { home: "Home", services: "Services", works: "My works" },
   ceo: "CEO",
   hrm: "HRM",
   analytics: "Analytics",
