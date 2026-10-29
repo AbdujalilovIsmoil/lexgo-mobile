@@ -31,6 +31,3 @@ export function sellerTabHidden(route: string, limited: boolean, actions?: { sec
 
 // The tab a role lands on (also where a role switch / sign-out sends the user).
 export const homeRoute = (role: TabRole): string => TABS[role][0].route;
-
-// The bar is drawn by the app (FlatBar) everywhere except on an iPad, which keeps the system bar (NativeTabsBar) beside its sidebar.
-export const systemBar = (ios: boolean, tablet: boolean): boolean => ios && tablet;

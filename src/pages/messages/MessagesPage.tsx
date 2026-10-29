@@ -12,8 +12,6 @@ import { chatPath } from "@/entities/call";
 import { useSession } from "@/entities/session";
 import { useSocketState } from "@/shared/realtime";
 import { useInsets } from "@/shared/lib/insets";
-import { useTablet } from "@/shared/lib/useTablet";
-import { systemBar } from "@/widgets/tab-bar/tabConfig";
 import { shadows } from "@/shared/theme";
 import { useT } from "@/shared/i18n";
 
@@ -24,10 +22,9 @@ export function MessagesPage() {
   const router = useRouter();
   const myId = useSession()?.user.id ?? "";
   const insets = useInsets();
-  // Top edge of the tab bar, from the screen's bottom. The iPad's system bar is part of the screen's safe area, so `insets.bottom` already
-  // reaches its top; the app's own bar (phones) floats over the page. The list ends a little above it, the new-chat button sits on it.
-  const { tablet } = useTablet();
-  const barTop = systemBar(Platform.OS === "ios", tablet) ? insets.bottom : insets.bottom + 76;
+  // Top edge of the tab bar, from the screen's bottom. On iOS the system bar is part of the screen's safe area, so `insets.bottom` already
+  // reaches its top; the Android bar floats over the page. The list ends a little above it, the new-chat button sits on it.
+  const barTop = Platform.OS === "ios" ? insets.bottom : insets.bottom + 76;
   const pad = barTop + 16;
   const q = useRooms(useSocketState() === "online", myId);
   const locked = !useSellerActions().chat;

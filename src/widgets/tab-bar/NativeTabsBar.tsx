@@ -1,5 +1,5 @@
 import { memo, useEffect, useState } from "react";
-import { useWindowDimensions, View } from "react-native";
+import { DynamicColorIOS, useWindowDimensions, View } from "react-native";
 import { NativeTabs } from "expo-router/unstable-native-tabs";
 import { useRouter } from "expo-router";
 import { useIsAuthed } from "@/entities/session";
@@ -7,7 +7,7 @@ import { loadGlass } from "@/shared/lib/glass";
 import { useTablet } from "@/shared/lib/useTablet";
 import { useBadgeStore } from "@/shared/lib/badgeStore";
 import { useT } from "@/shared/i18n";
-import { AURORA, useColors } from "@/shared/theme";
+import { AURORA } from "@/shared/theme";
 import { useAuroraStyle } from "@/shared/ui";
 import { AiRaisedButton } from "./AiRaisedButton";
 import { CaptionMeter, ReturnWatcher } from "./BarHelpers";
@@ -17,11 +17,16 @@ import { TABS, type TabDef } from "./tabConfig";
 import { useTabRole } from "./useTabRole";
 import { useVisibleTabs } from "./useTabItems";
 
-// Feather names of tabConfig → SF Symbols of the system tab bar.
+// Feather names of tabConfig → SF Symbols of the system tab bar: the outline at rest, the filled one when selected.
 const SF: Record<string, string> = {
-  home: "house.fill", "file-text": "doc.text.fill", grid: "square.grid.2x2.fill", zap: "sparkles", briefcase: "briefcase.fill", "message-circle": "message.fill",
-  layers: "square.stack.3d.up.fill", inbox: "tray.fill", users: "person.2.fill",
+  home: "house", "file-text": "doc.text", grid: "square.grid.2x2", zap: "sparkles", briefcase: "briefcase", "message-circle": "message",
+  layers: "square.stack.3d.up", inbox: "tray", users: "person.2",
 };
+const sfIcon = (icon: string) => ({ default: SF[icon], selected: `${SF[icon]}.fill` }) as never;
+// The selected tab in ink (white in the dark), as the design has it; Liquid Glass picks the rest of the colours itself.
+const INK = DynamicColorIOS({ light: "#0A1526", dark: "#FFFFFF" });
+
+installTabReach();
 
 // The AI tab's slot in the system bar is left empty (a clear 8 pt image, no caption): AiRaisedButton stands in it, rising above the bar.
 // The slot must stay narrow: the bar sizes its items by content, and a wide slot squeezes the neighbours' captions into "Xiz…".
@@ -32,9 +37,7 @@ const GLASS = !!loadGlass(); // iOS 26 sizes the items by their captions; the cl
 // The system tab bar (UITabBar): Liquid Glass on iOS 26 with no custom drawing. Every route is declared, in the role's order first;
 // the ones outside the role or not allowed right now are hidden. `bar` is false on screens that ask for no bar (the AI chat).
 export const NativeTabsBar = memo(function NativeTabsBar({ bar }: { bar: boolean }) {
-  installTabReach(); // only this bar needs it (once): the app's own bar can reach every tab route
   const { t } = useT();
-  const c = useColors();
   const router = useRouter();
   const authed = useIsAuthed();
   const role = useTabRole();
@@ -75,7 +78,7 @@ export const NativeTabsBar = memo(function NativeTabsBar({ bar }: { bar: boolean
     <View style={{ flex: 1 }}>
     <CaptionMeter texts={[...new Set([...fulls, ...shorts])]} onWidths={(w) => setMeasured((m) => ({ ...m, ...w }))} />
     <ReturnWatcher onSettled={() => setNudge((n) => n + 1)} />
-    <NativeTabs hidden={!bar || tablet} tintColor={c.accent} labelStyle={{ fontSize: fit.size + (nudge % 2) * 0.01 }}>
+    <NativeTabs hidden={!bar || tablet} tintColor={INK} labelStyle={{ fontSize: fit.size + (nudge % 2) * 0.01 }}>
       {shown.map((def) => {
         const n = def.badge ? (badges[def.badge] ?? 0) : 0;
         const guard = (def.auth && !authed) || def.route === GAP.route;
@@ -88,7 +91,7 @@ export const NativeTabsBar = memo(function NativeTabsBar({ bar }: { bar: boolean
             disabled={guard} // a visitor's tap on a personal tab never switches it: the (still emitted) press sends them to sign in
             listeners={guard && def.route !== GAP.route ? { tabPress: () => router.push("/auth/login") } : undefined}
           >
-            {def.center || def.route === GAP.route ? <NativeTabs.Trigger.Icon src={AI_SLOT} renderingMode="original" /> : <NativeTabs.Trigger.Icon sf={SF[def.icon] as never} />}
+            {def.center || def.route === GAP.route ? <NativeTabs.Trigger.Icon src={AI_SLOT} renderingMode="original" /> : <NativeTabs.Trigger.Icon sf={sfIcon(def.icon)} />}
             <NativeTabs.Trigger.Label hidden={def.center || def.route === GAP.route || fit.mode === "hidden"}>{caption(t(def.labelKey))}</NativeTabs.Trigger.Label>
             {n ? <NativeTabs.Trigger.Badge>{n > 99 ? "99+" : String(n)}</NativeTabs.Trigger.Badge> : null}
           </NativeTabs.Trigger>

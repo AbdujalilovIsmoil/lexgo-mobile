@@ -1,14 +1,12 @@
-import { useEffect } from "react";
 import { StyleSheet, useWindowDimensions, View } from "react-native";
-import { useRouter, useSegments } from "expo-router";
-import Animated, { Easing, cancelAnimation, useAnimatedStyle, useReducedMotion, useSharedValue, withDelay, withRepeat, withTiming } from "react-native-reanimated";
-import { PressableScale } from "@/shared/ui";
+import { useRouter } from "expo-router";
+import { LinearGradient } from "expo-linear-gradient";
+import { Ionicons } from "@expo/vector-icons";
+import { LiquidGlass, PressableScale, useLiquidGlass } from "@/shared/ui";
 import { selectHaptic } from "@/shared/lib/haptics";
-import { useAppActive } from "@/shared/lib/useAppActive";
 import { useInsets } from "@/shared/lib/insets";
 import { useTablet } from "@/shared/lib/useTablet";
-import { useColors } from "@/shared/theme";
-import { AiMark, MARK_PLAY_MS } from "./AiMark";
+import { useTheme } from "@/shared/theme";
 import { useT } from "@/shared/i18n";
 
 type Props = { labelKey: string; hidden?: boolean; shift?: number }; // labelKey: the button's accessibility label; hidden: the AI screen is up, so the button rests unseen (never unmounted); shift: how far right of the screen centre the bar's AI slot is
@@ -20,34 +18,20 @@ const BAR_HEIGHT = 62;
 const SIZE_MAX = 64; // on a narrow screen the disc shrinks (16% of the width, 52–64 pt) so it never crowds the neighbouring captions
 const TABLET_BOTTOM = 20; // a tablet: the button's distance above the bottom safe area
 const RISE = 8; // how far the disc stands above the bar's top edge
-const BREATH_MS = 3300; // one breath: a 900 ms pause and a 2.4 s ring
-const BREATHS = Math.round(MARK_PLAY_MS / BREATH_MS); // as long as the mark plays
+const RING = 5;
 
-// iOS: the AI tab's slot in the system bar has no icon (no caption); this button stands over it, rising above the bar. Each time it comes
-// into view the mark plays once and a soft ring breathes out of it a few times, then everything rests (a loop held the display at 120 Hz on
-// every tab page). Off with Reduce Motion.
+// iOS: the AI tab's slot in the system bar has no icon (no caption); this button stands over it, rising above the bar: the sparkle on a deep
+// navy disc in a ring, both SwiftUI Liquid Glass (Expo UI) on iOS 26 — a solid navy disc in a ring of the theme's surface elsewhere.
 export function AiRaisedButton({ labelKey, hidden = false, shift = 0 }: Props) {
-  const c = useColors();
+  const { colors: c, dark } = useTheme();
   const { t } = useT();
   const router = useRouter();
   const insets = useInsets();
   const { width } = useWindowDimensions();
   const { tablet } = useTablet();
+  const glass = useLiquidGlass();
   const size = tablet ? SIZE_MAX : Math.round(Math.min(SIZE_MAX, Math.max(52, width * 0.16)));
-  const calm = useReducedMotion();
-  // Nothing to look at — the AI screen, a page pushed over the tabs, the app in the background — means no motion at all: the button
-  // stays under every pushed page, and its loops (the ring, the Skia mark, the 3D crystal) would otherwise keep the phone busy there.
-  const onTabs = useSegments()[0] === "(tabs)";
-  const active = useAppActive();
-  const still = hidden || !onTabs || !active;
-  const breath = useSharedValue(0);
-  useEffect(() => {
-    if (calm || still) return;
-    breath.value = 0;
-    breath.value = withRepeat(withDelay(900, withTiming(1, { duration: BREATH_MS - 900, easing: Easing.out(Easing.cubic) })), BREATHS, false);
-    return () => cancelAnimation(breath);
-  }, [breath, calm, still]);
-  const ring = useAnimatedStyle(() => ({ opacity: 0.38 * (1 - breath.value), transform: [{ scale: 1 + breath.value * 0.42 }] }));
+  const disc = size - RING * 2;
   const bottom = tablet ? insets.bottom + TABLET_BOTTOM : insets.bottom + BAR_LIFT + (BAR_HEIGHT - size) / 2 + RISE;
   // A tablet has no bar: the button sits at the bottom centre of the page itself (its container is the page beside the sidebar).
   const left = tablet ? { left: "50%" as const, marginLeft: -size / 2 } : { left: width / 2 - size / 2 + shift };
@@ -58,11 +42,17 @@ export function AiRaisedButton({ labelKey, hidden = false, shift = 0 }: Props) {
         scale={0.92}
         accessibilityRole="button"
         accessibilityLabel={t(labelKey)}
-        style={[s.btn, { width: size, height: size, bottom }, left]}
+        style={[s.btn, { width: size, height: size, borderRadius: size / 2, bottom }, left, !glass && { backgroundColor: dark ? c.surface : "#FFFFFF" }]}
       >
-        <Animated.View pointerEvents="none" style={[s.ring, { width: size - 6, height: size - 6, borderRadius: size / 2, backgroundColor: c.accent }, ring]} />
-        <View style={[s.orb, { width: size - 4, height: size - 4, borderRadius: size / 2 }]} />
-        <View style={[s.mark, { width: size, height: size }]}><AiMark size={size} calm={calm} paused={still} /></View>
+        {glass ? <LiquidGlass width={size} height={size} shape="circle" interactive /> : null}
+        <View style={[s.disc, { width: disc, height: disc, borderRadius: disc / 2 }]}>
+          {glass ? (
+            <LiquidGlass width={disc} height={disc} shape="circle" interactive scheme="dark" tint="rgba(16,36,92,0.92)" />
+          ) : (
+            <LinearGradient colors={["#2A4C9C", "#13275E", "#0A1638"]} start={{ x: 0.2, y: 0 }} end={{ x: 0.8, y: 1 }} style={StyleSheet.absoluteFill} />
+          )}
+          <Ionicons name="sparkles" size={Math.round(disc * 0.4)} color="#FFFFFF" />
+        </View>
       </PressableScale>
     </View>
   );
@@ -70,8 +60,6 @@ export function AiRaisedButton({ labelKey, hidden = false, shift = 0 }: Props) {
 
 const s = StyleSheet.create({
   away: { opacity: 0 },
-  btn: { position: "absolute", alignItems: "center", justifyContent: "center" },
-  ring: { position: "absolute" },
-  mark: { position: "absolute" },
-  orb: { backgroundColor: "#1668F0", shadowColor: "#1668F0", shadowOpacity: 0.28, shadowRadius: 12, shadowOffset: { width: 0, height: 5 } },
+  btn: { position: "absolute", alignItems: "center", justifyContent: "center", shadowColor: "#0B1F45", shadowOpacity: 0.2, shadowRadius: 14, shadowOffset: { width: 0, height: 6 } },
+  disc: { alignItems: "center", justifyContent: "center", overflow: "hidden" },
 });
