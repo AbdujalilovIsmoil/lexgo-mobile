@@ -2,13 +2,11 @@ import { View } from "react-native";
 import { HeroScroll, TabletColumn } from "@/shared/ui";
 import { useInsets } from "@/shared/lib/insets";
 import { useColors } from "@/shared/theme";
-import { HeaderExtra } from "@/shared/ui/headerExtra";
 import { useIsAuthed } from "@/entities/session";
-import { DashAiCard, DashGuest, DashHero, DashPromo, DashReferral, DashRequests } from "@/widgets/client-dash";
+import { DashAsk, DashGuest, DashHero, DashQuick, DashReferral, DashRequests, DashTiles } from "@/widgets/client-dash";
 
-// Client dashboard, in the order of law-main portal/client/page.tsx: hero (header row, title, ask field, trust chips,
-// the rail of six quick actions) → lawyer promo (+ the upsell banner) → active requests → referral progress → AI card.
-// Everything, the header row included, scrolls together.
+// Client dashboard (no header banner here, unlike the other tabs): the dark hero (header row + the question) with the ask field on its bottom edge → the four ways in (2×2) →
+// urgent advocate | car accident, SOS → active requests → referral progress. Everything, the header row included, scrolls together.
 export function ClientHome() {
   const c = useColors();
   const insets = useInsets();
@@ -16,12 +14,11 @@ export function ClientHome() {
   return (
     <HeroScroll style={{ backgroundColor: c.canvas }} contentContainerStyle={{ paddingBottom: insets.bottom + 130 }} showsVerticalScrollIndicator={false}>
       <DashHero />
+      <DashAsk />
       <TabletColumn>
-        <View style={{ height: 16 }} />
-        <HeaderExtra />
-        <DashPromo />
-        {authed ? <><DashRequests /><DashReferral /></> : <DashGuest />}
-        <DashAiCard />
+        <DashTiles />
+        <DashQuick />
+        {authed ? <><DashRequests /><DashReferral /></> : <><View style={{ height: 16 }} /><DashGuest /></>}
       </TabletColumn>
     </HeroScroll>
   );
