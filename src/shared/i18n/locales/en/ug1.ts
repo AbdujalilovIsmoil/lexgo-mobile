@@ -1,7 +1,7 @@
 import type { Messages } from "../uz";
 
 export const ug1: Messages["ug1"] = {
-  page: { lead: "Not AI — the advocate answers in person.", eyebrow: "Straight to an advocate", pick: "Choose a service", activeN: "{n} active", noneActive: "No active requests", open: "Open the request", byDoc: "On a document", lawyersRange: "{min} to {max} advocates", docsSub: "Draft or review a document", priceFrom: "from {price} UZS" },
+  page: { secondSub: "One advocate or a panel of {min}–{max}", lead: "Not AI — the advocate answers in person.", eyebrow: "Straight to an advocate", pick: "Choose a service", activeN: "{n} active", noneActive: "No active requests", open: "Open the request", byDoc: "On a document", lawyersRange: "{min} to {max} advocates", docsSub: "Draft or review a document", priceFrom: "from {price} UZS" },
   title: "Urgent advocate",
   lead: "Reach an advocate right now: a video or chat consultation, or a second opinion from another advocate.",
   metaMinutes: "Meeting",
