@@ -1,4 +1,4 @@
-import { Fragment, useState, type ReactNode } from "react";
+import { Fragment } from "react";
 import { ScrollView, StyleSheet, View } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import * as Application from "expo-application";
@@ -11,7 +11,7 @@ import { useBadge } from "@/shared/lib";
 import { useInsets } from "@/shared/lib/insets";
 import { formatAnyPhone } from "@/shared/lib/phone";
 import { Avatar, Icon, PressableScale, Text, type IconName } from "@/shared/ui";
-import { LOCALES, LOCALE_LABELS, useLocaleStore, useT } from "@/shared/i18n";
+import { useT } from "@/shared/i18n";
 import { useSidebar } from "./sidebarStore";
 import { NAV, EXTRA, type NavItem } from "./navItems";
 
@@ -23,12 +23,11 @@ const AVATAR = ["#F7A066", "#E8662E"] as const;
 
 // Which card each of the client's rows sits in (anything not listed is a "main" row).
 const ACCOUNT_KEYS = new Set(["subscription", "payments", "gifts", "referrals", "reviews", "warranty", "complaints", "entitlements", "consents"]);
-const HELP_KEYS = new Set(["support"]);
 
 type Row = { key: string; icon: IconName; label: string; value?: string; badge?: number; tone?: string; onPress: () => void };
 
 // The client's drawer (and the visitor's): the brand row with the close button, the profile card, the plan card (free / current plan, the AI
-// questions left, the way to Pro — the whole card opens the plans), the rows in cards under Asosiy / Hisob / Yordam / Ilova (language, privacy, settings), sign out and the
+// questions left, the way to Pro — the whole card opens the plans), the rows in cards under Asosiy / Hisob (language, privacy and settings live in the profile), sign out and the
 // app version — always on the deep navy of the design, whatever the theme.
 export function MenuPanel({ onGo }: { onGo: (route: string) => void }) {
   const { t } = useT();
@@ -36,8 +35,6 @@ export function MenuPanel({ onGo }: { onGo: (route: string) => void }) {
   const user = useSession()?.user;
   const hide = useSidebar((s) => s.hide);
   const { confirm } = useLogout();
-  const { locale, setLocale } = useLocaleStore();
-  const [langs, setLangs] = useState(false);
   const features = useMyFeatures().data;
   const plans = usePlans().data;
   const ai = useFeature("ai_requests");
@@ -51,14 +48,8 @@ export function MenuPanel({ onGo }: { onGo: (route: string) => void }) {
     key === "subscription" ? (paid ? planName : t("cdash.side.free")) : key === "referrals" && referral ? `${Math.min(referral.joined, goal)}/${goal}` : undefined;
   const toRow = (it: NavItem, label: string): Row => ({ key: it.key, icon: it.icon, label, value: valueOf(it.key), badge: it.badge ? badges[it.badge] : undefined, onPress: () => onGo(it.route) });
   const rows = [...NAV.map((it) => toRow(it, t(it.label ?? `cpd.menu.${it.key}`))), ...(user ? EXTRA.map((it) => toRow(it, t(`nav1.menu.${it.key}`))) : [])];
-  const main = rows.filter((r) => !ACCOUNT_KEYS.has(r.key) && !HELP_KEYS.has(r.key));
+  const main = rows.filter((r) => !ACCOUNT_KEYS.has(r.key));
   const account = rows.filter((r) => ACCOUNT_KEYS.has(r.key));
-  const help = rows.filter((r) => HELP_KEYS.has(r.key));
-  const app: Row[] = [
-    { key: "lang", icon: "globe", label: t("cdash.side.lang"), value: LOCALE_LABELS[locale], onPress: () => setLangs((v) => !v) },
-    { key: "privacy", icon: "shield", label: t("cdash.side.privacy"), onPress: () => onGo("/security") },
-    { key: "settings", icon: "sun", label: t("cdash.side.settings"), onPress: () => onGo("/profile") },
-  ];
   const name = user ? displayName(user) || user.phone : "";
   return (
     <View style={s.fill}>
@@ -107,16 +98,6 @@ export function MenuPanel({ onGo }: { onGo: (route: string) => void }) {
 
         <Section title={t("cdash.side.main")} rows={main} />
         {account.length ? <Section title={t("cdash.side.account")} rows={account} /> : null}
-        <Section title={t("cdash.side.help")} rows={help} />
-        <Section title={t("cdash.side.app")} rows={app} after={(key) => (key === "lang" && langs ? (
-          <View style={s.langs}>
-            {LOCALES.map((l) => (
-              <PressableScale key={l} onPress={() => { setLocale(l); setLangs(false); }} accessibilityRole="button" accessibilityState={{ selected: l === locale }} style={[s.lang, l === locale && s.langOn]}>
-                <Text variant="small" weight="semibold" style={{ color: l === locale ? "#0B1636" : INK }}>{LOCALE_LABELS[l]}</Text>
-              </PressableScale>
-            ))}
-          </View>
-        ) : null)} />
 
         <PressableScale onPress={user ? confirm : () => onGo("/auth/login")} scale={0.98} accessibilityRole="button" style={[s.card, s.out]}>
           <Icon name={user ? "log-out" : "log-in"} size={21} color={INK} />
@@ -128,7 +109,7 @@ export function MenuPanel({ onGo }: { onGo: (route: string) => void }) {
   );
 }
 
-function Section({ title, rows, after }: { title: string; rows: Row[]; after?: (key: string) => ReactNode }) {
+function Section({ title, rows }: { title: string; rows: Row[] }) {
   if (!rows.length) return null;
   return (
     <View style={s.section}>
@@ -143,7 +124,6 @@ function Section({ title, rows, after }: { title: string; rows: Row[]; after?: (
               {r.value ? <Text variant="body" numberOfLines={1} style={s.value}>{r.value}</Text> : null}
               <Icon name="chevron-right" size={18} color={MUTED} />
             </PressableScale>
-            {after?.(r.key)}
             {i < rows.length - 1 ? <View style={s.rule} /> : null}
           </Fragment>
         ))}
@@ -173,9 +153,6 @@ const s = StyleSheet.create({
   rule: { height: StyleSheet.hairlineWidth, backgroundColor: "rgba(255,255,255,0.14)", marginLeft: 53 },
   value: { color: MUTED, maxWidth: 120 },
   badge: { minWidth: 22, height: 22, paddingHorizontal: 6, borderRadius: 11, backgroundColor: "#E5484D", alignItems: "center", justifyContent: "center" },
-  langs: { flexDirection: "row", gap: 8, paddingHorizontal: 18, paddingBottom: 14 },
-  lang: { flex: 1, alignItems: "center", paddingVertical: 9, borderRadius: 12, borderWidth: 1, borderColor: LINE },
-  langOn: { backgroundColor: "#FFFFFF", borderColor: "#FFFFFF" },
   out: { flexDirection: "row", alignItems: "center", gap: 14, paddingHorizontal: 18, paddingVertical: 17, marginTop: 4, backgroundColor: "transparent" },
   version: { color: MUTED, marginLeft: 4 },
 });
