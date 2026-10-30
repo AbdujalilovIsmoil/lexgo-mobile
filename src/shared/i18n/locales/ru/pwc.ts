@@ -1,6 +1,7 @@
 import type { Messages } from "../uz";
 
 export const pwc: Messages["pwc"] = {
+  head: { kicker: "Жалобы", open: "Открытых: {n}", none: "Открытых жалоб нет", sOpen: "Открыты", sReview: "На рассмотрении", sDone: "Решены" },
   lead: "Недовольны услугой, работой адвоката или оплатой — подайте здесь официальную жалобу.",
   new: "Новая жалоба",
   stepN: "Шаг {n}",

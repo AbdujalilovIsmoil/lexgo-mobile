@@ -25,10 +25,11 @@ type Props<T> = {
   flat?: boolean; // rows without a gap between them (they carry their own hairlines)
   joined?: boolean; // the rows draw one card themselves (their own edges and hairlines): no separator between them
   bottomPad?: number; // extra room under the last row (a floating button)
+  footer?: ReactElement | null; // under the rows (and the "show more" button)
 };
 
 // Infinite admin list: skeleton → error/403 (404 = module off when `off` is given) → rows, pull to refresh, "show more".
-export function PagedList<T>({ data, query, renderItem, keyExtractor, header, empty, skeletonHeight = 84, off, flat, joined, columns = 1, bottomPad = 0 }: Props<T>) {
+export function PagedList<T>({ data, query, renderItem, keyExtractor, header, empty, skeletonHeight = 84, off, flat, joined, footer, columns = 1, bottomPad = 0 }: Props<T>) {
   const { t } = useT();
   const pull = usePullRefresh(() => query.refetch());
   const insets = useInsets();
@@ -43,7 +44,7 @@ export function PagedList<T>({ data, query, renderItem, keyExtractor, header, em
       renderItem={({ item, index }) => renderItem(item, index)}
       ListHeaderComponent={header}
       ListEmptyComponent={pending ?? (query.isError ? (off && query.error instanceof ApiError && query.error.status === 404 ? <EmptyState icon="power" title={off.title} text={off.text} /> : <ErrorView error={query.error} onRetry={() => void query.refetch()} />) : <EmptyState icon={empty?.icon ?? "inbox"} title={empty?.title ?? t("adm.noData")} text={empty?.text} actionLabel={empty?.actionLabel} onAction={empty?.onAction} />)}
-      ListFooterComponent={query.hasNextPage ? <Button title={t("adm.loadMore")} variant="soft" full loading={query.isFetchingNextPage} onPress={() => void query.fetchNextPage?.()} style={{ marginTop: 12 }} /> : null}
+      ListFooterComponent={<>{query.hasNextPage ? <Button title={t("adm.loadMore")} variant="soft" full loading={query.isFetchingNextPage} onPress={() => void query.fetchNextPage?.()} style={{ marginTop: 12 }} /> : null}{footer}</>}
       ItemSeparatorComponent={joined ? undefined : () => (flat ? <Divider inset={56} /> : <View style={{ height: columns > 1 ? 20 : 10 }} />)}
       contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: insets.bottom + 24 + bottomPad, flexGrow: 1 }}
       refreshing={pull.refreshing}

@@ -6,4 +6,4 @@ export { useRatingSync } from "./model/useRatingSync";
 export { RateForm } from "./ui/RateForm";
 export { useComplaintForm } from "./ui/ComplaintForm";
 export { useComplaintSent } from "./model/complaintSent";
-export { useComplaintFilters } from "./model/useComplaintFilters";
+export { useComplaintFilters, type KindPick } from "./model/useComplaintFilters";

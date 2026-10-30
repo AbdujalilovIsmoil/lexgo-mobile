@@ -6,7 +6,7 @@ import { useComplaintFilters, useComplaintSent } from "@/features/rating";
 import { ComplaintDetailSheet } from "./ComplaintDetailSheet";
 import { ComplaintFilters } from "./ComplaintFilters";
 import { ComplaintNotes } from "./ComplaintNotes";
-import { ComplaintsHead } from "./ComplaintsHead";
+import { ComplaintProcess, ComplaintsHead } from "./ComplaintsHead";
 import { useComplaintLive } from "./useComplaintLive";
 import { PagedList } from "@/shared/ui/admin";
 import { useSlicedList } from "@/shared/lib/pay/useSlicedList";
@@ -46,16 +46,16 @@ export function ComplaintsTab({ work = "" }: Props) {
       <PagedList
         data={items}
         query={query}
-        flat
+        joined
         keyExtractor={(c) => c.key}
-        renderItem={(c) => <ComplaintRowCard item={c} onPress={() => setOpen(c)} />}
+        renderItem={(c, i) => <ComplaintRowCard item={c} first={i === 0} last={i === items.length - 1} onPress={() => setOpen(c)} />}
         empty={all.length ? { icon: "filter", title: t("pwc.filter.empty") } : { icon: "message-square", title: t("pwc.empty"), text: t("pwc.emptyText") }}
+        footer={all.length ? <ComplaintProcess /> : null}
         header={
           <View>
             <ComplaintsHead all={all} onNew={() => { setSentId(null); router.push("/complaints/new"); }} />
             <ComplaintNotes sentId={sentId} missing={missing} partial={partial} onDismissSent={() => setSentId(null)} onDismissMissing={() => setMissing(false)} onRetry={() => void q.refetch()} />
             <ComplaintFilters f={f} />
-            <View style={{ height: 10 }} />
           </View>
         }
       />

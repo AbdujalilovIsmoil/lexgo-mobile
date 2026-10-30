@@ -12,7 +12,7 @@ export const COMPLAINT_TILE = 46;
 
 // One complaint as a flat row (hairlines divide the rows): a category tile tinted by the stage, title, meta (kind, id, linked
 // work, date), the first line of the text and the stage pill (pulsing while it is still being handled).
-export function ComplaintRowCard({ item, onPress }: { item: ComplaintItem; onPress: () => void }) {
+export function ComplaintRowCard({ item, onPress, first = true, last = true }: { item: ComplaintItem; onPress: () => void; first?: boolean; last?: boolean }) {
   const c = useColors();
   const { t, locale } = useT();
   const L = useComplaintLabels();
@@ -20,7 +20,7 @@ export function ComplaintRowCard({ item, onPress }: { item: ComplaintItem; onPre
   const stage = complaintStage(item.status);
   const tint = { new: c.warn, review: c.accent, rework: "#00CFE8", resolved: c.ok, rejected: c.err, closed: c.gray2 }[stage];
   return (
-    <PressableScale onPress={onPress} style={s.row}>
+    <PressableScale onPress={onPress} scale={0.99} accessibilityRole="button" style={[s.row, { backgroundColor: c.surface, borderColor: c.line }, first && s.first, last && s.last, !last && { borderBottomWidth: StyleSheet.hairlineWidth }]}>
       <View style={[s.tile, { backgroundColor: `${tint}24` }]}><Icon name={q ? "star" : CATEGORY_ICON[item.category] ?? "message-circle"} size={20} color={tint} /></View>
       <View style={s.body}>
         <View style={s.top}>
@@ -30,12 +30,15 @@ export function ComplaintRowCard({ item, onPress }: { item: ComplaintItem; onPre
         <Text variant="caption" tone="gray2" numberOfLines={1}>{meta}</Text>
         <Text variant="small" tone="gray" numberOfLines={2}>{line}</Text>
       </View>
+      <Icon name="chevron-right" size={18} tone="gray" />
     </PressableScale>
   );
 }
 
 const s = StyleSheet.create({
-  row: { flexDirection: "row", gap: 12, paddingVertical: 12 },
+  row: { flexDirection: "row", alignItems: "center", gap: 12, paddingHorizontal: 14, paddingVertical: 14, borderLeftWidth: 1, borderRightWidth: 1 },
+  first: { borderTopWidth: 1, borderTopLeftRadius: 20, borderTopRightRadius: 20 },
+  last: { borderBottomWidth: 1, borderBottomLeftRadius: 20, borderBottomRightRadius: 20 },
   tile: { width: COMPLAINT_TILE, height: COMPLAINT_TILE, borderRadius: 15, alignItems: "center", justifyContent: "center" },
   body: { flex: 1, gap: 3 },
   top: { flexDirection: "row", alignItems: "center", gap: 8 },

@@ -1,5 +1,5 @@
 export { ComplaintsTab } from "./ComplaintsTab";
-export { ComplaintsHead } from "./ComplaintsHead";
+export { ComplaintsHead, ComplaintProcess } from "./ComplaintsHead";
 export { ComplaintFilters } from "./ComplaintFilters";
 export { ComplaintNotes } from "./ComplaintNotes";
 export { ComplaintDetailSheet } from "./ComplaintDetailSheet";

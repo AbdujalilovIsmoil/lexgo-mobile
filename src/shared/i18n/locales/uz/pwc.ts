@@ -1,4 +1,5 @@
 export const pwc = {
+  head: { kicker: "Shikoyatlar", open: "{n} ta ochiq", none: "Ochiq shikoyat yo'q", sOpen: "Ochiq", sReview: "Ko'rib chiqilmoqda", sDone: "Hal qilingan" },
   lead: "Xizmat, advokat ishi yoki to'lovdan norozi bo'lsangiz — shu yerda rasmiy shikoyat yozing.",
   new: "Yangi shikoyat",
   stepN: "{n}-qadam",
