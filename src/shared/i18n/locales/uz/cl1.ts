@@ -1,5 +1,5 @@
 export const cl1 = {
-  list: { running: "Faol", waiting: "Kutilmoqda", finished: "Yakunlangan", allKinds: "Barcha turlar", next: "Keyingi qadam: {s}", docs: "Hujjatlar arxivi" },
+  list: { more: "Yana {n} ta", shownOf: "{shown} / {total}", running: "Faol", waiting: "Kutilmoqda", finished: "Yakunlangan", allKinds: "Barcha turlar", next: "Keyingi qadam: {s}", docs: "Hujjatlar arxivi" },
   title: "Mening ishlarim",
   sub: "Advokat bilan ishlar, tezkor xizmatlar va buyurtmalar",
   count: "{n} ta ish",

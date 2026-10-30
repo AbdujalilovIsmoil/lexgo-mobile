@@ -1,7 +1,7 @@
 import type { Messages } from "../uz";
 
 export const cl1: Messages["cl1"] = {
-  list: { running: "В работе", waiting: "Ждут вас", finished: "Завершены", allKinds: "Все типы", next: "Следующий шаг: {s}", docs: "Архив документов" },
+  list: { more: "Ещё {n}", shownOf: "{shown} из {total}", running: "В работе", waiting: "Ждут вас", finished: "Завершены", allKinds: "Все типы", next: "Следующий шаг: {s}", docs: "Архив документов" },
   title: "Мои работы",
   sub: "Работы с юристами, срочные услуги и заказы",
   count: "Работ: {n}",
