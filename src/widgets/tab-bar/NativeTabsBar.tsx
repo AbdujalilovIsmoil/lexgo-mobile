@@ -16,6 +16,7 @@ import { installTabReach, setBarRoutes } from "./tabReach";
 import { TABS, type TabDef } from "./tabConfig";
 import { useTabRole } from "./useTabRole";
 import { useVisibleTabs } from "./useTabItems";
+import { useTabOverlay } from "./tabOverlay";
 import { useBarImages } from "./useBarImages";
 
 // Feather names of tabConfig → SF Symbols of the system tab bar: the outline at rest, the filled one when selected.
@@ -94,7 +95,7 @@ export const NativeTabsBar = memo(function NativeTabsBar({ bar }: { bar: boolean
             contentStyle={ground ? aurora : undefined}
             disableAutomaticContentInsets
             disabled={guard} // a visitor's tap on a personal tab never switches it: the (still emitted) press sends them to sign in
-            listeners={guard && def.route !== GAP.route ? { tabPress: () => router.push("/auth/login") } : undefined}
+            listeners={guard && def.route !== GAP.route ? { tabPress: () => router.push("/auth/login") } : { tabPress: () => useTabOverlay.getState().close() } /* a tab press closes a page opened over the tab */}
           >
             {def.center || def.route === GAP.route ? <NativeTabs.Trigger.Icon src={AI_SLOT} renderingMode="original" /> : images?.[def.icon] ? <NativeTabs.Trigger.Icon src={images[def.icon] as never} renderingMode="template" /> : <NativeTabs.Trigger.Icon sf={sfIcon(def.icon)} />}
             <NativeTabs.Trigger.Label hidden={def.route === GAP.route || fit.mode === "hidden"}>{caption(t(def.labelKey))}</NativeTabs.Trigger.Label>

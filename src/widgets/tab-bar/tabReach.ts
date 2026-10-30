@@ -1,5 +1,6 @@
 import { Platform } from "react-native";
 import { router } from "expo-router";
+import { canOverlay, useTabOverlay } from "./tabOverlay";
 
 // The system tab bar (NativeTabs) can only reach the tabs it shows: a tab marked `hidden` cannot be navigated to at all. Many
 // links point at tab pages that are not in the current role's bar (the profile, lawyers, orders, a client's works…), so on iOS
@@ -17,6 +18,18 @@ export const rewritePath = (path: string): string => {
   const b = /^\/([a-z]+)(\?.*)?$/.exec(path);
   return b && TAB_PAGES.has(b[1]) && !bar.includes(b[1]) ? `/m/${b[1]}${b[2] ?? ""}` : path;
 };
+// A bare link to a tab page the bar does not show opens it over the open tab (see tabOverlay); a link to a tab the bar shows closes that.
+// Returns true when the link was handled that way (nothing to navigate).
+const viaOverlay = (href: unknown): boolean => {
+  const path = typeof href === "string" ? href : (href as { pathname?: unknown; params?: Record<string, unknown> } | null)?.pathname;
+  const params = typeof href === "string" ? undefined : (href as { params?: Record<string, unknown> } | null)?.params;
+  if (typeof path !== "string") return false;
+  const m = /^\/(?:\(tabs\)\/)?([a-z]+)$/.exec(path);
+  const name = m?.[1] ?? (path === "/" ? "index" : "");
+  if (name && bar.includes(name)) { useTabOverlay.getState().close(); return false; }
+  if (name && canOverlay(name) && !(params && Object.keys(params).length)) { useTabOverlay.getState().open(name); return true; }
+  return false;
+};
 const rewrite = (href: unknown): unknown => {
   if (typeof href === "string") return rewritePath(href);
   const o = href as { pathname?: unknown } | null;
@@ -29,6 +42,6 @@ export function installTabReach() {
   installed = true;
   for (const k of ["navigate", "push", "replace"] as const) {
     const orig = router[k] as (href: never, options?: never) => void;
-    (router as Record<string, unknown>)[k] = (href: never, options?: never) => orig(rewrite(href) as never, options);
+    (router as Record<string, unknown>)[k] = (href: never, options?: never) => (viaOverlay(href) ? undefined : orig(rewrite(href) as never, options));
   }
 }
