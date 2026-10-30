@@ -5,7 +5,7 @@ import type { TabRole } from "@/widgets/tab-bar/tabConfig";
 
 export type NavItem = { key: string; icon: IconName; route: string; badge?: "notifications" | "support"; label?: string };
 
-// The web client sidebar (law-main PortalShell CLIENT_NAV) in its exact order, without Boshqaruv paneli, Tezkor advokat, Huquqiy hujjatlar and Advokat va yuristlar (Home and the tab bar lead there), SOS (Home has its own button), Mening so'rovlarim (a row on /urgent), AI, Mening ishlarim and Xabarlar (the tab bar has them), Mening hujjatlarim (the works page links to it); titles are cpd.menu.<key> (or `label` when the web has no such row).
+// The web client sidebar (law-main PortalShell CLIENT_NAV) in its exact order, without Boshqaruv paneli, Tezkor advokat, Huquqiy hujjatlar and Advokat va yuristlar (Home and the tab bar lead there), SOS (Home has its own button), Mening so'rovlarim (a row on /urgent), AI, Mening ishlarim and Xabarlar (the tab bar has them), Mening hujjatlarim (the works page links to it), Shikoyatlar and Roziliklar (the profile has them); titles are cpd.menu.<key> (or `label` when the web has no such row).
 export const NAV: NavItem[] = [
   { key: "intake", icon: "clipboard", route: "/intake" },
   { key: "academy", icon: "book-open", route: "/academy" },
@@ -18,7 +18,6 @@ export const NAV: NavItem[] = [
   { key: "referrals", icon: "user-plus", route: "/profile/referral" },
   { key: "reviews", icon: "star", route: "/ratings" },
   { key: "warranty", icon: "shield", route: "/warranty" },
-  { key: "complaints", icon: "clipboard", route: "/complaints" },
   { key: "support", icon: "headphones", route: "/support", badge: "support" },
 ];
 
@@ -78,7 +77,6 @@ export const navFor = (role: TabRole, seller: Seller = {}): NavItem[] => (role =
 // Mobile-only account screens that the web has no sidebar row for.
 export const EXTRA: NavItem[] = [
   { key: "entitlements", icon: "award", route: "/entitlements" },
-  { key: "consents", icon: "check-square", route: "/profile/consents" },
 ];
 
 // The team's task section (the web's "Jamoa vazifalari"): a row for anyone who holds `tasks.view`, whatever their role — the people who use
