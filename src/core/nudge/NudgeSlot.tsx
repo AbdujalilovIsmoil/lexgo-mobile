@@ -4,15 +4,24 @@ import { SupportMenu } from "@/features/support-menu";
 import { registerHeaderExtra, registerHeaderRight } from "@/shared/ui/headerExtra";
 import { useTabRole } from "@/widgets/tab-bar/useTabRole";
 
-// What the shared page header shows for signed-in clients: the upsell banner under it and the
-// support headset at its right end (sellers get the headset too, without the complaint row).
-// A conversation (or the emergency / order page) needs the whole screen, so no banner sits above it; neither do the documents
-// catalogue, the specialists directory, the works list and my documents (with each document's page), whose search has to be the first thing under the title, nor the new-complaint form.
-const CHAT = /^\/(support\/(?!new)[^/]+|chat\/|manage\/chat|manage\/support\/ticket|cc\/assist\/|sos$|urgent(\/new)?$|services$|services\/direction$|(m\/)?lawyers$|(m\/)?works$|documents(\/[^/]+)?$|complaints\/new$)/;
+// The client's banner under the page header shows only where its message fits the page — nowhere else: the gift offer on the profile
+// and the academy, the plans on payments, packages and entitlements, the specialists directory after the problem analysis and the
+// matches. Every other screen (lists, forms, chats, documents…) keeps its content first.
+const PLACES: [RegExp, string][] = [
+  [/^\/(m\/)?profile$/, "gift"],
+  [/^\/academy$/, "gift"],
+  [/^\/payments$/, "pro"],
+  [/^\/packages$/, "pro"],
+  [/^\/entitlements$/, "pro"],
+  [/^\/intake$/, "lawyers"],
+  [/^\/matches$/, "lawyers"],
+];
 
 function NudgeSlot() {
-  const inChat = CHAT.test(usePathname());
-  return <GiftNudge enabled={useTabRole() === "client" && !inChat} />;
+  const path = usePathname();
+  const client = useTabRole() === "client";
+  const place = PLACES.find(([re]) => re.test(path))?.[1] ?? "";
+  return <GiftNudge enabled={client && !!place} only={place} />;
 }
 
 function SupportSlot({ glass }: { glass?: boolean }) {

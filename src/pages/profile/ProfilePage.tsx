@@ -9,6 +9,7 @@ import { ProfileExtrasMenu, ProfileSummary } from "@/widgets/profile-extras";
 import { useTabRole } from "@/widgets/tab-bar/useTabRole";
 import { GuestWelcome } from "@/widgets/guest-welcome";
 import { HeroScroll } from "@/shared/ui";
+import { HeaderExtra } from "@/shared/ui/headerExtra";
 import { useRaPage } from "@/shared/remote-assist";
 import { ClientSections } from "./ClientSections";
 
@@ -29,6 +30,7 @@ export function ProfilePage() {
   return (
     <HeroScroll style={{ backgroundColor: c.canvas }} contentContainerStyle={{ paddingBottom: insets.bottom + 130 }}>
       {client ? <ClientHeader user={session.user} /> : <ProfileHeader user={session.user} />}
+      {client ? <View style={{ marginTop: 14 }}><HeaderExtra /></View> : null}
       {client ? <ClientSections /> : (
         <>
           <ProfileSummary />

@@ -1,4 +1,3 @@
-import { useEffect } from "react";
 import { StyleSheet, View } from "react-native";
 import { useRouter } from "expo-router";
 import { LinearGradient } from "expo-linear-gradient";
@@ -15,20 +14,20 @@ import { AI_SLUG, NUDGES } from "./variants";
 const LIGHT = ["#FFF2E6", "#FFF0F3", "#FDEDF6"] as const;
 const DARK = ["#33231A", "#331C26", "#2D1B33"] as const;
 
-// Client-only banner under the page header (web GiftNudge): gift / Pro crown / Lite / lawyers, dismissible.
-export function GiftNudge({ enabled }: { enabled: boolean }) {
+// Client-only banner under the page header (web GiftNudge): gift / Pro crown / Lite / lawyers, dismissible. `only` is the message the page
+// asks for; the plan upsell steps down to Lite, or stays away, when the client already has that plan.
+export function GiftNudge({ enabled, only }: { enabled: boolean; only: string }) {
   const { dark } = useTheme();
   const { t } = useT();
   const router = useRouter();
-  const { dismissed, picked, dismiss, ensure } = useNudgeStore();
+  const { dismissed, dismiss } = useNudgeStore();
   const plans = usePlans();
   const ent = useEntitlements();
   const ready = enabled && !plans.isLoading && !ent.isLoading;
   const mine = plans.data?.find((p) => AI_SLUG.test(p.slug) && ent.data?.planIds.includes(p.id));
-  const keys = NUDGES.filter((v) => !v.hideForPlan?.includes(mine?.slug ?? "lexgo-ai-free")).map((v) => v.key).join(",");
-  useEffect(() => { if (ready) ensure(keys.split(",")); }, [ready, keys, ensure]);
-  const v = NUDGES.find((x) => x.key === picked);
-  if (!ready || dismissed || !v) return null;
+  const fits = (k: string) => NUDGES.find((v) => v.key === k && !v.hideForPlan?.includes(mine?.slug ?? "lexgo-ai-free"));
+  const v = fits(only) ?? (only === "pro" ? fits("lite") : undefined);
+  if (!ready || dismissed.includes(only) || !v) return null;
   const go = () => router.push(v.href as never);
   return (
     <Animated.View entering={FadeInDown.duration(450)} exiting={FadeOut.duration(200)} style={s.outer}>
@@ -40,7 +39,7 @@ export function GiftNudge({ enabled }: { enabled: boolean }) {
             <Text variant="small" weight="bold">{t(`cpd.nudge.${v.key}Title`)}</Text>
             <Text variant="caption" tone="gray">{t(`cpd.nudge.${v.key}Text`)}</Text>
           </PressableScale>
-          <IconButton icon="x" size={30} onPress={dismiss} label={t("cpd.nudge.dismiss")} />
+          <IconButton icon="x" size={30} onPress={() => dismiss(only)} label={t("cpd.nudge.dismiss")} />
         </View>
         <Button title={t(`cpd.nudge.${v.key}Cta`)} icon="arrow-right" iconRight variant="gradient" size="sm" full onPress={go} />
       </LinearGradient>
