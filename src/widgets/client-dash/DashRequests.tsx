@@ -16,8 +16,8 @@ const toneOf = (status: string): ChipTone => (/done|closed|complete|resolved/.te
 const headline = (status: string) =>
   status === "meeting_active" ? "ugLive" : status === "scheduled" ? "ugScheduled" : (status || "open_pool") === "open_pool" ? "ugSearching" : "ugComing";
 
-// "Faol so'rovlar": one card of rows — the live urgent-advocate requests first, then the open cases from GET /cases. "Barchasi" opens the
-// works tab.
+// "Faol so'rovlar": two cards of the same rows, kept apart — the live urgent-advocate requests, then the open cases from GET /cases.
+// "Barchasi" opens the works tab.
 export function DashRequests() {
   const { t } = useT();
   const router = useRouter();
@@ -45,22 +45,26 @@ export function DashRequests() {
     next: x.nextAction || undefined,
     onPress: () => router.push(`/works/${encodeURIComponent(x.number || x.id)}` as never),
   });
-  const rows = [
-    ...(mine.data ?? []).filter((r) => !isFinal(r)).slice(0, URGENT_MAX).map((r) => ({ key: `u${r.id}`, row: urgentRow(r) })),
-    ...cases.open.slice(0, CASES_MAX).map((x) => ({ key: `c${x.id}`, row: caseRow(x) })),
-  ];
+  const urgent = (mine.data ?? []).filter((r) => !isFinal(r)).slice(0, URGENT_MAX).map((r) => ({ key: r.id, row: urgentRow(r) }));
+  const open = cases.open.slice(0, CASES_MAX).map((x) => ({ key: x.id, row: caseRow(x) }));
+  const card = (rows: { key: string; row: ActiveRowData }[]) => (
+    <View style={[s.card, { backgroundColor: dark ? c.surface : "#FFFFFF", borderColor: dark ? c.line : "#EEF2FA" }]}>
+      {rows.map((x, i) => <RequestRow key={x.key} row={x.row} last={i === rows.length - 1} />)}
+    </View>
+  );
   return (
     <View style={s.wrap}>
       <View style={s.head}>
         <Text variant="h3" style={{ fontSize: 19 }}>{t("cdash.home.active")}</Text>
         <PressableScale onPress={() => router.navigate("/(tabs)/works")} hitSlop={8}><Text variant="small" weight="bold" tone="accent" style={{ fontSize: 15 }}>{t("cdash.home.all")}</Text></PressableScale>
       </View>
-      {loading ? <Skeleton height={72} round={20} /> : !rows.length ? (
+      {loading ? <Skeleton height={72} round={20} /> : !urgent.length && !open.length ? (
         <EmptyState icon="star" title={t("cdash.emptyTitle")} text={t("cdash.emptyText")} compact />
       ) : (
-        <View style={[s.card, { backgroundColor: dark ? c.surface : "#FFFFFF", borderColor: dark ? c.line : "#EEF2FA" }]}>
-          {rows.map((x, i) => <RequestRow key={x.key} row={x.row} last={i === rows.length - 1} />)}
-        </View>
+        <>
+          {urgent.length ? card(urgent) : null}
+          {open.length ? card(open) : null}
+        </>
       )}
     </View>
   );
