@@ -9,7 +9,6 @@ import { openTel } from "@/shared/lib/links";
 import { SUPPORT_PHONE } from "@/shared/config/env";
 import { useColors } from "@/shared/theme";
 import { useT } from "@/shared/i18n";
-import { ComplaintSheet } from "@/features/rating";
 import { SupportButton } from "./SupportButton";
 import { OperatorCard } from "./OperatorCard";
 import { SupportItem } from "./SupportItem";
@@ -26,7 +25,6 @@ export function SupportMenu({ glass, client }: Props) {
   const insets = useInsets();
   const [open, setOpen] = useState(false);
   const [body, setBody] = useState(0);
-  const [complaint, setComplaint] = useState(false);
   // First snap = the measured content + sheet header + safe area, so it fits any screen and font size; the second opens it almost full.
   const fit = Math.min(0.92, ((body || (client ? 440 : 330)) + 14 + 96 + insets.bottom + 24) / H);
   const go = (path: string) => { setOpen(false); router.push(path as never); };
@@ -37,7 +35,7 @@ export function SupportMenu({ glass, client }: Props) {
         <SheetScroll contentContainerStyle={s.col}>
           <View style={s.cards} accessibilityRole="menu" onLayout={(e) => setBody(Math.round(e.nativeEvent.layout.height))}>
           <OperatorCard title={t("cpd.support.operator")} sub={t("cpd.support.operatorSub")} onPress={() => { setOpen(false); router.navigate("/support" as never); }} />
-          {client ? <SupportItem kind="case" icon="alert-triangle" title={t("cpd.support.complaint")} sub={t("cpd.support.complaintSub")} onPress={() => { setOpen(false); setTimeout(() => setComplaint(true), 380); }} /> : null}
+          {client ? <SupportItem kind="case" icon="alert-triangle" title={t("cpd.support.complaint")} sub={t("cpd.support.complaintSub")} onPress={() => go("/complaints/new")} /> : null}
           <SupportItem kind="call" icon="phone" title={t("cpd.support.call")} sub={SUPPORT_PHONE} subBold onPress={() => { setOpen(false); openTel(SUPPORT_PHONE); }}>
             <BusinessHoursBadge inline />
           </SupportItem>
@@ -48,7 +46,6 @@ export function SupportMenu({ glass, client }: Props) {
           </View>
         </SheetScroll>
       </BottomSheet>
-      {client ? <ComplaintSheet visible={complaint} onClose={() => setComplaint(false)} /> : null}
     </>
   );
 }

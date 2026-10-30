@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { View } from "react-native";
+import { useRouter } from "expo-router";
 import { matchesRef, ComplaintRowCard, useComplaints, type ComplaintItem } from "@/entities/rating";
-import { ComplaintSheet, useComplaintFilters } from "@/features/rating";
+import { useComplaintFilters, useComplaintSent } from "@/features/rating";
 import { ComplaintDetailSheet } from "./ComplaintDetailSheet";
 import { ComplaintFilters } from "./ComplaintFilters";
 import { ComplaintNotes } from "./ComplaintNotes";
@@ -11,17 +12,24 @@ import { PagedList } from "@/shared/ui/admin";
 import { useSlicedList } from "@/shared/lib/pay/useSlicedList";
 import { useT } from "@/shared/i18n";
 
-type Props = { work?: string; about?: string; openNew?: boolean };
+type Props = { work?: string };
 
 // The client's complaints (web: ClientComplaints) — written ones and those a low rating opened.
-export function ComplaintsTab({ work = "", about = "", openNew = false }: Props) {
+export function ComplaintsTab({ work = "" }: Props) {
   const { t } = useT();
   const q = useComplaints();
   const all = q.data?.items ?? [];
   const f = useComplaintFilters(all);
   const [open, setOpen] = useState<ComplaintItem | null>(null);
-  const [form, setForm] = useState(openNew || !!about);
-  const [sentId, setSentId] = useState<string | null>(null);
+  const router = useRouter();
+  const sentId = useComplaintSent((s) => s.id);
+  const setSentId = useComplaintSent((s) => s.set);
+  const [shownSent, setShownSent] = useState<string | null>(null);
+  if (sentId && shownSent !== sentId) { // a complaint just filed on its page: clear the filters so it shows among all
+    setShownSent(sentId);
+    f.reset();
+    setOpen(null);
+  }
   const [missing, setMissing] = useState(false);
   const [seen, setSeen] = useState("");
   if (work && q.data && seen !== work) {
@@ -44,7 +52,7 @@ export function ComplaintsTab({ work = "", about = "", openNew = false }: Props)
         empty={all.length ? { icon: "filter", title: t("pwc.filter.empty") } : { icon: "message-square", title: t("pwc.empty"), text: t("pwc.emptyText") }}
         header={
           <View>
-            <ComplaintsHead all={all} onNew={() => { setSentId(null); setForm(true); }} />
+            <ComplaintsHead all={all} onNew={() => { setSentId(null); router.push("/complaints/new"); }} />
             <ComplaintNotes sentId={sentId} missing={missing} partial={partial} onDismissSent={() => setSentId(null)} onDismissMissing={() => setMissing(false)} onRetry={() => void q.refetch()} />
             <ComplaintFilters f={f} />
             <View style={{ height: 10 }} />
@@ -52,7 +60,6 @@ export function ComplaintsTab({ work = "", about = "", openNew = false }: Props)
         }
       />
       <ComplaintDetailSheet item={open} onClose={() => setOpen(null)} />
-      <ComplaintSheet visible={form} onClose={() => setForm(false)} relatedRef={about} onSent={(c) => { setSentId(c.workId); f.reset(); setOpen(null); }} />
     </>
   );
 }

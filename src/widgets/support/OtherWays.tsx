@@ -1,11 +1,10 @@
-import { useState } from "react";
+import { useRouter } from "expo-router";
 import { StyleSheet, View } from "react-native";
 import { Icon, PressableScale, Text, type IconName } from "@/shared/ui";
 import { openTel } from "@/shared/lib/links";
 import { SUPPORT_PHONE } from "@/shared/config/env";
 import { useColors } from "@/shared/theme";
 import { useT } from "@/shared/i18n";
-import { ComplaintSheet } from "@/features/rating";
 import { scheduleText, useSupportHours } from "@/entities/support";
 
 function Tile({ icon, tint, bg, title, lines, onPress }: { icon: IconName; tint: string; bg: string; title: string; lines: { text: string; bold?: boolean }[]; onPress: () => void }) {
@@ -22,14 +21,13 @@ function Tile({ icon, tint, bg, title, lines, onPress }: { icon: IconName; tint:
 export function OtherWays() {
   const { t } = useT();
   const c = useColors();
-  const [form, setForm] = useState(false);
+  const router = useRouter();
   const hours = useSupportHours();
   const sched = hours ? scheduleText(hours, (d) => t(`sp4.days.${d}`)) : "";
   return (
     <View style={s.row}>
       <Tile icon="phone" tint={c.ok} bg={c.okBg} title={t("sp1.callTitle")} lines={[{ text: SUPPORT_PHONE, bold: true }, ...(sched ? [{ text: sched }] : [])]} onPress={() => openTel(SUPPORT_PHONE)} />
-      <Tile icon="alert-circle" tint={c.warn} bg={c.warnBg} title={t("sp1.cTitle")} lines={[{ text: t("sp1.cSub") }]} onPress={() => setForm(true)} />
-      <ComplaintSheet visible={form} onClose={() => setForm(false)} />
+      <Tile icon="alert-circle" tint={c.warn} bg={c.warnBg} title={t("sp1.cTitle")} lines={[{ text: t("sp1.cSub") }]} onPress={() => router.push("/complaints/new")} />
     </View>
   );
 }

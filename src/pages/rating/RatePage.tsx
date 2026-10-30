@@ -1,7 +1,8 @@
 import { useCallback, useState } from "react";
+import { useRouter } from "expo-router";
 import { ApiError } from "@/shared/api";
 import { useRateTarget, windowOpen, type QualityComplaintRef } from "@/entities/rating";
-import { ComplaintSheet, RateForm, useSubmitRating } from "@/features/rating";
+import { RateForm, useSubmitRating } from "@/features/rating";
 import { RateOutcome } from "@/widgets/rating";
 import { AdminPage } from "@/shared/ui/admin";
 import { PayScroll } from "@/shared/ui/pay/PayScroll";
@@ -14,9 +15,9 @@ type Sent = { stars: number; complaint: QualityComplaintRef | null };
 export function RatePage({ workId }: { workId: string }) {
   const { t } = useT();
   const q = useRateTarget(workId);
+  const router = useRouter();
   const [sent, setSent] = useState<Sent | null>(null);
   const [stars, setStars] = useState(0);
-  const [complaint, setComplaint] = useState(false);
   const submit = useSubmitRating(q.data, (c) => setSent({ stars, complaint: c }));
   const { refetch } = q;
   const expired = useCallback(() => void refetch(), [refetch]);
@@ -31,8 +32,7 @@ export function RatePage({ workId }: { workId: string }) {
             {target.lawyerName ? <Text variant="small" tone="gray">{t("py10.lawyer", { name: target.lawyerName })}</Text> : null}
             {open ? <RateForm target={target} busy={submit.isPending} onExpired={expired} onSubmit={(n, comment, text) => { setStars(n); submit.mutate({ stars: n, comment, complaint: text }); }} /> : <RateOutcome target={target} sent={sent} />}
             {/* A marketplace order has its own complaint (enterprise §9: one window, and a 1–2 star rating opens it by itself) — no second channel here. */}
-            {open && target.kind !== "market" ? <Button title={t("py10.rate.complain")} icon="message-square" variant="line" full onPress={() => setComplaint(true)} /> : null}
-            <ComplaintSheet visible={complaint} onClose={() => setComplaint(false)} relatedRef={target.workId} />
+            {open && target.kind !== "market" ? <Button title={t("py10.rate.complain")} icon="message-square" variant="line" full onPress={() => router.push({ pathname: "/complaints/new", params: { about: target.workId } })} /> : null}
           </>
         )}
       </PayScroll>

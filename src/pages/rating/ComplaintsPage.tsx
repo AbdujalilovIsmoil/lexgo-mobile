@@ -6,13 +6,13 @@ export type ComplaintsTabKey = "complaints" | "ratings" | "warranty";
 
 // Complaints, the client's ratings and the LexGo warranty (TZ 25) are three separate pages (three sidebar rows): this
 // shows only the one asked for, titled after it, so ratings never carry complaint chrome and vice versa.
-type Props = { initial?: ComplaintsTabKey; work?: string; about?: string; openNew?: boolean };
+type Props = { initial?: ComplaintsTabKey; work?: string };
 
-export function ComplaintsPage({ initial = "complaints", work, about, openNew }: Props) {
+export function ComplaintsPage({ initial = "complaints", work }: Props) {
   const { t } = useT();
   return (
     <AdminPage title={t(`py5.tab.${initial}`)}>
-      {initial === "complaints" ? <ComplaintsTab work={work} about={about} openNew={openNew} /> : initial === "ratings" ? <RatingsTab /> : <WarrantyTab />}
+      {initial === "complaints" ? <ComplaintsTab work={work} /> : initial === "ratings" ? <RatingsTab /> : <WarrantyTab />}
     </AdminPage>
   );
 }
