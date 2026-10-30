@@ -10,7 +10,6 @@ export const ai: Messages["ai"] = {
   online: "Online · trained on Uzbek law",
   greeting:
     "Hello! I'm an AI trained on the legislation of Uzbekistan. Describe your problem in two or three sentences and I'll suggest the practice area, case stage and the right service.",
-  greetingNote: "AI can make mistakes · the final legal decision stays with a lawyer",
   inputPlaceholder: "Type your question…",
   quick: [
     "Summoned for questioning",

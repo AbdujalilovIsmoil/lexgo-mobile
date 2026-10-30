@@ -1,5 +1,5 @@
 export const cxAi1 = {
-  privacy: "Maxfiylik",
+  piiShort: "Shaxsiy ma'lumotlar yashiriladi · AI xato qilishi mumkin",
   piiNote: "Maxfiylik: telefon raqamlari, email manzillar, JShShIR (PINFL) va pasport raqamlari Sun'iy Intellektga yuborilishidan oldin yashiriladi.",
   hi: "Salom, {name}",
   createDocRequest: "Hujjat so'rovi yaratish",

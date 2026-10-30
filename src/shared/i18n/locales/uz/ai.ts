@@ -8,7 +8,6 @@ export const ai = {
   online: "Onlayn · qonunchilikka o'qitilgan",
   greeting:
     "Assalomu alaykum! Men Sun'iy Intellekt — O'zbekiston qonunchiligiga o'qitilganman. Muammoyingizni ikki-uch gapda yozing, men yo'nalishni, ish bosqichini va mos xizmatni aytaman.",
-  greetingNote: "AI xato qilishi mumkin · yakuniy huquqiy qaror advokatda qoladi",
   inputPlaceholder: "Savolingizni yozing…",
   quick: [
     "Tergovga chaqirishdi",

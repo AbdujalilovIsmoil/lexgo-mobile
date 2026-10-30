@@ -6,7 +6,7 @@ import { KeyboardAvoidingView } from "react-native-keyboard-controller";
 import { useT } from "@/shared/i18n";
 import { useAiTheme } from "@/shared/theme";
 import { useInstructorTarget } from "@/shared/instructor";
-import { AiBackdrop, Composer, FeedbackSheet, PiiNote, useAiChat, useFeedback } from "@/features/ai-chat";
+import { AiBackdrop, Composer, FeedbackSheet, useAiChat, useFeedback } from "@/features/ai-chat";
 import { ChatHeader, MessageList } from "@/widgets/chat";
 import { homeRoute } from "@/widgets/tab-bar/tabConfig";
 import { useTabRole } from "@/widgets/tab-bar/useTabRole";
@@ -60,7 +60,6 @@ export function AiChatPage() {
           onLike={like}
           onDislike={askWhy}
         />
-        {chat.messages.length ? <PiiNote /> : null}
         <Composer onSend={pick} disabled={blocked} sending={chat.sending} />
       </KeyboardAvoidingView>
       <FeedbackSheet visible={!!fb.target} busy={fb.busy} onClose={fb.close} onSubmit={(c) => fb.target && void fb.submit(fb.target, false, c)} />

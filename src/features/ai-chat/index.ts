@@ -12,4 +12,3 @@ export { LimitCard } from "./ui/LimitCard";
 export { LimitHint } from "./ui/LimitHint";
 export { MessageActions } from "./ui/MessageActions";
 export { PromptGrid } from "./ui/PromptGrid";
-export { PiiNote } from "./ui/PiiNote";

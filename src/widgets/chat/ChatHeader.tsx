@@ -1,5 +1,6 @@
 import { StyleSheet, View } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
+import { Ionicons } from "@expo/vector-icons";
 import { useAiTheme } from "@/shared/theme";
 import { Icon, PressableScale, Text, type IconName } from "@/shared/ui";
 import { useInsets } from "@/shared/lib/insets";
@@ -8,7 +9,7 @@ import { useInstructorTarget } from "@/shared/instructor";
 
 type Props = { onClose: () => void; onNew: () => void; onHistory: () => void; remaining?: number | null };
 
-// [ ✕ exit ]  [⚡] LexGo.AI · Onlayn  [ history ] [ new chat ] — round outlined buttons, a hairline under the row.
+// [ ✕ exit ]  [✦] LexGo.AI · Onlayn  [ history ] [ new chat ] — round outlined buttons, a hairline under the row.
 export function ChatHeader({ onClose, onNew, onHistory, remaining }: Props) {
   const { t } = useT();
   const insets = useInsets();
@@ -26,7 +27,7 @@ export function ChatHeader({ onClose, onNew, onHistory, remaining }: Props) {
       {round("x", t("ai.close"), onClose)}
       <View style={s.mid}>
         <LinearGradient colors={["#2F6BFF", "#3FA9E8"]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={s.badge}>
-          <Icon name="zap" size={18} tone="white" />
+          <Ionicons name="sparkles" size={18} color="#FFFFFF" />
         </LinearGradient>
         <View style={s.col}>
           <Text variant="h4" style={{ color: aiTheme.text, fontSize: 18 }}>{t("ai.title")}</Text>

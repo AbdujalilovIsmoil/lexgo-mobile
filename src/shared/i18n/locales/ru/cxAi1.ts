@@ -1,7 +1,7 @@
 import { cxAi1 as base } from "../uz/cxAi1";
 
 export const cxAi1: typeof base = {
-  privacy: "Конфиденциальность",
+  piiShort: "Личные данные скрываются · ИИ может ошибаться",
   piiNote: "Конфиденциальность: номера телефонов, адреса email, ПИНФЛ (JShShIR) и номера паспортов скрываются перед отправкой в ИИ.",
   hi: "Здравствуйте, {name}",
   createDocRequest: "Создать запрос документа",
