@@ -48,3 +48,17 @@ describe("stopSend", () => {
     expect(useChatStore.getState().messages.map((m) => m.content)).toContain("javob");
   });
 });
+
+describe("stopSend while an answer streams", () => {
+  beforeEach(() => useChatStore.getState().reset());
+
+  it("ends the streaming answer where it is and shows no more of it", () => {
+    const s = useChatStore.getState();
+    s.append({ id: "u-1", role: "user", content: "savol", createdAt: new Date().toISOString() });
+    s.append({ id: "a-1", role: "assistant", content: "Javobning boshi", createdAt: new Date().toISOString(), streaming: true });
+    stopSend();
+    expect(useChatStore.getState().messages[1]).toMatchObject({ content: "Javobning boshi", streaming: false });
+    useChatStore.getState().delta("a-1", " davomi");
+    expect(useChatStore.getState().messages[1].content).toBe("Javobning boshi");
+  });
+});

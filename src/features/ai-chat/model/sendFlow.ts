@@ -68,11 +68,12 @@ export async function runSend(clientId: string, text: string, retryId?: string):
 // push it over the socket — is not shown (it is in the chat's history on the server).
 export function stopSend(): void {
   const f = inFlight;
-  if (!f) return;
   inFlight = null;
-  f.abort.abort();
-  if (live().session !== f.sid) return;
-  live().patch(f.id, { pending: false });
+  f?.abort.abort();
+  if (f && live().session === f.sid) live().patch(f.id, { pending: false });
+  // An answer already being written over the socket stops where it is.
+  const last = live().messages[live().messages.length - 1];
+  if (last?.role === "assistant" && last.streaming) live().patch(last.id, { streaming: false });
   live().setMuted(true);
   live().setSending(false);
 }

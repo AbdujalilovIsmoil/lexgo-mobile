@@ -43,6 +43,9 @@ export function AiChatPage() {
   const pick = useCallback((text: string) => void send(text), [send]);
   const like = useCallback((id: string) => void submit(id, true), [submit]);
   const remaining = chat.limit ? chat.limit.remainingToday : null;
+  // Busy until the answer is complete: the request in flight, or an answer still arriving in pieces over the socket.
+  const tail = chat.messages[chat.messages.length - 1];
+  const busy = chat.sending || (tail?.role === "assistant" && !!tail.streaming);
   const blocked = !chat.clientId || (!!chat.limitErr && chat.limitErr.kind !== "rate");
   return (
     <View {...screen} style={[s.fill, { backgroundColor: aiTheme.bg }]}>
@@ -60,7 +63,7 @@ export function AiChatPage() {
           onLike={like}
           onDislike={askWhy}
         />
-        <Composer onSend={pick} onStop={chat.stop} disabled={blocked} sending={chat.sending} />
+        <Composer onSend={pick} onStop={chat.stop} disabled={blocked} sending={busy} />
       </KeyboardAvoidingView>
       <FeedbackSheet visible={!!fb.target} busy={fb.busy} onClose={fb.close} onSubmit={(c) => fb.target && void fb.submit(fb.target, false, c)} />
     </View>
