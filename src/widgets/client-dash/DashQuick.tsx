@@ -23,7 +23,7 @@ export function DashQuick() {
           </View>
           <View style={s.copy}>
             <Text variant="h4" numberOfLines={2} maxFontSizeMultiplier={1.15} style={s.title}>{t("cdash.home.urgent")}</Text>
-            <Text variant="caption" weight="semibold" style={{ color: c.ok, fontSize: 13 }}>{t("cdash.home.online")}</Text>
+            <Text variant="caption" weight="semibold" style={{ color: c.ok, fontSize: 13 }}>{t("cdash.home.allDay")}</Text>
           </View>
         </PressableScale>
         <View style={[s.split, { backgroundColor: c.line }]} />

@@ -13,7 +13,7 @@ export const cdash = {
     "analysis": "Анализ документа", "analysisSub": "ИИ находит риски",
     "templates": "Шаблоны", "templatesSub": "{n} готовых документов", "templatesSub0": "Готовые документы",
     "services": "Услуги", "servicesSub": "Онлайн юридические услуги",
-    "urgent": "Срочный адвокат", "online": "Онлайн",
+    "urgent": "Срочный адвокат", "allDay": "24/7",
     "crash": "ДТП · консультация",
     "sos": "SOS · экстренная ситуация",
     "active": "Активные запросы", "all": "Все",

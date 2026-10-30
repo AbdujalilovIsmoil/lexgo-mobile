@@ -13,7 +13,7 @@ export const cdash = {
     "analysis": "Hujjat tahlili", "analysisSub": "AI xavflarni topadi",
     "templates": "Shablonlar", "templatesSub": "{n} ta tayyor hujjat", "templatesSub0": "Tayyor hujjatlar",
     "services": "Xizmatlar", "servicesSub": "Onlayn yuridik xizmat",
-    "urgent": "Tezkor advokat", "online": "Onlayn",
+    "urgent": "Tezkor advokat", "allDay": "24/7",
     "crash": "Avtohalokat · maslahat",
     "sos": "SOS · favqulodda holat",
     "active": "Faol so'rovlar", "all": "Barchasi",
