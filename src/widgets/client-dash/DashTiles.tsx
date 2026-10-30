@@ -10,12 +10,12 @@ import { useT } from "@/shared/i18n";
 type Glyph = keyof typeof MaterialCommunityIcons.glyphMap;
 type Tile = { key: string; icon: Glyph; colors: [string, string]; href: string };
 
-// The four main ways in, two by two: find a specialist, document analysis, ready templates (with the catalogue's count), services.
+// The four main ways in, two by two: services, document analysis, ready templates (with the catalogue's count), find a specialist.
 const TILES: Tile[] = [
-  { key: "find", icon: "magnify", colors: ["#4C82F7", "#2F5FD8"], href: "/(tabs)/lawyers" },
+  { key: "services", icon: "view-grid-outline", colors: ["#2C4FA3", "#172F72"], href: "/urgent" },
   { key: "analysis", icon: "file-check-outline", colors: ["#5CC2DC", "#3196B8"], href: "/doc-analysis" },
   { key: "templates", icon: "view-dashboard-outline", colors: ["#8B6CF2", "#6447D9"], href: "/(tabs)/services" },
-  { key: "services", icon: "view-grid-outline", colors: ["#2C4FA3", "#172F72"], href: "/urgent" },
+  { key: "find", icon: "magnify", colors: ["#4C82F7", "#2F5FD8"], href: "/(tabs)/lawyers" },
 ];
 
 export function DashTiles() {

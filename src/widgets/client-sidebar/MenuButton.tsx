@@ -1,3 +1,4 @@
+import { StyleSheet, View } from "react-native";
 import { IconButton } from "@/shared/ui";
 import { useT } from "@/shared/i18n";
 import { useTablet } from "@/shared/lib/useTablet";
@@ -13,5 +14,22 @@ export function MenuButton({ glass }: { glass?: boolean }) {
   const { docked } = useTablet();
   const show = useSidebar((s) => s.show);
   if (hidden || docked) return null;
-  return <IconButton icon="menu" size={40} tone={glass ? "glass" : "tint"} label={t("ntd.sbOpen")} onPress={show} />;
+  return <IconButton icon="menu" size={40} tone={glass ? "glass" : "tint"} label={t("ntd.sbOpen")} onPress={show} glyph={MenuGlyph} />;
 }
+
+// The design's menu mark: two full lines and a third of half their length, all from the left.
+function MenuGlyph(color: string, size: number) {
+  const w = Math.round(size * 0.9);
+  return (
+    <View style={[s.glyph, { width: w }]}>
+      <View style={[s.line, { backgroundColor: color, width: w }]} />
+      <View style={[s.line, { backgroundColor: color, width: w }]} />
+      <View style={[s.line, { backgroundColor: color, width: Math.round(w / 2) }]} />
+    </View>
+  );
+}
+
+const s = StyleSheet.create({
+  glyph: { gap: 4, alignItems: "flex-start" },
+  line: { height: 2, borderRadius: 1 },
+});

@@ -8,7 +8,7 @@ import { cardShadow } from "./DashTiles";
 
 const ORANGE = "#EF6A2E";
 
-// Urgent help in one card split in two (the urgent advocate | car-accident advice), and the quiet SOS link under it.
+// Urgent help in one card split in two (the urgent advocate | car-accident advice), and the SOS chip under it (red, with an arrow, so it reads as a button).
 export function DashQuick() {
   const { t } = useT();
   const router = useRouter();
@@ -34,9 +34,10 @@ export function DashQuick() {
           <Text variant="h4" numberOfLines={3} maxFontSizeMultiplier={1.15} style={[s.title, s.copy]}>{t("cdash.home.crash")}</Text>
         </PressableScale>
       </View>
-      <PressableScale onPress={() => router.navigate("/sos")} hitSlop={8} style={s.sos} accessibilityRole="button">
-        <Icon name="alert-triangle" size={15} color="#C0392B" />
+      <PressableScale onPress={() => router.navigate("/sos")} hitSlop={6} scale={0.97} style={[s.sos, { backgroundColor: dark ? "rgba(192,57,43,0.16)" : "#FDECEA", borderColor: dark ? "rgba(192,57,43,0.4)" : "#F7C9C3" }]} accessibilityRole="button">
+        <View style={s.sosIco}><Icon name="alert-triangle" size={13} color="#FFFFFF" /></View>
         <Text variant="small" weight="semibold" style={s.sosTx}>{t("cdash.home.sos")}</Text>
+        <Icon name="chevron-right" size={16} color="#C0392B" />
       </PressableScale>
     </View>
   );
@@ -52,6 +53,7 @@ const s = StyleSheet.create({
   crash: { width: 38, height: 38, borderRadius: 19, borderWidth: 1, alignItems: "center", justifyContent: "center" },
   copy: { flex: 1, minWidth: 0, gap: 2 },
   title: { fontSize: 15, lineHeight: 19 },
-  sos: { flexDirection: "row", alignItems: "center", gap: 7, alignSelf: "flex-start", paddingHorizontal: 4 },
+  sos: { flexDirection: "row", alignItems: "center", gap: 8, alignSelf: "flex-start", borderRadius: 999, borderWidth: 1, paddingLeft: 5, paddingRight: 10, paddingVertical: 5 },
+  sosIco: { width: 24, height: 24, borderRadius: 12, backgroundColor: "#D64534", alignItems: "center", justifyContent: "center" },
   sosTx: { color: "#C0392B" },
 });
