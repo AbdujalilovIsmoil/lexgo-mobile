@@ -3,12 +3,13 @@ import { hasEnded, type PromoSurface } from "@/entities/lawyer";
 import { openUrl } from "@/shared/lib/links";
 import { Carousel } from "@/shared/ui";
 import { PromoCard } from "./PromoCard";
+import { PromoRow } from "./PromoRow";
 
-type Props = { items: PromoSurface[]; onOpenSeller: (userId: string) => void };
+type Props = { items: PromoSurface[]; onOpenSeller: (userId: string) => void; compact?: boolean }; // compact: one-row cards (the directory)
 
 // The marketplace's top banners, one full-width card at a time (swipe for the next). A banner whose end date has passed (a copy kept
 // on the phone) is left out. A tap opens the specialist's page; only an absolute https link leaves the app.
-export function PromoRail({ items, onOpenSeller }: Props) {
+export function PromoRail({ items, onOpenSeller, compact }: Props) {
   const seen = new Set<string>(); // one card per seller+service
   const list = items.filter((p) => { const k = `${p.sellerUserId || p.id}-${p.serviceId}`; return !hasEnded(p.endsAt) && !seen.has(k) && (seen.add(k), true); });
   if (!list.length) return null;
@@ -22,11 +23,11 @@ export function PromoRail({ items, onOpenSeller }: Props) {
       keyOf={(p) => p.id || `${p.sellerUserId}-${p.serviceId}`}
       cardWidth={(rail) => rail - 32}
       style={s.rail}
-      renderItem={(p) => <PromoCard item={p} onPress={() => open(p)} />}
+      renderItem={(p) => (compact ? <PromoRow item={p} onPress={() => open(p)} /> : <PromoCard item={p} onPress={() => open(p)} />)}
     />
   );
 }
 
 const s = StyleSheet.create({
-  rail: { flexGrow: 0, marginBottom: 12 },
+  rail: { flexGrow: 0 },
 });

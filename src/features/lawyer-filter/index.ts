@@ -1,5 +1,5 @@
 export { useLawyerFilterStore } from "./model/filterStore";
+export { useRecentSearches } from "./model/recentSearches";
 export { FilterSheet } from "./ui/FilterSheet";
-export { MarketHero } from "./ui/MarketHero";
-export { FilterButton } from "./ui/FilterButton";
 export { ActiveFilters } from "./ui/ActiveFilters";
+export { SearchSuggest, type Pick } from "./ui/SearchSuggest";

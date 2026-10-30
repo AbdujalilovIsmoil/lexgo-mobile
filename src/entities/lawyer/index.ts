@@ -16,6 +16,7 @@ export { useGeoLabels } from "./lib/labels";
 export { daysLeft, hasEnded } from "./lib/promo";
 export { LawyerCard } from "./ui/LawyerCard";
 export { MarketCard } from "./ui/MarketCard";
+export { LawyerRow } from "./ui/LawyerRow";
 export { Monogram } from "./ui/Monogram";
 export { BestMatchCard } from "./ui/BestMatchCard";
 export { RankedMatchRow } from "./ui/RankedMatchRow";
