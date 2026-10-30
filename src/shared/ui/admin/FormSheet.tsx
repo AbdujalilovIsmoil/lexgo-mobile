@@ -26,25 +26,31 @@ type Props = {
 
 // Bottom-sheet form: scrollable fields and a sticky action bar (the keyboard lifts the whole sheet).
 export function FormSheet({ visible, onClose, title, subtitle, onSubmit, submitLabel, submitting, disabled, danger, secondary, snaps = [0.7, 0.94], guardClose, scrollRef, children }: Props) {
+  return (
+    <BottomSheet visible={visible} onClose={onClose} title={title} subtitle={subtitle} snaps={snaps} expandable guardClose={guardClose}>
+      <SheetScroll ref={scrollRef} contentContainerStyle={[s.body, onSubmit && s.withBar]}>{children}</SheetScroll>
+      {onSubmit ? <ActionBar onSubmit={onSubmit} submitLabel={submitLabel} submitting={submitting} disabled={disabled} danger={danger} secondary={secondary} /> : null}
+    </BottomSheet>
+  );
+}
+
+// The sticky bar. Its own component so the safe-area gap is read INSIDE the sheet: there iOS caps it to the home indicator (34), while
+// the page a sheet is opened from (a tab page) reports the tab bar's 83, which left a big empty strip under the buttons.
+function ActionBar({ onSubmit, submitLabel, submitting, disabled, danger, secondary }: Pick<Props, "submitLabel" | "submitting" | "disabled" | "danger" | "secondary"> & { onSubmit: () => void }) {
   const { t } = useT();
   const c = useColors();
   const insets = useInsets();
   return (
-    <BottomSheet visible={visible} onClose={onClose} title={title} subtitle={subtitle} snaps={snaps} expandable guardClose={guardClose}>
-      <SheetScroll ref={scrollRef} contentContainerStyle={[s.body, onSubmit && s.withBar]}>{children}</SheetScroll>
-      {onSubmit ? (
-        <View style={[s.bar, { borderTopColor: c.line, backgroundColor: c.surface, paddingBottom: insets.bottom + 10 }]}>
-          {secondary && !danger ? (
-            <SheetActions cancel={secondary} submit={{ label: submitLabel ?? t("adm.save"), onPress: onSubmit, loading: submitting, disabled }} />
-          ) : (
-            <View style={s.pair}>
-              {secondary ? <Button title={secondary.label} variant="line" onPress={secondary.onPress} style={s.half} /> : null}
-              <Button title={submitLabel ?? t("adm.save")} variant={danger ? "line" : "gradient"} onPress={onSubmit} loading={submitting} disabled={disabled} style={secondary ? s.half : s.full} full={!secondary} />
-            </View>
-          )}
+    <View style={[s.bar, { borderTopColor: c.line, backgroundColor: c.surface, paddingBottom: insets.bottom + 10 }]}>
+      {secondary && !danger ? (
+        <SheetActions cancel={secondary} submit={{ label: submitLabel ?? t("adm.save"), onPress: onSubmit, loading: submitting, disabled }} />
+      ) : (
+        <View style={s.pair}>
+          {secondary ? <Button title={secondary.label} variant="line" onPress={secondary.onPress} style={s.half} /> : null}
+          <Button title={submitLabel ?? t("adm.save")} variant={danger ? "line" : "gradient"} onPress={onSubmit} loading={submitting} disabled={disabled} style={secondary ? s.half : s.full} full={!secondary} />
         </View>
-      ) : null}
-    </BottomSheet>
+      )}
+    </View>
   );
 }
 
