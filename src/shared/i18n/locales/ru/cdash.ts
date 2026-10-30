@@ -3,6 +3,7 @@ export const cdash = {
   "emptyTitle": "Нет активных запросов",
   "emptyText": "Опишите проблему выше, чтобы начать.",
   "viewAll": "Смотреть все",
+  side: { main: "Главное", account: "Аккаунт", help: "Помощь", app: "Приложение", lang: "Язык", privacy: "Конфиденциальность", settings: "Настройки", freePlan: "Бесплатный тариф", myPlan: "Текущий тариф", free: "Бесплатно", aiLeft: "ИИ: {n} вопросов", aiUnlimited: "ИИ: без лимита", pro: "LexGo AI Pro", toPro: "Перейти на Pro", seePlan: "Посмотреть тариф", version: "LexGo · {v}", guestTitle: "Войдите в аккаунт", guestSub: "Ваши дела, сообщения и тариф — здесь", close: "Закрыть меню" },
   "home": {
     "title": "Какая помощь нужна?",
     "askPh": "Опишите проблему…",

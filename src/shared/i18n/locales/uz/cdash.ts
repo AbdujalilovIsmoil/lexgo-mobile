@@ -3,6 +3,7 @@ export const cdash = {
   "emptyTitle": "Faol so'rov yo'q",
   "emptyText": "Boshlash uchun yuqorida muammoni yozing.",
   "viewAll": "Barchasini ko'rish",
+  side: { main: "Asosiy", account: "Hisob", help: "Yordam", app: "Ilova", lang: "Til", privacy: "Maxfiylik", settings: "Sozlamalar", freePlan: "Bepul tarif", myPlan: "Joriy tarif", free: "Bepul", aiLeft: "AI: {n} ta savol", aiUnlimited: "AI: cheksiz", pro: "LexGo AI Pro", toPro: "Pro'ga o'tish", seePlan: "Tarifni ko'rish", version: "LexGo · {v}", guestTitle: "Hisobingizga kiring", guestSub: "Ishlaringiz, xabarlar va tarif shu yerda", close: "Menyuni yopish" },
   "home": {
     "title": "Qanday yordam kerak?",
     "askPh": "Muammoni yozing…",
