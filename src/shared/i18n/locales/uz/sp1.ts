@@ -1,4 +1,5 @@
 export const sp1 = {
+  hub2: { kicker: "Onlayn — kun-u tun", title: "Qanday yordam kerak?", lead: "Avval AI javob beradi. Hal bo'lmasa — operatorga yozing.", ai: "AI instruktor bilan yozish", aiResume: "AI bilan suhbatni davom ettirish ({n})", newChat: "Yangi murojaat", newChatSub: "Operator bilan chat", call: "Qo'ng'iroq", complaint: "Shikoyat", complaintSub: "Rasmiy shikoyat", faq: "Savollar", faqSub: "Tez-tez so'raladi", faqTitle: "Tez-tez beriladigan savollar", mine: "Murojaatlarim", hoursOpen: "Operatorlar hozir ishlayapti · {s}", hoursClosed: "Operatorlar ish vaqti: {s}" },
   title: "Yordam markazi",
   untitled: "Operator bilan chat",
   operatorIs: "Operator: {name}",

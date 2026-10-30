@@ -1,6 +1,7 @@
 import type { Messages } from "../uz";
 
 export const sp1: Messages["sp1"] = {
+  hub2: { kicker: "Онлайн — круглосуточно", title: "Какая помощь нужна?", lead: "Сначала отвечает ИИ. Не помогло — напишите оператору.", ai: "Написать AI-инструктору", aiResume: "Продолжить разговор с ИИ ({n})", newChat: "Новое обращение", newChatSub: "Чат с оператором", call: "Позвонить", complaint: "Жалоба", complaintSub: "Официальная жалоба", faq: "Вопросы", faqSub: "Частые вопросы", faqTitle: "Частые вопросы", mine: "Мои обращения", hoursOpen: "Операторы сейчас на связи · {s}", hoursClosed: "Часы работы операторов: {s}" },
   title: "Центр помощи",
   untitled: "Чат с оператором",
   operatorIs: "Оператор: {name}",

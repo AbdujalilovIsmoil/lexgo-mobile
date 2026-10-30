@@ -5,5 +5,4 @@ export { TicketDetailsSheet } from "./TicketDetailsSheet";
 export { AssistHost } from "./AssistHost";
 export { ListControls } from "./ListControls";
 export { SignInGate } from "./SignInGate";
-export { OngoingSection } from "./OngoingSection";
 export { NewChatSheet } from "./NewChatSheet";

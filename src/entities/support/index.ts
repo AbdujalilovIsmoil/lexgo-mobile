@@ -15,6 +15,7 @@ export { assistInfoOf } from "./lib/assistInfo";
 export { assistRoute, canDecline } from "./lib/assistRoute";
 export { SupportStatusPill } from "./ui/SupportStatusPill";
 export { TicketRow } from "./ui/TicketRow";
+export { TicketLine } from "./ui/TicketLine";
 export { MessageBubble } from "./ui/MessageBubble";
 export { useSupportLabels } from "./ui/useLabels";
 export { askSupportAi, type AiAnswer } from "./api/aiApi";
