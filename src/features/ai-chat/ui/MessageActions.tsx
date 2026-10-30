@@ -1,5 +1,5 @@
 import { StyleSheet, View } from "react-native";
-import { aiTheme } from "@/shared/theme";
+import { useAiTheme } from "@/shared/theme";
 import { Icon, PressableScale, type IconName } from "@/shared/ui";
 import { useT } from "@/shared/i18n";
 import type { ChatMessage } from "@/entities/chat";
@@ -9,6 +9,7 @@ import { useCopyShare } from "../model/useCopyShare";
 type Props = { message: ChatMessage; onDislike: (id: string) => void; onLike: (id: string) => void };
 
 function Act({ icon, label, onPress, on, disabled }: { icon: IconName; label: string; onPress: () => void; on?: boolean; disabled?: boolean }) {
+  const aiTheme = useAiTheme();
   return (
     <PressableScale onPress={onPress} disabled={disabled} accessibilityRole="button" accessibilityLabel={label} hitSlop={6} style={[s.btn, on && s.on, disabled && !on && s.dim]}>
       <Icon name={icon} size={15} color={on ? aiTheme.accent : aiTheme.muted} />

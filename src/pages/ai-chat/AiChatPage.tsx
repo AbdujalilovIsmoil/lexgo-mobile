@@ -4,19 +4,21 @@ import { StyleSheet, View } from "react-native";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { KeyboardAvoidingView } from "react-native-keyboard-controller";
 import { useT } from "@/shared/i18n";
+import { useAiTheme } from "@/shared/theme";
 import { useInstructorTarget } from "@/shared/instructor";
 import { AiBackdrop, Composer, FeedbackSheet, PiiNote, useAiChat, useFeedback } from "@/features/ai-chat";
 import { ChatHeader, MessageList } from "@/widgets/chat";
 import { homeRoute } from "@/widgets/tab-bar/tabConfig";
 import { useTabRole } from "@/widgets/tab-bar/useTabRole";
 
-// LexGo.AI. Always dark. The tab bar is hidden here, so the header has an exit
+// LexGo.AI, in the app's light or dark theme. The tab bar is hidden here, so the header has an exit
 // (✕) back to Home. A question typed on the Home hero arrives as `?q=`.
 export function AiChatPage() {
   const router = useRouter();
   const chat = useAiChat();
   const fb = useFeedback();
   const { t } = useT();
+  const aiTheme = useAiTheme();
   const screen = useInstructorTarget("screen:ai", { label: t("ai.title"), type: "screen" });
   const { q } = useLocalSearchParams<{ q?: string }>();
   const sent = useRef<string | null>(null);
@@ -43,8 +45,8 @@ export function AiChatPage() {
   const remaining = chat.limit ? chat.limit.remainingToday : null;
   const blocked = !chat.clientId || (!!chat.limitErr && chat.limitErr.kind !== "rate");
   return (
-    <View {...screen} style={s.fill}>
-      <FocusStatusBar style="light" />
+    <View {...screen} style={[s.fill, { backgroundColor: aiTheme.bg }]}>
+      <FocusStatusBar style={aiTheme.dark ? "light" : "dark"} />
       <AiBackdrop />
       <ChatHeader onClose={close} onNew={chat.newChat} onHistory={() => router.push("/chats")} remaining={remaining} />
       <KeyboardAvoidingView behavior="padding" style={s.flex}>
@@ -58,7 +60,7 @@ export function AiChatPage() {
           onLike={like}
           onDislike={askWhy}
         />
-        <PiiNote />
+        {chat.messages.length ? <PiiNote /> : null}
         <Composer onSend={pick} disabled={blocked} sending={chat.sending} />
       </KeyboardAvoidingView>
       <FeedbackSheet visible={!!fb.target} busy={fb.busy} onClose={fb.close} onSubmit={(c) => fb.target && void fb.submit(fb.target, false, c)} />
@@ -67,6 +69,6 @@ export function AiChatPage() {
 }
 
 const s = StyleSheet.create({
-  fill: { flex: 1, backgroundColor: "#03102B" },
+  fill: { flex: 1 },
   flex: { flex: 1 },
 });

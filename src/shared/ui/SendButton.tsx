@@ -7,17 +7,17 @@ import { Icon } from "./Icon";
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
-type Props = { enabled: boolean; onPress: () => void; size?: number; label?: string };
+type Props = { enabled: boolean; onPress: () => void; size?: number; label?: string; idle?: string }; // idle: the colour while there is nothing to send
 
 // Round send button. Dimmed and inert while there is nothing to send; turns
 // brand blue (with a light shadow) as soon as `enabled` becomes true.
-export function SendButton({ enabled, onPress, size = 44, label = "Send" }: Props) {
+export function SendButton({ enabled, onPress, size = 44, label = "Send", idle = "rgba(255,255,255,0.14)" }: Props) {
   const p = useSharedValue(enabled ? 1 : 0);
   useEffect(() => {
     p.value = withTiming(enabled ? 1 : 0, { duration: 180 });
   }, [enabled, p]);
   const box = useAnimatedStyle(() => ({
-    backgroundColor: interpolateColor(p.value, [0, 1], ["rgba(255,255,255,0.14)", "#1668F0"]),
+    backgroundColor: interpolateColor(p.value, [0, 1], [idle, "#1668F0"]),
     transform: [{ scale: 0.94 + 0.06 * p.value }],
   }));
   const icon = useAnimatedStyle(() => ({ opacity: 0.4 + 0.6 * p.value }));

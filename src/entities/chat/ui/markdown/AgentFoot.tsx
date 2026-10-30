@@ -1,6 +1,6 @@
 import { useRouter } from "expo-router";
 import { View } from "react-native";
-import { aiTheme } from "@/shared/theme";
+import { useAiTheme } from "@/shared/theme";
 import { Button } from "@/shared/ui";
 import { useT } from "@/shared/i18n";
 import { classifyAgentAnswer } from "../../lib/agentAnswer";
@@ -10,6 +10,7 @@ export type Agent = { interactive: boolean; onAsk: (q: string) => void; onRetry:
 // Under a legal-agent answer: "Qayta urinish" when lex.uz / the service failed (latest answer only) and the
 // "Hujjat so'rovi yaratish" shortcut when the answer is about ordering a document.
 export function AgentFoot({ text, agent }: { text: string; agent: Agent }) {
+  const aiTheme = useAiTheme();
   const { t } = useT();
   const router = useRouter();
   const kind = classifyAgentAnswer(text);

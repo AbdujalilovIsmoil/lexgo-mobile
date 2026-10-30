@@ -2,7 +2,8 @@ import { useRef, useState } from "react";
 import { StyleSheet, TextInput, View } from "react-native";
 import Animated, { interpolate, useAnimatedStyle } from "react-native-reanimated";
 import { useReanimatedKeyboardAnimation } from "react-native-keyboard-controller";
-import { aiTheme } from "@/shared/theme";
+import { LinearGradient } from "expo-linear-gradient";
+import { useAiTheme } from "@/shared/theme";
 import { SendButton } from "@/shared/ui";
 import { useInsets } from "@/shared/lib/insets";
 import { useT } from "@/shared/i18n";
@@ -10,10 +11,11 @@ import { useInstructorPrefill, useInstructorTarget } from "@/shared/instructor";
 
 type Props = { onSend: (text: string) => void; disabled?: boolean; sending?: boolean };
 
-// Bottom bar docked edge to edge. Its background reaches the screen bottom;
-// the safe-area gap shrinks smoothly while the keyboard is open.
+// Bottom bar docked edge to edge, a hairline on top: one rounded field with the round send button inside it on the right and a soft
+// violet-to-cyan light along its lower edge. The safe-area gap shrinks smoothly while the keyboard is open.
 export function Composer({ onSend, disabled, sending }: Props) {
   const { t } = useT();
+  const aiTheme = useAiTheme();
   const insets = useInsets();
   const { progress } = useReanimatedKeyboardAnimation();
   const [text, setText] = useState("");
@@ -29,8 +31,8 @@ export function Composer({ onSend, disabled, sending }: Props) {
     setText("");
   };
   return (
-    <Animated.View style={[s.bar, pad]}>
-      <View {...mark} style={[s.field, focused && s.focused]}>
+    <Animated.View style={[s.bar, { backgroundColor: aiTheme.bar, borderTopColor: aiTheme.border }, pad]}>
+      <View {...mark} style={[s.field, { borderColor: focused ? aiTheme.accent : aiTheme.border, backgroundColor: aiTheme.card }]}>
         <TextInput
           ref={input}
           value={text}
@@ -44,17 +46,18 @@ export function Composer({ onSend, disabled, sending }: Props) {
           multiline
           maxLength={2000}
           editable={!disabled}
-          style={s.input}
+          style={[s.input, { color: aiTheme.text }]}
         />
+        <SendButton enabled={can} onPress={submit} size={46} label={t("ai.inputPlaceholder")} idle={aiTheme.dark ? "rgba(47,107,255,0.55)" : "rgba(22,104,240,0.45)"} />
+        <LinearGradient pointerEvents="none" colors={["rgba(139,108,242,0)", "rgba(139,108,242,0.75)", "rgba(0,207,232,0.85)", "rgba(0,207,232,0)"]} start={{ x: 0, y: 0.5 }} end={{ x: 1, y: 0.5 }} style={s.glow} />
       </View>
-      <SendButton enabled={can} onPress={submit} size={46} label={t("ai.inputPlaceholder")} />
     </Animated.View>
   );
 }
 
 const s = StyleSheet.create({
-  bar: { flexDirection: "row", alignItems: "flex-end", gap: 10, paddingHorizontal: 12, paddingTop: 10, backgroundColor: aiTheme.bar, borderTopWidth: 1, borderTopColor: aiTheme.border },
-  field: { flex: 1, minHeight: 46, maxHeight: 140, justifyContent: "center", borderRadius: 24, borderWidth: 1.5, borderColor: aiTheme.border, backgroundColor: aiTheme.glass, paddingHorizontal: 16 },
-  focused: { borderColor: aiTheme.accent },
-  input: { color: aiTheme.text, fontFamily: "Inter_400Regular", fontSize: 15, lineHeight: 20, paddingVertical: 10 },
+  bar: { paddingHorizontal: 14, paddingTop: 12, borderTopWidth: StyleSheet.hairlineWidth },
+  field: { flexDirection: "row", alignItems: "flex-end", gap: 8, minHeight: 58, maxHeight: 150, borderRadius: 29, borderWidth: 1.5, paddingLeft: 18, paddingRight: 5, paddingVertical: 5 },
+  input: { flex: 1, fontFamily: "Inter_400Regular", fontSize: 16, lineHeight: 21, paddingVertical: 11, alignSelf: "center" },
+  glow: { position: "absolute", left: 40, right: 40, bottom: -1.5, height: 2, borderRadius: 1 },
 });

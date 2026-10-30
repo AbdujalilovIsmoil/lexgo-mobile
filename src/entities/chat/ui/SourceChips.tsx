@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { StyleSheet, View } from "react-native";
-import { aiTheme } from "@/shared/theme";
+import { useAiTheme } from "@/shared/theme";
 import { Icon, PressableScale, Text } from "@/shared/ui";
 import { useT } from "@/shared/i18n";
 import { openUrl } from "@/shared/lib/links";
@@ -12,6 +12,7 @@ const SHOWN = 3;
 
 // Law references under an answer: a few chips, the rest (with snippets) in a drawer.
 export function SourceChips({ sources }: { sources: Source[] }) {
+  const aiTheme = useAiTheme();
   const { t } = useT();
   const [all, setAll] = useState(false);
   const rows = sources.filter((x) => x.title || x.url);

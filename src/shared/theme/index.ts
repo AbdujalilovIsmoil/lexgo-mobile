@@ -5,4 +5,4 @@ export { shadows } from "./shadows";
 export { AURORA, FLOATING_GLASS } from "./flags";
 export { ThemeProvider, useTheme, useColors, type Theme } from "./ThemeContext";
 export { useThemeStore, type ThemeMode } from "./themeStore";
-export { aiTheme } from "./aiTheme";
+export { useAiTheme, type AiTheme } from "./aiTheme";

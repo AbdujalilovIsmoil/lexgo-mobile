@@ -2,7 +2,7 @@ import type { ReactNode } from "react";
 import { StyleSheet, View } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import Animated, { FadeInUp } from "react-native-reanimated";
-import { aiTheme } from "@/shared/theme";
+import { useAiTheme } from "@/shared/theme";
 import { Icon, PressableScale, Text } from "@/shared/ui";
 import { useT } from "@/shared/i18n";
 import { fmtTime } from "@/shared/lib/format";
@@ -17,6 +17,7 @@ type Props = { message: ChatMessage; footer?: ReactNode; onRetry?: () => void; a
 // User: brand-gradient bubble on the right. Assistant: glass card on the left, markdown body,
 // sources, contract files and a footer slot (copy / share / feedback live in the feature layer).
 export function MessageBubble({ message, footer, onRetry, agent }: Props) {
+  const aiTheme = useAiTheme();
   const { t } = useT();
   const mine = message.role === "user";
   const time = message.createdAt ? fmtTime(message.createdAt) : "";
@@ -40,7 +41,7 @@ export function MessageBubble({ message, footer, onRetry, agent }: Props) {
             {inner}
           </LinearGradient>
         ) : (
-          <View style={[s.bubble, s.theirs]}>{inner}</View>
+          <View style={[s.bubble, s.theirs, { backgroundColor: aiTheme.card, borderColor: aiTheme.border }]}>{inner}</View>
         )}
         {mine && message.failed && onRetry ? (
           <PressableScale onPress={onRetry} style={s.retry} accessibilityRole="button">
@@ -62,7 +63,7 @@ const s = StyleSheet.create({
   theirsCol: { alignItems: "flex-start", maxWidth: "100%", flexShrink: 1 },
   bubble: { paddingVertical: 12, paddingHorizontal: 15, borderRadius: 22, gap: 6, maxWidth: "100%" },
   mine: { borderBottomRightRadius: 7 },
-  theirs: { backgroundColor: aiTheme.glass, borderWidth: 1, borderColor: aiTheme.border, borderBottomLeftRadius: 7 },
+  theirs: { borderWidth: 1, borderBottomLeftRadius: 7 },
   pending: { opacity: 0.7 },
   failed: { borderWidth: 1.5, borderColor: "#FF9494" },
   time: { alignSelf: "flex-end" },

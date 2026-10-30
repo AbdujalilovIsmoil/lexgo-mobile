@@ -1,6 +1,7 @@
 import { cxAi1 as base } from "../uz/cxAi1";
 
 export const cxAi1: typeof base = {
+  privacy: "Privacy",
   piiNote: "Privacy: phone numbers, email addresses, PINFL (JShShIR) and passport numbers are masked before they are sent to the AI.",
   hi: "Hello, {name}",
   createDocRequest: "Create a document request",
