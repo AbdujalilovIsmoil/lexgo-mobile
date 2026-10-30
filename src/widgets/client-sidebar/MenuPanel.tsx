@@ -28,7 +28,7 @@ const HELP_KEYS = new Set(["support"]);
 type Row = { key: string; icon: IconName; label: string; value?: string; badge?: number; tone?: string; onPress: () => void };
 
 // The client's drawer (and the visitor's): the brand row with the close button, the profile card, the plan card (free / current plan, the AI
-// questions left, the way to Pro), the rows in cards under Asosiy / Hisob / Yordam / Ilova (language, privacy, settings), sign out and the
+// questions left, the way to Pro — the whole card opens the plans), the rows in cards under Asosiy / Hisob / Yordam / Ilova (language, privacy, settings), sign out and the
 // app version — always on the deep navy of the design, whatever the theme.
 export function MenuPanel({ onGo }: { onGo: (route: string) => void }) {
   const { t } = useT();
@@ -91,16 +91,18 @@ export function MenuPanel({ onGo }: { onGo: (route: string) => void }) {
         )}
 
         {user ? (
-          <LinearGradient colors={["#1E3A86", "#1A2E66", "#172654"]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={s.plan}>
-            <View style={s.planTop}>
-              <Text variant="caption" weight="bold" style={s.kick}>{(paid ? t("cdash.side.myPlan") : t("cdash.side.freePlan")).toUpperCase()}</Text>
-              {aiLine ? <Text variant="small" weight="semibold" style={{ color: "#D6DEEE" }}>{aiLine}</Text> : null}
-            </View>
-            <Text variant="h3" style={{ color: "#FFFFFF" }}>{planName}</Text>
-            <PressableScale onPress={() => onGo("/subscription")} scale={0.97} accessibilityRole="button" style={s.planBtn}>
-              <Text variant="body" weight="bold" style={{ color: "#0B1636" }}>{paid ? t("cdash.side.seePlan") : t("cdash.side.toPro")}</Text>
-            </PressableScale>
-          </LinearGradient>
+          <PressableScale onPress={() => onGo("/subscription")} scale={0.98} accessibilityRole="button" accessibilityLabel={`${planName} · ${paid ? t("cdash.side.seePlan") : t("cdash.side.toPro")}`}>
+            <LinearGradient colors={["#1E3A86", "#1A2E66", "#172654"]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={s.plan}>
+              <View style={s.planTop}>
+                <Text variant="caption" weight="bold" style={s.kick}>{(paid ? t("cdash.side.myPlan") : t("cdash.side.freePlan")).toUpperCase()}</Text>
+                {aiLine ? <Text variant="small" weight="semibold" style={{ color: "#D6DEEE" }}>{aiLine}</Text> : null}
+              </View>
+              <Text variant="h3" style={{ color: "#FFFFFF" }}>{planName}</Text>
+              <View style={s.planBtn}>
+                <Text variant="body" weight="bold" style={{ color: "#0B1636" }}>{paid ? t("cdash.side.seePlan") : t("cdash.side.toPro")}</Text>
+              </View>
+            </LinearGradient>
+          </PressableScale>
         ) : null}
 
         <Section title={t("cdash.side.main")} rows={main} />
