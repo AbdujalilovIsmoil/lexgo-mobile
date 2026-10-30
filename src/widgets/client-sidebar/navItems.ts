@@ -5,11 +5,10 @@ import type { TabRole } from "@/widgets/tab-bar/tabConfig";
 
 export type NavItem = { key: string; icon: IconName; route: string; badge?: "notifications" | "support"; label?: string };
 
-// The web client sidebar (law-main PortalShell CLIENT_NAV) in its exact order, without SOS (Home has its own SOS button); titles are cpd.menu.<key> (or `label` when the web has no such row).
+// The web client sidebar (law-main PortalShell CLIENT_NAV) in its exact order, without SOS (Home has its own SOS button) and without Mening so'rovlarim (a row on /urgent); titles are cpd.menu.<key> (or `label` when the web has no such row).
 export const NAV: NavItem[] = [
   { key: "dashboard", icon: "grid", route: "/" },
   { key: "urgent", icon: "zap", route: "/urgent" },
-  { key: "urgentMine", icon: "list", route: "/urgent/requests", label: "ug1.mine" },
   { key: "services", icon: "search", route: "/services" },
   { key: "documents", icon: "file-text", route: "/documents" },
   { key: "lawyers", icon: "users", route: "/lawyers" },
