@@ -6,7 +6,7 @@ export const cdash = {
   side: { main: "Main", account: "Account", help: "Help", app: "App", lang: "Language", privacy: "Privacy", settings: "Settings", freePlan: "Free plan", myPlan: "Current plan", free: "Free", aiLeft: "AI: {n} questions", aiUnlimited: "AI: unlimited", pro: "LexGo AI Pro", toPro: "Go Pro", seePlan: "See the plan", version: "LexGo · {v}", guestTitle: "Sign in to your account", guestSub: "Your works, messages and plan live here", close: "Close the menu" },
   "home": {
     "title": "What help do you need?",
-    "askPh": "Describe the problem…",
+    "askPh": "Describe your problem, e.g. my salary is 3 months unpaid",
     "attach": "Attach a document",
     "find": "Find a specialist", "findSub": "Advocates and lawyers",
     "analysis": "Document analysis", "analysisSub": "AI finds the risks",

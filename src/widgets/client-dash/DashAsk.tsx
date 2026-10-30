@@ -4,7 +4,7 @@ import { useRouter } from "expo-router";
 import { LinearGradient } from "expo-linear-gradient";
 import { Ionicons } from "@expo/vector-icons";
 import Animated, { Easing, cancelAnimation, useAnimatedStyle, useSharedValue, withRepeat, withTiming } from "react-native-reanimated";
-import { Icon, PressableScale, singleLineText } from "@/shared/ui";
+import { Icon, PressableScale } from "@/shared/ui";
 import { useMotionOn } from "@/shared/lib/useMotionOn";
 import { useTheme } from "@/shared/theme";
 import { useT } from "@/shared/i18n";
@@ -47,7 +47,7 @@ export function DashAsk() {
         ) : null}
         <View style={[s.box, { backgroundColor: dark ? c.surface : "#FFFFFF" }]}>
           <Ionicons name="sparkles" size={18} color="#2F6BFF" />
-          <TextInput value={q} onChangeText={setQ} onSubmitEditing={go} returnKeyType="send" placeholder={t("cdash.home.askPh")} placeholderTextColor={c.gray2} style={[s.input, { color: c.ink }, singleLineText]} accessibilityLabel={t("cdash.home.askPh")} />
+          <TextInput value={q} onChangeText={setQ} onSubmitEditing={go} submitBehavior="submit" returnKeyType="send" multiline numberOfLines={2} placeholder={t("cdash.home.askPh")} placeholderTextColor={c.gray2} style={[s.input, { color: c.ink }]} accessibilityLabel={t("cdash.home.askPh")} />
           <PressableScale onPress={() => router.push("/doc-analysis")} hitSlop={8} style={s.clip} accessibilityRole="button" accessibilityLabel={t("cdash.home.attach")}>
             <Icon name="paperclip" size={20} tone="gray" />
           </PressableScale>
@@ -66,5 +66,5 @@ const s = StyleSheet.create({
   spinner: { position: "absolute" },
   box: { flexDirection: "row", alignItems: "center", gap: 10, borderRadius: RADIUS - EDGE, paddingLeft: 16, paddingRight: 6, minHeight: 56 - EDGE * 2 },
   clip: { width: 40, height: 40, alignItems: "center", justifyContent: "center" },
-  input: { flex: 1, minWidth: 0, fontSize: 16, paddingVertical: 10 },
+  input: { flex: 1, minWidth: 0, fontSize: 15, lineHeight: 20, maxHeight: 64, paddingTop: 12, paddingBottom: 12, textAlignVertical: "center" }, // two lines: the example question in the placeholder fits whole
 });
