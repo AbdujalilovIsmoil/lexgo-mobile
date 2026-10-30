@@ -25,7 +25,9 @@ export function AiChatPage() {
 
   useEffect(() => {
     const question = typeof q === "string" ? q.trim() : "";
-    if (!question || !chat.clientId || sent.current === question) return;
+    // `sent` only keeps one question from going twice while its `?q=` is still on the route; once cleared, the same words may be asked again.
+    if (!question) { sent.current = null; return; }
+    if (!chat.clientId || sent.current === question) return;
     sent.current = question;
     void chat.send(question);
     router.setParams({ q: "" });
