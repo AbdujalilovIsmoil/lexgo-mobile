@@ -2,20 +2,15 @@ import { View } from "react-native";
 import { useInsets } from "@/shared/lib/insets";
 import { useColors } from "@/shared/theme";
 import { useSession } from "@/entities/session";
-import { useClientProfile } from "@/entities/profile-extras";
 import { AppSettings, ProfileHeader, ProfileMenu } from "@/widgets/profile";
 import { IdentityCard } from "@/widgets/identity";
 import { ProfileExtrasMenu, ProfileSummary } from "@/widgets/profile-extras";
 import { useTabRole } from "@/widgets/tab-bar/useTabRole";
 import { GuestWelcome } from "@/widgets/guest-welcome";
 import { HeroScroll } from "@/shared/ui";
-import { HeaderExtra } from "@/shared/ui/headerExtra";
 import { useRaPage } from "@/shared/remote-assist";
-import { ClientSections } from "./ClientSections";
+import { ClientProfile } from "./ClientProfile";
 
-function ClientHeader({ user }: { user: NonNullable<ReturnType<typeof useSession>>["user"] }) {
-  return <ProfileHeader user={user} photo={useClientProfile().data?.avatarUrl} />;
-}
 
 // Signed-in users get their profile; visitors get the welcome / sign-in page.
 export function ProfilePage() {
@@ -25,13 +20,12 @@ export function ProfilePage() {
   const role = useTabRole();
   const client = role === "client";
   const seller = role === "seller"; // a professional's links live in the sidebar
-  useRaPage(client ? "client.profile" : ""); // remote assistance: the section tabs and the personal-data editor (ClientSections)
+  useRaPage(client ? "client.profile" : ""); // remote assistance: the client profile (its sections open on their own pages)
   if (!session) return <GuestWelcome />;
   return (
     <HeroScroll style={{ backgroundColor: c.canvas }} contentContainerStyle={{ paddingBottom: insets.bottom + 130 }}>
-      {client ? <ClientHeader user={session.user} /> : <ProfileHeader user={session.user} />}
-      {client ? <View style={{ marginTop: 14 }}><HeaderExtra /></View> : null}
-      {client ? <ClientSections /> : (
+      {client ? <ClientProfile user={session.user} /> : <ProfileHeader user={session.user} />}
+      {client ? null : (
         <>
           <ProfileSummary />
           <View style={{ paddingHorizontal: 16, marginTop: 14 }}><IdentityCard /></View>

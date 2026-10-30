@@ -1,4 +1,5 @@
 export const profile = {
+  pp: { title: "Profil", kicker: "Mijoz", edit: "Profilni tahrirlash", invites: "{n}/{goal} taklif", works: "Ishlarim", worksSub: "{n} ta faol", docs: "Hujjatlar", payments: "To'lovlar", paymentsSub: "Tarix va kartalar", sections: "Profil bo'limlari", settings: "Sozlamalar", personal: "Shaxsiy ma'lumotlar", personalSub: "Ism, hudud, til, shaxsni tasdiqlash", family: "Oila a'zolari", payPlan: "To'lovlar va obuna", payPlanSub: "Kartalar, tarif, to'lovlar tarixi", consents: "Roziliklar", complaints: "Shikoyatlar", gifts: "Sovg'alar", referral: "Do'stlarni taklif qilish", security: "Xavfsizlik", securitySub: "2FA, Telegram, faol sessiyalar", notif: "Bildirishnoma sozlamalari", lock: "Ilovani qulflash", storage: "Xotira va kesh", activity: "Faollik jurnali", activitySub: "Xavfsizlik hodisalari va harakatlar", help: "Yordam markazi" },
   title: "Profil",
   guestTitle: "LexGo ga xush kelibsiz",
   guestSub: "Advokat tanlash, buyurtma berish va AI tarixini saqlash uchun kiring.",

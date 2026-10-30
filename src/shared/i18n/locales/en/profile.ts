@@ -1,6 +1,7 @@
 import type { Messages } from "../uz";
 
 export const profile: Messages["profile"] = {
+  pp: { title: "Profile", kicker: "Client", edit: "Edit profile", invites: "{n}/{goal} invites", works: "My works", worksSub: "{n} active", docs: "Documents", payments: "Payments", paymentsSub: "History and cards", sections: "Profile sections", settings: "Settings", personal: "Personal data", personalSub: "Name, region, language, identity check", family: "Family members", payPlan: "Payments and plan", payPlanSub: "Cards, plan, payment history", consents: "Consents", complaints: "Complaints", gifts: "Gifts", referral: "Invite friends", security: "Security", securitySub: "2FA, Telegram, active sessions", notif: "Notification settings", lock: "App lock", storage: "Storage and cache", activity: "Activity log", activitySub: "Security events and actions", help: "Help centre" },
   title: "Profile",
   guestTitle: "Welcome to LexGo",
   guestSub: "Sign in to choose lawyers, place orders and keep your AI history.",
