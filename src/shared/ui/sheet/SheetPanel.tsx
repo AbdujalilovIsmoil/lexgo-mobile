@@ -5,7 +5,7 @@ import { useReanimatedKeyboardAnimation } from "react-native-keyboard-controller
 import Animated, { useAnimatedStyle, type SharedValue } from "react-native-reanimated";
 import { useInsets } from "@/shared/lib/insets";
 import { useTablet } from "@/shared/lib/useTablet";
-import { useColors, useTheme } from "@/shared/theme";
+import { useColors, usePaneColor, useTheme } from "@/shared/theme";
 import { GlassBackdrop, useGlass } from "../GlassBackdrop";
 import { SheetBackdrop } from "./SheetBackdrop";
 import { SheetHeader } from "./SheetHeader";
@@ -22,6 +22,7 @@ const TOP_GAP = 10;
 export function SheetPanel({ h, gesture, low, onClose, title, subtitle, children }: Props) {
   const c = useColors();
   const { dark } = useTheme();
+  const pane = usePaneColor();
   const lens = !!useGlass();
   const insets = useInsets();
   const { tablet } = useTablet();
@@ -36,7 +37,7 @@ export function SheetPanel({ h, gesture, low, onClose, title, subtitle, children
   return (
     <GestureHandlerRootView style={s.root}>
       <SheetBackdrop height={h} low={low} onPress={onClose} />
-      <Animated.View accessibilityViewIsModal accessibilityLabel={title} onAccessibilityEscape={onClose} style={[s.sheet, { backgroundColor: lens ? "transparent" : c.surface, borderColor: c.line }, tablet && s.wide, sheet]}>
+      <Animated.View accessibilityViewIsModal accessibilityLabel={title} onAccessibilityEscape={onClose} style={[s.sheet, { backgroundColor: lens ? "transparent" : pane, borderColor: c.line }, tablet && s.wide, sheet]}>
         {lens ? <GlassBackdrop radius={28} tint={dark ? "rgba(10,17,32,0.62)" : "rgba(255,255,255,0.66)"} /> : null}
         <GestureDetector gesture={gesture}>
           <View collapsable={false} onLayout={(e) => fit?.setHeader(e.nativeEvent.layout.height)}>

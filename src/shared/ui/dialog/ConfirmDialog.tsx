@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Modal, Platform, Pressable, StyleSheet, View } from "react-native";
 import Animated from "react-native-reanimated";
-import { radius, shadows, useColors, useTheme } from "@/shared/theme";
+import { radius, shadows, useColors, usePaneColor, useTheme } from "@/shared/theme";
 import { GlassBackdrop, useGlass } from "../GlassBackdrop";
 import { errorHaptic } from "@/shared/lib/haptics";
 import { useKept } from "@/shared/lib/useKept";
@@ -17,6 +17,7 @@ import { useDialogMotion } from "./useDialogMotion";
 export function ConfirmDialog() {
   const c = useColors();
   const { dark } = useTheme();
+  const pane = usePaneColor();
   const lens = !!useGlass();
   const live = useDialogStore((st) => st.spec);
   const close = useDialogStore((st) => st.close);
@@ -45,7 +46,7 @@ export function ConfirmDialog() {
         <Animated.View style={[StyleSheet.absoluteFill, { backgroundColor: "#020A1C" }, dim]}>
           <Pressable style={StyleSheet.absoluteFill} onPress={cancel} accessibilityLabel="close" />
         </Animated.View>
-        <Animated.View style={[s.card, shadows.s2, { backgroundColor: lens ? "transparent" : c.surface, borderColor: c.line }, m3 && s.cardStart, card]}>
+        <Animated.View style={[s.card, shadows.s2, { backgroundColor: lens ? "transparent" : pane, borderColor: c.line }, m3 && s.cardStart, card]}>
           {lens ? <GlassBackdrop radius={radius.rx} tint={dark ? "rgba(10,17,32,0.6)" : "rgba(255,255,255,0.7)"} /> : null}
           <View style={[s.ring, { backgroundColor: spec.danger ? c.errBg : c.tint2 }, m3 && s.ringStart]}>
             <View style={[s.badge, { backgroundColor: spec.danger ? c.errBg : c.tint2, borderColor: tone }]}>

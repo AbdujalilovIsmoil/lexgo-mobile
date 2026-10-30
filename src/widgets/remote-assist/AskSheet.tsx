@@ -4,7 +4,7 @@ import { answerAsk, askShown, useRaAsk, useRaStore, type RaAsk } from "@/feature
 import { Icon, Text } from "@/shared/ui";
 import { SheetActions } from "@/shared/ui/profile";
 import { useInsets } from "@/shared/lib/insets";
-import { radius, shadows, useColors } from "@/shared/theme";
+import { radius, shadows, useColors, usePaneColor } from "@/shared/theme";
 import { useT } from "@/shared/i18n";
 import { actionName, pageName } from "./names";
 
@@ -50,6 +50,7 @@ function Body({ ask }: { ask: RaAsk }) {
 export function AskSheet() {
   const { t } = useT();
   const c = useColors();
+  const pane = usePaneColor();
   const insets = useInsets();
   const ask = useRaAsk((s) => s.ask);
   const name = useRaStore((s) => s.session?.operator.name) || t("ra.operator");
@@ -61,7 +62,7 @@ export function AskSheet() {
     <Modal transparent visible animationType="fade" statusBarTranslucent navigationBarTranslucent onRequestClose={() => answerAsk(false)}>
       <View style={s.root}>
         <View style={[StyleSheet.absoluteFill, s.dim]} />
-        <View style={[s.card, shadows.s2, { backgroundColor: c.surface, paddingBottom: insets.bottom + 14 }]} accessibilityViewIsModal>
+        <View style={[s.card, shadows.s2, { backgroundColor: pane, paddingBottom: insets.bottom + 14 }]} accessibilityViewIsModal>
           <ScrollView contentContainerStyle={s.body} showsVerticalScrollIndicator={false}>
             <View style={s.head}>
               <View style={[s.badge, { backgroundColor: c.tint2 }]}><Icon name="headphones" size={20} color={c.accent} /></View>

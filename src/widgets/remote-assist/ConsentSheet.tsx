@@ -5,7 +5,7 @@ import { answerRequest, requestTimedOut, useRaStore } from "@/features/remote-as
 import { Text } from "@/shared/ui";
 import { SheetActions } from "@/shared/ui/profile";
 import { useInsets } from "@/shared/lib/insets";
-import { radius, shadows, useColors } from "@/shared/theme";
+import { radius, shadows, usePaneColor } from "@/shared/theme";
 import { useT } from "@/shared/i18n";
 import { Fact, OperatorHead, ScopeRows, TicketFact } from "./ConsentParts";
 import { modeText } from "./names";
@@ -22,7 +22,7 @@ export function ConsentSheet() {
 // never shared, that it can be paused or revoked at any time, and Accept / Deny. The Android back button does not answer for the client.
 function Consent({ req }: { req: RaSession }) {
   const { t } = useT();
-  const c = useColors();
+  const pane = usePaneColor();
   const insets = useInsets();
   const busy = useRaStore((s) => s.busy);
   const failed = useRaStore((s) => s.failed);
@@ -45,7 +45,7 @@ function Consent({ req }: { req: RaSession }) {
     <Modal transparent visible animationType="fade" statusBarTranslucent navigationBarTranslucent onRequestClose={() => undefined}>
       <View style={s.root}>
         <View style={[StyleSheet.absoluteFill, s.dim]} />
-        <View style={[s.card, shadows.s2, { backgroundColor: c.surface, paddingBottom: insets.bottom + 14 }]} accessibilityViewIsModal>
+        <View style={[s.card, shadows.s2, { backgroundColor: pane, paddingBottom: insets.bottom + 14 }]} accessibilityViewIsModal>
           <ScrollView contentContainerStyle={s.body} showsVerticalScrollIndicator={false}>
             <OperatorHead person={req.operator} left={left} />
             <View style={s.gap}>
