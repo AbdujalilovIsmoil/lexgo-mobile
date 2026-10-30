@@ -11,7 +11,7 @@ import { cardShadow } from "./DashTiles";
 const URGENT_MAX = 2;
 const CASES_MAX = 3;
 
-// "Faol so'rovlar": the live urgent-advocate requests first (green, what happens next), then the open cases from GET /cases.
+// "Faol so'rovlar": the live urgent-advocate requests first (green, what happens next), then the open cases from GET /cases in one card.
 // "Barchasi" opens the works tab.
 export function DashRequests() {
   const { t } = useT();
@@ -21,6 +21,7 @@ export function DashRequests() {
   const live = (mine.data ?? []).filter((r) => !isFinal(r)).slice(0, URGENT_MAX);
   const open = cases.open.slice(0, CASES_MAX);
   const loading = cases.isLoading && mine.isLoading;
+  const { colors: c, dark } = useTheme();
   return (
     <View style={s.wrap}>
       <View style={s.head}>
@@ -32,7 +33,11 @@ export function DashRequests() {
       ) : (
         <>
           {live.map((r) => <UrgentLive key={r.id} r={r} onPress={() => router.push(detailHref("client", r.id))} />)}
-          {open.map((c) => <RequestRow key={c.id} c={c} />)}
+          {open.length ? (
+            <View style={[s.cases, { backgroundColor: dark ? c.surface : "#FFFFFF", borderColor: dark ? c.line : "#EEF2FA" }]}>
+              {open.map((x, i) => <RequestRow key={x.id} c={x} last={i === open.length - 1} />)}
+            </View>
+          ) : null}
         </>
       )}
     </View>
@@ -64,6 +69,7 @@ const GREEN = "#2E8B4A";
 const s = StyleSheet.create({
   wrap: { paddingHorizontal: 16, marginTop: 26, gap: 10 },
   head: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginBottom: 2 },
+  cases: { borderRadius: 20, borderWidth: 1, ...cardShadow },
   live: { flexDirection: "row", alignItems: "center", gap: 12, padding: 12, borderRadius: 18, borderWidth: 1, backgroundColor: "#E8F6EC", borderColor: "#CBE9D4", ...cardShadow },
   liveDark: { backgroundColor: "#12301F", borderColor: "#1E4A31" },
   phone: { width: 42, height: 42, borderRadius: 21, backgroundColor: "#4CC26E", alignItems: "center", justifyContent: "center", borderWidth: 4, borderColor: "rgba(76,194,110,0.25)" },
