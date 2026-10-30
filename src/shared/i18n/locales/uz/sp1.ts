@@ -1,5 +1,22 @@
 export const sp1 = {
   hub2: { kicker: "Onlayn — kun-u tun", title: "Qanday yordam kerak?", lead: "Avval AI javob beradi. Hal bo'lmasa — operatorga yozing.", ai: "AI instruktor bilan yozish", aiResume: "AI bilan suhbatni davom ettirish ({n})", newChat: "Yangi murojaat", newChatSub: "Operator bilan chat", call: "Qo'ng'iroq", complaint: "Shikoyat", complaintSub: "Rasmiy shikoyat", faq: "Savollar", faqSub: "Tez-tez so'raladi", faqTitle: "Tez-tez beriladigan savollar", mine: "Murojaatlarim", hoursOpen: "Operatorlar hozir ishlayapti · {s}", hoursClosed: "Operatorlar ish vaqti: {s}" },
+  faq: {
+    lead: "Savolni tanlang — AI instruktor darhol javob beradi.",
+    searchPh: "Savolni qidirish",
+    noMatch: "Bunday savol topilmadi",
+    noMatchText: "Savolingizni AI instruktorga o'zingiz yozing yoki operator bilan bog'laning.",
+    askOwn: "O'z savolimni yozish",
+    moreTitle: "Javob topmadingizmi?",
+    moreText: "Operator ish vaqtida javob beradi, javob shu yerga keladi.",
+    groups: {
+      subscription: ["Menga qaysi tarif mos keladi?", "Tarifni qanday almashtiraman?", "Obunani qanday bekor qilaman?"],
+      payment: ["Tarif uchun to'lov o'tmayapti, nima qilay?", "Kartani qanday qo'shaman yoki o'chiraman?", "Pulni qaytarib olsa bo'ladimi?"],
+      documents: ["Hujjatni qanday yarataman?", "Tayyor hujjatni qayerdan topaman?", "Hujjatni advokatga tekshirtirsa bo'ladimi?"],
+      marketplace: ["Menga mos advokatni qanday topaman?", "Advokat bilan qanday bog'lanaman?", "Advokatga qanday baho qoldiraman?"],
+      urgent: ["Tezkor konsultatsiyani qanday boshlayman?", "Tezkor advokat qancha vaqtda ulanadi?"],
+      account: ["Profil va hisob sozlamalari qayerda?", "Telefon raqamimni qanday o'zgartiraman?", "Hisobimni qanday himoyalayman?"],
+    },
+  },
   title: "Yordam markazi",
   untitled: "Operator bilan chat",
   operatorIs: "Operator: {name}",

@@ -2,6 +2,23 @@ import type { Messages } from "../uz";
 
 export const sp1: Messages["sp1"] = {
   hub2: { kicker: "Online — around the clock", title: "What help do you need?", lead: "AI answers first. If that does not solve it, write to an operator.", ai: "Write to the AI instructor", aiResume: "Continue the AI chat ({n})", newChat: "New request", newChatSub: "Chat with an operator", call: "Call", complaint: "Complaint", complaintSub: "Formal complaint", faq: "Questions", faqSub: "Frequently asked", faqTitle: "Frequently asked questions", mine: "My requests", hoursOpen: "Operators are online · {s}", hoursClosed: "Operator hours: {s}" },
+  faq: {
+    lead: "Pick a question — the AI instructor answers right away.",
+    searchPh: "Search questions",
+    noMatch: "No such question",
+    noMatchText: "Write your question to the AI instructor or contact an operator.",
+    askOwn: "Ask my own question",
+    moreTitle: "Didn't find the answer?",
+    moreText: "An operator replies during working hours; the answer comes here.",
+    groups: {
+      subscription: ["Which plan suits me?", "How do I change my plan?", "How do I cancel my subscription?"],
+      payment: ["The plan payment fails, what should I do?", "How do I add or remove a card?", "Can I get a refund?"],
+      documents: ["How do I create a document?", "Where do I find a ready document?", "Can a lawyer review my document?"],
+      marketplace: ["How do I find the right lawyer?", "How do I contact a lawyer?", "How do I rate a lawyer?"],
+      urgent: ["How do I start an urgent consultation?", "How fast does an urgent lawyer join?"],
+      account: ["Where are the profile and account settings?", "How do I change my phone number?", "How do I protect my account?"],
+    },
+  },
   title: "Help center",
   untitled: "Operator chat",
   operatorIs: "Operator: {name}",

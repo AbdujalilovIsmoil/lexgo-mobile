@@ -28,6 +28,6 @@ export const sp5: Messages["sp5"] = {
   followUp: "Задайте ещё вопрос…",
   ask: "Отправить",
   solved: "Решено",
-  operator: "Написать оператору",
+  operator: "Оператор",
   solvedToast: "Отлично! Если появятся вопросы — пишите.",
 };

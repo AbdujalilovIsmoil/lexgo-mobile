@@ -79,7 +79,7 @@ export function WorksFilterBar({ filters, onChange, kindCounts, groupCounts, gro
 }
 
 const s = StyleSheet.create({
-  wrap: { marginHorizontal: -16, gap: 12, paddingBottom: 14 },
+  wrap: { marginHorizontal: -16, gap: 10, paddingBottom: 4 },
   pad: { paddingHorizontal: 16, flexDirection: "row" },
   flex: { flex: 1 },
   searchRow: { flexDirection: "row", alignItems: "center", gap: 10, paddingHorizontal: 16 },

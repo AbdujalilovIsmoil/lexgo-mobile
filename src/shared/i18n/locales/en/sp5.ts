@@ -28,6 +28,6 @@ export const sp5: Messages["sp5"] = {
   followUp: "Ask a follow-up…",
   ask: "Send",
   solved: "Solved",
-  operator: "Write to an operator",
+  operator: "Operator",
   solvedToast: "Great! Ask again any time.",
 };

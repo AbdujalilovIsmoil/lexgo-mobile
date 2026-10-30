@@ -26,6 +26,6 @@ export const sp5 = {
   followUp: "Yana savol bering…",
   ask: "Yuborish",
   solved: "Hal bo'ldi",
-  operator: "Operatorga yozish",
+  operator: "Operator",
   solvedToast: "Ajoyib! Yana savol bo'lsa, bemalol yozing.",
 };

@@ -3,7 +3,6 @@ import { StyleSheet, View } from "react-native";
 import { useRouter } from "expo-router";
 import { LinearGradient } from "expo-linear-gradient";
 import { Icon, PressableScale, Text, type IconName } from "@/shared/ui";
-import { ActionList } from "@/shared/ui/admin";
 import { useColors } from "@/shared/theme";
 import { openTel } from "@/shared/lib/links";
 import { SUPPORT_PHONE } from "@/shared/config/env";
@@ -11,13 +10,11 @@ import { useT } from "@/shared/i18n";
 import { scheduleText, useSupportHours } from "@/entities/support";
 import { AskAiSheet, useSupportAi } from "@/features/support";
 
-const TOPICS = ["subscription", "payment", "documents", "marketplace", "urgent", "account"] as const;
-
 type Props = { onStart: (force: boolean) => void };
 
 // Top of the help centre, as in the design: the navy card (AI is there day and night → "write to the AI instructor"; the operators'
 // hours from the backend under it), then four ways in two by two — a new request (operator chat), a call, a complaint, the frequent
-// questions (each one asked to the AI) — and the "my requests" list follows (the page's own list).
+// questions (their own page, /support/faq) — and the "my requests" list follows (the page's own list).
 export function SupportHome({ onStart }: Props) {
   const { t } = useT();
   const c = useColors();
@@ -25,14 +22,12 @@ export function SupportHome({ onStart }: Props) {
   const ai = useSupportAi();
   const hours = useSupportHours();
   const [open, setOpen] = useState(false);
-  const [faq, setFaq] = useState(false);
   const sched = hours ? scheduleText(hours, (d) => t(`sp4.days.${d}`)) : "";
-  const ask = (q: string) => { ai.ask(q); setFaq(false); setOpen(true); };
   const tiles: { key: string; icon: IconName; title: string; sub: string; onPress: () => void }[] = [
     { key: "chat", icon: "message-circle", title: t("sp1.hub2.newChat"), sub: t("sp1.hub2.newChatSub"), onPress: () => onStart(false) },
     { key: "call", icon: "phone", title: t("sp1.hub2.call"), sub: SUPPORT_PHONE, onPress: () => openTel(SUPPORT_PHONE) },
     { key: "complaint", icon: "flag", title: t("sp1.hub2.complaint"), sub: t("sp1.hub2.complaintSub"), onPress: () => router.push("/complaints") },
-    { key: "faq", icon: "book-open", title: t("sp1.hub2.faq"), sub: t("sp1.hub2.faqSub"), onPress: () => setFaq(true) },
+    { key: "faq", icon: "book-open", title: t("sp1.hub2.faq"), sub: t("sp1.hub2.faqSub"), onPress: () => router.push("/support/faq") },
   ];
   return (
     <View style={s.col}>
@@ -68,7 +63,6 @@ export function SupportHome({ onStart }: Props) {
       </View>
       <Text variant="caption" weight="bold" tone="gray" style={s.head}>{t("sp1.hub2.mine").toUpperCase()}</Text>
       <AskAiSheet visible={open} onClose={() => setOpen(false)} onHandoff={() => { setOpen(false); onStart(false); }} />
-      <ActionList visible={faq} onClose={() => setFaq(false)} title={t("sp1.hub2.faqTitle")} actions={TOPICS.map((k) => ({ key: k, label: t(`sp1.topics.${k}.q`), icon: "help-circle" as const, onPress: () => ask(t(`sp1.topics.${k}.q`)) }))} />
     </View>
   );
 }
