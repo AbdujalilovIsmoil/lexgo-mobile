@@ -3,14 +3,14 @@ import { router } from "expo-router";
 import { canOverlay, useTabOverlay } from "./tabOverlay";
 
 // The system tab bar (NativeTabs) can only reach the tabs it shows: a tab marked `hidden` cannot be navigated to at all. Many
-// links point at tab pages that are not in the current role's bar (the profile, lawyers, orders, a client's works…), so on iOS
+// links point at tab pages that are not in the current role's bar (lawyers, orders, a client’s works…), so on iOS
 // every `/(tabs)/<name>` the bar does not show opens the same page as an ordinary stack screen, `/m/<name>`.
 let bar: string[] = [];
 export const setBarRoutes = (routes: string[]) => { bar = routes; };
 
 // The tab pages (app/(tabs)/*.tsx apart from the home): a bare "/orders" or "/lawyers" (the sidebar writes them so) reaches the same screen
 // as "/(tabs)/orders", so it is rewritten the same way — only the exact path: "/orders/<id>" and "/services/<id>" are real stack screens.
-const TAB_PAGES = new Set(["services", "works", "messages", "workspace", "requests", "clients", "leads", "csupport", "cclients", "cmeetings", "pipeline", "duty", "smeetings", "canalytics", "lawyers", "orders", "admin", "hrm", "notifs", "profile", "ai"]);
+const TAB_PAGES = new Set(["services", "works", "messages", "workspace", "requests", "clients", "leads", "csupport", "cclients", "cmeetings", "pipeline", "duty", "smeetings", "canalytics", "lawyers", "orders", "admin", "hrm", "notifs", "ai"]);
 
 export const rewritePath = (path: string): string => {
   const m = /^\/\(tabs\)\/([a-z]+)(.*)$/.exec(path);

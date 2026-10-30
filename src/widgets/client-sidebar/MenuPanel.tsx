@@ -57,7 +57,7 @@ export function MenuPanel({ onGo }: { onGo: (route: string) => void }) {
   const app: Row[] = [
     { key: "lang", icon: "globe", label: t("cdash.side.lang"), value: LOCALE_LABELS[locale], onPress: () => setLangs((v) => !v) },
     { key: "privacy", icon: "shield", label: t("cdash.side.privacy"), onPress: () => onGo("/security") },
-    { key: "settings", icon: "sun", label: t("cdash.side.settings"), onPress: () => onGo("/(tabs)/profile") },
+    { key: "settings", icon: "sun", label: t("cdash.side.settings"), onPress: () => onGo("/profile") },
   ];
   const name = user ? displayName(user) || user.phone : "";
   return (
@@ -71,7 +71,7 @@ export function MenuPanel({ onGo }: { onGo: (route: string) => void }) {
         </View>
 
         {user ? (
-          <PressableScale onPress={() => onGo("/(tabs)/profile")} scale={0.98} accessibilityRole="button" style={[s.card, s.profile]}>
+          <PressableScale onPress={() => onGo("/profile")} scale={0.98} accessibilityRole="button" style={[s.card, s.profile]}>
             <Avatar name={name} size={56} colors={AVATAR} />
             <View style={s.flex}>
               <Text variant="h4" numberOfLines={1} style={{ color: INK, fontSize: 18 }}>{name}</Text>

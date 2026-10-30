@@ -14,7 +14,7 @@ export function AuthHero({ title, subtitle, back = true }: Props) {
       <FocusStatusBar style="light" />
       <View style={s.top}>
         {back ? (
-          <IconButton icon={backIcon} tone="glass" onPress={() => (router.canGoBack() ? router.back() : router.replace("/(tabs)/profile"))} />
+          <IconButton icon={backIcon} tone="glass" onPress={() => (router.canGoBack() ? router.back() : router.replace("/"))} />
         ) : (
           <View style={s.spacer} />
         )}

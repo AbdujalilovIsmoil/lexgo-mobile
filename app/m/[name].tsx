@@ -16,7 +16,6 @@ const PAGES: Record<string, ComponentType> = {
   clients: lazy(() => import("../(tabs)/clients")),
   lawyers: lazy(() => import("../(tabs)/lawyers")),
   orders: lazy(() => import("../(tabs)/orders")),
-  profile: lazy(() => import("../(tabs)/profile")),
   ai: lazy(() => import("../(tabs)/ai")),
 };
 

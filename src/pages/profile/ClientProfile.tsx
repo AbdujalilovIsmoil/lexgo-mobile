@@ -6,7 +6,7 @@ import { displayName, type User } from "@/entities/session";
 import { needsAction, useClientProfile, useConsents, useReferral } from "@/entities/profile-extras";
 import { useMyFeatures, usePlans } from "@/entities/plan";
 import { isOpenWork, useWorks } from "@/entities/work";
-import { Avatar, Icon, PressableScale, Text, type IconName } from "@/shared/ui";
+import { Avatar, Icon, IconButton, PressableScale, Text, backIcon, type IconName } from "@/shared/ui";
 import { HeaderExtra } from "@/shared/ui/headerExtra";
 import { useColors } from "@/shared/theme";
 import { useInsets, HEADER_GAP } from "@/shared/lib/insets";
@@ -18,7 +18,7 @@ type Row = { key: string; icon: IconName; title: string; sub?: string; badge?: n
 // The client's profile as in the design: the navy card (photo, name, phone · LexGo ID, plan and invites chips, "edit"), three shortcuts
 // (works, documents, payments), then the sections as rows of two cards — every panel the profile's old tabs held opens on its own page
 // (/profile/section/…), the account screens and the settings on theirs. Theme, language, update, sign out and the version follow below.
-export function ClientProfile({ user }: { user: User }) {
+export function ClientProfile({ user, onBack }: { user: User; onBack: () => void }) {
   const { t } = useT();
   const c = useColors();
   const insets = useInsets();
@@ -79,7 +79,10 @@ export function ClientProfile({ user }: { user: User }) {
   );
   return (
     <View style={{ paddingTop: insets.top + HEADER_GAP }}>
-      <Text variant="h2" style={s.title}>{t("profile.pp.title")}</Text>
+      <View style={s.top}>
+        <IconButton icon={backIcon} onPress={onBack} />
+        <Text variant="h2">{t("profile.pp.title")}</Text>
+      </View>
       <LinearGradient colors={["#14295F", "#1D3D8F", "#2856B4"]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={s.hero}>
         <View style={s.who}>
           <View style={s.ring}><Avatar name={name} uri={photo} size={68} /></View>
@@ -116,7 +119,7 @@ export function ClientProfile({ user }: { user: User }) {
 }
 
 const s = StyleSheet.create({
-  title: { paddingHorizontal: 16, marginBottom: 14 },
+  top: { flexDirection: "row", alignItems: "center", gap: 12, paddingHorizontal: 16, marginBottom: 14 },
   hero: { marginHorizontal: 16, borderRadius: 24, padding: 18, gap: 14 },
   who: { flexDirection: "row", alignItems: "center", gap: 14 },
   ring: { padding: 3, borderRadius: 40, backgroundColor: "rgba(255,255,255,0.18)" },

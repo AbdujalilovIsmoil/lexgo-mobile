@@ -17,8 +17,8 @@ export const TABS: Record<TabRole, TabDef[]> = {
 };
 
 // Tab routes that belong to a role's bar are listed above; these extra routes are
-// still reachable (pushed from Home, Profil, deep links) without a bar slot.
-const ALWAYS = ["profile", "services", "lawyers", "orders", "messages"];
+// still reachable (pushed from Home, the profile, deep links) without a bar slot.
+const ALWAYS = ["services", "lawyers", "orders", "messages"];
 export const allowedRoutes = (role: TabRole): string[] => [...TABS[role].map((x) => x.route), ...ALWAYS];
 
 // A professional's bar follows the same permission rules as the drawer (the web PortalShell): an account still under

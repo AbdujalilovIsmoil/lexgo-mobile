@@ -2,11 +2,11 @@ import { enc } from "./types";
 
 // The routes a `lexgo://…` link may name — the contract table of TZ_GUIDE.md section 3. Anything
 // else is refused, so a crafted link can never reach an unplanned screen.
-const TABS = "index|services|works|messages|workspace|requests|clients|lawyers|orders|profile|ai";
+const TABS = "index|services|works|messages|workspace|requests|clients|lawyers|orders|ai";
 const ID = "[^/]+";
 const ALLOWED: RegExp[] = [
   new RegExp(`^/(${TABS})$`),
-  /^\/(notifications|assistant|chats|instructor|subscription|payments|entitlements|doc-analysis|sos|intake|matches|cases|packages|academy|complaints|ratings|warranty|security|marketplace|documents|orders|urgent|urgent\/requests|meetings|support)$/,
+  /^\/(profile|notifications|assistant|chats|instructor|subscription|payments|entitlements|doc-analysis|sos|intake|matches|cases|packages|academy|complaints|ratings|warranty|security|marketplace|documents|orders|urgent|urgent\/requests|meetings|support)$/,
   new RegExp(`^/(payments|rate|works|dashboard-lists|chat|call|meetings|support|documents|orders|urgent|lawyer)/${ID}$`),
   new RegExp(`^/services/${ID}(/(fill|ai|lawyer))?$`), // also /services/direction (a direction's own page)
   /^\/(support|urgent)\/new$/,

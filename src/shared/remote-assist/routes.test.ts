@@ -6,7 +6,7 @@ describe("remote-assistance route allowlist", () => {
     expect(raTarget("/portal/client/lawyers")).toMatchObject({ route: "/lawyers", tab: true, pageId: "client.marketplace" });
     expect(raTarget("/portal/client/lawyers/abc-1")).toMatchObject({ route: "/specialist/abc-1", tab: false });
     expect(raTarget("/lawyers/abc-1")).toMatchObject({ route: "/specialist/abc-1" });
-    expect(raTarget("/uz/portal/client/profile")).toMatchObject({ route: "/profile", tab: true });
+    expect(raTarget("/uz/portal/client/profile")).toMatchObject({ route: "/profile", tab: false });
     expect(raTarget("/portal/client/marketplace-orders/o1")).toMatchObject({ route: "/orders/o1", tab: false });
     expect(raTarget("/portal/client/services")).toMatchObject({ route: "/services", pageId: "client.documents" });
     expect(raTarget("/portal/client/documents")).toMatchObject({ route: "/documents", pageId: "client.my_documents" });

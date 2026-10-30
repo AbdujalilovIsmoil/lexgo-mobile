@@ -21,11 +21,11 @@ export function HeaderActions({ glass }: { glass?: boolean }) {
       {role === "client" || role === "seller" ? <SupportMenu glass={glass} client={role === "client"} /> : null}
       <IconButton icon="bell" size={40} tone={glass ? "glass" : "tint"} badge={unread > 0} onPress={() => router.push(session ? "/notifications" : "/auth/login")} />
       {session && name ? (
-        <PressableScale onPress={() => router.push("/(tabs)/profile")} accessibilityLabel="profile">
+        <PressableScale onPress={() => router.push("/profile")} accessibilityLabel="profile">
           <Avatar name={name} size={40} />
         </PressableScale>
       ) : (
-        <IconButton icon="user" size={40} tone={glass ? "glass" : "tint"} onPress={() => router.push(session ? "/(tabs)/profile" : "/auth/login")} />
+        <IconButton icon="user" size={40} tone={glass ? "glass" : "tint"} onPress={() => router.push(session ? "/profile" : "/auth/login")} />
       )}
     </View>
   );

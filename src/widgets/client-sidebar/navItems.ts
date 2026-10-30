@@ -5,7 +5,7 @@ import type { TabRole } from "@/widgets/tab-bar/tabConfig";
 
 export type NavItem = { key: string; icon: IconName; route: string; badge?: "notifications" | "support"; label?: string };
 
-// The web client sidebar (law-main PortalShell CLIENT_NAV) in its exact order, without Boshqaruv paneli, Tezkor advokat, Huquqiy hujjatlar and Advokat va yuristlar (Home and the tab bar lead there), SOS (Home has its own button), Mening so'rovlarim (a row on /urgent), AI, Mening ishlarim and Xabarlar (the tab bar has them), Mening hujjatlarim (the works page links to it), Shikoyatlar and Roziliklar (the profile has them); titles are cpd.menu.<key> (or `label` when the web has no such row).
+// The web client sidebar (law-main PortalShell CLIENT_NAV) in its exact order, without Boshqaruv paneli, Tezkor advokat, Huquqiy hujjatlar and Advokat va yuristlar (Home and the tab bar lead there), SOS (Home has its own button), Mening so'rovlarim (a row on /urgent), AI, Mening ishlarim and Xabarlar (the tab bar has them), Mening hujjatlarim (the works page links to it), Shikoyatlar, Roziliklar, To'lovlar, Sovg'alar and Do'stni taklif qilish (the profile has them); titles are cpd.menu.<key> (or `label` when the web has no such row).
 export const NAV: NavItem[] = [
   { key: "intake", icon: "clipboard", route: "/intake" },
   { key: "academy", icon: "book-open", route: "/academy" },
@@ -13,9 +13,6 @@ export const NAV: NavItem[] = [
   { key: "marketplaceOrders", icon: "tag", route: "/orders" },
   { key: "matches", icon: "target", route: "/matches" },
   { key: "subscription", icon: "award", route: "/subscription" },
-  { key: "payments", icon: "credit-card", route: "/payments" },
-  { key: "gifts", icon: "gift", route: "/profile/gifts" },
-  { key: "referrals", icon: "user-plus", route: "/profile/referral" },
   { key: "reviews", icon: "star", route: "/ratings" },
   { key: "warranty", icon: "shield", route: "/warranty" },
   { key: "support", icon: "headphones", route: "/support", badge: "support" },

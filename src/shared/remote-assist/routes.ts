@@ -19,7 +19,7 @@ const APP: [RegExp, string, boolean?][] = [
   [/^\/packages$/, "client.packages"],
   [/^\/ratings$/, "client.reviews"],
   [/^\/warranty$/, "client.warranty"],
-  [/^\/profile$/, "client.profile", true],
+  [/^\/profile$/, "client.profile"],
   [/^\/profile\/edit$/, "client.profile"],
   [/^\/profile\/referral$/, "client.referrals"],
   [/^\/profile\/gifts$/, "client.gifts"],

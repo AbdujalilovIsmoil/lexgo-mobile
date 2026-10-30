@@ -6,18 +6,16 @@ import { NativeTabsBar } from "@/widgets/tab-bar/NativeTabsBar";
 import { allowedRoutes, homeRoute } from "@/widgets/tab-bar/tabConfig";
 import { useTabRole } from "@/widgets/tab-bar/useTabRole";
 import { registerOverlayPage } from "@/widgets/tab-bar/tabOverlay";
-import { ProfilePage } from "@/pages/profile/ProfilePage";
 import { LawyersPage } from "@/pages/lawyers/LawyersPage";
 import { OrdersPage } from "@/pages/orders/OrdersPage";
 
 // Every role's tab routes are declared; the bar shows only those of the current
 // role (tabConfig). The AI tab hides the bar so its composer sits on the edge.
 // iOS: these open over the open tab, under the real system bar (see tabOverlay).
-registerOverlayPage("profile", ProfilePage);
 registerOverlayPage("lawyers", LawyersPage);
 registerOverlayPage("orders", OrdersPage);
 
-const ROUTES = ["index", "services", "works", "messages", "workspace", "requests", "clients", "lawyers", "orders", "profile"];
+const ROUTES = ["index", "services", "works", "messages", "workspace", "requests", "clients", "lawyers", "orders"];
 
 export default function TabsLayout() {
   const role = useTabRole();

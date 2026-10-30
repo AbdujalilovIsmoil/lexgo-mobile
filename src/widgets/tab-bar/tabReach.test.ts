@@ -10,7 +10,9 @@ describe("rewritePath", () => {
     expect(rewritePath("/orders")).toBe("/m/orders");
     expect(rewritePath("/lawyers")).toBe("/m/lawyers");
     expect(rewritePath("/lawyers?q=a")).toBe("/m/lawyers?q=a");
-    expect(rewritePath("/profile")).toBe("/m/profile");
+  });
+  it("leaves the profile alone — it is a stack page of its own, not a tab", () => {
+    expect(rewritePath("/profile")).toBe("/profile");
   });
   it("leaves the tabs the bar shows (the tab switches)", () => {
     expect(rewritePath("/works")).toBe("/works");

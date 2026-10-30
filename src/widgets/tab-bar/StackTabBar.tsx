@@ -19,9 +19,9 @@ const BAR_LIFT = -19;
 const BAR_HEIGHT = 62;
 const SIDE = 21;
 
-// iOS: a tab page the system bar does not hold (the profile, the directory, orders) opens as a stack screen (/m/<name>), where the system
+// iOS: a tab page the system bar does not hold (the directory, orders) opens as a stack screen (/m/<name>), where the system
 // bar cannot be shown. This bar stands in for it, drawn like it — a capsule of Liquid Glass, the same icons and 11 pt captions, the badge,
-// and the very same raised AI button over the middle slot — so moving between Home and the profile shows one bar.
+// and the very same raised AI button over the middle slot — so moving between Home and those pages shows one bar.
 export function StackTabBar() {
   const router = useRouter();
   const insets = useInsets();
