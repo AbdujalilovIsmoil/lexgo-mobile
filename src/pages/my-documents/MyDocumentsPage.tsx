@@ -11,7 +11,7 @@ import { ReviewSheet, useDocList, useDocRealtime } from "@/features/my-documents
 import { DocList, DocListHeader } from "@/widgets/my-documents";
 
 // "Mening hujjatlarim" (TZ 15): every document the client started, in any mode, with its status. Ten at a time; a tap on a
-// row opens the document's own page (/documents/[id]: timeline, payment, file, answers, advocate, review, versions, rating). The "new" menu offers only the document service
+// row opens the document's own page (/documents/[id]: timeline, payment, file, answers, advocate, review, rating). The "new" menu offers only the document service
 // modes the platform keeps on; one outside the plan carries a lock and its page says why (TZ.md §4).
 export default function MyDocumentsPage() {
   const { t } = useT();

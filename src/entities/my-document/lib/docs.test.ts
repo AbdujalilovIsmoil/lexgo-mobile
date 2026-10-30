@@ -27,14 +27,14 @@ describe("status groups", () => {
 
 describe("docCan", () => {
   it("a draft with fields can be edited and versioned, not paid until the server says so", () => {
-    expect(docCan(doc({ status: "draft" }))).toMatchObject({ edit: true, version: true, pay: false, stopped: false });
+    expect(docCan(doc({ status: "draft" }))).toMatchObject({ edit: true, pay: false, stopped: false });
   });
   it("a finished or closed document is never edited again", () => {
     expect(docCan(doc({ status: "file_ready", ctor: { available: true } as never })).edit).toBe(false);
     expect(docCan(doc({ status: "closed", ctor: { available: true } as never })).edit).toBe(false);
   });
   it("a stopped payment blocks everything", () => {
-    expect(docCan(doc({ status: "payment_cancelled" }))).toMatchObject({ edit: false, version: false, stopped: true, pay: false });
+    expect(docCan(doc({ status: "payment_cancelled" }))).toMatchObject({ edit: false, stopped: true, pay: false });
   });
   it("pay needs a price, an unpaid state, and not already waiting", () => {
     const base = { status: "draft", requiresPayment: true, price: 50000 };

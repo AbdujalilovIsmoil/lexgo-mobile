@@ -10,10 +10,10 @@ import { useKept } from "@/shared/lib/useKept";
 import { useT } from "@/shared/i18n";
 import { useDocSettings } from "@/entities/doc-settings";
 import { docCan, docKeys, useDoc, useDocPolicy } from "@/entities/my-document";
-import { AnswersSheet, CtorSheet, RatingSheet, ReviewSheet, VersionsSheet, useCtorPrompt, useDocRealtime } from "@/features/my-documents";
+import { AnswersSheet, CtorSheet, RatingSheet, ReviewSheet, useCtorPrompt, useDocRealtime } from "@/features/my-documents";
 import { DocDetailBody, type SheetKey } from "@/widgets/my-documents";
 
-// One document: status timeline, answers, file, versions, advocate chat/call, payment and rating (TZ 15).
+// One document: status timeline, answers, file, advocate chat/call, payment and rating (TZ 15).
 export default function DocumentDetailPage({ id }: { id: string }) {
   const { t } = useT();
   const insets = useInsets();
@@ -45,7 +45,6 @@ export default function DocumentDetailPage({ id }: { id: string }) {
       {doc && can ? (
         <>
           <AnswersSheet doc={doc} editable={can.edit} visible={sheet === "answers"} onClose={close} />
-          <VersionsSheet docId={doc.id} title={doc.title} canCreate={can.version} visible={sheet === "versions"} onClose={close} onOpen={openFile} />
           <ReviewSheet docId={doc.id} visible={sheet === "review"} onClose={close} />
           <RatingSheet docId={doc.id} visible={sheet === "rate"} onClose={close} />
           <CtorSheet visible={ctor.visible} title={ctor.title} message={ctor.message} onYes={() => (doc?.templateId ? router.push(`/templates/${encodeURIComponent(doc.templateId)}/fill?request=${encodeURIComponent(doc.id)}` as never) : setSheet("answers"))} onClose={ctor.close} />

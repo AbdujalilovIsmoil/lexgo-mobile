@@ -1,15 +1,9 @@
 import { asArr, asDict, asNum, asStr, uzs } from "@/shared/lib/json";
-import type { DocCall, DocChat, DocPreview, DocVersion, MissingField, UnlockPolicy } from "../model/docTypes";
+import type { DocCall, DocChat, DocPreview, MissingField, UnlockPolicy } from "../model/docTypes";
 
 const missingOf = (v: unknown): MissingField[] =>
   asArr(v).map((x) => ({ name: asStr(asDict(x).name ?? asDict(x).key), label: asStr(asDict(x).label) })).filter((m) => m.name);
 
-// `number` is the position in the document's own history (the payload counter is global).
-export function normVersion(v: unknown, number: number): DocVersion {
-  const d = asDict(v);
-  const p = asDict(d.payload);
-  return { id: asStr(d.id), number, createdAt: asStr(d.created_at), contractId: asStr(p.contract_id), answerCount: Object.keys(asDict(p.answers)).length };
-}
 
 export function normPolicy(v: unknown): UnlockPolicy {
   const d = asDict(v);

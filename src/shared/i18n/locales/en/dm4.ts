@@ -12,13 +12,4 @@ export const dm4: Messages["dm4"] = {
   previewFail: "Could not load the preview.",
   percent: "{n}% complete",
   missing: "Required fields missing: {list}",
-  versions: "Versions",
-  versionNew: "New version from the current state",
-  versionCreated: "Version created",
-  versionN: "Version {n}",
-  versionFields: "{n} fields",
-  versionsEmpty: "No versions",
-  versionsEmptyText: "You can save the document's current state as a version.",
-  versionCount: "{n} saved versions",
-  versionNone: "No versions yet",
 };

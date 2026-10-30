@@ -1,6 +1,6 @@
 import { skipToken, useQuery } from "@tanstack/react-query";
 import { usePaged } from "@/shared/lib/usePaged";
-import { getChat, getDoc, getPolicy, listFlow, listLite, listVersions } from "../api/readApi";
+import { getChat, getDoc, getPolicy, listFlow, listLite } from "../api/readApi";
 import type { DocFilters } from "./types";
 
 // One prefix: invalidating ["my-docs"] refreshes the list, counts and every open detail.
@@ -13,7 +13,6 @@ export const useDocFlow = (f: DocFilters, enabled = true) =>
 export const useDocLite = () => useQuery({ queryKey: [...docKeys.all, "lite"], queryFn: listLite });
 export const useDoc = (id: string) => useQuery({ queryKey: [...docKeys.all, "doc", id], queryFn: () => getDoc(id), enabled: !!id });
 export const useDocPolicy = (id: string, enabled = true) => useQuery({ queryKey: [...docKeys.all, "policy", id], queryFn: () => getPolicy(id), enabled: !!id && enabled });
-export const useDocVersions = (id: string) => useQuery({ queryKey: [...docKeys.all, "versions", id], queryFn: () => listVersions(id), enabled: !!id });
 // The chat room of a document request. The chat list (already loaded and kept live for the unread badge) names the
 // document requests behind each room, so a list of documents costs no request per card; GET …/chat is only the
 // fallback while that list is not available.

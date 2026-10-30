@@ -1,1 +1,1 @@
-export type SheetKey = "answers" | "versions" | "review" | "rate" | null;
+export type SheetKey = "answers" | "review" | "rate" | null;

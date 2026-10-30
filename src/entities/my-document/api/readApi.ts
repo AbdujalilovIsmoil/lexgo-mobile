@@ -1,8 +1,8 @@
 import { ApiError, http } from "@/shared/api";
 import { asDict, asNum, listFrom } from "@/shared/lib/json";
 import type { DocPage, DocRow } from "../model/types";
-import type { DocChat, DocVersion, MyDoc, UnlockPolicy } from "../model/docTypes";
-import { normChat, normPolicy, normVersion } from "./normMisc";
+import type { DocChat, MyDoc, UnlockPolicy } from "../model/docTypes";
+import { normChat, normPolicy } from "./normMisc";
 import { normDoc } from "./normDoc";
 import { normFlow, normLite } from "./normRow";
 
@@ -25,10 +25,6 @@ export const listLite = async (): Promise<DocRow[]> => listFrom(await http("/doc
 export const getDoc = async (id: string): Promise<MyDoc> => normDoc(await http(`/document-requests/${encodeURIComponent(id)}`));
 export const getPolicy = async (id: string): Promise<UnlockPolicy> => normPolicy(await http(`/document-requests/${encodeURIComponent(id)}/unlock-policy`));
 
-export async function listVersions(id: string): Promise<DocVersion[]> {
-  const rows = listFrom(await http(`/document-requests/${encodeURIComponent(id)}/versions`));
-  return rows.map((r, i) => normVersion(r, rows.length - i));
-}
 
 // 404 = this request can never have a chat (a document nobody else holds): same as "not yet".
 export async function getChat(id: string): Promise<DocChat> {

@@ -1,7 +1,7 @@
 export type { DocRow, DocMode, DocRating, DocGate, CtorAction, DocPage, DocFilters } from "./model/types";
-export type { MyDoc, DocField, DocVersion, UnlockPolicy, DocPreview, DocChat, DocCall, MissingField } from "./model/docTypes";
-export { docKeys, FLOW_PAGE, useDocFlow, useDocLite, useDoc, useDocPolicy, useDocVersions, useDocChat } from "./model/queries";
-export { createRequest, saveAnswers, previewAnswers, generateDoc, createVersion, startAudioCall, createPayment, rateDoc, type PayResult } from "./api/writeApi";
+export type { MyDoc, DocField, UnlockPolicy, DocPreview, DocChat, DocCall, MissingField } from "./model/docTypes";
+export { docKeys, FLOW_PAGE, useDocFlow, useDocLite, useDoc, useDocPolicy, useDocChat } from "./model/queries";
+export { createRequest, saveAnswers, previewAnswers, generateDoc, startAudioCall, createPayment, rateDoc, type PayResult } from "./api/writeApi";
 export { groupOf, toneOf, needsClient, READY, DRAFT, PAY_WAIT, REVIEW, STOPPED, type DocGroup, type Tone } from "./lib/status";
 export { docCan, type DocCan } from "./lib/can";
 export { sectionize, priceOf, type DocItem, type DocPrice } from "./lib/sections";

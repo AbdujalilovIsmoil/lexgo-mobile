@@ -10,13 +10,4 @@ export const dm4 = {
   previewFail: "Ko'rinishni olib bo'lmadi.",
   percent: "{n}% to'ldirilgan",
   missing: "To'ldirilmagan majburiy maydonlar: {list}",
-  versions: "Versiyalar",
-  versionNew: "Joriy holatdan yangi versiya",
-  versionCreated: "Versiya yaratildi",
-  versionN: "Versiya {n}",
-  versionFields: "{n} ta maydon",
-  versionsEmpty: "Versiyalar yo'q",
-  versionsEmptyText: "Hujjatning joriy holatini versiya sifatida saqlab qo'yishingiz mumkin.",
-  versionCount: "{n} ta saqlangan versiya",
-  versionNone: "Hali versiya yo'q",
 };

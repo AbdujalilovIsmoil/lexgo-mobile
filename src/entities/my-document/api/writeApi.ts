@@ -17,10 +17,6 @@ export const previewAnswers = async (id: string, answers: Record<string, unknown
 // 402 = not paid, 409 = nothing to build yet, 422 = required fields missing — the caller shows the server text.
 export const generateDoc = async (id: string): Promise<MyDoc> => normDoc(await http(`${base(id)}/generate`, { method: "POST" }));
 
-// Snapshot of the current (or the given) answers as a new DOCX version.
-export const createVersion = async (id: string, answers?: Record<string, unknown>): Promise<void> => {
-  await http(`${base(id)}/versions`, { method: "POST", body: answers ? { answers } : {} });
-};
 
 // The client may ring the advocate a limited number of times per document (429 after that).
 export const startAudioCall = async (id: string): Promise<DocCall> => normCall(await http(`${base(id)}/calls/audio`, { method: "POST", body: {} }));

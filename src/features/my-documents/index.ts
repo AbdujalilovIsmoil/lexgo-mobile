@@ -7,7 +7,6 @@ export { useDocRealtime } from "./model/useDocRealtime";
 export { useCtorPrompt } from "./model/useCtorPrompt";
 export { CtorSheet } from "./ui/CtorSheet";
 export { AnswersSheet } from "./ui/AnswersSheet";
-export { VersionsSheet } from "./ui/VersionsSheet";
 export { ReviewSheet } from "./ui/ReviewSheet";
 export { RatingSheet } from "./ui/RatingSheet";
 export { RatingCard } from "./ui/RatingCard";
