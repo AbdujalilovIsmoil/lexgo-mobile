@@ -95,7 +95,7 @@ export const NativeTabsBar = memo(function NativeTabsBar({ bar }: { bar: boolean
             listeners={guard && def.route !== GAP.route ? { tabPress: () => router.push("/auth/login") } : undefined}
           >
             {def.center || def.route === GAP.route ? <NativeTabs.Trigger.Icon src={AI_SLOT} renderingMode="original" /> : images?.[def.icon] ? <NativeTabs.Trigger.Icon src={images[def.icon] as never} renderingMode="template" /> : <NativeTabs.Trigger.Icon sf={sfIcon(def.icon)} />}
-            <NativeTabs.Trigger.Label hidden={def.center || def.route === GAP.route || fit.mode === "hidden"}>{caption(t(def.labelKey))}</NativeTabs.Trigger.Label>
+            <NativeTabs.Trigger.Label hidden={def.route === GAP.route || fit.mode === "hidden"}>{caption(t(def.labelKey))}</NativeTabs.Trigger.Label>
             {n ? <NativeTabs.Trigger.Badge>{n > 99 ? "99+" : String(n)}</NativeTabs.Trigger.Badge> : null}
           </NativeTabs.Trigger>
         );

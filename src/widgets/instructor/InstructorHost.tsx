@@ -4,29 +4,20 @@ import { useSession } from "@/entities/session";
 import { useInstructorContract } from "@/entities/instructor";
 import { ApiError } from "@/shared/api";
 import { subscribeTargets, targetsVersion, usePathStore } from "@/shared/instructor";
-import { useInsets } from "@/shared/lib/insets";
 import { useT } from "@/shared/i18n";
-import { useSidebar } from "@/widgets/client-sidebar/sidebarStore";
 import { abortRun, closeInstructor, ENGAGED_MS, queueEvent, scheduleRuntimeSync, setActiveContract, useInstructorRealtime, useInstructorUi, useOverlay } from "@/features/instructor";
 import { HighlightOverlay } from "./HighlightOverlay";
-import { InstructorLauncher } from "./InstructorLauncher";
 import { InstructorSheet } from "./InstructorSheet";
-import { hasTabBar, launcherHidden } from "./hiddenRoutes";
-import { useKeyboardUp } from "./useKeyboardUp";
 
 // Mounted ONCE in core. Tracks the screen, loads the contract, keeps the backend in sync while the assistant
-// is in use, and renders the floating button, the sheet and the highlight overlay. Hidden for guests.
+// is in use, and renders the sheet and the highlight overlay (it is opened from its own page; there is no floating robot). Hidden for guests.
 export function InstructorHost() {
   const session = useSession();
   const authed = !!session;
   const role = session?.user.role ?? "guest";
   const pathname = usePathname();
   const { locale } = useT();
-  const insets = useInsets();
-  const keyboard = useKeyboardUp();
   const open = useInstructorUi((s) => s.open);
-  const guiding = useOverlay((o) => !!o.step);
-  const drawer = useSidebar((s) => s.open); // the robot floats above the page: it steps aside while the drawer covers the page
   const contract = useInstructorContract(authed, session?.user.id ?? "");
   const version = useSyncExternalStore(subscribeTargets, targetsVersion);
 
@@ -46,14 +37,11 @@ export function InstructorHost() {
     closeInstructor();
   }, [authed]);
 
-  // The robot stays on screen while the contract loads, after a network/server failure and offline: only a clear
-  // "not for this account" answer (403 / 404) removes it. Without a contract the runner simply skips navigation.
+  // Only a clear "not for this account" answer (403 / 404) turns it off. Without a contract the runner simply skips navigation.
   const denied = contract.error instanceof ApiError && (contract.error.status === 403 || contract.error.status === 404);
   if (!authed || denied) return null;
-  const hidden = launcherHidden(pathname) || keyboard || open || guiding || drawer;
   return (
     <>
-      <InstructorLauncher base={insets.bottom + (hasTabBar(pathname) ? 104 : 24)} hidden={hidden} />
       <InstructorSheet />
       <HighlightOverlay />
     </>

@@ -31,8 +31,6 @@ function hostClipboard(req, res) {
 }
 
 const config = getDefaultConfig(__dirname);
-// The robot mascot (assets/robot): a .glb model that the WebView scene loads.
-config.resolver.assetExts = [...config.resolver.assetExts, "glb"];
 const enhance = config.server && config.server.enhanceMiddleware;
 config.server = {
   ...config.server,
