@@ -37,7 +37,7 @@ export function DirectoryTop({ filters, setFilters, text, onText, focused, onFoc
   const f = filters;
   const chip = (key: string, label: string, on: boolean, press: () => void) => (
     <PressableScale key={key} onPress={press} scale={0.96} accessibilityRole="button" accessibilityState={{ selected: on }} style={[s.chip, on ? { backgroundColor: c.ink, borderColor: c.ink } : { backgroundColor: c.surface, borderColor: c.line }]}>
-      <Text variant="small" weight="semibold" style={{ color: on ? c.surface : c.ink }}>{label}</Text>
+      <Text variant="small" weight="semibold" style={{ color: on ? c.bg : c.ink }}>{label}</Text>
     </PressableScale>
   );
   const ai = aiMode;

@@ -7,7 +7,7 @@ import { loadGlass } from "@/shared/lib/glass";
 import { useTablet } from "@/shared/lib/useTablet";
 import { useBadgeStore } from "@/shared/lib/badgeStore";
 import { useT } from "@/shared/i18n";
-import { AURORA } from "@/shared/theme";
+import { AURORA, useTheme } from "@/shared/theme";
 import { useAuroraStyle } from "@/shared/ui";
 import { AiRaisedButton } from "./AiRaisedButton";
 import { CaptionMeter, ReturnWatcher } from "./BarHelpers";
@@ -60,7 +60,9 @@ export const NativeTabsBar = memo(function NativeTabsBar({ bar }: { bar: boolean
   const centerAt = shown.findIndex((d) => d.center);
   const barKey = shown.map((d) => d.route).join(",");
   useEffect(() => { setBarRoutes(barKey ? barKey.split(",") : []); }, [barKey]); // links to any other tab page open it as a stack screen
-  const aurora = useAuroraStyle(); // every tab page sits on the aurora (the pages themselves are transparent)
+  const aurora = useAuroraStyle(); // every tab page sits on the aurora / the glass ground (the pages themselves are transparent)
+  const { glass } = useTheme();
+  const ground = AURORA || glass;
   const rest = [...new Set(Object.values(TABS).flat().map((d) => d.route))].filter((r) => !shown.some((d) => d.route === r));
   // Captions that fit: the bar cuts a caption it has no room for to "Xab…", so their real widths (measured at 10 pt by the hidden texts below)
   // pick the size; if that is unreadably small the first word of each is used, and if even that does not fit, no captions.
@@ -89,7 +91,7 @@ export const NativeTabsBar = memo(function NativeTabsBar({ bar }: { bar: boolean
           <NativeTabs.Trigger
             key={`${role}-${def.route}`}
             name={def.route}
-            contentStyle={AURORA ? aurora : undefined}
+            contentStyle={ground ? aurora : undefined}
             disableAutomaticContentInsets
             disabled={guard} // a visitor's tap on a personal tab never switches it: the (still emitted) press sends them to sign in
             listeners={guard && def.route !== GAP.route ? { tabPress: () => router.push("/auth/login") } : undefined}
@@ -100,7 +102,7 @@ export const NativeTabsBar = memo(function NativeTabsBar({ bar }: { bar: boolean
           </NativeTabs.Trigger>
         );
       })}
-      {rest.map((name) => <NativeTabs.Trigger key={`hidden-${name}`} name={name} contentStyle={AURORA ? aurora : undefined} hidden />)}
+      {rest.map((name) => <NativeTabs.Trigger key={`hidden-${name}`} name={name} contentStyle={ground ? aurora : undefined} hidden />)}
     </NativeTabs>
     {centerAt >= 0 ? <AiRaisedButton labelKey={shown[centerAt].labelKey} hidden={!bar} shift={shift} /> : null}
     </View>

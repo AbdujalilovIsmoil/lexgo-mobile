@@ -99,8 +99,8 @@ export function DocListHeader({ counts, modeCounts, statusCounts, total, loading
             return (
               <PressableScale key={m.value || "all"} onPress={() => onMode(sel && m.value ? "" : m.value)} scale={0.96} accessibilityRole="button" accessibilityState={{ selected: sel }}
                 style={[s.chip, sel ? { backgroundColor: c.ink, borderColor: c.ink } : { backgroundColor: c.surface, borderColor: c.line }]}>
-                <Text variant="small" weight="semibold" style={{ color: sel ? c.surface : c.ink }}>{m.label}</Text>
-                {n ? <Text variant="caption" weight="bold" style={{ color: sel ? c.surface : c.gray }}>{n}</Text> : null}
+                <Text variant="small" weight="semibold" style={{ color: sel ? c.bg : c.ink }}>{m.label}</Text>
+                {n ? <Text variant="caption" weight="bold" style={{ color: sel ? c.bg : c.gray }}>{n}</Text> : null}
               </PressableScale>
             );
           })}

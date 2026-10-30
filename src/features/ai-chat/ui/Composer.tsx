@@ -34,7 +34,7 @@ export function Composer({ onSend, onStop, disabled, sending }: Props) {
   return (
     <Animated.View style={[s.bar, { backgroundColor: aiTheme.bar, borderTopColor: aiTheme.border }, pad]}>
       <RunningRim radius={29} rest={focused ? aiTheme.accent : aiTheme.border}>
-        <View {...mark} style={[s.field, { backgroundColor: aiTheme.card }]}>
+        <View {...mark} style={[s.field, { backgroundColor: aiTheme.seeThrough ? "#14224D" : aiTheme.card }]}>
           <TextInput
             ref={input}
             value={text}

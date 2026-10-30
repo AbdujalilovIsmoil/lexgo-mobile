@@ -63,3 +63,34 @@ export const darkColors: ThemeColors = {
   cyBg: "rgba(96,165,250,0.14)",
   cyText: "#6EA8FF",
 };
+
+// Solid stand-in for `surface` where see-through would break the look (the tab bar, an input with a running light behind it).
+export const GLASS_SOLID = "#14224D";
+
+// The "Shisha" (glass) theme: a deep navy ground with soft blue light behind every page (GlassBackdrop), cards and wells as panes of
+// translucent white with a bright hairline, white type — the same on iOS and Android. Pages are transparent so the ground shows through.
+export const glassColors: ThemeColors = {
+  bg: "#0A1430",
+  canvas: "transparent",
+  glassFill: "rgba(120,150,235,0.13)",
+  glassLine: "rgba(255,255,255,0.13)",
+  surface: "rgba(120,150,235,0.13)",
+  surface2: "rgba(255,255,255,0.08)",
+  glass: "rgba(14,26,62,0.88)",
+  ink: "#F2F6FD",
+  gray: "#B8C4DC",
+  gray2: "#8F9DBA",
+  line: "rgba(255,255,255,0.12)",
+  tint: "rgba(255,255,255,0.07)",
+  tint2: "rgba(127,176,255,0.18)",
+  accent: "#82B4FF",
+  accentStrong: "#B8D3FF",
+  ok: "#4ADE9F",
+  okBg: "rgba(52,211,153,0.16)",
+  err: "#FF9C9C",
+  errBg: "rgba(248,113,113,0.16)",
+  warn: "#FCC66B",
+  warnBg: "rgba(251,191,36,0.16)",
+  cyBg: "rgba(96,165,250,0.16)",
+  cyText: "#82B4FF",
+};

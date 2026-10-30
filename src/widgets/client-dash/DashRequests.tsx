@@ -6,7 +6,7 @@ import { EmptyState, PressableScale, Skeleton, Text } from "@/shared/ui";
 import { useTheme } from "@/shared/theme";
 import { useT } from "@/shared/i18n";
 import { RequestRow, type ActiveRowData, type ChipTone } from "./RequestRow";
-import { cardShadow } from "./DashTiles";
+import { cardShadow, noShadow } from "./DashTiles";
 
 const URGENT_MAX = 2;
 const CASES_MAX = 3;
@@ -21,7 +21,7 @@ const headline = (status: string) =>
 export function DashRequests() {
   const { t } = useT();
   const router = useRouter();
-  const { colors: c, dark } = useTheme();
+  const { colors: c, dark, glass } = useTheme();
   const label = useUrgentLabels();
   const cases = useOpenCases();
   const mine = useMine();
@@ -48,7 +48,7 @@ export function DashRequests() {
   const urgent = (mine.data ?? []).filter((r) => !isFinal(r)).slice(0, URGENT_MAX).map((r) => ({ key: r.id, row: urgentRow(r) }));
   const open = cases.open.slice(0, CASES_MAX).map((x) => ({ key: x.id, row: caseRow(x) }));
   const card = (rows: { key: string; row: ActiveRowData }[]) => (
-    <View style={[s.card, { backgroundColor: dark ? c.surface : "#FFFFFF", borderColor: dark ? c.line : "#EEF2FA" }]}>
+    <View style={[s.card, { backgroundColor: dark ? c.surface : "#FFFFFF", borderColor: dark ? c.line : "#EEF2FA" }, glass && noShadow]}>
       {rows.map((x, i) => <RequestRow key={x.key} row={x.row} last={i === rows.length - 1} />)}
     </View>
   );

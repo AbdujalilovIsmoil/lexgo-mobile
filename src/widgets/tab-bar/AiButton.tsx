@@ -4,7 +4,7 @@ import { Ionicons } from "@expo/vector-icons";
 import Animated from "react-native-reanimated";
 import { PressableScale, Text } from "@/shared/ui";
 import { useAppActive } from "@/shared/lib/useAppActive";
-import { useTheme } from "@/shared/theme";
+import { GLASS_SOLID, useTheme } from "@/shared/theme";
 import { useT } from "@/shared/i18n";
 import { useAiPulse } from "./useAiPulse";
 
@@ -18,12 +18,12 @@ const LABEL_TOP = 32; // where the other tabs' captions start (their 28 pt icon 
 // The AI destination in the middle of the bar: a deep navy disc with the sparkle, in a ring of the bar's own colour, raised above the bar
 // with its "AI" caption on the line of the other captions. The sparkle swells and a soft ring breathes out for a few beats (useAiPulse).
 export function AiButton({ focused, onPress, labelKey }: Props) {
-  const { colors: c, dark } = useTheme();
+  const { colors: c, dark, glass } = useTheme();
   const { t } = useT();
   const pulse = useAiPulse(useAppActive());
   return (
     <View style={s.slot}>
-      <PressableScale onPress={onPress} scale={0.92} style={[s.ring, { backgroundColor: dark ? c.surface : "#FFFFFF" }]} accessibilityRole="button" accessibilityLabel={t(labelKey)} accessibilityState={{ selected: focused }}>
+      <PressableScale onPress={onPress} scale={0.92} style={[s.ring, { backgroundColor: glass ? GLASS_SOLID : dark ? c.surface : "#FFFFFF" }]} accessibilityRole="button" accessibilityLabel={t(labelKey)} accessibilityState={{ selected: focused }}>
         <Animated.View pointerEvents="none" style={[s.halo, pulse.ring]} />
         <LinearGradient colors={["#2A4C9C", "#13275E", "#0A1638"]} start={{ x: 0.2, y: 0 }} end={{ x: 0.8, y: 1 }} style={s.disc}>
           <Animated.View style={pulse.icon}><Ionicons name="sparkles" size={22} color="#FFFFFF" /></Animated.View>

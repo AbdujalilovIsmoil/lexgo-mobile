@@ -15,8 +15,8 @@ type Props = ViewProps & {
 // the translucent fill); elsewhere the solid surface with a soft shadow. 20px radius; the tappable variant scales.
 export function Card({ children, onPress, padded = true, elevated, tinted, style, ...rest }: Props) {
   const c = useColors();
-  const { dark } = useTheme();
-  const glass = Platform.OS === "ios" && AURORA;
+  const { dark, glass: glassTheme } = useTheme();
+  const glass = glassTheme || (Platform.OS === "ios" && AURORA);
   // the light a glass edge catches: a short bright fade along the top
   const sheen = glass && !tinted ? <LinearGradient pointerEvents="none" colors={dark ? ["rgba(255,255,255,0.10)", "rgba(255,255,255,0)"] : ["rgba(255,255,255,0.85)", "rgba(255,255,255,0)"]} style={s.sheen} /> : null;
   const base: ViewStyle = {

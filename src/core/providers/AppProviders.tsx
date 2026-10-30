@@ -5,7 +5,7 @@ import { SafeAreaProvider, initialWindowMetrics } from "react-native-safe-area-c
 import { StatusBar } from "expo-status-bar";
 import { KeyboardProvider } from "react-native-keyboard-controller";
 import * as SystemUI from "expo-system-ui";
-import { AURORA, ThemeProvider, darkColors, lightColors, useTheme, useThemeStore } from "@/shared/theme";
+import { AURORA, ThemeProvider, darkColors, glassColors, lightColors, useTheme, useThemeStore } from "@/shared/theme";
 import { ClientSidebar, TabletFrame, UnderSidebar } from "@/widgets/client-sidebar";
 import { AuroraBackdrop, RootOverlays, TabletStatusStrip } from "@/shared/ui";
 import { useProfileRefresh } from "@/entities/session";
@@ -27,12 +27,12 @@ void SystemUI.setBackgroundColorAsync("#03102B").catch(() => {});
 if (__DEV__) LogBox.ignoreLogs(["Can't perform a React state update on a component that hasn't mounted yet"]);
 
 function Chrome({ children }: { children: ReactNode }) {
-  const { dark } = useTheme();
+  const { dark, glass } = useTheme();
   return (
     <NavigationTheme>
       <StatusBar style={dark ? "light" : "dark"} />
       <SystemChrome />
-      {Platform.OS === "ios" && AURORA ? <AuroraBackdrop /> : null}
+      {glass || (Platform.OS === "ios" && AURORA) ? <AuroraBackdrop /> : null}
       <TabletFrame>
         <UnderSidebar>{children}</UnderSidebar>
       </TabletFrame>
@@ -51,6 +51,7 @@ function Chrome({ children }: { children: ReactNode }) {
 function useRootBg(): string {
   const system = useColorScheme();
   const mode = useThemeStore((s) => s.mode);
+  if (mode === "glass") return glassColors.bg;
   return (mode === "system" ? system === "dark" : mode === "dark") ? darkColors.bg : lightColors.bg;
 }
 

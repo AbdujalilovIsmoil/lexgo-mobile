@@ -26,7 +26,7 @@ export function ChatsHistoryPage() {
     chat.newChat();
     router.navigate("/ai");
   };
-  const ground = ai.dark ? (["#11224F", "#0B1634", "#090E1B"] as const) : ([ai.bg, ai.bg] as const);
+  const ground = ai.seeThrough ? (["transparent", "transparent"] as const) : ai.dark ? (["#11224F", "#0B1634", "#090E1B"] as const) : ([ai.bg, ai.bg] as const);
   return (
     <View style={s.fill}>
       <FocusStatusBar style={ai.dark ? "light" : "dark"} />

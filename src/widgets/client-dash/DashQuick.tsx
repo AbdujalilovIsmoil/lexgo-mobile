@@ -4,7 +4,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { Icon, PressableScale, Text } from "@/shared/ui";
 import { useTheme } from "@/shared/theme";
 import { useT } from "@/shared/i18n";
-import { cardShadow } from "./DashTiles";
+import { cardShadow, noShadow } from "./DashTiles";
 
 const ORANGE = "#EF6A2E";
 
@@ -12,10 +12,10 @@ const ORANGE = "#EF6A2E";
 export function DashQuick() {
   const { t } = useT();
   const router = useRouter();
-  const { colors: c, dark } = useTheme();
+  const { colors: c, dark, glass } = useTheme();
   return (
     <View style={s.wrap}>
-      <View style={[s.card, { backgroundColor: dark ? c.surface : "#FFFFFF", borderColor: dark ? c.line : "#EEF2FA" }]}>
+      <View style={[s.card, { backgroundColor: dark ? c.surface : "#FFFFFF", borderColor: dark ? c.line : "#EEF2FA" }, glass && noShadow]}>
         <PressableScale onPress={() => router.navigate("/urgent")} scale={0.97} style={s.half} accessibilityRole="button" accessibilityLabel={t("cdash.home.urgent")}>
           <View style={s.urgent}>
             <Icon name="zap" size={20} color="#FFFFFF" />

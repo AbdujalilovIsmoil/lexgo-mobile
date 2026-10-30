@@ -21,14 +21,14 @@ const TILES: Tile[] = [
 export function DashTiles() {
   const { t } = useT();
   const router = useRouter();
-  const { colors: c, dark } = useTheme();
+  const { colors: c, dark, glass } = useTheme();
   const cats = useTemplateCategories();
   const docs = (cats.data ?? []).reduce((a, x) => a + x.count, 0);
   const sub = (k: string) => (k === "templates" ? (docs ? t("cdash.home.templatesSub", { n: docs }) : t("cdash.home.templatesSub0")) : t(`cdash.home.${k}Sub`));
   return (
     <View style={s.grid}>
       {TILES.map((x) => (
-        <PressableScale key={x.key} onPress={() => router.navigate(x.href as never)} scale={0.97} style={[s.card, { backgroundColor: dark ? c.surface : "#FFFFFF", borderColor: dark ? c.line : "#EEF2FA" }]} accessibilityRole="button" accessibilityLabel={t(`cdash.home.${x.key}`)}>
+        <PressableScale key={x.key} onPress={() => router.navigate(x.href as never)} scale={0.97} style={[s.card, { backgroundColor: dark ? c.surface : "#FFFFFF", borderColor: dark ? c.line : "#EEF2FA" }, glass && noShadow]} accessibilityRole="button" accessibilityLabel={t(`cdash.home.${x.key}`)}>
           <MaterialCommunityIcons name={x.icon} size={76} color={x.colors[1]} style={s.ghost} />
           <LinearGradient colors={x.colors} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={s.ico}>
             <MaterialCommunityIcons name={x.icon} size={22} color="#FFFFFF" />
@@ -47,6 +47,8 @@ export const cardShadow = Platform.select({
   ios: { shadowColor: "#1B2A4E", shadowOpacity: 0.07, shadowRadius: 14, shadowOffset: { width: 0, height: 6 } },
   default: { elevation: 2 },
 });
+// The glass theme's cards are see-through: a shadow would show through them as a dark block (Android elevation), so none there.
+export const noShadow = { elevation: 0, shadowOpacity: 0 };
 
 const s = StyleSheet.create({
   grid: { flexDirection: "row", flexWrap: "wrap", gap: 10, paddingHorizontal: 16, marginTop: 16 },

@@ -23,17 +23,20 @@ const DARK: Record<"advocate" | "lawyer" | "base", Field[]> = {
   lawyer: [...DARK_BASE, { x: 1, y: 0.72, r: 0.6, color: "#E0457F", alpha: 0.32 }],
 };
 const BASE = { light: "#EEF4FF", dark: "#060C1B" } as const;
+// The glass theme's ground: deep navy with a blue light at the top left and the middle right, and a violet one low down.
+const GLASS_BASE = "#0A1430";
+const GLASS: Field[] = [{ x: 0, y: 0.05, r: 1.0, color: "#1E55E0", alpha: 0.5 }, { x: 1, y: 0.42, r: 0.95, color: "#2E6BEA", alpha: 0.32 }, { x: 0.1, y: 0.96, r: 0.9, color: "#3B2E9E", alpha: 0.36 }];
 
 const rgba = (hex: string, a: number) => `${hex}${Math.round(a * 255).toString(16).padStart(2, "0")}`;
 
 // The same fields as one CSS background, for native containers that cannot sit above the RN root (the system tab bar's pages).
 export function useAuroraStyle() {
-  const { dark } = useTheme();
+  const { dark, glass } = useTheme();
   const { width: W, height: H } = useWindowDimensions();
   const role = useSession()?.user.role;
   const key = role === "advocate" ? "advocate" : role === "lawyer" ? "lawyer" : "base";
   return useMemo(() => {
-    const fields = (dark ? DARK : LIGHT)[key];
+    const fields = glass ? GLASS : (dark ? DARK : LIGHT)[key];
     // `circle farthest-corner` has no radius of its own: the fade-out stop is the field's radius as a share of the distance to the far corner.
     const image = fields.map((f) => {
       const cx = f.x * W, cy = f.y * H;
@@ -41,19 +44,19 @@ export function useAuroraStyle() {
       const stop = Math.min(100, Math.round((f.r * W / far) * 100));
       return `radial-gradient(circle farthest-corner at ${Math.round(f.x * 100)}% ${Math.round(f.y * 100)}%, ${rgba(f.color, f.alpha)} 0%, ${rgba(f.color, 0)} ${stop}%)`;
     }).join(", ");
-    return { backgroundColor: dark ? BASE.dark : BASE.light, experimental_backgroundImage: image };
-  }, [dark, key, W, H]);
+    return { backgroundColor: glass ? GLASS_BASE : dark ? BASE.dark : BASE.light, experimental_backgroundImage: image };
+  }, [dark, glass, key, W, H]);
 }
 
 export function AuroraBackdrop() {
-  const { dark } = useTheme();
+  const { dark, glass } = useTheme();
   const { width, height } = useWindowDimensions();
   const role = useSession()?.user.role;
   const key = role === "advocate" ? "advocate" : role === "lawyer" ? "lawyer" : "base";
-  const fields = (dark ? DARK : LIGHT)[key];
+  const fields = glass ? GLASS : (dark ? DARK : LIGHT)[key];
   return (
     <Canvas style={StyleSheet.absoluteFill} pointerEvents="none">
-      <Rect x={0} y={0} width={width} height={height} color={dark ? BASE.dark : BASE.light} />
+      <Rect x={0} y={0} width={width} height={height} color={glass ? GLASS_BASE : dark ? BASE.dark : BASE.light} />
       {fields.map((f, i) => {
         const cx = f.x * width, cy = f.y * height, r = f.r * width;
         return (

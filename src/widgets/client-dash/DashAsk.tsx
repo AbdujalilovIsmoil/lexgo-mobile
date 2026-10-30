@@ -6,7 +6,7 @@ import { Ionicons } from "@expo/vector-icons";
 import Animated, { Easing, cancelAnimation, useAnimatedStyle, useSharedValue, withRepeat, withTiming } from "react-native-reanimated";
 import { Icon, PressableScale } from "@/shared/ui";
 import { useMotionOn } from "@/shared/lib/useMotionOn";
-import { useTheme } from "@/shared/theme";
+import { GLASS_SOLID, useTheme } from "@/shared/theme";
 import { useT } from "@/shared/i18n";
 import { freshAiChat } from "@/features/ai-chat";
 import { usePickForAnalysis } from "@/features/doc-analysis";
@@ -23,7 +23,7 @@ const TURN_MS = 3600;
 // only while Home is on view and the app in front (useMotionOn); otherwise the rim rests on its plain blue.
 export function DashAsk() {
   const { t } = useT();
-  const { colors: c, dark } = useTheme();
+  const { colors: c, dark, glass } = useTheme();
   const router = useRouter();
   const [q, setQ] = useState("");
   const [w, setW] = useState(0);
@@ -50,7 +50,7 @@ export function DashAsk() {
             <LinearGradient colors={[rest, rest, "#2F6BFF", "#00CFE8", "#8B6CF2", rest, rest]} locations={[0, 0.36, 0.45, 0.5, 0.56, 0.64, 1]} start={{ x: 0, y: 0.5 }} end={{ x: 1, y: 0.5 }} style={StyleSheet.absoluteFill} />
           </Animated.View>
         ) : null}
-        <View style={[s.box, { backgroundColor: dark ? c.surface : "#FFFFFF" }]}>
+        <View style={[s.box, { backgroundColor: glass ? GLASS_SOLID : dark ? c.surface : "#FFFFFF" }]}>
           <Ionicons name="sparkles" size={18} color="#2F6BFF" />
           <TextInput value={q} onChangeText={setQ} onSubmitEditing={go} submitBehavior="submit" returnKeyType="send" multiline numberOfLines={2} placeholder={t("cdash.home.askPh")} placeholderTextColor={c.gray2} style={[s.input, { color: c.ink }]} accessibilityLabel={t("cdash.home.askPh")} />
           {q.trim() ? (
