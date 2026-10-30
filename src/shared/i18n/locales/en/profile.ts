@@ -21,7 +21,6 @@ export const profile: Messages["profile"] = {
   themeLight: "Light",
   themeDark: "Dark",
   themeGlass: "Glass",
-  themeSystem: "System",
   language: "Language",
   logout: "Sign out",
   logoutConfirm: "Sign out of your account?",

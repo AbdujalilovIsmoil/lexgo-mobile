@@ -6,10 +6,9 @@ const MODES: { value: ThemeMode; icon: IconName; key: string }[] = [
   { value: "light", icon: "sun", key: "profile.themeLight" },
   { value: "dark", icon: "moon", key: "profile.themeDark" },
   { value: "glass", icon: "droplet", key: "profile.themeGlass" },
-  { value: "system", icon: "smartphone", key: "profile.themeSystem" },
 ];
 
-// Light / dark / glass / system (the web's ThemeToggle plus the app's glass theme) — the thumb glides.
+// Light / dark / glass (the web's ThemeToggle without "system", plus the app's glass theme) — the thumb glides.
 export function ThemeSegment() {
   const { t } = useT();
   const { mode, setMode } = useThemeStore();

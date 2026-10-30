@@ -1,5 +1,5 @@
 import { type ReactNode } from "react";
-import { LogBox, Platform, useColorScheme } from "react-native";
+import { LogBox, Platform } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { SafeAreaProvider, initialWindowMetrics } from "react-native-safe-area-context";
 import { StatusBar } from "expo-status-bar";
@@ -49,10 +49,8 @@ function Chrome({ children }: { children: ReactNode }) {
 // The root view sits under everything (above ThemeProvider, so it reads the theme the same way): the page colour of the current theme,
 // not the splash's near-black, which showed through as a black flash in the light theme.
 function useRootBg(): string {
-  const system = useColorScheme();
   const mode = useThemeStore((s) => s.mode);
-  if (mode === "glass") return glassColors.bg;
-  return (mode === "system" ? system === "dark" : mode === "dark") ? darkColors.bg : lightColors.bg;
+  return mode === "glass" ? glassColors.bg : mode === "dark" ? darkColors.bg : lightColors.bg;
 }
 
 // Order: gestures → keyboard → safe area → theme → data → fonts/session gate → navigation chrome.

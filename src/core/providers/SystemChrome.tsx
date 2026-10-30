@@ -12,9 +12,9 @@ export function SystemChrome() {
   const { colors, dark } = useTheme();
   const mode = useThemeStore((s) => s.mode);
   // The system tab bar (Liquid Glass) and the other system materials follow the window's appearance, not the app's theme: when the
-  // two differ they come out in the wrong tone (a light bar over a dark app). The app's choice is handed to iOS; "system" releases it.
+  // two differ they come out in the wrong tone (a light bar over a dark app). The app's choice is handed to iOS.
   useEffect(() => {
-    if (Platform.OS === "ios") Appearance.setColorScheme(mode === "system" ? "unspecified" : mode === "glass" ? "dark" : mode); // glass is a dark ground
+    if (Platform.OS === "ios") Appearance.setColorScheme(mode === "glass" ? "dark" : mode); // glass is a dark ground
   }, [mode]);
   useEffect(() => {
     void SystemUI.setBackgroundColorAsync(colors.bg).catch(() => {});

@@ -19,7 +19,6 @@ export const profile = {
   themeLight: "Yorug'",
   themeDark: "Qorong'i",
   themeGlass: "Shisha",
-  themeSystem: "Qurilma",
   language: "Til",
   logout: "Chiqish",
   logoutConfirm: "Hisobdan chiqmoqchimisiz?",
