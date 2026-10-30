@@ -1,5 +1,5 @@
 export { useAiChat } from "./model/useAiChat";
-export { useChatStore } from "./model/chatStore";
+export { useChatStore, freshAiChat } from "./model/chatStore";
 export { useClientId } from "./model/useClientId";
 export { useChatHistory } from "./model/useChatHistory";
 export { useFeedback } from "./model/useFeedback";

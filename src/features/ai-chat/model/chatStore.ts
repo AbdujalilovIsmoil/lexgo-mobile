@@ -56,3 +56,10 @@ export const useChatStore = create<ChatState>((set) => ({
 
 // Logout / another user or role: nothing of the previous conversation may remain (TZ 45.9).
 registerSessionReset(() => useChatStore.setState((s) => ({ chatId: null, messages: [], sending: false, limit: null, limitErr: null, feedback: {}, session: s.session + 1 })));
+
+// Going into the AI from a "new question" entry (the bar's AI button, Home's ask field…) starts an empty conversation; only the history
+// opens an old one. The store outlives the screen, so without this the last chat came back.
+export const freshAiChat = () => {
+  const s = useChatStore.getState();
+  if (s.chatId || s.messages.length) s.reset();
+};

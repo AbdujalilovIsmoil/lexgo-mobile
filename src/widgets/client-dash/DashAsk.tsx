@@ -8,6 +8,7 @@ import { Icon, PressableScale, singleLineText } from "@/shared/ui";
 import { useMotionOn } from "@/shared/lib/useMotionOn";
 import { useTheme } from "@/shared/theme";
 import { useT } from "@/shared/i18n";
+import { freshAiChat } from "@/features/ai-chat";
 import { HERO_OVERLAP } from "./DashHero";
 
 const EDGE = 2; // the border's width: the light runs in this rim
@@ -31,7 +32,10 @@ export function DashAsk() {
     return () => cancelAnimation(turn);
   }, [on, turn]);
   const spin = useAnimatedStyle(() => ({ transform: [{ rotate: `${turn.get() * 360}deg` }] }));
-  const go = () => router.navigate({ pathname: "/(tabs)/ai", params: q.trim() ? { q: q.trim() } : {} });
+  const go = () => {
+    freshAiChat(); // a question from Home starts its own conversation
+    router.navigate({ pathname: "/(tabs)/ai", params: q.trim() ? { q: q.trim() } : {} });
+  };
   const rest = dark ? c.line : "#BFE0FF";
   return (
     <View style={[s.shadow, { backgroundColor: rest }]}>

@@ -11,6 +11,7 @@ import { useTablet } from "@/shared/lib/useTablet";
 import { useTheme } from "@/shared/theme";
 import { useT } from "@/shared/i18n";
 import { useAiPulse } from "./useAiPulse";
+import { freshAiChat } from "@/features/ai-chat";
 
 type Props = { labelKey: string; hidden?: boolean; shift?: number }; // labelKey: the button's accessibility label; hidden: the AI screen is up, so the button rests unseen (never unmounted); shift: how far right of the screen centre the bar's AI slot is
 
@@ -48,7 +49,7 @@ export function AiRaisedButton({ labelKey, hidden = false, shift = 0 }: Props) {
     <View pointerEvents={hidden ? "none" : "box-none"} style={[StyleSheet.absoluteFill, hidden && s.away]}>
       <Animated.View pointerEvents="none" style={[s.halo, { width: size, height: size, borderRadius: size / 2, bottom }, left, pulse.ring]} />
       <PressableScale
-        onPress={() => { selectHaptic(); router.navigate("/(tabs)/ai" as never); }}
+        onPress={() => { selectHaptic(); freshAiChat(); router.navigate("/(tabs)/ai" as never); }}
         scale={0.92}
         accessibilityRole="button"
         accessibilityLabel={t(labelKey)}

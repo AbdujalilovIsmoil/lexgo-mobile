@@ -3,6 +3,7 @@ import { useRouter } from "expo-router";
 import { useCabinet } from "@/entities/pro-workspace";
 import { useIsAuthed, useSession } from "@/entities/session";
 import { selectHaptic } from "@/shared/lib/haptics";
+import { freshAiChat } from "@/features/ai-chat";
 import { sellerTabHidden, TABS, type TabDef } from "./tabConfig";
 import { useTabRole } from "./useTabRole";
 
@@ -30,6 +31,7 @@ export function useTabItems({ state, navigation }: Pick<BottomTabBarProps, "stat
     const onPress = () => {
       selectHaptic();
       if (def.auth && !authed) return router.push("/auth/login"); // personal data: a visitor signs in first
+      if (def.center && !focused) freshAiChat(); // the AI button always opens a new conversation
       const ev = navigation.emit({ type: "tabPress", target: route.key, canPreventDefault: true });
       if (!focused && !ev.defaultPrevented) navigation.navigate(route.name);
     };
