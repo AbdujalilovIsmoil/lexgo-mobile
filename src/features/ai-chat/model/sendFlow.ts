@@ -9,6 +9,9 @@ import { recover } from "./recover";
 // Async code reads the live store (never a stale render snapshot).
 const live = () => useChatStore.getState();
 
+// The question in flight, so the stop button can cancel it.
+let inFlight: { abort: AbortController; id: string; sid: number } | null = null;
+
 async function ensureChat(clientId: string, seed: string, sid: number): Promise<string> {
   const have = live().chatId;
   if (have) return have;
@@ -41,18 +44,35 @@ export async function runSend(clientId: string, text: string, retryId?: string):
   if (retryId) live().patch(id, { pending: true, failed: false });
   else live().append({ id, role: "user", content, createdAt: new Date().toISOString(), pending: true });
   live().setSending(true);
+  live().setMuted(false);
   live().setLimitErr(null);
   const sid = live().session;
+  const abort = new AbortController();
+  inFlight = { abort, id, sid };
   try {
     const chatId = await ensureChat(clientId, content, sid);
-    const res = await sendMessage(clientId, chatId, content);
-    if (live().session !== sid) return;
+    const res = await sendMessage(clientId, chatId, content, abort.signal);
+    if (live().session !== sid || abort.signal.aborted) return;
     live().settle(id, res.user);
     live().upsert({ ...res.assistant, createdAt: res.assistant.createdAt ?? new Date().toISOString() });
     live().setLimit(res.limit ?? null);
   } catch (e) {
-    if (live().session === sid) await onFailure(e, clientId, id, sid);
+    if (live().session === sid && !abort.signal.aborted) await onFailure(e, clientId, id, sid);
   } finally {
-    if (live().session === sid) live().setSending(false);
+    if (inFlight?.abort === abort) inFlight = null;
+    if (live().session === sid && !abort.signal.aborted) live().setSending(false);
   }
+}
+
+// The stop button: cancel the question in flight. The question stays in the chat; its answer — should the server still finish it and
+// push it over the socket — is not shown (it is in the chat's history on the server).
+export function stopSend(): void {
+  const f = inFlight;
+  if (!f) return;
+  inFlight = null;
+  f.abort.abort();
+  if (live().session !== f.sid) return;
+  live().patch(f.id, { pending: false });
+  live().setMuted(true);
+  live().setSending(false);
 }

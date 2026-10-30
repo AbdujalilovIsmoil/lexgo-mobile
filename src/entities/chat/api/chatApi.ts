@@ -29,8 +29,8 @@ export async function getMessages(clientId: string, chatId: string): Promise<Cha
 
 export type SendResult = { user?: ChatMessage; assistant: ChatMessage; limit?: GuestLimit };
 
-export async function sendMessage(clientId: string, chatId: string, content: string): Promise<SendResult> {
-  const d = asDict(await http(`${base(clientId)}/${chatId}/messages`, { method: "POST", body: { content } }));
+export async function sendMessage(clientId: string, chatId: string, content: string, signal?: AbortSignal): Promise<SendResult> {
+  const d = asDict(await http(`${base(clientId)}/${chatId}/messages`, { method: "POST", body: { content }, signal }));
   const assistant = normMessage(d.assistant_message ?? { role: "assistant", content: d.content });
   const sources = assistant.sources?.length ? assistant.sources : normSources(d.sources);
   const contracts = assistant.contracts?.length ? assistant.contracts : normContracts(d.contracts);

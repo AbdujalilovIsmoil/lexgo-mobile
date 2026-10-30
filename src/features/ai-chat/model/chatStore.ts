@@ -8,6 +8,7 @@ type ChatState = {
   session: number; // bumps on every new/opened chat, so late replies of an old one are dropped
   messages: ChatMessage[];
   sending: boolean; // a question is waiting for its answer
+  muted: boolean; // the client stopped the last question: its answer, if the server still sends one, is not shown
   limit: GuestLimit | null; // guest quota echoed by the last successful reply
   limitErr: ChatLimit | null; // the server refused the last question (limit card)
   feedback: Record<string, "up" | "down">;
@@ -19,6 +20,7 @@ type ChatState = {
   delta: (id: string, text: string) => void;
   merge: (server: ChatMessage[]) => void;
   setSending: (v: boolean) => void;
+  setMuted: (v: boolean) => void;
   setLimit: (l: GuestLimit | null) => void;
   setLimitErr: (l: ChatLimit | null) => void;
   setFeedback: (id: string, v: "up" | "down") => void;
@@ -33,25 +35,27 @@ export const useChatStore = create<ChatState>((set) => ({
   session: 0,
   messages: [],
   sending: false,
+  muted: false,
   limit: null,
   limitErr: null,
   feedback: {},
-  setChat: (chatId, messages) => set((s) => ({ chatId, messages, session: s.session + 1, sending: false, limitErr: null })),
+  setChat: (chatId, messages) => set((s) => ({ chatId, messages, session: s.session + 1, sending: false, muted: false, limitErr: null })),
   append: (m) => set((s) => ({ messages: [...s.messages, m] })),
-  upsert: (m) => set((s) => ({ messages: upsertMessage(s.messages, m), sending: m.role === "assistant" ? false : s.sending })),
+  upsert: (m) => set((s) => (s.muted && m.role === "assistant" ? s : { messages: upsertMessage(s.messages, m), sending: m.role === "assistant" ? false : s.sending })),
   patch: (id, p) => set((s) => ({ messages: s.messages.map((m) => (m.id === id ? { ...m, ...p } : m)) })),
   settle: (localId, server) => set((s) => ({ messages: settleLocal(s.messages, localId, server) })),
-  delta: (id, text) => set((s) => ({ messages: appendDelta(s.messages, id, text) })),
+  delta: (id, text) => set((s) => (s.muted ? s : { messages: appendDelta(s.messages, id, text) })),
   merge: (server) =>
     set((s) => {
       const messages = mergeServer(s.messages, server);
       return { messages, sending: s.sending && awaiting(messages) };
     }),
   setSending: (sending) => set({ sending }),
+  setMuted: (muted) => set({ muted }),
   setLimit: (limit) => set({ limit }),
   setLimitErr: (limitErr) => set({ limitErr }),
   setFeedback: (id, v) => set((s) => ({ feedback: { ...s.feedback, [id]: v } })),
-  reset: () => set((s) => ({ chatId: null, messages: [], sending: false, limitErr: null, session: s.session + 1 })),
+  reset: () => set((s) => ({ chatId: null, messages: [], sending: false, muted: false, limitErr: null, session: s.session + 1 })),
 }));
 
 // Logout / another user or role: nothing of the previous conversation may remain (TZ 45.9).

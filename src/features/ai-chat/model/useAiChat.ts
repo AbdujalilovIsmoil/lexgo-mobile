@@ -4,10 +4,10 @@ import { useT } from "@/shared/i18n";
 import { tapHaptic } from "@/shared/lib/haptics";
 import { toast } from "@/shared/ui";
 import { useChatStore } from "./chatStore";
-import { runSend } from "./sendFlow";
+import { runSend, stopSend } from "./sendFlow";
 import { useClientId } from "./useClientId";
 
-// The AI tab's controller: send / retry / open a past chat / start a new one.
+// The AI tab's controller: send / stop / retry / open a past chat / start a new one.
 export function useAiChat() {
   const { t } = useT();
   const clientId = useClientId();
@@ -39,5 +39,5 @@ export function useAiChat() {
     toast(t("ai.newChatStarted"), "ok");
   }, [t]);
 
-  return { ...store, clientId, send, retry, open, newChat };
+  return { ...store, clientId, send, retry, open, newChat, stop: stopSend };
 }

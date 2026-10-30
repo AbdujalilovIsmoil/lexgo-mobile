@@ -3,18 +3,18 @@ import { StyleSheet, TextInput, View } from "react-native";
 import Animated, { interpolate, useAnimatedStyle } from "react-native-reanimated";
 import { useReanimatedKeyboardAnimation } from "react-native-keyboard-controller";
 import { useAiTheme } from "@/shared/theme";
-import { SendButton } from "@/shared/ui";
+import { PressableScale, SendButton } from "@/shared/ui";
 import { useInsets } from "@/shared/lib/insets";
 import { useT } from "@/shared/i18n";
 import { useInstructorPrefill, useInstructorTarget } from "@/shared/instructor";
 import { PiiNote } from "./PiiNote";
 import { RunningRim } from "./RunningRim";
 
-type Props = { onSend: (text: string) => void; disabled?: boolean; sending?: boolean };
+type Props = { onSend: (text: string) => void; onStop?: () => void; disabled?: boolean; sending?: boolean };
 
 // Bottom bar docked edge to edge, a hairline on top: one rounded field with the round send button inside it on the right and a
-// violet-to-cyan light running round its rim (RunningRim), and the short privacy line under it. The safe-area gap shrinks smoothly while the keyboard is open.
-export function Composer({ onSend, disabled, sending }: Props) {
+// violet-to-cyan light running round its rim (RunningRim), and the short privacy line under it. While an answer is awaited the send button is a stop button (a square). The safe-area gap shrinks smoothly while the keyboard is open.
+export function Composer({ onSend, onStop, disabled, sending }: Props) {
   const { t } = useT();
   const aiTheme = useAiTheme();
   const insets = useInsets();
@@ -50,7 +50,13 @@ export function Composer({ onSend, disabled, sending }: Props) {
             editable={!disabled}
             style={[s.input, { color: aiTheme.text }]}
           />
-          <SendButton enabled={can} onPress={submit} size={46} label={t("ai.inputPlaceholder")} idle={aiTheme.dark ? "rgba(47,107,255,0.55)" : "rgba(22,104,240,0.45)"} />
+          {sending && onStop ? (
+            <PressableScale onPress={onStop} scale={0.9} hitSlop={6} accessibilityRole="button" accessibilityLabel={t("ai.stop")} style={s.stop}>
+              <View style={s.square} />
+            </PressableScale>
+          ) : (
+            <SendButton enabled={can} onPress={submit} size={46} label={t("ai.inputPlaceholder")} idle={aiTheme.dark ? "rgba(47,107,255,0.55)" : "rgba(22,104,240,0.45)"} />
+          )}
         </View>
       </RunningRim>
       <PiiNote />
@@ -61,5 +67,7 @@ export function Composer({ onSend, disabled, sending }: Props) {
 const s = StyleSheet.create({
   bar: { paddingHorizontal: 14, paddingTop: 12, borderTopWidth: StyleSheet.hairlineWidth },
   field: { flexDirection: "row", alignItems: "flex-end", gap: 8, minHeight: 55, maxHeight: 147, borderRadius: 27.5, paddingLeft: 18, paddingRight: 5, paddingVertical: 5 },
+  stop: { width: 46, height: 46, borderRadius: 23, backgroundColor: "#1668F0", alignItems: "center", justifyContent: "center" },
+  square: { width: 15, height: 15, borderRadius: 3.5, backgroundColor: "#FFFFFF" },
   input: { flex: 1, fontFamily: "Inter_400Regular", fontSize: 16, lineHeight: 21, paddingVertical: 11, alignSelf: "center" },
 });

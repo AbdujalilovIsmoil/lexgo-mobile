@@ -1,6 +1,7 @@
 export const ai = {
   title: "LexGo.AI",
   status: "Onlayn",
+  stop: "Javobni to'xtatish",
   welcomeTitle: "Qanday yordam bera olaman?",
   welcomeSub: "Muammoingizni yozing yoki quyidagi mavzulardan birini tanlang.",
   close: "AI dan chiqish",

@@ -60,7 +60,7 @@ export function AiChatPage() {
           onLike={like}
           onDislike={askWhy}
         />
-        <Composer onSend={pick} disabled={blocked} sending={chat.sending} />
+        <Composer onSend={pick} onStop={chat.stop} disabled={blocked} sending={chat.sending} />
       </KeyboardAvoidingView>
       <FeedbackSheet visible={!!fb.target} busy={fb.busy} onClose={fb.close} onSubmit={(c) => fb.target && void fb.submit(fb.target, false, c)} />
     </View>

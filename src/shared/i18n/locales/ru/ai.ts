@@ -3,6 +3,7 @@ import type { Messages } from "../uz";
 export const ai: Messages["ai"] = {
   title: "LexGo.AI",
   status: "Онлайн",
+  stop: "Остановить ответ",
   welcomeTitle: "Чем могу помочь?",
   welcomeSub: "Опишите проблему или выберите тему ниже.",
   close: "Выйти из AI",
