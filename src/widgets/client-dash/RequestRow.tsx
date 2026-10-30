@@ -1,35 +1,31 @@
 import { Platform, StyleSheet, View } from "react-native";
-import { useRouter } from "expo-router";
 import { Icon, PressableScale, Text } from "@/shared/ui";
 import { useTheme } from "@/shared/theme";
-import { useT } from "@/shared/i18n";
-import type { OpenCase } from "@/entities/open-cases";
 
-// One open case as a row of the cases card: title and the status chip on top, the case number (monospace chip) and the stage, then the
-// next step in accent with an arrow. Rows are split by a hairline. A tap opens that case.
-export function RequestRow({ c: row, last }: { c: OpenCase; last: boolean }) {
-  const { t } = useT();
+export type ChipTone = "done" | "busy" | "open";
+export type ActiveRowData = { title: string; status: string; tone: ChipTone; id?: string; stage?: string; next?: string; onPress: () => void };
+
+// One row of the "Faol so'rovlar" card (an urgent request or an open case): title and the status chip on top, the number (monospace chip)
+// and the stage, then the next step in accent with an arrow. Rows are split by a hairline. A tap opens it.
+export function RequestRow({ row, last }: { row: ActiveRowData; last: boolean }) {
   const { colors: c, dark } = useTheme();
-  const router = useRouter();
-  const label = (v: string) => { const k = `cdash.st.${v}`; const x = t(k); return x === k ? v.replace(/[_-]+/g, " ").replace(/^\w/, (m) => m.toUpperCase()) : x; };
-  const done = /done|closed|complete|resolved/.test(row.status);
-  const busy = /progress|review|wait|pending/.test(row.status);
-  const chip = done ? { bg: "#E3F5EA", fg: "#1F7A45" } : busy ? { bg: "#FDEBDD", fg: "#A3471A" } : { bg: c.tint2, fg: c.accent };
-  const id = row.number || row.id;
+  const chip = row.tone === "done" ? { bg: "#E3F5EA", fg: "#1F7A45" } : row.tone === "busy" ? { bg: "#FDEBDD", fg: "#A3471A" } : { bg: c.tint2, fg: c.accent };
   return (
-    <PressableScale onPress={() => router.push(`/works/${encodeURIComponent(id)}` as never)} scale={0.99} accessibilityRole="button" style={[s.row, !last && { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: dark ? c.line : "#E6EBF3" }]}>
+    <PressableScale onPress={row.onPress} scale={0.99} accessibilityRole="button" style={[s.row, !last && { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: dark ? c.line : "#E6EBF3" }]}>
       <View style={s.top}>
-        <Text variant="h4" numberOfLines={2} style={s.title}>{row.type || row.number}</Text>
-        <View style={[s.chip, { backgroundColor: dark ? `${chip.fg}33` : chip.bg }]}><Text variant="caption" weight="bold" numberOfLines={1} style={{ color: dark ? c.ink : chip.fg }}>{label(row.status)}</Text></View>
+        <Text variant="h4" numberOfLines={2} style={s.title}>{row.title}</Text>
+        <View style={[s.chip, { backgroundColor: dark ? `${chip.fg}33` : chip.bg }]}><Text variant="caption" weight="bold" numberOfLines={1} style={{ color: dark ? c.ink : chip.fg }}>{row.status}</Text></View>
       </View>
-      <View style={s.meta}>
-        {row.type && row.number ? <View style={[s.id, { backgroundColor: c.surface2 }]}><Text variant="caption" weight="bold" tone="gray" style={s.mono}>{row.number}</Text></View> : null}
-        {row.stage ? <Text variant="small" tone="gray">{label(row.stage)}</Text> : null}
-      </View>
-      {row.nextAction ? (
+      {row.id || row.stage ? (
+        <View style={s.meta}>
+          {row.id ? <View style={[s.id, { backgroundColor: c.surface2 }]}><Text variant="caption" weight="bold" tone="gray" style={s.mono}>{row.id}</Text></View> : null}
+          {row.stage ? <Text variant="small" tone="gray">{row.stage}</Text> : null}
+        </View>
+      ) : null}
+      {row.next ? (
         <View style={s.next}>
           <Icon name="arrow-right" size={16} tone="accent" />
-          <Text variant="body" weight="bold" tone="accent" numberOfLines={2} style={s.flex}>{row.nextAction}</Text>
+          <Text variant="body" weight="bold" tone="accent" numberOfLines={2} style={s.flex}>{row.next}</Text>
         </View>
       ) : null}
     </PressableScale>
