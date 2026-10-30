@@ -5,7 +5,6 @@ import { useUnreadCount } from "@/entities/notification";
 import { SupportMenu } from "@/features/support-menu";
 import { useTabRole } from "@/widgets/tab-bar/useTabRole";
 import { Avatar, IconButton, PressableScale } from "@/shared/ui";
-import { DemoPill } from "@/shared/demo/DemoPill";
 
 // Global header actions of every tab page: notifications (with the unread dot) and
 // the avatar that opens Profil (the AI centre button takes the 5th tab slot).
@@ -19,7 +18,6 @@ export function HeaderActions({ glass }: { glass?: boolean }) {
   const name = displayName(session?.user) || session?.user.phone;
   return (
     <View style={s.row}>
-      <DemoPill glass={glass} />
       {role === "client" || role === "seller" ? <SupportMenu glass={glass} client={role === "client"} /> : null}
       <IconButton icon="bell" size={40} tone={glass ? "glass" : "tint"} badge={unread > 0} onPress={() => router.push(session ? "/notifications" : "/auth/login")} />
       {session && name ? (

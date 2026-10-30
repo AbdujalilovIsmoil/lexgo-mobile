@@ -66,5 +66,4 @@ export const adm: Messages["adm"] = {
   required: "Required field",
   selectOne: "Choose",
   noAccess: "No access",
-  demo: "Demo data",
 };

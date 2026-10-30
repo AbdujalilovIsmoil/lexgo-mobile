@@ -190,6 +190,5 @@ export const shm = {
   },
   "sec": { "title": "Hisob xavfsizligi", "sum": "2FA, Telegram va xabarnoma sozlamalari" },
   "alert": { "title": "{n} ta yangi so'rov kutmoqda", "sub": "Javob muddati ketmoqda — ochish uchun bosing" },
-  "demo": { "label": "Demo", "on": "Demo yoqilgan", "hint": "Namuna ma'lumotlar" },
   "phone": { "country": "Davlatni tanlang" }
 };

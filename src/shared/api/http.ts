@@ -3,8 +3,6 @@ import { ApiError, parseErrorBody } from "./errors";
 import { baseHeaders } from "./headers";
 import { shareGet } from "./dedupe";
 import { timed } from "./roundTrip";
-import { demoAnswer } from "../demo/mocks";
-import { demoOn } from "../demo/demoStore";
 
 // Token access is injected by the session entity so this layer stays
 // framework-free (same split as lib/client.ts + lib/http.ts on the web).
@@ -46,10 +44,8 @@ async function refreshOnce(): Promise<string | null> {
   return refreshing;
 }
 
-// With the Demo switch on, a plain GET of a path that has demo data is answered locally (the server is not asked at all).
-const demoed = (path: string, init: HttpInit): unknown => (demoOn() && (!init.method || init.method === "GET") ? demoAnswer(path) : undefined);
 
-export const http = <T = unknown>(path: string, init: HttpInit = {}): Promise<T> => { const d = demoed(path, init); return d !== undefined ? Promise.resolve(d as T) : shareGet(path, init, getToken() ?? "", () => send<T>(path, init)); };
+export const http = <T = unknown>(path: string, init: HttpInit = {}): Promise<T> => shareGet(path, init, getToken() ?? "", () => send<T>(path, init));
 
 // A request with bearer auth and one transparent token refresh on 401; the body comes back as text.
 async function sendText(path: string, init: HttpInit): Promise<string> {

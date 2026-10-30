@@ -66,5 +66,4 @@ export const adm: Messages["adm"] = {
   required: "Обязательное поле",
   selectOne: "Выберите",
   noAccess: "Нет доступа",
-  demo: "Демо-данные",
 };

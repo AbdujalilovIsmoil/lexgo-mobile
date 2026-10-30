@@ -54,7 +54,6 @@ export const aw8 = {
   sortBy: "Saralash",
   type: { all: "Hammasi", folder: "Papkalar", pdf: "PDF", doc: "Hujjatlar", sheet: "Jadvallar", image: "Rasmlar", file: "Boshqa" },
   sort: { name: "Nomi bo'yicha", new: "Yangilari avval", size: "Hajmi bo'yicha" },
-  demoFile: "Demo fayl",
   free: "{size} bo'sh",
   counts: "{f} papka · {n} fayl",
   secLabel: "Bo'lim",

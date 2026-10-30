@@ -190,6 +190,5 @@ export const shm = {
   },
   "sec": { "title": "Account security", "sum": "2FA, Telegram and notification switches" },
   "alert": { "title": "{n} new requests waiting", "sub": "The response clock is running — tap to open" },
-  "demo": { "label": "Demo", "on": "Demo is on", "hint": "Sample data" },
   "phone": { "country": "Choose a country" }
 };

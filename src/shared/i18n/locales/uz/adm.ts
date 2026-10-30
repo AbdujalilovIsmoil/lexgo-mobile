@@ -64,5 +64,4 @@ export const adm = {
   required: "Majburiy maydon",
   selectOne: "Tanlang",
   noAccess: "Ruxsat yo'q",
-  demo: "Namuna ma'lumot",
 };

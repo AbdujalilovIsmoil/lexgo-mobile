@@ -56,7 +56,6 @@ export const aw8: Messages["aw8"] = {
   sortBy: "Sort by",
   type: { all: "All", folder: "Folders", pdf: "PDF", doc: "Documents", sheet: "Spreadsheets", image: "Images", file: "Other" },
   sort: { name: "By name", new: "Newest first", size: "By size" },
-  demoFile: "Demo file",
   free: "{size} free",
   counts: "{f} folders · {n} files",
   secLabel: "Section",
