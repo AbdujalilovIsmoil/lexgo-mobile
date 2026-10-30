@@ -1,4 +1,5 @@
 export const cl1 = {
+  list: { running: "Faol", waiting: "Sizdan kutilmoqda", finished: "Yakunlangan", allKinds: "Barcha turlar", next: "Keyingi qadam: {s}", docs: "Hujjatlar arxivi" },
   title: "Mening ishlarim",
   sub: "Advokat bilan ishlar, tezkor xizmatlar va buyurtmalar",
   count: "{n} ta ish",
@@ -15,6 +16,7 @@ export const cl1 = {
   group: {
     all: "Barchasi",
     open: "Faol",
+    running: "Faol",
     queue: "Navbatda",
     active: "Ijroda",
     review: "Tekshiruvda",

@@ -1,47 +1,38 @@
 import { StyleSheet, View } from "react-native";
-import { useRouter } from "expo-router";
-import { isOpenWork, workGroup, type Work } from "@/entities/work";
-import { Icon, PressableScale, Reveal, Text, type IconName } from "@/shared/ui";
-import { radius, useColors } from "@/shared/theme";
+import { inGroup, type GroupFilter } from "@/features/work-filters";
+import type { Work } from "@/entities/work";
+import { PressableScale, Text } from "@/shared/ui";
+import { useColors } from "@/shared/theme";
 import { useT } from "@/shared/i18n";
 
-// The top of "Mening ishlarim": three live counters (in progress · finished · all) and the one pointer to the document
-// archive ("Mening hujjatlarim"), since this list holds processes only.
-export function WorksSummary({ works }: { works: Work[] }) {
+// The top of "Mening ishlarim": three counters — being worked on, waiting for the client (queue: payment, documents, answers…), finished.
+// A counter is also the shortcut to that list: a tap filters by it, a second tap takes the filter off.
+export function WorksSummary({ works, group, onGroup }: { works: Work[]; group: GroupFilter; onGroup: (g: GroupFilter) => void }) {
   const c = useColors();
   const { t } = useT();
-  const router = useRouter();
-  const cells: { icon: IconName; n: number; k: string; tint: string }[] = [
-    { icon: "activity", n: works.filter((w) => isOpenWork(w.status)).length, k: t("wks.active"), tint: c.accent },
-    { icon: "check-circle", n: works.filter((w) => workGroup(w.status) === "done").length, k: t("wks.done"), tint: c.ok },
-    { icon: "layers", n: works.length, k: t("wks.total"), tint: c.gray },
+  const cells: { g: GroupFilter; label: string; tint: string }[] = [
+    { g: "running", label: t("cl1.list.running"), tint: c.ink },
+    { g: "queue", label: t("cl1.list.waiting"), tint: "#A3471A" },
+    { g: "done", label: t("cl1.list.finished"), tint: "#1F7A45" },
   ];
   return (
-    <Reveal>
-      <View style={s.col}>
-        <View style={s.row}>
-          {cells.map((x) => (
-            <View key={x.k} style={[s.cell, { backgroundColor: c.glassFill, borderColor: c.glassLine }]}>
-              <Icon name={x.icon} size={16} color={x.tint} />
-              <Text variant="h3">{x.n}</Text>
-              <Text variant="caption" tone="gray" numberOfLines={1}>{x.k}</Text>
-            </View>
-          ))}
-        </View>
-        <PressableScale onPress={() => router.push("/documents" as never)} accessibilityRole="button" style={[s.link, { backgroundColor: c.tint }]}>
-          <Icon name="file-text" size={16} color={c.accent} />
-          <Text variant="small" weight="bold" tone="accent" style={s.flex}>{t("cl1.documentsLink")}</Text>
-          <Icon name="arrow-right" size={15} color={c.accent} />
-        </PressableScale>
-      </View>
-    </Reveal>
+    <View style={s.row}>
+      {cells.map((x) => {
+        const on = group === x.g;
+        return (
+          <PressableScale key={x.g} onPress={() => onGroup(on ? "all" : x.g)} scale={0.97} accessibilityRole="button" accessibilityState={{ selected: on }}
+            style={[s.cell, { backgroundColor: c.surface, borderColor: on ? x.tint : c.line }, on && s.on]}>
+            <Text variant="h2" style={{ color: x.tint }}>{works.filter((w) => inGroup(w, x.g)).length}</Text>
+            <Text variant="small" tone="gray" numberOfLines={2}>{x.label}</Text>
+          </PressableScale>
+        );
+      })}
+    </View>
   );
 }
 
 const s = StyleSheet.create({
-  col: { gap: 10, paddingBottom: 14 },
-  row: { flexDirection: "row", gap: 10 },
-  cell: { flex: 1, gap: 4, padding: 12, borderRadius: radius.rl, borderWidth: 1 },
-  link: { flexDirection: "row", alignItems: "center", gap: 10, minHeight: 48, paddingHorizontal: 14, borderRadius: radius.r },
-  flex: { flex: 1 },
+  row: { flexDirection: "row", gap: 10, paddingBottom: 14 },
+  cell: { flex: 1, gap: 2, paddingHorizontal: 14, paddingVertical: 14, borderRadius: 20, borderWidth: 1, minHeight: 92 },
+  on: { borderWidth: 1.5 },
 });

@@ -1,6 +1,7 @@
 import type { Messages } from "../uz";
 
 export const cl1: Messages["cl1"] = {
+  list: { running: "Active", waiting: "Waiting for you", finished: "Finished", allKinds: "All types", next: "Next step: {s}", docs: "Document archive" },
   title: "My works",
   sub: "Work with lawyers, urgent services and orders",
   count: "{n} works",
@@ -17,6 +18,7 @@ export const cl1: Messages["cl1"] = {
   group: {
     all: "All",
     open: "Active",
+    running: "Active",
     queue: "Queued",
     active: "In progress",
     review: "In review",

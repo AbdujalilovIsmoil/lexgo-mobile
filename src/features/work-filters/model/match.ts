@@ -5,7 +5,7 @@ import type { GroupFilter, WorkFilters } from "./types";
 export const inGroup = (w: Work, g: GroupFilter): boolean => {
   if (g === "all") return true;
   const own = workGroup(w.status);
-  return g === "open" ? OPEN_GROUPS.includes(own) : own === g;
+  return g === "open" ? OPEN_GROUPS.includes(own) : g === "running" ? own === "active" || own === "review" : own === g;
 };
 
 const fold = (s: string) => s.toLowerCase().normalize("NFKD").replace(/[̀-ͯ]/g, "").replace(/[ʻʼ’‘`']/g, "");

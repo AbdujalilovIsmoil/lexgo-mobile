@@ -19,7 +19,7 @@ export function useWorkFilters(items: Work[], initialGroup: GroupFilter = "all")
   }, [items, filters, hays]);
   const groupCounts = useMemo(() => {
     const base = filterWorks(items, filters, hays, "group");
-    return Object.fromEntries([...GROUPS, "open", "all"].map((g) => [g, base.filter((w) => inGroup(w, g as GroupFilter)).length])) as Record<string, number>;
+    return Object.fromEntries([...GROUPS, "open", "running", "all"].map((g) => [g, base.filter((w) => inGroup(w, g as GroupFilter)).length])) as Record<string, number>;
   }, [items, filters, hays]);
   const set = (patch: Partial<WorkFilters>) => setRaw((f) => ({ ...f, ...patch }));
   const reset = () => setRaw({ q: "", kind: "all", group: initialGroup });

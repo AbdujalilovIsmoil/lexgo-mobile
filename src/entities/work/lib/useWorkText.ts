@@ -26,6 +26,6 @@ export function useWorkText() {
   );
   const next = useCallback((raw: string) => (NEXT[raw] ? t(`cl5.next.${NEXT[raw]}`) : raw), [t]);
   const kind = useCallback((k: WorkKind) => t(`cl1.kind.${k}`), [t]);
-  const group = useCallback((g: WorkGroup | "open" | "all") => t(`cl1.group.${g}`), [t]);
+  const group = useCallback((g: WorkGroup | "open" | "running" | "all") => t(`cl1.group.${g}`), [t]);
   return useMemo(() => ({ status, next, kind, group }), [status, next, kind, group]);
 }
