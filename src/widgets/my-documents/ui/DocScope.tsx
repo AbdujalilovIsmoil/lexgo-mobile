@@ -1,52 +1,46 @@
-import { ScrollView, StyleSheet, View } from "react-native";
-import { LinearGradient } from "expo-linear-gradient";
+import { StyleSheet, View } from "react-native";
 import { Icon, PressableScale, Skeleton, Text, type IconName } from "@/shared/ui";
-import { gradient, useColors } from "@/shared/theme";
+import { useTheme } from "@/shared/theme";
 import { selectHaptic } from "@/shared/lib/haptics";
 import { useT } from "@/shared/i18n";
 
 export type StatKey = "" | "you" | "review" | "ready";
-const SCOPES: { key: StatKey; icon: IconName }[] = [
-  { key: "", icon: "layers" },
-  { key: "you", icon: "edit-3" },
-  { key: "review", icon: "briefcase" },
-  { key: "ready", icon: "check-circle" },
+const SCOPES: { key: Exclude<StatKey, "">; icon: IconName; tint: string }[] = [
+  { key: "you", icon: "edit-3", tint: "#E0791C" },
+  { key: "review", icon: "briefcase", tint: "#1668F0" },
+  { key: "ready", icon: "check-circle", tint: "#1F9D55" },
 ];
 
 type Props = { counts: Record<string, number>; value: StatKey; onChange: (k: StatKey) => void; loading: boolean };
 
-// The archive split by who holds the ball, as one scrolling row of pills with live counts; the chosen one is filled
-// with the brand gradient, and "waiting on you" carries a dot while it is not empty (the thing to do first).
+// The archive split by who holds the ball, as three counters (the same look as "Mening ishlarim"): an icon disc in each one's colour, the
+// live count beside it, a short label under. A tap filters by it (the tile fills with its colour), a second tap takes the filter off.
 export function DocScope({ counts, value, onChange, loading }: Props) {
   const { t } = useT();
-  const c = useColors();
+  const { colors: c, dark } = useTheme();
   return (
-    <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={s.row}>
-      {SCOPES.map(({ key, icon }) => {
+    <View style={s.row}>
+      {SCOPES.map(({ key, icon, tint }) => {
         const on = value === key;
-        const n = counts[key || "all"] ?? 0;
-        const fg = on ? "#FFFFFF" : c.ink;
-        const body = (
-          <>
-            <Icon name={icon} size={16} color={on ? "#FFFFFF" : c.accent} />
-            <Text variant="small" weight="semibold" style={{ color: fg }}>{t(`dm1.stat.${key || "all"}`)}</Text>
-            {loading ? <Skeleton width={22} height={16} onDark={on} /> : <View style={[s.count, { backgroundColor: on ? "rgba(255,255,255,0.25)" : c.surface2 }]}><Text variant="caption" weight="bold" style={{ color: fg }}>{n}</Text></View>}
-            {key === "you" && n > 0 && !on ? <View style={[s.dot, { backgroundColor: c.warn }]} /> : null}
-          </>
-        );
         return (
-          <PressableScale key={key || "all"} haptic={false} onPress={() => { selectHaptic(); onChange(on ? "" : key); }} accessibilityRole="button" accessibilityState={{ selected: on }}>
-            {on ? <LinearGradient colors={[...gradient.primary]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={s.pill}>{body}</LinearGradient> : <View style={[s.pill, { backgroundColor: c.glassFill, borderColor: c.glassLine, borderWidth: 1 }]}>{body}</View>}
+          <PressableScale key={key} haptic={false} scale={0.97} onPress={() => { selectHaptic(); onChange(on ? "" : key); }} accessibilityRole="button" accessibilityState={{ selected: on }}
+            style={[s.cell, { backgroundColor: on ? tint : c.surface, borderColor: on ? tint : c.line }]}>
+            <View style={s.top}>
+              <View style={[s.ico, { backgroundColor: on ? "rgba(255,255,255,0.22)" : `${tint}${dark ? "33" : "1A"}` }]}><Icon name={icon} size={15} color={on ? "#FFFFFF" : tint} /></View>
+              {loading ? <Skeleton width={26} height={20} onDark={on} /> : <Text variant="h3" style={[s.n, { color: on ? "#FFFFFF" : c.ink }]}>{counts[key] ?? 0}</Text>}
+            </View>
+            <Text variant="caption" weight="semibold" numberOfLines={1} style={{ color: on ? "rgba(255,255,255,0.9)" : c.gray }}>{t(`dm1.statShort.${key}`)}</Text>
           </PressableScale>
         );
       })}
-    </ScrollView>
+    </View>
   );
 }
 
 const s = StyleSheet.create({
-  row: { gap: 8, paddingHorizontal: 16 },
-  pill: { flexDirection: "row", alignItems: "center", gap: 8, height: 44, paddingHorizontal: 14, borderRadius: 22 },
-  count: { minWidth: 26, height: 22, paddingHorizontal: 7, borderRadius: 11, alignItems: "center", justifyContent: "center" },
-  dot: { position: "absolute", top: 6, right: 6, width: 8, height: 8, borderRadius: 4 },
+  row: { flexDirection: "row", gap: 8, paddingHorizontal: 16 },
+  cell: { flex: 1, gap: 8, padding: 12, borderRadius: 18, borderWidth: 1 },
+  top: { flexDirection: "row", alignItems: "center", gap: 8 },
+  ico: { width: 30, height: 30, borderRadius: 15, alignItems: "center", justifyContent: "center" },
+  n: { fontSize: 20, lineHeight: 24 },
 });

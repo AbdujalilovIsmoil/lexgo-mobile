@@ -24,7 +24,7 @@ type Props = {
 };
 
 // A card on the remote-assistance map while it is on screen: the operator may point at it or open its detail sheet (named by its public id).
-function Item({ row, index, onOpen, onSend }: { row: DocRow; index: number; onOpen: (id: string) => void; onSend: (id: string) => void }) {
+function Item({ row, first, last, onOpen, onSend }: { row: DocRow; first: boolean; last: boolean; onOpen: (id: string) => void; onSend: (id: string) => void }) {
   const { t } = useT();
   const ra = useRaControl({
     id: `my_documents.item.${row.id}`,
@@ -35,10 +35,10 @@ function Item({ row, index, onOpen, onSend }: { row: DocRow; index: number; onOp
       return raOk();
     },
   });
-  return <View {...ra}><DocListItem row={row} index={index} onOpen={onOpen} onSend={onSend} /></View>;
+  return <View {...ra}><DocListItem row={row} first={first} last={last} onOpen={onOpen} onSend={onSend} /></View>;
 }
 
-// The list body: skeleton cards → error → empty / filtered-empty → sections of cards, pull to refresh, and ten more on
+// The list body: skeleton cards → error → empty / filtered-empty → sections, each one card of rows, pull to refresh, and ten more on
 // scroll-end through the counter footer.
 export function DocList({ rows, query, page, filtered, header, onOpen, onSend, onReset, onBrowse }: Props) {
   const { t } = useT();
@@ -55,8 +55,7 @@ export function DocList({ rows, query, page, filtered, header, onOpen, onSend, o
     <FlatList
       data={data}
       keyExtractor={(i) => i.id}
-      renderItem={({ item, index }) => (item.head ? <DocSectionHead kind={item.head} n={item.n ?? 0} /> : item.row ? <Item row={item.row} index={index} onOpen={onOpen} onSend={onSend} /> : <View />)}
-      ItemSeparatorComponent={() => <View style={s.sep} />}
+      renderItem={({ item, index }) => (item.head ? <DocSectionHead kind={item.head} n={item.n ?? 0} /> : item.row ? <Item row={item.row} first={index === 0 || !!data[index - 1]?.head} last={index === data.length - 1 || !!data[index + 1]?.head} onOpen={onOpen} onSend={onSend} /> : <View />)}
       ListHeaderComponent={header}
       ListEmptyComponent={empty}
       ListFooterComponent={data.length ? <DocListFooter page={page} loading={!!query.isFetchingNextPage} onMore={() => void query.fetchNextPage?.()} /> : null}
@@ -72,4 +71,4 @@ export function DocList({ rows, query, page, filtered, header, onOpen, onSend, o
   );
 }
 
-const s = StyleSheet.create({ content: { paddingHorizontal: 16, flexGrow: 1 }, gap: { gap: 12 }, sep: { height: 10 } });
+const s = StyleSheet.create({ content: { paddingHorizontal: 16, flexGrow: 1 }, gap: { gap: 12 } });

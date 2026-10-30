@@ -5,6 +5,7 @@ export const dm1 = {
   searchPh: "Hujjat nomi yoki ish raqami…",
   untitled: "Nomsiz hujjat",
   stat: { all: "Jami hujjatlar", you: "Sizdan kutilmoqda", review: "Advokatda", ready: "Tayyor" },
+  statShort: { you: "Kutilmoqda", review: "Advokatda", ready: "Tayyor" },
   mode: { all: "Barchasi", manual: "O'zim to'ldirganlar", ai: "AI bilan", lawyer: "Advokat bilan" },
   empty: "Hozircha hujjat yo'q",
   emptyText: "Xizmat tanlab hujjat to'ldirganingizda yoki advokatga so'rov yuborganingizda, ular shu yerda ko'rinadi.",

@@ -43,10 +43,10 @@ export function DocCardActions({ row, onSend }: Props) {
   const main = list[0];
   return (
     <View style={s.row}>
-      <Button title={main.label} icon={main.icon} size="sm" variant="primary" loading={main.key === "dl" && dl.busy} onPress={main.onPress} style={s.btn} />
+      <Button title={main.label} icon={main.icon} size="sm" variant="soft" loading={main.key === "dl" && dl.busy} onPress={main.onPress} style={s.btn} />
       <CtorSheet visible={asking} title={row.ctor?.title || t("dm3.ctorTitle")} message={row.ctor?.message || t("dm3.ctorText")} onYes={go} onClose={() => setAsking(false)} />
     </View>
   );
 }
 
-const s = StyleSheet.create({ row: { flexDirection: "row", alignItems: "center" }, btn: { minHeight: 44 } });
+const s = StyleSheet.create({ row: { flexDirection: "row", alignItems: "center", paddingLeft: 54 }, btn: { minHeight: 40 } }); // under the title, past the icon tile
