@@ -7,6 +7,7 @@ export const cdash = {
   "home": {
     "title": "Qanday yordam kerak?",
     "askPh": "Muammoingizni yozing, masalan: maoshim 3 oydan beri to'lanmayapti",
+    "send": "Yuborish",
     "attach": "Hujjat biriktirish",
     "find": "Mutaxassis topish", "findSub": "Advokat va yuristlar",
     "analysis": "Hujjat tahlili", "analysisSub": "AI xavflarni topadi",

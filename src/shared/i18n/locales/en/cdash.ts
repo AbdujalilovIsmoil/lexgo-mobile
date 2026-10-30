@@ -7,6 +7,7 @@ export const cdash = {
   "home": {
     "title": "What help do you need?",
     "askPh": "Describe your problem, e.g. my salary is 3 months unpaid",
+    "send": "Send",
     "attach": "Attach a document",
     "find": "Find a specialist", "findSub": "Advocates and lawyers",
     "analysis": "Document analysis", "analysisSub": "AI finds the risks",

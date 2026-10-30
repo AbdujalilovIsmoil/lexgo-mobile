@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { analyzeFile, analyzeText, FILE_RULE, type DocAnalysis, type PickedDoc } from "@/entities/doc-analysis";
 import { pickRule, useDocRefusal, useDocSettings } from "@/entities/doc-settings";
 import { planGateOf, type PlanGate } from "@/entities/plan";
@@ -8,6 +8,7 @@ import { errorHaptic, successHaptic } from "@/shared/lib/haptics";
 import { pickDocuments } from "@/shared/lib/upload";
 import { INCLUDED_PAGES, useOptions } from "./useOptions";
 import { useQuote } from "./useQuote";
+import { takePendingDoc, usePendingDoc } from "./pendingDoc";
 
 type Status = "idle" | "running" | "done" | "error";
 const MIN_TEXT = 20;
@@ -21,10 +22,19 @@ export function useDocAnalysis() {
   const rule = useMemo(() => pickRule(ds.upload(FILE_RULE)), [ds]);
   const gate = ds.gate("analysis");
   const review = ds.gate("review").state !== "off";
-  const [file, setFile] = useState<PickedDoc | null>(null);
+  const [file, setFile] = useState<PickedDoc | null>(() => usePendingDoc.getState().file); // a file picked on Home comes in ready
   const [text, setText] = useState("");
   const [status, setStatus] = useState<Status>("idle");
   const [result, setResult] = useState<DocAnalysis | null>(null);
+  // The file handed over from Home: the first one is the starting state above (cleared here once taken); a later one, with the screen
+  // already open, starts the analysis over with it.
+  useEffect(() => {
+    takePendingDoc();
+    return usePendingDoc.subscribe((st) => {
+      const f = st.file ? takePendingDoc() : null;
+      if (f) { setFile(f); setResult(null); setStatus("idle"); }
+    });
+  }, []);
   const [error, setError] = useState("");
   const [plan, setPlan] = useState<PlanGate | null>(null);
   const opts = useOptions(text, { included: ds.includedPages(INCLUDED_PAGES), review });
