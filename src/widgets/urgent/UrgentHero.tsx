@@ -1,32 +1,30 @@
 import { StyleSheet, View } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
-import { Icon, Skeleton, Text } from "@/shared/ui";
-import { radius } from "@/shared/theme";
+import { Skeleton, Text } from "@/shared/ui";
 import { fmtMoney } from "@/shared/lib/money";
 import { useT } from "@/shared/i18n";
 import type { UrgentCatalog } from "@/entities/urgent";
 
-// Hero of the client page: the name of the module and what it is, then the three numbers every meeting runs on as one
-// ruled strip (meeting / free extension / paid extension), all from the catalog.
+// Compact hero of the client page: eyebrow, the module's name and one line about it, then the three numbers every meeting runs on as
+// three tiles (meeting / free extension / paid extension), all from the catalog.
 export function UrgentHero({ cat, loading }: { cat?: UrgentCatalog; loading: boolean }) {
   const { t } = useT();
   const cols = cat ? [
-    [t("ug1.metaMinutes"), t("ug4.minutesN", { n: cat.meetingMinutes })],
-    [t("ug1.metaFree"), t("ug4.minutesN", { n: cat.freeExtensionMinutes })],
-    ...(cat.paidExtensionPerMinute ? [[t("ug1.metaPaid"), t("ug1.perMinute", { price: fmtMoney(cat.paidExtensionPerMinute) })]] : []),
+    [t("ug4.minutesN", { n: cat.meetingMinutes }), t("ug1.metaMinutes")],
+    [t("ug4.minutesN", { n: cat.freeExtensionMinutes }), t("ug1.metaFree")],
+    ...(cat.paidExtensionPerMinute ? [[t("ug1.perMinute", { price: fmtMoney(cat.paidExtensionPerMinute) }), t("ug1.metaPaid")]] : []),
   ] : [];
   return (
-    <LinearGradient colors={["#0B1B3F", "#0E2A63"]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={s.box}>
-      <View style={s.glow} pointerEvents="none" />
-      <View style={s.bolt}><Icon name="zap" size={22} color="#FACC15" /></View>
-      <Text variant="h2" tone="white">{cat?.title || t("ug1.title")}</Text>
-      <Text variant="body" style={s.dim}>{t("ug1.lead")}</Text>
-      {loading ? <Skeleton height={64} onDark /> : cols.length ? (
+    <LinearGradient colors={["#14295F", "#1D3D8F", "#2856B4"]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={s.box}>
+      <Text variant="caption" weight="bold" style={s.eyebrow}>{t("ug1.page.eyebrow").toUpperCase()}</Text>
+      <Text variant="h3" tone="white">{cat?.title || t("ug1.title")}</Text>
+      <Text variant="small" style={s.dim}>{t("ug1.page.lead")}</Text>
+      {loading ? <Skeleton height={54} onDark /> : cols.length ? (
         <View style={s.strip}>
-          {cols.map(([label, value], i) => (
-            <View key={label} style={[s.col, i === 2 && { flex: 1.5 }, i > 0 && s.rule]}>
-              <Text variant="small" weight="bold" tone="white">{value}</Text>
-              <Text variant="caption" style={s.dim}>{label}</Text>
+          {cols.map(([value, label], i) => (
+            <View key={label} style={[s.col, i > 0 && s.rule]}>
+              <Text variant="small" weight="bold" tone="white" numberOfLines={2}>{value}</Text>
+              <Text variant="caption" style={s.dim} numberOfLines={2}>{label}</Text>
             </View>
           ))}
         </View>
@@ -36,11 +34,10 @@ export function UrgentHero({ cat, loading }: { cat?: UrgentCatalog; loading: boo
 }
 
 const s = StyleSheet.create({
-  box: { padding: 18, gap: 10, borderRadius: radius.rx, overflow: "hidden" },
-  glow: { position: "absolute", right: -80, top: -90, width: 240, height: 240, borderRadius: 120, backgroundColor: "rgba(22,104,240,0.35)" },
-  bolt: { width: 42, height: 42, borderRadius: 14, alignItems: "center", justifyContent: "center", backgroundColor: "rgba(250,204,21,0.16)" },
-  dim: { color: "rgba(255,255,255,0.78)" },
-  strip: { flexDirection: "row", marginTop: 6, paddingVertical: 12, borderRadius: 16, backgroundColor: "rgba(255,255,255,0.08)", borderWidth: 1, borderColor: "rgba(255,255,255,0.14)" },
-  col: { flex: 1, gap: 2, paddingHorizontal: 12 },
-  rule: { borderLeftWidth: 1, borderLeftColor: "rgba(255,255,255,0.16)" },
+  box: { padding: 16, gap: 6, borderRadius: 20, overflow: "hidden" },
+  eyebrow: { color: "rgba(255,255,255,0.75)", letterSpacing: 0.6 },
+  dim: { color: "rgba(255,255,255,0.8)" },
+  strip: { flexDirection: "row", marginTop: 6, borderRadius: 14, backgroundColor: "rgba(255,255,255,0.12)", overflow: "hidden" },
+  col: { flex: 1, gap: 2, paddingHorizontal: 10, paddingVertical: 10 },
+  rule: { borderLeftWidth: 1, borderLeftColor: "rgba(255,255,255,0.14)" },
 });

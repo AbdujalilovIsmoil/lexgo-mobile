@@ -1,4 +1,5 @@
 export const ug1 = {
+  page: { lead: "Sun'iy intellekt emas — advokatning o'zi javob beradi.", eyebrow: "Advokat bilan bevosita", pick: "Xizmatni tanlang", activeN: "{n} ta faol", noneActive: "Faol so'rov yo'q", open: "So'rovni ochish", byDoc: "Hujjat bo'yicha", lawyersRange: "{min} dan {max} tagacha advokat", docsSub: "Hujjat yozish yoki tekshirish", priceFrom: "{price} so'mdan" },
   title: "Tezkor advokat",
   lead: "Advokat bilan hoziroq bog'laning: video yoki chat orqali konsultatsiya, yoki boshqa advokatning ikkinchi fikri.",
   metaMinutes: "Uchrashuv",
