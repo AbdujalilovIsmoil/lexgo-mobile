@@ -42,7 +42,7 @@ Yig'ilMAYDI: aniq/taxminiy joylashuv, kontaktlar, kalendar (mahalliy eslatma uch
 | MODIFY_AUDIO_SETTINGS, BLUETOOTH | Qo'ng'iroq paytida dinamik/quloqchin yo'naltirish |
 | POST_NOTIFICATIONS | Buyurtma, xabar, qo'ng'iroq bildirishnomalari |
 | USE_BIOMETRIC | Biometrik qulf |
-| VIBRATE, WAKE_LOCK, FOREGROUND_SERVICE(_MEDIA_PLAYBACK) | Qo'ng'iroq signali va qo'ng'iroq davomida ekran/audio |
+| VIBRATE, WAKE_LOCK, FOREGROUND_SERVICE | Qo'ng'iroq signali va qo'ng'iroq davomida ekran/audio (FOREGROUND_SERVICE_MEDIA_PLAYBACK olib tashlandi: ilovada fon media-pleyer yo'q) |
 | INTERNET, ACCESS_NETWORK_STATE | Tarmoq |
 
 Olib tashlangan (Play'da cheklangan): SYSTEM_ALERT_WINDOW, READ_MEDIA_IMAGES/VIDEO/AUDIO, READ_MEDIA_VISUAL_USER_SELECTED, READ/WRITE_EXTERNAL_STORAGE (`app.json → android.blockedPermissions`).

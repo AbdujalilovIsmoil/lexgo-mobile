@@ -69,7 +69,7 @@ Fixed in the app on 2026-10-24: a call started from a secure chat now sends `par
 
 - **iOS app:** PushKit + CallKit, registering the `apns_voip` token, and answer / decline from the system call screen. This is native work. It can be tested only on a real iPhone with a build signed by the paid Apple team, because PushKit does not work on the simulator.
 - **Android app:**
-  - A Firebase project with the Android app `org.cognilabs.lexgo`. Its `google-services.json` goes into the project root (or an EAS file variable `GOOGLE_SERVICES_JSON`), followed by a new build.
+  - A Firebase project with the Android app `org.cognilabs.lexgo.app`. Its `google-services.json` goes into the project root (or an EAS file variable `GOOGLE_SERVICES_JSON`), followed by a new build.
   - A full-screen incoming-call screen. The app already turns an FCM `call.incoming` data message into the call notification with Join / Decline. This was built but cannot be tested without Firebase.
 - **Apple:** the APNs auth key (`.p8`, key id, team id) of the paid team that owns `org.cognilabs.lexgo`, for the server. Builds signed with a free "Personal Team" (the USB test phone) can never receive a push. No iOS build has been made on EAS yet.
 

@@ -31,7 +31,7 @@
       "bitcode": false
     },
     "android": {
-      "package": "org.cognilabs.lexgo",
+      "package": "org.cognilabs.lexgo.app",
       "allowBackup": false,
       "adaptiveIcon": {
         "foregroundImage": "./logos/android/adaptive-foreground.png",
@@ -64,7 +64,8 @@
         "android.permission.READ_MEDIA_AUDIO",
         "android.permission.READ_MEDIA_VISUAL_USER_SELECTED",
         "android.permission.READ_EXTERNAL_STORAGE",
-        "android.permission.WRITE_EXTERNAL_STORAGE"
+        "android.permission.WRITE_EXTERNAL_STORAGE",
+        "android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK"
       ],
       "permissions": [
         "android.permission.ACCESS_NETWORK_STATE",
@@ -76,7 +77,6 @@
         "android.permission.WAKE_LOCK",
         "android.permission.BLUETOOTH",
         "android.permission.FOREGROUND_SERVICE",
-        "android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK",
         "android.permission.USE_BIOMETRIC",
         "android.permission.USE_FINGERPRINT",
         "android.permission.READ_EXTERNAL_STORAGE",
@@ -86,7 +86,7 @@
         "android.permission.READ_MEDIA_VIDEO",
         "android.permission.READ_MEDIA_AUDIO"
       ],
-      "versionCode": 3
+      "versionCode": 4
     },
     "web": {
       "favicon": "./assets/favicon.png",
@@ -190,17 +190,17 @@
         "enforceContrast": false
       },
       "eas": {
-        "projectId": "3c3729af-185c-4be7-8c62-298aff835b84"
+        "projectId": "4919a25b-38c2-44ad-9ac4-eef07dcd72a2"
       }
     },
-    "owner": "ismoilabdujalilov",
     "runtimeVersion": {
       "policy": "appVersion"
     },
     "updates": {
-      "url": "https://u.expo.dev/3c3729af-185c-4be7-8c62-298aff835b84",
+      "url": "https://u.expo.dev/4919a25b-38c2-44ad-9ac4-eef07dcd72a2",
       "checkAutomatically": "ON_LOAD",
       "fallbackToCacheTimeout": 0
-    }
+    },
+    "owner": "cognilabs-dev"
   }
 }

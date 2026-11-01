@@ -25,7 +25,7 @@ Eslatma: App Store Connect'da **o'zbek tili lokalizatsiya sifatida yo'q**. Shuni
 
 | Maydon | Qiymat |
 |---|---|
-| **Bundle ID** | `org.cognilabs.lexgo` (iOS va Android bir xil) |
+| **Bundle ID** | `org.cognilabs.lexgo` (iOS; Android paketi — `org.cognilabs.lexgo.app`) |
 | Versiya (`CFBundleShortVersionString`) | `1.1.0` (`app.json → expo.version`) |
 | Build (`CFBundleVersion`) | `1` (`app.json → expo.ios.buildNumber`; EAS production profili har buildda avtomatik oshiradi) |
 | Minimal iOS | 16.4 (Expo SDK 57 standarti) |
