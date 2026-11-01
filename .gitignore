@@ -27,3 +27,14 @@ yarn-error.*
 # impeccable design review captures
 .impeccable/review/
 .impeccable/mocks/
+
+# Android signing material and build artifacts: never commit (see docs/ANDROID-RELEASE.md)
+*.keystore
+*.apks
+credentials.json
+key.properties
+*.pem
+
+# generated store-listing images (PNG copies; the JPGs in out/ are the upload files)
+play-store/graphics/store-listing/out/*.png
+play-store/graphics/store-listing/src/.tmp/
