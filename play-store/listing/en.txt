@@ -4,39 +4,45 @@
 LexGo — Legal Help
 
 [Short description] (max 80 characters)
-Find a lawyer, prepare documents and get AI legal guidance in one app.
+Find a lawyer, prepare documents and get AI legal help — all in one app.
 
 [Full description] (max 4000 characters)
-LexGo brings legal services in Uzbekistan together in one app. Describe your problem and quickly find the right service and specialist.
+LexGo brings legal services in Uzbekistan into one app. Describe your problem and the AI points the way, prepare a document in minutes, or connect with a verified lawyer.
 
 WHAT YOU CAN DO
 
-• AI legal assistant — describe your question in plain words; the app identifies the type of problem and suggests a suitable service and lawyer.
-• Directory of lawyers and legal advisers — search by region, specialization, rating and price, view profiles and place an order.
-• Document preparation — fill in contracts, applications and other documents yourself, generate them with AI, or hand them to an on-duty lawyer.
-• On-duty (urgent) lawyer — send a request for urgent help.
-• Secure chat, audio and video calls — talk to a specialist inside the app.
-• Orders and statuses — follow every step, download the result and rate the work.
-• Plans — choose a package to extend AI and document features.
-• Notifications — stay informed about orders, messages and calls.
-• Help center — chat with a support operator.
+• AI legal assistant — write your question in plain words. Answers cite the relevant articles of the law and suggest next steps.
+• Ready-made documents — hundreds of contract, application and complaint templates. Search, fill in and download.
+• Document analysis — upload a document and the AI flags risky clauses.
+• Lawyers and legal advisers — filter by region, specialty, rating and price, view profiles and place an order.
+• Urgent lawyer and SOS — request fast help in an emergency. Road-accident advice is included.
+• Video consultation, chat and calls — reach a specialist securely inside the app.
+• Orders — follow every stage, download the result and leave a review.
+• Plans and packages — pick the one that suits you.
+• Academy — legal knowledge and useful material.
+• Help center — chat with an operator.
 
 FOR LAWYERS AND LEGAL ADVISERS
 
-Register, publish your services, accept orders, work with clients and track your income.
+Sign up, list your services, accept orders, work with clients and track your earnings.
 
 SECURITY
 
-• Mandatory two-step verification for staff and specialists.
-• Password and biometric lock (fingerprint / Face ID).
 • Data is encrypted in transit.
+• Password and biometric lock (fingerprint / Face ID).
+• Mandatory two-step verification for staff and specialists.
 
 IMPORTANT
 
-The AI assistant provides general information and does not replace advice from a lawyer. For complex matters, contact a qualified specialist.
+The AI assistant gives general information and does not replace a lawyer's advice. For complex matters, consult a qualified specialist.
 
 Languages: Uzbek, Russian, English.
-Questions? Use the "Help" section inside the app.
+Questions? Write to us from the "Help" section in the app.
 
-[What's new] (max 500 characters)
-First release of LexGo: AI assistant, lawyer directory, document preparation, secure chat and calls, orders and notifications.
+[Release notes — 1.1.0 (4), internal test] (max 500 characters; inside <en-US> ... </en-US> in Play Console)
+LexGo 1.1.0 — first test build.
+• AI legal assistant with answers that cite the law
+• Ready-made documents and document analysis
+• Lawyer catalog, urgent lawyer and SOS
+• Chat, voice and video calls
+Please test sign-in, calls and documents, and report any bugs via the Help section.

@@ -4,8 +4,8 @@
 | Maydon | Qiymat |
 |---|---|
 | Ilova nomi | LexGo — yuridik yordam (uz) / LexGo — юридическая помощь (ru) / LexGo — Legal Help (en) |
-| Paket nomi (applicationId) | `org.cognilabs.lexgo` |
-| Versiya | 1.1.0 (versionCode **3**) — keyingi har yuklashda `app.json` → `android.versionCode` ni oshiring |
+| Paket nomi (applicationId) | `org.cognilabs.lexgo.app` (Android; iOS bundle ID — `org.cognilabs.lexgo`. Eski `org.cognilabs.lexgo` Play ilovasi yo'qolgan upload kaliti sababli tashlandi) |
+| Versiya | 1.1.0 (versionCode **4**) — keyingi har yuklashda `app.json` → `android.versionCode` ni oshiring (batafsil: `docs/ANDROID-RELEASE.md`) |
 | Asosiy til | O'zbekcha (uz) |
 | Ilova yoki o'yin | Ilova |
 | Bepul yoki pullik | Bepul (ilova ichida pullik tariflar bor) |
@@ -21,18 +21,16 @@
 ## Yuklanadigan fayllar
 | Fayl | Joyi |
 |---|---|
-| **AAB** (Play'ga yuklanadigan) | `play-store/lexgo-1.1.0-v3.aab` (git'da yo'q; qayta yig'ish: `npx eas-cli@latest build -p android --profile production`) |
-| Ilova ikonkasi 512×512 | `mobile/logos/play-market/lexgo-play-icon-512.png` |
-| Feature graphic 1024×500 | `mobile/logos/play-market/lexgo-feature-graphic-1024x500.png` |
-| Skrinshotlar (telefon) | `mobile/play-store/graphics/screenshots/` |
-| Matnlar | `mobile/play-store/listing/uz.txt, ru.txt, en.txt` |
+| **AAB** (Play'ga yuklanadigan) | git'da yo'q (`*.aab` ignor qilingan). Qayta yig'ish va tekshirish: `docs/ANDROID-RELEASE.md` |
+| Ilova ikonkasi 512×512 | `play-store/graphics/icon-512.png` |
+| Feature graphic 1024×500 | `play-store/graphics/store-listing/out/feature-graphic-1024x500.jpg` |
+| Skrinshotlar (telefon, 1080×1920) | `play-store/graphics/store-listing/out/screenshot-01…06.jpg` (haqiqiy emulyator suratlari; generator: `play-store/graphics/store-listing/build.mjs`) |
+| Matnlar | `play-store/listing/uz.txt` (asosiy), `en.txt`, `ru.txt` (ru hali yangilanmagan) |
 
 ## Imzo (MUHIM)
-AAB EAS serverida saqlanadigan **upload kaliti** bilan imzolanadi (expo.dev → lexgo → Credentials → Android, "Build Credentials vpvqa-cAbQ").
-Sertifikat SHA-1: `AD:4D:54:03:8E:59:8C:16:B1:67:0A:3A:85:95:40:13:7F:04:E0:80`
-Sertifikat SHA-256: `3D:0D:2B:91:5C:FC:F3:F1:DF:C8:AD:11:95:13:C0:6B:E1:1B:2E:8E:E9:42:52:38:39:CF:BF:02:14:93:5E:56`
-Play Console avvalgi kalitni kutadi (SHA-1 `54:7C:BF:E1:E5:5B:3E:46:03:25:31:F2:83:51:CE:55:22:27:CB:7F`, `~/lexgo-keys/lexgo-upload.jks`), u bu Mac'da yo'q (2026-10-30). Yechim: Play Console → Test and release → App integrity → App signing → **Request upload key reset** → sabab "I lost my upload key" → `play-store/upload_certificate.pem` faylini yuklang. Google tasdiqlagach (odatda 1–2 kun) shu EAS kaliti bilan imzolangan AAB qabul qilinadi.
-- EAS'dagi kalitni zaxiralang (`eas credentials` → Android → Download keystore) — **zaxiralang** (parol menejeri / xavfsiz disk). Yo'qolsa, yangilanish yuklab bo'lmaydi (Google qo'llab-quvvatlashi orqali kalitni almashtirish mumkin, lekin sekin).
+AAB EAS serverida saqlanadigan **upload kaliti** bilan imzolanadi (expo.dev → lexgo → Credentials → Android). Yangi paket (`org.cognilabs.lexgo.app`) uchun birinchi `eas build -p android --profile production` EAS'da yangi keystore yaratadi; Play'dagi yangi ilova birinchi yuklashda shu kalitni upload kaliti sifatida qabul qiladi.
+Eski paket `org.cognilabs.lexgo` Play'da boshqa upload kalitini (SHA-1 `54:7C:BF:E1:…:CB:7F`) kutardi va u yo'qolgan (2026-10-31), shuning uchun yangi paket nomi bilan boshidan boshlandi.
+- Yangi build'dan keyin EAS'dagi kalitni zaxiralang (`eas credentials` → Android → Download keystore) — parol menejeriga. Yo'qolsa, yangilanish yuklab bo'lmaydi (kalitni almashtirish faqat Google orqali, 1–2 kun).
 - Play Console'da "Play App Signing" ni yoqing (standart): Google ilovani o'z kaliti bilan imzolaydi, sizning kalit — faqat yuklash uchun.
 - Kalit va parolni git'ga solmang (`.gitignore` da `*.jks` bor).
 
@@ -45,7 +43,7 @@ Play Console avvalgi kalitni kutadi (SHA-1 `54:7C:BF:E1:E5:5B:3E:46:03:25:31:F2:
 
 ## App access (tekshiruvchi uchun)
 Ilovaning katta qismi kirishni talab qiladi (OTP / parol, xodimlar uchun majburiy 2FA).
-Play tekshiruvchisi uchun **test akkaunt** kerak:
-- Telefon: **(to'ldiring)**
-- Parol: **(to'ldiring)**
-- Eslatma: akkauntda 2FA/OTP bo'lmasligi yoki tekshiruvchiga kod berilishi kerak (aks holda ilova rad etiladi).
+Play tekshiruvchisi uchun **test akkaunt** kerak. Play Console → App content → App access'da **faqat `client` rolidagi, 2FA'siz** akkaunt kiritiladi (xodim/admin/advokat akkauntlari 2FA yoki keng huquq sababli yaramaydi).
+- Telefon va parol **repoga yozilmaydi** — loyiha egasidan olinadi va Play Console'ga qo'lda kiritiladi.
+- Matn (≤500 belgi): `1. Open LexGo and tap "Kirish". 2. Log in with the phone and password above. No SMS/OTP/2-step code is needed. 3. The account opens the full client app. 4. Allow camera, microphone and notifications when asked.`
+- Akkaunt ishlashini har yuborishdan oldin telefonda tekshiring; parolni o'zgartirsangiz Play Console'dagi ma'lumotni ham yangilang.

@@ -7,18 +7,19 @@ LexGo — yuridik yordam
 Advokat topish, hujjat tayyorlash va AI yuridik maslahat — bitta ilovada.
 
 [To'liq tavsif] (max 4000 belgi)
-LexGo — O'zbekistondagi yuridik xizmatlarni bir joyga to'plagan ilova. Muammoingizni yozing, kerakli xizmat va mutaxassisni tez toping.
+LexGo — O'zbekistondagi yuridik xizmatlarni bir joyga to'plagan ilova. Muammoingizni yozing — AI yo'l ko'rsatadi, hujjatni 5 daqiqada tayyorlang yoki tasdiqlangan advokat bilan bog'laning.
 
 NIMA QILA OLASIZ
 
-• AI yuridik yordamchi — savolingizni oddiy so'zlar bilan yozing, ilova muammo turini aniqlab, mos xizmat va advokatni tavsiya qiladi.
-• Advokat va yuristlar katalogi — hudud, ixtisoslik, reyting va narx bo'yicha qidiring, profilini ko'ring va buyurtma bering.
-• Hujjat tayyorlash — shartnoma, ariza va boshqa hujjatlarni o'zingiz to'ldiring, AI yordamida yarating yoki navbatchi advokatga topshiring.
-• Navbatchi (tezkor) advokat — shoshilinch holatlarda tezkor yordam so'rovi yuboring.
-• Xavfsiz chat, audio va video qo'ng'iroq — mutaxassis bilan ilova ichida bog'laning.
-• Buyurtmalar va holatlar — har bir buyurtma bosqichini kuzating, natijani yuklab oling va baho bering.
-• Tariflar — kerakli paketni tanlab, AI va hujjat imkoniyatlarini kengaytiring.
-• Bildirishnomalar — buyurtma, xabar va qo'ng'iroqlar haqida o'z vaqtida xabar oling.
+• AI yuridik yordamchi — savolingizni oddiy so'zlar bilan yozing. Javob qonun moddalariga havolalar bilan beriladi va keyingi qadamlar ko'rsatiladi.
+• Tayyor hujjatlar — yuzlab shartnoma, ariza va shikoyat namunalari. Qidiring, to'ldiring va yuklab oling.
+• Hujjat tahlili — hujjatni yuklang, AI xavfli bandlarni topadi.
+• Advokat va yuristlar — hudud, ixtisoslik, reyting va narx bo'yicha tanlang, profilini ko'ring va buyurtma bering.
+• Tezkor advokat va SOS — shoshilinch holatlarda tezkor yordam so'rang. Avtohalokat bo'yicha maslahat ham bor.
+• Videokonsultatsiya, chat va qo'ng'iroq — mutaxassis bilan ilova ichida xavfsiz bog'laning.
+• Buyurtmalar — har bir bosqichni kuzating, natijani yuklab oling va baho bering.
+• Tariflar va paketlar — o'zingizga mos rejani tanlang.
+• Akademiya — huquqiy bilimlar va foydali materiallar.
 • Yordam markazi — operator bilan chat orqali murojaat qiling.
 
 ADVOKATLAR VA YURISTLAR UCHUN
@@ -27,9 +28,9 @@ Ro'yxatdan o'tib, xizmatlaringizni joylashtiring, buyurtmalarni qabul qiling, mi
 
 XAVFSIZLIK
 
-• Majburiy ikki bosqichli tasdiqlash xodimlar va mutaxassislar uchun.
-• Parol va biometrik qulf (barmoq izi / Face ID).
 • Ma'lumotlar uzatishda shifrlanadi.
+• Parol va biometrik qulf (barmoq izi / Face ID).
+• Xodimlar va mutaxassislar uchun majburiy ikki bosqichli tasdiqlash.
 
 MUHIM ESLATMA
 
@@ -38,5 +39,10 @@ AI yordamchi umumiy ma'lumot beradi va advokat maslahatining o'rnini bosmaydi. M
 Til: o'zbek, rus, ingliz.
 Savollar bo'lsa, ilovadagi "Yordam" bo'limi orqali yozing.
 
-[Yangiliklar / Release notes] (max 500 belgi)
-LexGo ning birinchi versiyasi: AI yuridik yordamchi, advokatlar katalogi, hujjat tayyorlash, xavfsiz chat va qo'ng'iroqlar, buyurtmalar va bildirishnomalar.
+[Release notes — 1.1.0 (4), ichki test] (max 500 belgi; Play'da <uz> ... </uz> teglari ichida)
+LexGo 1.1.0 — birinchi sinov versiyasi.
+• Qonunga havola qiladigan AI yuridik yordamchi
+• Tayyor hujjatlar va hujjat tahlili
+• Advokatlar katalogi, tezkor advokat va SOS
+• Chat, ovozli va video qo'ng'iroqlar
+Iltimos, kirish, qo'ng'iroq va hujjatlar bilan ishlashni sinab ko'ring va xatolarni "Yordam" bo'limi orqali yuboring.

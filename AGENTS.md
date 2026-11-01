@@ -25,7 +25,7 @@ Run lint and typecheck before declaring any task done.
 
 ## Navigation & Routing
 
-- Use **Expo Router** for all navigation. Routes live in `src/app/` — every file there is a screen, `_layout.tsx` files define navigators. Keep non-route code (components, hooks, utils) outside `src/app/`.
+- Use **Expo Router** for all navigation. In this repo the routes live in **`app/` at the repo root** (not `src/app/`) — every file there is a screen, `_layout.tsx` files define navigators. Keep non-route code (components, hooks, utils) in `src/`.
 - Import `Link`, `router`, and `useLocalSearchParams` from `expo-router`.
 - Docs: https://docs.expo.dev/router/introduction.md
 
@@ -33,6 +33,14 @@ Run lint and typecheck before declaring any task done.
 
 Use EAS to build, sign, and submit the app in the cloud (`eas build`, `eas submit`) and to ship over-the-air updates (`eas update`) — no local Xcode or Android Studio required. Run EAS CLI as `bunx eas-cli <command>` in Bun projects, or `npx eas-cli@latest <command>` otherwise; substitute that for bare `eas` in docs examples.
 Docs: https://docs.expo.dev/eas/index.md
+
+## Android release / Google Play — read `docs/ANDROID-RELEASE.md` first
+
+Before building, signing, uploading to Google Play, changing `android.package`, `android.versionCode`, `android.permissions`/`blockedPermissions`, or touching credentials, read **`docs/ANDROID-RELEASE.md`**. Non-negotiables:
+
+- Release builds must be signed with the registered upload key (EAS credential set `KG3xC17yfV`, SHA-1 `71:22:8E:D9:E5:E3:17:02:CA:9E:6A:D1:85:5D:F2:A0:9D:15:EE:89`). Verify every `.aab` with the script in that doc before upload. Never create a new Android keystore, never pick "Set up a new keystore" / "Delete your keystore" in `eas credentials`, and answer **No** if a build asks to generate a keystore.
+- Bump `expo.android.versionCode` in `app.json` for every upload. Never change `android.package` (`org.cognilabs.lexgo.app`).
+- Never commit or print secrets: keystores, passwords, EAS/Expo tokens, service-account JSON, test-account passwords.
 
 ## Rules
 
