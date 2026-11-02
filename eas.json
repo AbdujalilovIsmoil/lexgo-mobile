@@ -27,12 +27,6 @@
     }
   },
   "submit": {
-    "production": {
-      "ios": {
-        "appleId": "<Apple ID email of the App Store Connect account>",
-        "ascAppId": "<App Store Connect app id (numbers)>",
-        "appleTeamId": "<Team ID>"
-      }
-    }
+    "production": {}
   }
 }
