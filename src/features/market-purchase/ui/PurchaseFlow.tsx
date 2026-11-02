@@ -41,7 +41,7 @@ export function PurchaseFlow({ lawyerId, lawyerName, service, blocked, onBack, o
             <Text variant="caption" tone="gray">{t("ntd.po.total")}</Text>
             <Text variant="h4" tone="accent" numberOfLines={1}>{`${fmtMoney(total)} ${t("common.currency")}`}</Text>
           </View>
-          <Button title={p.sending ? t("mk3.sending") : t("mk3.submit")} onPress={() => void p.submit()} loading={p.sending} disabled={!!blocked || !p.q.settled} variant="gradient" icon="send" />
+          <Button title={p.sending ? t("mk3.sending") : t("mk3.submit")} onPress={() => void p.submit()} loading={p.sending} disabled={!!blocked || !p.q.settled || p.att.uploading} variant="gradient" icon="send" />
         </View>
       ) : null}
     </View>

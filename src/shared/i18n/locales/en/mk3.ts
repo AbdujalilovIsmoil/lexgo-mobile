@@ -1,6 +1,7 @@
 import type { Messages } from "../uz";
 
 export const mk3: Messages["mk3"] = {
+  att: { title: "Documents and a voice note", file: "Attach a file", voice: "Voice note", recording: "Recording · {time}", stop: "Done", cancel: "Cancel", voiceItem: "Voice note · {time}", retry: "Upload again", remove: "Remove", micDenied: "No microphone access — allow it in the phone settings.", tooBig: "The file is too large (up to 25 MB).", badType: "This file type is not accepted.", limit: "At most {n} files can be attached.", hint: "The specialist sees them only after the order is paid. Up to 20 files and 10 voice notes (each up to 5 minutes).", state: { uploading: "Uploading…", done: "Uploaded", error: "Not uploaded — try again" } },
   title: "Buy a service",
   channel: "How would you like to talk?",
   channelShort: "Contact channel",

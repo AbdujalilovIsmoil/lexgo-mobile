@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { activePurchaseOf, marketKeys, useMarketOrder, useMarketSync, type ContactSpeed, type MarketPurchase, type PaymentProvider, type PreferredChannel, type Urgency } from "@/entities/order";
+import { activePurchaseOf, marketKeys, useMarketOrder, useMarketSync, type ContactSpeed, type MarketPurchase, type PaymentProvider, type PreferredChannel, type PurchaseAttachment, type PurchaseVoice, type Urgency } from "@/entities/order";
 import { useRuntimeCaps } from "@/entities/market-flow";
 import { useQuote, type PriceOptions, type Quote } from "@/entities/price-option";
 import { ApiError } from "@/shared/api";
@@ -9,9 +9,10 @@ import { useAppForm } from "@/shared/form";
 import { useErrorText } from "@/shared/ui";
 import { purchaseSchema } from "./purchaseSchema";
 import { phaseOfOrder, phaseOfStatus, type PurchasePhase } from "./phase";
+import { useAttachments } from "./useAttachments";
 
 export type Tracked = { orderId: string; workId: string; status: string; amount: number; existing: boolean; telegramSent: boolean; paymentStatus: string; paymentUrl: string };
-export type SendInput = { note: string; time: string; channel: PreferredChannel; optionIds: string[]; contactSpeed?: ContactSpeed; urgency?: Urgency; provider?: PaymentProvider };
+export type SendInput = { note: string; time: string; channel: PreferredChannel; optionIds: string[]; contactSpeed?: ContactSpeed; urgency?: Urgency; provider?: PaymentProvider; attachments?: PurchaseAttachment[]; voices?: PurchaseVoice[] };
 type Send = (v: SendInput) => Promise<MarketPurchase>;
 type Opts = { options: { data?: PriceOptions }; quote: (ids: string[]) => Promise<Quote>; send: Send; onLogin: () => void };
 
@@ -36,13 +37,14 @@ export function usePurchaseCore({ options, quote, send, onLogin }: Opts) {
   const [providerFailed, setProviderFailed] = useState(false);
   const [tracked, setTracked] = useState<Tracked | null>(null);
   const [error, setError] = useState("");
+  const att = useAttachments(); // files and voice notes, uploaded as they are added; only finished ones are sent
   const track = (r: Pick<MarketPurchase, "orderId" | "workId" | "status" | "amount"> & Partial<Pick<MarketPurchase, "paymentStatus" | "paymentUrl">>, existing: boolean, telegramSent = true) =>
     setTracked({ orderId: r.orderId, workId: r.workId, status: r.status, amount: r.amount, existing, telegramSent, paymentStatus: r.paymentStatus ?? "", paymentUrl: r.paymentUrl ?? "" });
 
   const go = useMutation({
     mutationFn: (v: { note: string; time: string; via?: PaymentProvider }) => {
       const via = v.via ?? provider;
-      return send({ note: v.note, time: v.time, channel, contactSpeed, urgency, optionIds: q.quote?.selectedIds ?? q.ids, provider: via === "telegram_manual" ? undefined : via });
+      return send({ note: v.note, time: v.time, channel, contactSpeed, urgency, optionIds: q.quote?.selectedIds ?? q.ids, provider: via === "telegram_manual" ? undefined : via, attachments: att.attachments, voices: att.voices });
     },
     onSuccess: (r) => { successHaptic(); setProviderFailed(false); track(r, false, r.telegramSent); void qc.invalidateQueries({ queryKey: marketKeys.list }); },
     onError: (e) => {
@@ -60,11 +62,11 @@ export function usePurchaseCore({ options, quote, send, onLogin }: Opts) {
   const order = useMarketOrder(key, !!tracked);
   const found = order.data ?? null;
   const phase: PurchasePhase | null = tracked ? (found ? phaseOfOrder(found) : phaseOfStatus(tracked.status, tracked.paymentStatus)) : null;
-  const submit = f.handleSubmit((v) => { setError(""); go.mutate(v); });
+  const submit = f.handleSubmit((v) => { if (att.uploading) return; setError(""); go.mutate(v); });
   // After an online provider refused: the same request once more, approved through Telegram.
   const viaTelegram = f.handleSubmit((v) => { setError(""); setProvider("telegram_manual"); go.mutate({ ...v, via: "telegram_manual" }); });
   return {
-    form: f, options, q, channel, setChannel, contactSpeed, setContactSpeed, urgency, setUrgency, providers, provider, setProvider, providerFailed, viaTelegram,
-    tracked, found, phase, error, sending: go.isPending, submit, reset: () => { setTracked(null); setError(""); setProviderFailed(false); }, check: () => order.refetch(), checking: order.isFetching,
+    form: f, att, options, q, channel, setChannel, contactSpeed, setContactSpeed, urgency, setUrgency, providers, provider, setProvider, providerFailed, viaTelegram,
+    tracked, found, phase, error, sending: go.isPending, submit, reset: () => { setTracked(null); setError(""); setProviderFailed(false); att.reset(); }, check: () => order.refetch(), checking: order.isFetching,
   };
 }

@@ -3,7 +3,12 @@ import { asDict, asStr, uzs } from "@/shared/lib/json";
 import { safeHttpsUrl } from "@/shared/lib/pay/safeUrl";
 import type { ActivePurchase, ContactSpeed, MarketPurchase, PaymentProvider, PreferredChannel, Urgency } from "../model/marketTypes";
 
-export type PurchaseInput = { note: string; channel: PreferredChannel; time: string; optionIds?: string[]; contactSpeed?: ContactSpeed; urgency?: Urgency; provider?: PaymentProvider };
+// Files and voice notes are uploaded first (uploadPurchaseFile) and only their ids travel with the request.
+export type PurchaseAttachment = { file_id: string; name: string };
+export type PurchaseVoice = { file_id: string; duration_ms: number };
+export const MAX_ATTACHMENTS = 20;
+export const MAX_VOICES = 10;
+export type PurchaseInput = { note: string; channel: PreferredChannel; time: string; optionIds?: string[]; contactSpeed?: ContactSpeed; urgency?: Urgency; provider?: PaymentProvider; attachments?: PurchaseAttachment[]; voices?: PurchaseVoice[] };
 const enc = encodeURIComponent;
 
 // The request as the web portal sends it (Enterprise contract §3): the contact speed and the urgency also go into `details` for the
@@ -21,8 +26,11 @@ export function purchaseBody(i: PurchaseInput): Record<string, unknown> {
     ...(i.urgency ? { urgency: i.urgency } : {}),
     ...(i.contactSpeed || i.urgency ? { details: { note, contact_channel: i.channel, ...(i.contactSpeed ? { contact_speed: i.contactSpeed } : {}), ...(i.urgency ? { urgency: i.urgency } : {}) } } : {}),
     ...(i.provider ? { payment_provider: i.provider } : {}),
+    ...(i.attachments?.length ? { attachments: i.attachments.slice(0, MAX_ATTACHMENTS) } : {}),
+    ...(i.voices?.length ? { voice_messages: i.voices.slice(0, MAX_VOICES) } : {}),
   };
 }
+
 const body = purchaseBody;
 
 // POST /marketplace/lawyers/{id}/services/{sid}/purchase-request. No amount is

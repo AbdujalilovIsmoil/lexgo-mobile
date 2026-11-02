@@ -1,4 +1,5 @@
 export const mk3 = {
+  att: { title: "Hujjat va ovozli xabar", file: "Fayl biriktirish", voice: "Ovozli xabar", recording: "Yozilmoqda · {time}", stop: "Tugatish", cancel: "Bekor qilish", voiceItem: "Ovozli xabar · {time}", retry: "Qayta yuklash", remove: "Olib tashlash", micDenied: "Mikrofonga ruxsat berilmadi — telefon sozlamalarida yoqing.", tooBig: "Fayl juda katta (25 MB gacha).", badType: "Bu turdagi fayl qabul qilinmaydi.", limit: "Ko'pi bilan {n} ta fayl biriktiriladi.", hint: "Mutaxassis faqat buyurtma to'langandan keyin ko'radi. 20 tagacha fayl, 10 tagacha ovozli xabar (har biri 5 daqiqagacha).", state: { uploading: "Yuklanmoqda…", done: "Yuklandi", error: "Yuklanmadi — qayta urining" } },
   title: "Xizmatni sotib olish",
   channel: "Qanday bog'lanish qulay?",
   channelShort: "Bog'lanish usuli",
