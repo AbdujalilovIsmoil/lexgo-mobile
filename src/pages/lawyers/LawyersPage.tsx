@@ -10,6 +10,8 @@ import { TabPage } from "@/widgets/tab-page";
 import { useDebounced } from "@/shared/lib/useDebounced";
 import { RA_FIELD, RA_OPENER, raOk, useRaControl, useRaPage } from "@/shared/remote-assist";
 import { useT } from "@/shared/i18n";
+import { IconButton } from "@/shared/ui";
+import { useIsAuthed } from "@/entities/session";
 import { DirectoryTop } from "./DirectoryTop";
 import { useMarketParams } from "./useMarketParams";
 
@@ -20,6 +22,7 @@ import { useMarketParams } from "./useMarketParams";
 export function LawyersPage() {
   const { t } = useT();
   const router = useRouter();
+  const authed = useIsAuthed();
   const { filters, set, reset, ai, aiQuery, setAi, runAi } = useLawyerFilterStore();
   const [text, setText] = useState(filters.q);
   const [aiText, setAiText] = useState(aiQuery);
@@ -102,7 +105,7 @@ export function LawyersPage() {
   );
   const clear = () => { reset(); setText(""); };
   return (
-    <TabPage title={t("mk1.pageTitle")} subtitle={t("mk1.pageLead")}>
+    <TabPage title={t("mk1.pageTitle")} subtitle={t("mk1.pageLead")} right={<IconButton icon="map" label={t("mmap.entry")} onPress={() => router.push((authed ? "/nearby" : "/auth/login") as never)} />}>
       {ai ? <AiResults header={header} onOpen={openServices} onExample={(x) => askAi(x)} onOff={aiOff} /> : <LawyerResults query={query} header={header} onOpen={open} onReset={clear} quiet={focused && !!text.trim()} />}
       <FilterSheet visible={sheet} onClose={() => setSheet(false)} />
     </TabPage>

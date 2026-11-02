@@ -6,13 +6,14 @@ const TABS = "index|services|works|messages|workspace|requests|clients|lawyers|o
 const ID = "[^/]+";
 const ALLOWED: RegExp[] = [
   new RegExp(`^/(${TABS})$`),
-  /^\/(profile|notifications|assistant|chats|instructor|subscription|payments|entitlements|doc-analysis|sos|intake|matches|cases|packages|academy|complaints|ratings|warranty|security|marketplace|documents|orders|urgent|urgent\/requests|meetings|support)$/,
-  new RegExp(`^/(payments|rate|works|dashboard-lists|chat|call|meetings|support|documents|orders|urgent|lawyer)/${ID}$`),
+  /^\/(profile|notifications|assistant|chats|instructor|subscription|payments|entitlements|doc-analysis|sos|intake|matches|cases|packages|academy|complaints|ratings|warranty|security|marketplace|documents|orders|urgent|urgent\/requests|meetings|support|nearby)$/,
+  new RegExp(`^/(payments|rate|works|dashboard-lists|chat|call|meetings|support|documents|orders|urgent|lawyer|specialist)/${ID}$`),
+  new RegExp(`^/pro/clients/(new|${ID})$`),
   new RegExp(`^/services/${ID}(/(fill|ai|lawyer))?$`), // also /services/direction (a direction's own page)
   /^\/(support|urgent)\/new$/,
   /^\/profile\/(family|methods|consents|referral|gifts)$/,
   /^\/settings\/(notifications|storage|security-lock)$/,
-  new RegExp(`^/pro/(docs|cases|calendar|tasks|files|scan|templates|market|stats|referrals|onboarding|profile|services|packages|availability|experience|achievements|orders|promotions|promotions/new|urgent|assistant)(/${ID})?$`),
+  new RegExp(`^/pro/(docs|cases|calendar|tasks|files|scan|templates|market|stats|referrals|onboarding|profile|services|packages|availability|experience|achievements|orders|promotions|promotions/new|urgent|assistant|office)(/${ID})?$`),
   new RegExp(`^/pro/docs/${ID}/editor$`),
   /^\/auth\/(login|register|forgot)$/,
 ];

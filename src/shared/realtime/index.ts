@@ -1,4 +1,4 @@
-export { connectUserSocket, disconnectUserSocket, kickUserSocket } from "./controls";
+export { connectUserSocket, disconnectUserSocket, kickUserSocket, sendUserEvent } from "./controls";
 export { subscribeUserEvents, onResync, useSocketStatus, emit as emitUserEvent } from "./bus";
 export { useUserEvents, useResync, useSocketState } from "./useUserEvents";
 export type { UserEvent, UserEventHandler, SocketState } from "./types";

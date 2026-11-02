@@ -31,3 +31,15 @@ export function kickUserSocket(): void {
   if (!conn.ws || conn.ws.readyState !== WebSocket.OPEN || quiet) return reconnectNow();
   conn.ws.send(JSON.stringify({ event: "ping" }));
 }
+
+/** Sends one frame ({event: …}) on the user socket when it is open; false when it is not (the caller re-sends on resync / online). */
+export function sendUserEvent(frame: Record<string, unknown>): boolean {
+  const ws = conn.ws;
+  if (!ws || ws.readyState !== WebSocket.OPEN) return false;
+  try {
+    ws.send(JSON.stringify(frame));
+    return true;
+  } catch {
+    return false;
+  }
+}
