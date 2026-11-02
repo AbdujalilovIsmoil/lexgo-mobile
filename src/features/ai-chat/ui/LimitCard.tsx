@@ -6,6 +6,7 @@ import { fmtDate, fmtDateTime } from "@/shared/lib/format";
 import { useGateText, type PlanGate } from "@/entities/plan";
 import { useIsAuthed } from "@/entities/session";
 import type { ChatLimit } from "@/entities/chat";
+import { DIGITAL_SALES } from "@/shared/store-rules";
 
 // A 402: the backend's code picks the words (used-up AI limit, no active subscription, not in the plan), its numbers the counter.
 function PlanLimit({ gate }: { gate: PlanGate }) {
@@ -20,7 +21,7 @@ function PlanLimit({ gate }: { gate: PlanGate }) {
       {counted ? <Text variant="caption" style={s.sub}>{t("ax1.usedOf", { used: gate.used ?? 0, cap: gate.limit ?? 0 })}</Text> : null}
       {gate.resetsAt ? <Text variant="caption" style={s.sub}>{t("mf.plan.resets", { date: fmtDate(gate.resetsAt, locale) })}</Text> : null}
       <View style={s.row}>
-        <Button title={t("ai.upgradePlan")} onPress={() => router.push("/subscription")} variant="glass" size="sm" icon="credit-card" />
+        {DIGITAL_SALES ? <Button title={t("ai.upgradePlan")} onPress={() => router.push("/subscription")} variant="glass" size="sm" icon="credit-card" /> : null}
       </View>
     </GradientBox>
   );
@@ -46,7 +47,7 @@ export function LimitCard({ limit }: { limit: ChatLimit }) {
       {g?.resetsAt && daily ? <Text variant="caption" style={s.sub}>{t("ax1.resetsAt", { when: fmtDateTime(g.resetsAt, locale) })}</Text> : null}
       <View style={s.row}>
         {authed ? (
-          <Button title={t("ai.upgradePlan")} onPress={() => router.push("/subscription")} variant="glass" size="sm" icon="credit-card" />
+          DIGITAL_SALES ? <Button title={t("ai.upgradePlan")} onPress={() => router.push("/subscription")} variant="glass" size="sm" icon="credit-card" /> : null
         ) : (
           <>
             <Button title={t("auth.createAccount")} onPress={() => router.push("/auth/register")} variant="gradient" size="sm" icon="user-plus" />

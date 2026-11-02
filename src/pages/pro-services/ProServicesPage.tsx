@@ -14,6 +14,7 @@ import { IconButton } from "@/shared/ui";
 import { AdminPage, PagedList } from "@/shared/ui/admin";
 import { afterSheet } from "@/shared/lib/sel";
 import { useT } from "@/shared/i18n";
+import { DIGITAL_SALES } from "@/shared/store-rules";
 
 const BLANK: ProSeller = { name: "", avatarUrl: "", kind: "yurist", verified: false, rating: 0, reviews: 0, experienceYears: 0, cases: 0, successRate: 0, completed: null, about: { bio: "", district: "", languages: [], specializations: [], education: "", license: "", bar: "", organization: "" } };
 type Sheet = { kind: "view" | "form"; item: ProService | null; open: boolean };
@@ -64,7 +65,7 @@ export default function ProServicesPage({ packages, aboveList }: Props = {}) {
   const none = !q.isLoading && !q.isError && (d?.items.length ?? 0) === 0;
   const tabs = <ServicesTabs value={tab} onChange={setTab} />;
   const header = (toolbar: boolean) => (
-    <ServicesHeader before={tabs} aboveList={aboveList} rules={<RulesBanner onOpen={() => rules.open()} />} items={d?.items ?? []} loading={q.isLoading} filter={filter} onFilter={setFilter} search={search} onSearch={setSearch} verified={verified} boostDays={boost ? boost.daysLeft : null} waiting={pending.length} toolbar={toolbar} onAdd={() => open("form", null)} onPromoteProfile={() => promote()} />
+    <ServicesHeader before={tabs} aboveList={aboveList} rules={<RulesBanner onOpen={() => rules.open()} />} items={d?.items ?? []} loading={q.isLoading} filter={filter} onFilter={setFilter} search={search} onSearch={setSearch} verified={verified} boostDays={boost ? boost.daysLeft : null} waiting={pending.length} toolbar={toolbar} onAdd={() => open("form", null)} onPromoteProfile={DIGITAL_SALES ? () => promote() : undefined} />
   );
   // A native modal is presented only from the one on screen: the rules sheet goes inside the open sheet, else on the page.
   const place = sheet.open ? sheet.kind : "page";
@@ -101,7 +102,7 @@ export default function ProServicesPage({ packages, aboveList }: Props = {}) {
         overlay={place === "view" ? rules.sheet : null}
         onClose={close}
         onEdit={(s) => { close(); afterSheet(() => open("form", s)); }}
-        onPromote={(s) => { close(); afterSheet(() => promote(s.id)); }}
+        onPromote={DIGITAL_SALES ? (s) => { close(); afterSheet(() => promote(s.id)); } : undefined}
       />
       <ServiceFormSheet visible={sheet.open && sheet.kind === "form"} onClose={close} item={sheet.kind === "form" ? sheet.item : null} taken={new Set((d?.items ?? []).map((x) => x.id))} sellerId={d?.sellerId ?? ""} region={d?.region ?? ""} yurist={d?.sellerType === "yurist"} seller={d?.seller ?? BLANK} services={d?.items ?? []} onRules={rules.open} overlay={place === "form" ? rules.sheet : null} />
       {place === "page" ? rules.sheet : null}

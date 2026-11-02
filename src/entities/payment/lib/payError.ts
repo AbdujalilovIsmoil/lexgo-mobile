@@ -4,6 +4,7 @@ import { ApiError, isPaymentRequired } from "@/shared/api";
 import { useT } from "@/shared/i18n";
 import { errorHaptic } from "@/shared/lib/haptics";
 import { confirmDialog, toast } from "@/shared/ui";
+import { DIGITAL_SALES } from "@/shared/store-rules";
 
 // 503 "integratsiyasi sozlanmagan" / 400 "provider qo'llab-quvvatlanmaydi": the provider is off.
 export const isProviderDown = (e: unknown): boolean => e instanceof ApiError && (e.status === 503 || (e.status === 400 && /provider/i.test(e.detail ?? "")));
@@ -30,6 +31,7 @@ export function usePaymentError(): (e: unknown) => void {
       errorHaptic();
       if (isPaymentRequired(e)) {
         const message = e instanceof ApiError && e.detail ? e.detail : t("py2.need.text");
+        if (!DIGITAL_SALES) { toast(message, "err"); return; } // iOS: no plans to offer (store-rules)
         confirmDialog({ title: t("py2.need.title"), message, confirmLabel: t("py2.need.cta"), cancelLabel: t("common.close"), icon: "credit-card", onConfirm: () => router.push("/subscription") });
         return;
       }

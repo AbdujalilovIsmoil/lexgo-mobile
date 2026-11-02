@@ -1,9 +1,11 @@
 import type { Viewer } from "./types";
+import { DIGITAL_SALES, isDigitalRoute } from "@/shared/store-rules";
 
 // Who may open which part of the app (UI hiding is not security: the backend 403 stays final, this
 // only keeps a link from landing a client inside the professional's area).
 export function mayOpen(href: string, v: Viewer): boolean {
   const path = href.split("?")[0];
+  if (!DIGITAL_SALES && isDigitalRoute(path)) return false; // iOS sells no digital goods (store-rules)
   // Whole segments only: "/profile/gifts" is a client screen, not part of "/pro/…".
   if (path === "/pro" || path.startsWith("/pro/")) return v.kind === "seller";
   return true;

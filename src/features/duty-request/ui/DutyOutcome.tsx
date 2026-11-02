@@ -5,6 +5,7 @@ import { fmtMoney } from "@/shared/lib/money";
 import { StatusBadge } from "@/entities/my-document";
 import type { DutyResult, ExistingRef } from "@/entities/duty-request";
 import { OutcomeCard } from "./OutcomeCard";
+import { DIGITAL_SALES } from "@/shared/store-rules";
 
 type Open = { onOpen: (docId: string) => void; onList: () => void };
 
@@ -47,7 +48,7 @@ export function PlanCard({ message, onChoose, onBack }: { message: string; onCho
   return (
     <OutcomeCard icon="lock" tone="warn" title={t("dm9.planTitle")} text={message}>
       <View style={{ alignSelf: "stretch", gap: 8, marginTop: 8 }}>
-        <Button title={t("dm9.choosePlan")} icon="award" full onPress={onChoose} />
+        {DIGITAL_SALES ? <Button title={t("dm9.choosePlan")} icon="award" full onPress={onChoose} /> : null}
         <Button title={t("dm9.backToForm")} variant="soft" full onPress={onBack} />
       </View>
     </OutcomeCard>

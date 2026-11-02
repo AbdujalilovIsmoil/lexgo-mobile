@@ -3,9 +3,10 @@ import { useRouter } from "expo-router";
 import { useEntitlements } from "@/entities/plan";
 import { Card, Divider, ListRow, Pill, Text } from "@/shared/ui";
 import { useT } from "@/shared/i18n";
+import { storeRows } from "@/shared/store-rules";
 
 type Item = { icon: "edit-3" | "file-text" | "layers" | "users" | "credit-card" | "check-square" | "share-2" | "gift" | "message-square" | "shield" | "lock"; key: string; href: string };
-const ITEMS: Item[] = [
+const ITEMS: Item[] = storeRows<Item>([
   { icon: "edit-3", key: "edit", href: "/profile/edit" },
   { icon: "file-text", key: "payments", href: "/payments" },
   { icon: "layers", key: "plan", href: "/entitlements" },
@@ -17,7 +18,7 @@ const ITEMS: Item[] = [
   { icon: "lock", key: "security", href: "/security" },
   { icon: "message-square", key: "complaints", href: "/complaints" },
   { icon: "shield", key: "warranty", href: "/warranty" },
-];
+], (i) => i.href);
 
 // Entry points of the client profile extras: personal data, payments and plan, family and cards,
 // consents, referral, gifts, complaints and the warranty.

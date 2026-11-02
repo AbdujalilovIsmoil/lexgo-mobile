@@ -8,6 +8,7 @@ import { useT } from "@/shared/i18n";
 import { gateText, isPlanCode } from "../lib/gate";
 import { dsetKeys } from "../model/queries";
 import type { ModeGate } from "../model/types";
+import { DIGITAL_SALES } from "@/shared/store-rules";
 
 type Props = { gate: ModeGate; onPlan: () => void; onBack?: () => void; inline?: boolean };
 
@@ -18,17 +19,18 @@ export function ModeNotice({ gate, onPlan, onBack, inline }: Props) {
   const { t } = useT();
   useRecheck();
   const plan = isPlanCode(gate.code);
+  const offer = plan && DIGITAL_SALES; // iOS offers no plans (store-rules)
   const icon = gate.state === "off" ? "slash" : "lock";
   const title = gate.state === "off" ? t("dset.offTitle") : plan ? t("dm9.planTitle") : t("dset.closedTitle");
   if (inline) {
     return (
       <View style={{ gap: 8 }}>
         <Notice tone="warn" icon={icon} title={title} text={gateText(t, gate)} />
-        {plan ? <Button title={t("dm9.choosePlan")} icon="award" variant="soft" size="sm" full onPress={onPlan} /> : null}
+        {offer ? <Button title={t("dm9.choosePlan")} icon="award" variant="soft" size="sm" full onPress={onPlan} /> : null}
       </View>
     );
   }
-  return <EmptyState icon={icon} title={title} text={gateText(t, gate)} actionLabel={plan ? t("dm9.choosePlan") : onBack ? t("common.back") : undefined} onAction={plan ? onPlan : onBack} />;
+  return <EmptyState icon={icon} title={title} text={gateText(t, gate)} actionLabel={offer ? t("dm9.choosePlan") : onBack ? t("common.back") : undefined} onAction={offer ? onPlan : onBack} />;
 }
 
 // The first focus is the mount itself (the settings were just read); every later one asks again.

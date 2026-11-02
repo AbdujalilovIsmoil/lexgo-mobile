@@ -5,6 +5,7 @@ import { gateOfFeature } from "../lib/planGate";
 import { useFeature } from "../model/queries";
 import { useFeatureLabel } from "../model/useFeatureLabel";
 import { FeatureRow } from "./FeatureRow";
+import { DIGITAL_SALES } from "@/shared/store-rules";
 
 // TZ.md §13.1 where a feature is used: a limited one shows used / limit, what is left and when it resets; a locked or used-up one adds the
 // way to a plan. Nothing for an unlimited feature or one the backend does not list (the action's own 402 still decides).
@@ -17,7 +18,7 @@ export function FeatureUsage({ featureKey, onUpgrade }: { featureKey: string; on
   return (
     <Card style={s.card}>
       <FeatureRow f={f} label={label(featureKey)} first />
-      {stopped ? <Button title={t("mf.plan.upgrade")} icon="arrow-up-circle" variant="soft" size="sm" onPress={onUpgrade} style={s.center} /> : null}
+      {stopped && DIGITAL_SALES ? <Button title={t("mf.plan.upgrade")} icon="arrow-up-circle" variant="soft" size="sm" onPress={onUpgrade} style={s.center} /> : null}
     </Card>
   );
 }

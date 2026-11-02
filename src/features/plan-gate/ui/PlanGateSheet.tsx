@@ -13,6 +13,7 @@ import { fmtMoney } from "@/shared/lib/money";
 import { useSheetNavigate } from "@/shared/lib/useSheetNavigate";
 import { useSheetReset } from "@/shared/lib/useSheetReset";
 import { useT } from "@/shared/i18n";
+import { DIGITAL_SALES } from "@/shared/store-rules";
 import { PlanPickList } from "./PlanPickList";
 
 const CLOSED: PlanGate = { code: "plan_required", featureKey: "", limit: null, used: null, remaining: null, unit: "", resetsAt: "", message: "" };
@@ -50,6 +51,8 @@ export function PlanGateSheet({ gate, onClose }: { gate: PlanGate | null; onClos
   const bar = sent
     ? { label: t("tgp.tgClose"), run: onClose }
     : none ? { label: t("subq.gate.open"), run: toPlans } : { label: t(tg.pending ? "tgp.busy" : "tgp.mdSubmit"), run: () => sel && tg.send(sel.id, eff) };
+  // iOS sells no plans (store-rules): the reason and the meter only, nothing to buy.
+  if (!DIGITAL_SALES) return <FormSheet visible={open} onClose={onClose} title={words.title} submitLabel={t("common.close")} onSubmit={onClose}><GateNotice gate={g} /></FormSheet>;
   return (
     <FormSheet visible={open} onClose={onClose} title={words.title} submitLabel={bar.label} onSubmit={plans.isPending ? undefined : bar.run} submitting={tg.pending}
       disabled={!sent && !none && !sel} secondary={!sent && !none ? { label: t("subq.gate.plans"), onPress: toPlans } : undefined}>

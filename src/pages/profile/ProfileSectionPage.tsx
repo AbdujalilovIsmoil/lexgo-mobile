@@ -6,6 +6,7 @@ import { AdminPage } from "@/shared/ui/admin";
 import { useInsets } from "@/shared/lib/insets";
 import { useT } from "@/shared/i18n";
 import { NotFoundPage } from "@/pages/not-found/NotFoundPage";
+import { DIGITAL_SALES } from "@/shared/store-rules";
 
 export type ProfileSection = "personal" | "family" | "security" | "payments" | "activity";
 
@@ -17,7 +18,7 @@ const BODY: Record<ProfileSection, { title: string; body: () => React.ReactNode 
   personal: { title: "profile.pp.personal", body: () => <><PersonalPanel /><IdentityCard /></> },
   family: { title: "profile.pp.family", body: () => <FamilyPanel /> },
   security: { title: "profile.pp.security", body: () => <><TwoFactorCard /><TelegramCard /><NotifPrefsCard /><SessionsPanel /></> },
-  payments: { title: "profile.pp.payPlan", body: () => <><CardsPanel /><SubscriptionPanel /><PaymentsPanel /></> },
+  payments: { title: "profile.pp.payPlan", body: () => <>{DIGITAL_SALES ? <><CardsPanel /><SubscriptionPanel /></> : null}<PaymentsPanel /></> },
   activity: { title: "profile.pp.activity", body: () => <><EventsPanel /><ActivityPanel /></> },
 };
 

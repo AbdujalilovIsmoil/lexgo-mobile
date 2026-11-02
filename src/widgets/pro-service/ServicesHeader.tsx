@@ -26,7 +26,7 @@ type Props = {
   waiting: number;
   toolbar?: boolean; // search + filter (nothing to search while the list is empty)
   onAdd: () => void;
-  onPromoteProfile: () => void;
+  onPromoteProfile?: () => void; // absent: no promotions on this platform
 };
 
 // Everything above the list: tab switch, hero (counters, add), the promote card, the slot, notes, search and filter.
@@ -38,7 +38,7 @@ export function ServicesHeader({ before, aboveList, rules, items, loading, filte
     <View style={{ gap: 14, paddingBottom: 14 }}>
       {before}
       <ServicesHero items={items} loading={loading} filter={filter} onFilter={onFilter} waiting={waiting} running={running.length} onAdd={onAdd} />
-      <PromoteStrip onPress={onPromoteProfile} running={running} />
+      {onPromoteProfile ? <PromoteStrip onPress={onPromoteProfile} running={running} /> : null}
       {aboveList}
       {rules}
       {verified ? null : (

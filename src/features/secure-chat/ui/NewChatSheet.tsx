@@ -10,6 +10,7 @@ import { ApiError } from "@/shared/api";
 import { Button, Text, toast } from "@/shared/ui";
 import { useT } from "@/shared/i18n";
 import { useOpenChat } from "../model/useOpenChat";
+import { DIGITAL_SALES } from "@/shared/store-rules";
 
 // "New chat": find a person in the lawyers directory and open the secure chat with them.
 // A client who has not paid the private-chat fee gets the server's 402 sentence and a way to the plans.
@@ -26,7 +27,7 @@ export function NewChatSheet({ visible, onClose }: { visible: boolean; onClose: 
   const note = pay ? (
     <View style={{ marginHorizontal: 18, marginBottom: 8, gap: 8 }}>
       <Text variant="small" tone="warn">{(open.error as ApiError).detail}</Text>
-      <Button title={t("ms1.openPlans")} size="sm" onPress={() => { onClose(); router.push("/subscription" as never); }} />
+      {DIGITAL_SALES ? <Button title={t("ms1.openPlans")} size="sm" onPress={() => { onClose(); router.push("/subscription" as never); }} /> : null}
     </View>
   ) : null;
   return <PeopleSheet visible={visible} onClose={onClose} title={t("ms1.newChat")} subtitle={t("ms1.newChatHint")} me={useSession()?.user.id ?? ""} note={note} onPick={(p) => (!allowed(p.id) ? toast(t("spf.chatLocked"), "info") : open.mutate(p.id))} busyId={open.isPending ? open.variables : undefined} />;

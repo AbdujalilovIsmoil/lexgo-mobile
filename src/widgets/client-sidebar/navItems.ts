@@ -2,11 +2,12 @@ import type { IconName } from "@/shared/ui";
 import { COMMON_SECTION } from "@/widgets/profile/menu/commonItems";
 import { PRO_SECTIONS } from "@/widgets/profile/menu/proItems";
 import type { TabRole } from "@/widgets/tab-bar/tabConfig";
+import { storeRows } from "@/shared/store-rules";
 
 export type NavItem = { key: string; icon: IconName; route: string; badge?: "notifications" | "support"; label?: string };
 
 // The web client sidebar (law-main PortalShell CLIENT_NAV) in its exact order, without Boshqaruv paneli, Tezkor advokat, Huquqiy hujjatlar and Advokat va yuristlar (Home and the tab bar lead there), SOS (Home has its own button), Mening so'rovlarim (a row on /urgent), AI, Mening ishlarim and Xabarlar (the tab bar has them), Mening hujjatlarim (the works page links to it), Shikoyatlar, Roziliklar, To'lovlar, Sovg'alar, Do'stni taklif qilish and Yordam markazi (the profile has them; the header's headset opens support); titles are cpd.menu.<key> (or `label` when the web has no such row).
-export const NAV: NavItem[] = [
+export const NAV: NavItem[] = storeRows([
   { key: "intake", icon: "clipboard", route: "/intake" },
   { key: "academy", icon: "book-open", route: "/academy" },
   { key: "packages", icon: "package", route: "/packages" },
@@ -16,7 +17,7 @@ export const NAV: NavItem[] = [
   { key: "subscription", icon: "award", route: "/subscription" },
   { key: "reviews", icon: "star", route: "/ratings" },
   { key: "warranty", icon: "shield", route: "/warranty" },
-];
+], (i) => i.route);
 
 const flat = (sections: { items: NavItem[] }[]): NavItem[] => sections.flatMap((s) => s.items).map((i) => ({ ...i, label: i.label ?? `nav1.menu.${i.key}` }));
 
@@ -55,7 +56,7 @@ function sellerNav(s: Seller): { main: NavItem[]; account: NavItem[]; settings: 
   // under review can still reach its own data).
   const account = ACCOUNT.map((a) => ({ ...a, label: `py9.menu.${a.key}` }));
   const settings = flat([COMMON_SECTION]).filter((i) => i.key !== "notifications"); // app settings: always there
-  return { main: [...web, ...extra, office].filter((i) => !sellerRowHidden(i.key, s)), account, settings };
+  return { main: storeRows([...web, ...extra, office], (i) => i.route).filter((i) => !sellerRowHidden(i.key, s)), account: storeRows(account, (i) => i.route), settings };
 }
 
 // The phone drawer of a professional, built like the client's: no row repeats what the tab bar or the header already opens (the
@@ -103,9 +104,9 @@ const ACCOUNT: NavItem[] = [
 export const navFor = (role: TabRole, seller: Seller = {}): NavItem[] => (role === "seller" ? sellerFlat(seller) : NAV);
 
 // Mobile-only account screens that the web has no sidebar row for.
-export const EXTRA: NavItem[] = [
+export const EXTRA: NavItem[] = storeRows([
   { key: "entitlements", icon: "award", route: "/entitlements" },
-];
+], (i) => i.route);
 
 // The team's task section (the web's "Jamoa vazifalari"): a row for anyone who holds `tasks.view`, whatever their role — the people who use
 // it (the team's developers, managers) are clients or yurists by role. First in the drawer, so it is there right after signing in.

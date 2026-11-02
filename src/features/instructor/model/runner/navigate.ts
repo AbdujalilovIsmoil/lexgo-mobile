@@ -5,13 +5,14 @@ import { activeContract } from "../contractRef";
 import { closeInstructor, useInstructorUi } from "../uiStore";
 import { sleep, waitFor, type RunCtx } from "./context";
 import { markRunning, reportDone, reportFailed } from "./report";
+import { DIGITAL_SALES, isDigitalRoute } from "@/shared/store-rules";
 
 // Open a screen of this app. The backend's portal href is mapped through an allowlist; the contract's
 // allowed_routes must also permit it. Returns false when the run cannot continue on that screen.
 export async function runNavigate(c: Command, ctx: RunCtx): Promise<boolean> {
   const contract = activeContract();
   const route = mobileRoute(c.href, contract?.routeAliases);
-  if (!route || !hrefAllowed(c.href, contract?.allowedRoutes ?? [], contract?.routeAliases)) {
+  if (!route || !hrefAllowed(c.href, contract?.allowedRoutes ?? [], contract?.routeAliases) || (!DIGITAL_SALES && isDigitalRoute(route))) {
     reportFailed(c, "route_not_allowed");
     return false;
   }

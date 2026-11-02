@@ -27,7 +27,7 @@ type Props = {
   statusBusy?: boolean;
   onClose: () => void;
   onEdit: (s: ProService) => void;
-  onPromote: (s: ProService) => void;
+  onPromote?: (s: ProService) => void; // absent: no promotions on this platform
 };
 
 // A round action of the bottom bar (promote, remove): an icon, its name as the accessibility label, dimmed when it cannot be used.
@@ -107,7 +107,7 @@ export function ServiceSheet({ item: current, verified, waiting = false, banner,
       {item ? (
         <View style={[s.bar, { borderTopColor: c.line, backgroundColor: c.surface, paddingBottom: insets.bottom + 10 }]}>
           <Button title={t("proSvc.card.edit")} icon="edit-2" variant="gradient" disabled={!canEdit(item)} onPress={() => onEdit(item)} style={s.edit} full />
-          <RoundAction icon={waiting && !item.promotion ? "clock" : "radio"} label={item.promotion ? t("proSvc.card.promotedShort") : t("proSvc.card.promote")} disabled={!canPromote(item, waiting)} onPress={() => onPromote(item)} />
+          {onPromote ? <RoundAction icon={waiting && !item.promotion ? "clock" : "radio"} label={item.promotion ? t("proSvc.card.promotedShort") : t("proSvc.card.promote")} disabled={!canPromote(item, waiting)} onPress={() => onPromote(item)} /> : null}
           <RoundAction icon="trash-2" label={t("proSvc.card.remove")} danger disabled={remove.isPending} onPress={ask} />
         </View>
       ) : null}

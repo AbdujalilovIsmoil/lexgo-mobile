@@ -11,7 +11,7 @@
       "supportsTablet": true,
       "requireFullScreen": true,
       "bundleIdentifier": "org.cognilabs.lexgo",
-      "buildNumber": "1",
+      "buildNumber": "20261103",
       "backgroundColor": "#03102B",
       "associatedDomains": [
         "applinks:lexgo.uz"

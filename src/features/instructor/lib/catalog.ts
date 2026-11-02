@@ -1,5 +1,6 @@
 import type { TargetBody } from "@/entities/instructor";
 import { tr } from "./tr";
+import { storeRows } from "@/shared/store-rules";
 
 // Destination targets on OTHER screens (id, type, label key, mobile route). The backend answers a question like
 // "where do I buy Pro?" with navigate + highlight of the target it knows lives on the destination, exactly as the
@@ -28,5 +29,5 @@ const SELLER = CLIENT.filter(([, , , route]) => route === "/subscription" || rou
 
 export function crossTargets(role: string, skip: Set<string>): TargetBody[] {
   const list = role === "client" ? CLIENT : role === "lawyer" || role === "advocate" ? SELLER : [];
-  return list.filter(([id]) => !skip.has(id)).map(([id, type, key, route]) => ({ ai_id: id, type, label: tr(`ax4.${key}`), route: `/mobile/${role}${route}` }));
+  return storeRows(list, ([, , , route]) => route).filter(([id]) => !skip.has(id)).map(([id, type, key, route]) => ({ ai_id: id, type, label: tr(`ax4.${key}`), route: `/mobile/${role}${route}` }));
 }

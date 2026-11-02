@@ -12,8 +12,8 @@ const messages = t("messages", "message-circle", "tabs.messages", "messages");
 // lives behind the avatar in the page headers.
 export const TABS: Record<TabRole, TabDef[]> = {
   // A visitor gets the client's bar and pages; the two tabs that hold personal data (`auth`) send them to sign in when pressed.
-  guest: [t("index", "home", "tabs.bar.home"), t("services", "grid", "tabs.bar.services"), ai, { ...t("works", "briefcase", "tabs.bar.works"), auth: true }, { ...messages, auth: true }],
-  client: [t("index", "home", "tabs.bar.home"), t("services", "grid", "tabs.bar.services"), ai, t("works", "briefcase", "tabs.bar.works"), messages],
+  guest: [t("index", "home", "tabs.bar.home"), t("services", "file-text", "tabs.bar.services"), ai, { ...t("works", "briefcase", "tabs.bar.works"), auth: true }, { ...messages, auth: true }],
+  client: [t("index", "home", "tabs.bar.home"), t("services", "file-text", "tabs.bar.services"), ai, t("works", "briefcase", "tabs.bar.works"), messages],
   seller: [t("workspace", "home", "tabs.bar.home"), t("requests", "inbox", "tabs.requests", "requests"), ai, t("clients", "users", "tabs.clients"), messages],
 };
 

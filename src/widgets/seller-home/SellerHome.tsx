@@ -37,6 +37,7 @@ import { TasksPanel } from "./TasksPanel";
 import { TodayPanel } from "./TodayPanel";
 import { WorkTiles, type WorkTile } from "./WorkTiles";
 import { NavyBar } from "@/widgets/tab-page/NavyBar";
+import { DIGITAL_SALES } from "@/shared/store-rules";
 
 const KEYS = ["pro-workspace", "lawyer-cabinet", "pro-profile", "seller-rating", "pro-requests", "pro-calendar", "pro-tasks", "pro-cases", "pro-clients", "pro-referral", "pay-referral", "market-feed", [...secKeys.profile]];
 
@@ -141,7 +142,7 @@ export function SellerHome({ bottomPad }: { bottomPad: number }) {
           <MetricsPanel cabinet={c} i={k++} />
           <RatingPanel i={k++} />
           <PayoutsPanel i={k++} />
-          {advocate ? <BoostCard i={k++} /> : <SecurityFold i={k++} />}
+          {advocate && DIGITAL_SALES ? <BoostCard i={k++} /> : <SecurityFold i={k++} />}
         </View>
       </ScrollView>
     </View>

@@ -9,6 +9,7 @@ import { refusalCode } from "@/entities/doc-settings";
 import { PlanGateSheet } from "@/features/plan-gate";
 import { useT } from "@/shared/i18n";
 import { FlowGate } from "./FlowGate";
+import { DIGITAL_SALES } from "@/shared/store-rules";
 
 type Props = { title: string; error: unknown; onRetry: () => void };
 
@@ -30,7 +31,7 @@ export function FlowFailure({ title, error, onRetry }: Props) {
       ) : gate ? (
         <View style={{ padding: 16, gap: 14 }}>
           <GateNotice gate={gate} titled />
-          <Button title={t("dc6.seePlans")} icon="award" variant="gradient" full onPress={() => router.push("/subscription")} />
+          {DIGITAL_SALES ? <Button title={t("dc6.seePlans")} icon="award" variant="gradient" full onPress={() => router.push("/subscription")} /> : null}
         </View>
       ) : (
         <ErrorView error={error} onRetry={onRetry} />

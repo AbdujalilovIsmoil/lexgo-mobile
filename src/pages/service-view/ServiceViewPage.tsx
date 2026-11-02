@@ -6,6 +6,7 @@ import { PreviewBody } from "@/shared/ui/preview/PreviewBody";
 import { AdminPage } from "@/shared/ui/admin";
 import { useT } from "@/shared/i18n";
 import { useSampleFile } from "./useSampleFile";
+import { DIGITAL_SALES } from "@/shared/store-rules";
 
 // "View document" of the catalogue: the clean template, read-only. No share or save control is
 // drawn here - looking at a blank sample is free, getting the file is the paid "Download".
@@ -20,7 +21,7 @@ export function ServiceViewPage({ id }: { id: string }) {
       ) : f.gate ? (
         <View style={s.pad}>
           <GateNotice gate={f.gate} titled />
-          <Button title={t("plans.choose")} icon="award" variant="gradient" full onPress={() => router.push("/subscription")} />
+          {DIGITAL_SALES ? <Button title={t("plans.choose")} icon="award" variant="gradient" full onPress={() => router.push("/subscription")} /> : null}
         </View>
       ) : f.failed ? (
         <View style={s.pad}>

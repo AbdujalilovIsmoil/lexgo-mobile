@@ -18,6 +18,7 @@ import { useT } from "@/shared/i18n";
 import { useTabRole } from "@/widgets/tab-bar/useTabRole";
 import { useSidebar } from "./sidebarStore";
 import { NAV, EXTRA, TEAM_TASKS, isActive, sellerSections, type NavItem } from "./navItems";
+import { DIGITAL_SALES } from "@/shared/store-rules";
 
 const INK = "#F1F5FC";
 const MUTED = "#AEB9CF";
@@ -99,7 +100,7 @@ export function MenuPanel({ onGo }: { onGo: (route: string) => void }) {
           </PressableScale>
         )}
 
-        {user ? (
+        {user && DIGITAL_SALES ? (
           <PressableScale onPress={() => onGo("/subscription")} scale={0.98} accessibilityRole="button" accessibilityLabel={`${planName} · ${paid ? t("cdash.side.seePlan") : t("cdash.side.toPro")}`}>
             <LinearGradient colors={["#1E3A86", "#1A2E66", "#172654"]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={s.plan}>
               <View style={s.planTop}>

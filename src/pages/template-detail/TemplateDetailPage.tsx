@@ -17,6 +17,7 @@ import { AdminPage } from "@/shared/ui/admin";
 import { useT } from "@/shared/i18n";
 import { TemplateActions } from "./TemplateActions";
 import { TemplatePreview } from "./TemplatePreview";
+import { DIGITAL_SALES } from "@/shared/store-rules";
 
 // /templates/[id] — one ready document: title, description, category and language, the full preview, and the three ways on (README §3.2).
 // The template is read again from the server on opening (never only the list row). A template with a linked service uses the service's
@@ -80,7 +81,7 @@ export function TemplateDetailPage({ id }: { id: string }) {
             <Card style={[s.plan, { borderColor: c.warn, backgroundColor: c.warnBg }]}>
               <Text variant="body" weight="bold">{t("dcat.planNoteTitle")}</Text>
               <Text variant="small" tone="gray">{t("dcat.planNoteText")}</Text>
-              <Button title={t("dcat.planChoose")} icon="award" variant="gradient" full onPress={() => router.push("/subscription" as never)} />
+              {DIGITAL_SALES ? <Button title={t("dcat.planChoose")} icon="award" variant="gradient" full onPress={() => router.push("/subscription" as never)} /> : null}
             </Card>
           ) : null}
           {actions.length ? <Text variant="h4">{t("dcat.whatNext")}</Text> : null}

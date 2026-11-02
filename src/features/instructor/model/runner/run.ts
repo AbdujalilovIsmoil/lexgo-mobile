@@ -11,6 +11,7 @@ import { isMutating } from "./payload";
 import { reportCancelled, reportDone, reportSkipped } from "./report";
 import { runTargetStep } from "./targets";
 import { closeInstructor, useInstructorUi } from "../uiStore";
+import { DIGITAL_SALES } from "@/shared/store-rules";
 
 const STEPS = ["scroll_to", "highlight", "tooltip", "focus_input"];
 const SCREEN = [...STEPS, "navigate", "open_modal"];
@@ -53,6 +54,8 @@ export async function runCommands(list: Command[], base: Omit<RunCtx, "signal">)
       await runFill(c, ctx);
     } else if (c.type === "show_steps") {
       reportDone(c);
+    } else if (!DIGITAL_SALES && c.action === "prepare_subscription_purchase") {
+      reportSkipped(c, "unsupported_command"); // iOS sells no plans (store-rules)
     } else if (isMutating(c, contract?.mutatingActions ?? [])) {
       const out = await runAction(c, ctx);
       queue.splice(i + 1, 0, ...out.more);

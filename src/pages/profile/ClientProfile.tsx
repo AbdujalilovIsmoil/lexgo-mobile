@@ -12,6 +12,7 @@ import { useColors } from "@/shared/theme";
 import { useInsets, HEADER_GAP } from "@/shared/lib/insets";
 import { formatAnyPhone } from "@/shared/lib/phone";
 import { useT } from "@/shared/i18n";
+import { DIGITAL_SALES } from "@/shared/store-rules";
 
 type Row = { key: string; icon: IconName; title: string; sub?: string; badge?: number; href: string };
 
@@ -40,7 +41,7 @@ export function ClientProfile({ user, onBack }: { user: User; onBack: () => void
     { key: "payments", icon: "credit-card", title: t("profile.pp.payPlan"), sub: t("profile.pp.payPlanSub"), href: "/profile/section/payments" },
     { key: "consents", icon: "check-square", title: t("profile.pp.consents"), badge: todo, href: "/profile/consents" },
     { key: "complaints", icon: "message-square", title: t("profile.pp.complaints"), href: "/complaints" },
-    { key: "gifts", icon: "gift", title: t("profile.pp.gifts"), href: "/profile/gifts" },
+    ...(DIGITAL_SALES ? [{ key: "gifts", icon: "gift", title: t("profile.pp.gifts"), href: "/profile/gifts" } as Row] : []),
     { key: "referral", icon: "user-plus", title: t("profile.pp.referral"), sub: referral ? t("profile.pp.invites", { n: Math.min(referral.joined, goal), goal }) : undefined, href: "/profile/referral" },
   ];
   const settings: Row[] = [

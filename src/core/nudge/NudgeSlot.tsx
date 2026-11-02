@@ -3,11 +3,12 @@ import { GiftNudge } from "@/features/gift-nudge";
 import { SupportMenu } from "@/features/support-menu";
 import { registerHeaderExtra, registerHeaderRight } from "@/shared/ui/headerExtra";
 import { useTabRole } from "@/widgets/tab-bar/useTabRole";
+import { DIGITAL_SALES } from "@/shared/store-rules";
 
 // The client's banner under the page header shows only where its message fits the page — nowhere else: the gift offer on the profile
 // and the academy, the plans on payments, packages and entitlements, the specialists directory after the problem analysis and the
 // matches. Every other screen (lists, forms, chats, documents…) keeps its content first.
-const PLACES: [RegExp, string][] = [
+const ALL_PLACES: [RegExp, string][] = [
   [/^\/(m\/)?profile$/, "gift"],
   [/^\/academy$/, "gift"],
   [/^\/payments$/, "pro"],
@@ -16,6 +17,8 @@ const PLACES: [RegExp, string][] = [
   [/^\/intake$/, "lawyers"],
   [/^\/matches$/, "lawyers"],
 ];
+// iOS sells no digital goods (store-rules): no gift or plan offers there, only the specialists one.
+const PLACES = DIGITAL_SALES ? ALL_PLACES : ALL_PLACES.filter(([, p]) => p === "lawyers");
 
 function NudgeSlot() {
   const path = usePathname();
