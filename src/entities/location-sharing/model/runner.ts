@@ -1,7 +1,8 @@
 import { AppState } from "react-native";
 import { ApiError } from "@/shared/api";
 import { registerSessionReset } from "@/shared/lib/sessionReset";
-import { sendLocationApi, stopSharingApi } from "../api/locationApi";
+import { getSharingApi, sendLocationApi, stopSharingApi } from "../api/locationApi";
+import { startBackground, stopBackground } from "./background";
 import { remainingPreset, untilMs } from "../lib/sharing";
 import { LocationFailure, readPermission, readPosition, FIX_MAX_AGE_MS } from "./position";
 import { patchShare, resetShare, useShareStore } from "./store";
@@ -78,6 +79,7 @@ async function expire() {
   clearTimers();
   epoch++;
   resetShare("off");
+  await stopBackground();
   try {
     await stopSharingApi();
   } catch (x) {
@@ -108,7 +110,7 @@ function arm() {
 }
 
 // Starts sharing with the fix the sheet just read. Throws on a server failure (state/error are set too).
-export async function startSharing(durationHours: number | null, fix: Fix): Promise<void> {
+export async function startSharing(durationHours: number | null, fix: Fix, bg?: { notice: { title: string; body: string } }): Promise<void> {
   const prev = st().mode === "starting" || st().mode === "stopping" ? "unknown" : st().mode;
   clearTimers();
   const e = ++epoch;
@@ -118,8 +120,14 @@ export async function startSharing(durationHours: number | null, fix: Fix): Prom
     if (e !== epoch) return;
     const now = Date.now();
     lastTick = now;
-    patchShare({ mode: "on", manual: durationHours === null, until: untilMs(r.expiresAt, durationHours, now), policy: r.policy, lastSentAt: now, lastAccuracy: fix.accuracy, error: null });
+    const until = untilMs(r.expiresAt, durationHours, now);
+    patchShare({ mode: "on", manual: durationHours === null, until, policy: r.policy, lastSentAt: now, lastAccuracy: fix.accuracy, error: null, background: false });
     arm();
+    // Background updates only when the seller asked for them; a refused "allow all the time" keeps the share running while the app is open.
+    if (bg) {
+      const ok = await startBackground({ until, manual: durationHours === null }, r.policy.backgroundIntervalSec, bg.notice).catch(() => false);
+      if (e === epoch) patchShare({ background: ok });
+    } else await stopBackground();
   } catch (x) {
     if (e === epoch) patchShare({ mode: prev, error: err("server") });
     throw x;
@@ -130,6 +138,7 @@ export async function startSharing(durationHours: number | null, fix: Fix): Prom
 export async function stopSharing(): Promise<boolean> {
   clearTimers();
   const e = ++epoch;
+  await stopBackground();
   patchShare({ mode: "stopping", until: null, manual: false, error: null });
   try {
     if (busy) await busy.catch(() => undefined);
@@ -145,4 +154,29 @@ export async function stopSharing(): Promise<boolean> {
 registerSessionReset(() => {
   epoch++;
   clearTimers();
+  void stopBackground(); // signed out: nothing may keep sending this account's location
 });
+
+// The server's state when the card opens: a share that is on (started before a restart, or elsewhere) is shown and kept fresh while the
+// app is open; one that is off is shown as off. A read failure leaves the mirror as it was.
+export async function syncSharing(): Promise<void> {
+  if (st().mode === "starting" || st().mode === "stopping") return;
+  const e = epoch;
+  try {
+    const r = await getSharingApi();
+    if (e !== epoch) return;
+    const now = Date.now();
+    const until = r.enabled ? untilMs(r.expiresAt, r.durationHours, now) : null;
+    if (r.enabled && (until === null || until > now)) {
+      const wasOn = st().mode === "on";
+      patchShare({ mode: "on", manual: r.durationHours === null, until, policy: r.policy, lastSentAt: r.updatedAt ? Date.parse(r.updatedAt) || st().lastSentAt : st().lastSentAt });
+      if (!wasOn) arm();
+    } else if (st().mode !== "on" || !r.enabled) {
+      clearTimers();
+      patchShare({ mode: "off", until: null, manual: false, background: false });
+      await stopBackground();
+    }
+  } catch {
+    // keep the mirror
+  }
+}

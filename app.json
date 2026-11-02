@@ -165,11 +165,12 @@
         "expo-location",
         {
           "locationWhenInUsePermission": "LexGo yaqin atrofdagi mijozlarga sizni taxminiy masofa bilan ko'rsatish uchun, ilova ochiq turganda joylashuvingizdan foydalanadi.",
-          "isAndroidBackgroundLocationEnabled": false,
-          "isIosBackgroundLocationEnabled": false,
-          "locationAlwaysAndWhenInUsePermission": false,
+          "isAndroidBackgroundLocationEnabled": true,
+          "isIosBackgroundLocationEnabled": true,
+          "locationAlwaysAndWhenInUsePermission": "LexGo siz yoqqan joylashuv ulashish davomida, ilova yopiq bo'lsa ham, yaqin atrofdagi mijozlarga sizni taxminiy masofa bilan ko'rsatish uchun joylashuvingizdan foydalanadi. Ulashishni istalgan vaqtda to'xtatishingiz mumkin.",
           "locationAlwaysPermission": false,
-          "motionUsagePermission": false
+          "motionUsagePermission": false,
+          "isAndroidForegroundServiceEnabled": true
         }
       ],
       [

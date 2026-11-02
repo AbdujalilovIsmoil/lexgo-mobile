@@ -31,6 +31,9 @@ export function LocationCard({ onStart }: Props) {
       ? t("svcRules.locTextOn", { time: fmtSpan(Math.max(60, left / 1000), t) })
       : t("svcRules.locTextOnManual")
     : t(unknown ? "svcRules.locTextUnknown" : "svcRules.locTextOff");
+  // Stale: the last position is older than the backend's stale window (20 min by default) — clients no longer see it as live.
+  const stale = on && state.lastSentAt !== null && now - state.lastSentAt > state.policy.staleAfterSec * 1000;
+  const statusLine = [status, on && state.background ? t("svcRules.locBgOn") : "", stale ? t("svcRules.locStale") : ""].filter(Boolean).join(" · ");
   const acc = shownAccuracy(state.lastAccuracy);
   const ago = on && state.lastSentAt !== null ? Math.max(0, now - state.lastSentAt) : null;
   const last = ago === null || acc === null ? "" : ago < 60_000 ? t("svcRules.locLastSentNow", { m: acc }) : t("svcRules.locLastSent", { time: fmtSpan(ago / 1000, t), m: acc });
@@ -48,7 +51,7 @@ export function LocationCard({ onStart }: Props) {
         </View>
         <View style={s.body}>
           <Text variant="body" weight="bold" numberOfLines={1}>{t("svcRules.locTitle")}</Text>
-          <Text variant="caption" tone={on ? "ok" : "gray"} numberOfLines={on ? 1 : 2} accessibilityLiveRegion="polite">{status}</Text>
+          <Text variant="caption" tone={on ? "ok" : "gray"} numberOfLines={2} accessibilityLiveRegion="polite">{statusLine}</Text>
         </View>
         <Toggle value={on} onChange={change} disabled={busy} label={t("svcRules.locTitle")} />
       </View>

@@ -1,8 +1,8 @@
 import { useState } from "react";
-import { Linking, StyleSheet, View } from "react-native";
+import { Linking, Platform, StyleSheet, View } from "react-native";
 import { useT } from "@/shared/i18n";
 import { radius, useColors } from "@/shared/theme";
-import { BottomSheet, Button, Icon, PressableScale, SheetScroll, Text, toast } from "@/shared/ui";
+import { BottomSheet, Button, confirmDialog, Icon, PressableScale, SheetScroll, Text, Toggle, toast } from "@/shared/ui";
 import { selectHaptic } from "@/shared/lib/haptics";
 import { clockTime } from "../lib/duration";
 import { LOCATION_DURATIONS, shownAccuracy } from "../lib/sharing";
@@ -42,6 +42,7 @@ function SheetBody({ onClose, onStarted }: { onClose: () => void; onStarted?: ()
   const [settings, setSettings] = useState(false); // permission refused for good → offer the system settings
   const [duration, setDuration] = useState<Duration>(1);
   const [sending, setSending] = useState(false);
+  const [bg, setBg] = useState(false); // also while the app is closed — off unless the seller turns it on after the disclosure
   const [now] = useState(() => Date.now()); // the «HH:MM gacha» times count from the moment the sheet opened
 
   const locate = async () => {
@@ -69,7 +70,7 @@ function SheetBody({ onClose, onStarted }: { onClose: () => void; onStarted?: ()
     if (!fix || sending) return;
     setSending(true);
     try {
-      await start(duration, fix);
+      await start(duration, fix, bg);
       toast(t("svcRules.locStarted"), "ok");
       onStarted?.();
       onClose();
@@ -151,6 +152,18 @@ function SheetBody({ onClose, onStarted }: { onClose: () => void; onStarted?: ()
             ))}
           </View>
           <Tile wide on={duration === null} title={t("svcRules.locManual")} hint={t("svcRules.locManualHint")} onPress={() => setDuration(null)} />
+          <View style={[s.bgRow, { backgroundColor: c.surface, borderColor: bg ? c.accent : c.line }]}>
+            <Icon name="moon" size={18} color={c.accent} />
+            <View style={s.flex}>
+              <Text variant="small" weight="bold">{t("svcRules.locBgTitle")}</Text>
+              <Text variant="caption" tone="gray">{t("svcRules.locBgSub", { min: Math.round(state.policy.backgroundIntervalSec / 60) })}</Text>
+            </View>
+            <Toggle value={bg} label={t("svcRules.locBgTitle")} onChange={(v) => {
+              if (!v) return setBg(false);
+              // Prominent disclosure before the OS asks for "allow all the time" (Google Play background-location policy).
+              confirmDialog({ title: t("svcRules.locBgDiscloseTitle"), message: t(Platform.OS === "ios" ? "svcRules.locBgDiscloseTextIos" : "svcRules.locBgDiscloseText", { min: Math.round(state.policy.backgroundIntervalSec / 60) }), confirmLabel: t("svcRules.locBgAllow"), cancelLabel: t("svcRules.locCancel"), icon: "map-pin", onConfirm: () => setBg(true) });
+            }} />
+          </View>
           {serverErr ? (
             <View style={[s.note, { backgroundColor: c.errBg }]} accessibilityRole="alert" accessibilityLiveRegion="polite">
               <Text variant="small" tone="err">{serverErr}</Text>
@@ -202,4 +215,5 @@ const s = StyleSheet.create({
   tile: { flexGrow: 1, flexBasis: "46%", minHeight: 60, borderRadius: radius.r, borderWidth: 1.5, paddingHorizontal: 14, paddingVertical: 10, justifyContent: "center", gap: 2 },
   tileWide: { flexBasis: "100%" },
   footer: { flexDirection: "row", gap: 10, marginTop: 4 },
+  bgRow: { flexDirection: "row", alignItems: "center", gap: 12, padding: 14, borderRadius: radius.r, borderWidth: 1.5 },
 });

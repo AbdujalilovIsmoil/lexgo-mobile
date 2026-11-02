@@ -1,7 +1,7 @@
-import { useCallback } from "react";
+import { useCallback, useEffect } from "react";
 import { useT } from "@/shared/i18n";
 import { useShareStore } from "./store";
-import { startSharing, stopSharing } from "./runner";
+import { startSharing, stopSharing, syncSharing } from "./runner";
 import type { Fix, LocErrorKind } from "./types";
 
 const ERR_KEY: Record<LocErrorKind, string> = {
@@ -12,11 +12,13 @@ const ERR_KEY: Record<LocErrorKind, string> = {
   build: "svcRules.locErrBuild",
 };
 
-// Seller location sharing: state mirror (the server cannot be read back), start / stop, translated error.
+// Seller location sharing: state mirror (synced from GET on mount), start / stop (optionally with background updates), translated error.
 export function useLocationSharing() {
   const { t } = useT();
   const state = useShareStore();
-  const start = useCallback((durationHours: number | null, fix: Fix) => startSharing(durationHours, fix), []);
+  useEffect(() => { void syncSharing(); }, []); // the server's state each time the card / sheet appears
+  const start = useCallback((durationHours: number | null, fix: Fix, background = false) =>
+    startSharing(durationHours, fix, background ? { notice: { title: t("svcRules.locBgNoticeTitle"), body: t("svcRules.locBgNoticeBody") } } : undefined), [t]);
   const stop = useCallback(() => stopSharing(), []);
   const errorText = state.error ? t(ERR_KEY[state.error.stop ? "server" : state.error.kind]) : "";
   return {

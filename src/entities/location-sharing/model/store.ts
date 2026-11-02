@@ -4,16 +4,17 @@ import { DEFAULT_POLICY } from "../lib/sharing";
 import type { LocError, SharingPolicy, ShareMode } from "./types";
 
 export type ShareState = {
-  mode: ShareMode; // "unknown" until the user starts/stops in this app (the server has no read-back)
+  mode: ShareMode; // "unknown" until the server state is read (GET) or the user starts / stops
   manual: boolean; // "until switched off"
   until: number | null; // epoch ms the timed share ends
   policy: SharingPolicy;
   lastSentAt: number | null;
   lastAccuracy: number | null;
   error: LocError | null;
+  background: boolean; // updates also go on while the app is closed (Android foreground service)
 };
 
-export const initialShare: ShareState = { mode: "unknown", manual: false, until: null, policy: DEFAULT_POLICY, lastSentAt: null, lastAccuracy: null, error: null };
+export const initialShare: ShareState = { mode: "unknown", manual: false, until: null, policy: DEFAULT_POLICY, lastSentAt: null, lastAccuracy: null, error: null, background: false };
 
 export const useShareStore = create<ShareState>()(() => initialShare);
 

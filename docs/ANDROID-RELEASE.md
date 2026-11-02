@@ -142,6 +142,12 @@ Also confirm the build's version code: `npx eas-cli@latest build:list --platform
 Permissions policy for this app (set in `app.json`):
 - `android.blockedPermissions` removes `FOREGROUND_SERVICE_MEDIA_PLAYBACK`, storage and `SYSTEM_ALERT_WINDOW` permissions. The media-playback permission is merged in by the media libraries but the app has no background media feature, so declaring it would need a false justification in Play's declaration form. Do not re-add it.
 - No advertising ID (`AD_ID`) is used; the Play declaration answer is **No**. If an ads/attribution SDK is ever added, revisit this and the Data safety form.
+- **Background location (seller location sharing).** `expo-location` is configured with `isAndroidBackgroundLocationEnabled` and `isAndroidForegroundServiceEnabled`, so the manifest declares `ACCESS_BACKGROUND_LOCATION`, `FOREGROUND_SERVICE` and `FOREGROUND_SERVICE_LOCATION`. Before uploading a build with them, complete in Play Console:
+  - *App content → Sensitive permissions → Location permissions*: core feature "Advocates and lawyers share their live location, only for the sharing period they choose, so nearby clients can find them (marketplace map)". Attach a short video showing: Services → Joylashuvni ulashish → the in-app disclosure ("Fonda joylashuvdan foydalanish") → the OS "Allow all the time" prompt → the persistent notification → stopping the share.
+  - *Foreground service permissions*: type **location**, the same use case and video.
+  - *Data safety*: "Approximate / precise location", collected, not shared, purpose "App functionality", optional (sellers only, opt-in), data deleted after 30 days (backend retention).
+  - The feature is off by default; only a seller who turns on "Ilova yopiq bo'lsa ham yuborish" after the disclosure is asked for "Allow all the time". Clients are never asked for background location.
+- **Play test usage analytics** (`src/features/usage-test`) needs no permission: foreground time only, no identifiers beyond a random installation key. Data safety: "App interactions" + "Device or other IDs" (installation identifier), purpose "Analytics", not shared.
 
 ## 7. Release notes and listing text
 
