@@ -31,6 +31,8 @@ export const aw2: Messages["aw2"] = {
   call: { audio: "Аудио", video: "Видео" },
   channel: { chat: "Чат", audio: "Аудио", video: "Видео" },
   st: {
+    questionnaire: "Заполняется анкета",
+    refund_pending: "Ожидает возврата",
     scheduled: "Запланировано",
     meeting_active: "Идёт встреча",
     expired: "Просрочено",
@@ -50,4 +52,5 @@ export const aw2: Messages["aw2"] = {
     waiting_payment: "Ожидает оплаты",
     waiting_docs: "Ожидает документы",
   },
+  inbox: { title: "Заявки", action: "Нужно действие", overdue: "Просрочено", total: "Всего", all: "Все", kind: { docs: "Запрос документа", urgent: "Срочная заявка", orders: "Заказ", meetings: "Встреча" }, showDone: "Показать завершённые", hideDone: "Скрыть завершённые", modules: "Полные разделы", empty: "Заявок пока нет", needs: "Ждёт ответа" },
 };

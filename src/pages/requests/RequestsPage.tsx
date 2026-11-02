@@ -9,7 +9,7 @@ export function RequestsPage() {
   const pad = useTabPad();
   const { attention } = useRequestCounts();
   return (
-    <TabPage title={t("tabs.requests")} subtitle={attention ? t("aw2.attention", { n: attention }) : t("aw2.sub")}>
+    <TabPage navy title={t("tabs.requests")} subtitle={attention ? t("aw2.attention", { n: attention }) : t("aw2.sub")}>
       <RequestsInbox bottomPad={pad} />
     </TabPage>
   );

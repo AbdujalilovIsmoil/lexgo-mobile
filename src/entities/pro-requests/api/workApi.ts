@@ -15,6 +15,7 @@ export async function listUrgent(): Promise<ReqItem[]> {
       kind: "urgent" as const, id: asStr(d.id), title: asStr(d.title) || asStr(p.need), client: asStr(asDict(d.client).name),
       detail: asStr(p.channel), amount: 0, when: asStr(p.scheduled_at), status, at: asStr(d.updated_at ?? d.created_at),
       route: `/pro/urgent/${asStr(d.id)}`, action: needsAction("urgent", status), active: final.length ? !final.includes(status) : isActiveStatus("urgent", status),
+      ref: asStr(d.work_id ?? d.number ?? d.public_id), due: asStr(d.respond_by ?? d.deadline_at ?? p.scheduled_at),
     };
   });
 }
@@ -29,6 +30,7 @@ export async function listOrders(): Promise<ReqItem[]> {
       kind: "orders" as const, id: asStr(d.id ?? d.order_id), title: asStr(d.service_title) || asStr(asDict(d.details).service_title), client: asStr(asDict(d.client).name),
       detail: "", amount: uzs(d, "price"), when: "", status, at: asStr(d.updated_at ?? d.created_at), route: `/pro/orders/${asStr(d.id ?? d.order_id)}`,
       action: needsAction("orders", status), active: isActiveStatus("orders", status),
+      ref: asStr(d.work_id ?? d.order_number ?? asDict(d.details).work_id), due: asStr(d.confirmation_deadline_at ?? asDict(d.details).confirmation_deadline_at ?? d.deadline_at),
     };
   });
 }
@@ -43,6 +45,7 @@ export async function listMeetings(): Promise<ReqItem[]> {
       kind: "meetings" as const, id: asStr(d.call_id ?? d.id), title: asStr(d.title), client: asStr(d.caller_name),
       detail: asStr(d.call_type), amount: 0, when: "", status, at: asStr(d.started_at),
       route: live ? `/call/${asStr(d.room_id)}` : "/meetings", action: needsAction("meetings", status), active: isActiveStatus("meetings", status),
+      ref: "", due: "",
     };
   });
 }

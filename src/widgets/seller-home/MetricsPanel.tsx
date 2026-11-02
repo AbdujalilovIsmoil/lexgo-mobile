@@ -1,27 +1,19 @@
-import { useEffect, useState } from "react";
 import { StyleSheet, View } from "react-native";
 import { MIN_REVIEWS_FOR_RATING, n, pct, type Cabinet } from "@/entities/pro-workspace";
-import { useSession } from "@/entities/session";
-import { readJson, writeJson } from "@/shared/lib/storage";
 import { fmtRating } from "@/shared/lib/format";
 import { useColors } from "@/shared/theme";
-import { Icon, Text, Toggle } from "@/shared/ui";
+import { Icon, Text } from "@/shared/ui";
 import { useT } from "@/shared/i18n";
 import { Panel } from "./Panel";
 import { Tile, tilesStyle } from "./Tile";
 import { useGrid } from "@/shared/lib/useGrid";
 
-// "Ko'rsatkichlarim": response and acceptance rate, average answer time and rating (a "new" badge under five reviews), the
-// vacation switch (kept on the phone until the backend stores availability), a coaching tip and the four "Super advokat" steps.
+// "Ko'rsatkichlarim": response and acceptance rate, average answer time and rating (a "new" badge under five reviews), a coaching
+// tip and the four "Super advokat" steps — all from the cabinet.
 export function MetricsPanel({ cabinet, i }: { cabinet: Cabinet; i: number }) {
   const grid = useGrid({ count: 4 });
   const { t, locale } = useT();
   const c = useColors();
-  const uid = useSession()?.user.id ?? "";
-  const key = `lexgo_vacation_${uid}`;
-  const [vac, setVac] = useState(false);
-  useEffect(() => void readJson<boolean>(key).then((v) => setVac(v === true)), [key]);
-  const flip = (v: boolean) => { setVac(v); void writeJson(key, v); };
   const p = cabinet.performance;
   const response = n(p, "response_rate");
   const acceptance = p.acceptance_rate == null ? null : n(p, "acceptance_rate");
@@ -37,12 +29,6 @@ export function MetricsPanel({ cabinet, i }: { cabinet: Cabinet; i: number }) {
   ];
   return (
     <Panel i={i} icon="trending-up" tint="#00A870" title={t("shm.sd.metrics.title")} fold={`${pct(response)}% · ${avg ? t("shm.sd.metrics.minutes", { n: avg }) : "—"} · ${isNew ? t("shm.sd.metrics.newBadge") : rating ? fmtRating(rating, locale) : "—"}`}>
-      <View style={[s.vacRow, { backgroundColor: vac ? c.warnBg : c.surface2 }]}>
-        <Icon name="sun" size={18} color={vac ? c.warn : c.gray} />
-        <Text variant="small" weight="bold" style={s.flex}>{vac ? t("shm.sd.metrics.vacationOn") : t("shm.sd.metrics.vacationOff")}</Text>
-        <Toggle value={vac} onChange={flip} label={t("shm.sd.metrics.vacationOff")} />
-      </View>
-      {vac ? <View style={s.note}><Icon name="sun" size={16} color={c.warn} /><Text variant="small" style={[s.flex, { color: c.warn }]}>{t("shm.sd.metrics.vacationNote")}</Text></View> : null}
       <View style={[tilesStyle.grid, grid.row]} onLayout={grid.onLayout}>
         {grid.ready ? (
           <>
@@ -71,8 +57,6 @@ export function MetricsPanel({ cabinet, i }: { cabinet: Cabinet; i: number }) {
 }
 
 const s = StyleSheet.create({
-  vacRow: { flexDirection: "row", alignItems: "center", gap: 10, paddingVertical: 8, paddingLeft: 14, paddingRight: 10, borderRadius: 14 },
-  note: { flexDirection: "row", alignItems: "center", gap: 8 },
   flex: { flex: 1 },
   super: { gap: 8, marginTop: 4 },
   step: { flexDirection: "row", alignItems: "center", gap: 10 },

@@ -2,7 +2,7 @@ import { StyleSheet, View } from "react-native";
 import { Button, Icon, Text } from "@/shared/ui";
 import { fmtDateTime } from "@/shared/lib/format";
 import { useInsets } from "@/shared/lib/insets";
-import { useColors } from "@/shared/theme";
+import { useColors, usePaneColor } from "@/shared/theme";
 import { useT } from "@/shared/i18n";
 import { serverIso, type SupportTicket } from "@/entities/support";
 
@@ -12,9 +12,10 @@ type Props = { ticket: SupportTicket; onReopen: () => void; onNew: () => void };
 export function ClosedBanner({ ticket, onReopen, onNew }: Props) {
   const { t, locale } = useT();
   const c = useColors();
+  const pane = usePaneColor(); // solid in the glass theme
   const insets = useInsets();
   return (
-    <View style={[s.box, { borderTopColor: c.line, backgroundColor: c.surface2, paddingBottom: insets.bottom + 12 }]}>
+    <View style={[s.box, { borderTopColor: c.line, backgroundColor: pane, paddingBottom: insets.bottom + 12 }]}>
       <View style={s.head}>
         <Icon name="check-circle" size={20} color={c.ok} />
         <View style={s.fill}>

@@ -9,10 +9,11 @@ import { FormSheet, SelectField } from "@/shared/ui/admin";
 import { bodyOf, draftOf } from "../model/draft";
 import { caseSchema } from "../model/caseSchema";
 
-type Props = { visible: boolean; onClose: () => void; item: ProCase | null };
+// `clientId`: a new case opened from a client card belongs to that client.
+type Props = { visible: boolean; onClose: () => void; item: ProCase | null; clientId?: string };
 
 // Open a new case or manage one (status, stage, next step, deadline); archive from the secondary button.
-export function CaseFormSheet({ visible, onClose, item }: Props) {
+export function CaseFormSheet({ visible, onClose, item, clientId }: Props) {
   const { t } = useT();
   const me = useSession()?.user.id;
   const f = useAppForm(caseSchema, draftOf(item));
@@ -22,7 +23,7 @@ export function CaseFormSheet({ visible, onClose, item }: Props) {
   const archive = useArchiveCase();
   const submit = f.handleSubmit((v) => {
     const body = bodyOf(v, !!item);
-    if (!item) return create.mutate({ ...body, lawyer_user_id: me }, { onSuccess: onClose });
+    if (!item) return create.mutate({ ...body, lawyer_user_id: me, ...(clientId ? { client_user_id: clientId } : {}) }, { onSuccess: onClose });
     update.mutate({ id: item.id, ...body }, { onSuccess: onClose });
   });
   const askArchive = () => item && confirmDialog({ title: t("aw4.archiveTitle"), message: t("aw4.archiveText"), confirmLabel: t("aw4.archive"), cancelLabel: t("adm.cancel"), icon: "archive", danger: true, onConfirm: () => archive.mutate(item.id, { onSuccess: onClose }) });

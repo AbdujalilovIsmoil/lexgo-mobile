@@ -29,6 +29,8 @@ export const aw2 = {
   call: { audio: "Audio", video: "Video" },
   channel: { chat: "Chat", audio: "Audio", video: "Video" },
   st: {
+    questionnaire: "Anketa to'ldirilmoqda",
+    refund_pending: "Pul qaytarilmoqda",
     scheduled: "Rejalashtirilgan",
     meeting_active: "Uchrashuv ketyapti",
     expired: "Muddati o'tgan",
@@ -48,4 +50,5 @@ export const aw2 = {
     waiting_payment: "To'lov kutilmoqda",
     waiting_docs: "Hujjat kutilmoqda",
   },
+  inbox: { title: "So'rovlar", action: "Harakat kerak", overdue: "Muddati o'tgan", total: "Jami", all: "Hammasi", kind: { docs: "Hujjat so'rovi", urgent: "Tezkor so'rov", orders: "Buyurtma", meetings: "Uchrashuv" }, showDone: "Yakunlanganlarni ko'rsatish", hideDone: "Yakunlanganlarni yashirish", modules: "To'liq bo'limlar", empty: "Hozircha so'rov yo'q", needs: "Javob kutilmoqda" },
 };

@@ -26,6 +26,7 @@ export type CaseInput = {
   next_action?: string;
   deadline_at?: string | null;
   lawyer_user_id?: string;
+  client_user_id?: string;
 };
 
 export type TimelineItem = { id: string; kind: string; title: string; stage: string; status: string; nextAction: string; createdAt: string };

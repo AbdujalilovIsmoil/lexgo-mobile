@@ -190,5 +190,6 @@ export const shm = {
   },
   "sec": { "title": "Hisob xavfsizligi", "sum": "2FA, Telegram va xabarnoma sozlamalari" },
   "alert": { "title": "{n} ta yangi so'rov kutmoqda", "sub": "Javob muddati ketmoqda — ochish uchun bosing" },
+  "ws": { "alertTitle": "Sizga yangi buyurtma biriktirildi", "alertUrgent": "Yangi tezkor so'rov keldi", "alertMore": "yana {n} ta", "open": "Ochish", "left": "{time} qoldi", "timeUp": "Javob vaqti tugadi", "freePlan": "Bepul tarif", "statRequests": "So'rovlar", "statDue": "Bugun muddat", "statRating": "Reyting", "ratingNew": "Yangi", "waiting": "{n} ta kutmoqda", "none": "Hozircha yo'q", "fresh": "{n} ta yangi", "todayN": "Bugun {n} ta", "count": "{n} ta", "clientsN": "{n} ta mijoz", "today": "Bugun", "soon": "Yaqinda", "calendar": "Kalendar", "todayEmpty": "Bugun rejalashtirilgan ish yo'q", "todayEmptySub": "Uchrashuv yoki muddat qo'shish uchun kalendarni oching", "due": "Muddat", "caseDue": "Ish muddati", "reputation": "Obro' va reyting", "reviews": "{n} baho", "topRank": "Yuqori o'rin uchun profilni to'ldiring", "sectionsLeft": "{n} ta bo'lim qoldi", "profileDone": "Profilingiz to'liq", "profileDoneSub": "Mijozlar sizni qidiruvda birinchilardan ko'radi", "security": "Hisob xavfsizligi", "twoFaOn": "2FA yoqilgan", "twoFaOff": "2FA o'chirilgan — yoqishni tavsiya qilamiz" },
   "phone": { "country": "Davlatni tanlang" }
 };

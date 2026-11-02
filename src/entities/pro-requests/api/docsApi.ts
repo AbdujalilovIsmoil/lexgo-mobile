@@ -20,6 +20,8 @@ function norm(kind: ReqKind, v: unknown): ReqItem {
     route: `/pro/docs/${id}`,
     action: needsAction(kind, status) || Boolean(d.can_claim),
     active: isActiveStatus(kind, status),
+    ref: asStr(d.work_id ?? d.number ?? d.request_number),
+    due: asStr(d.deadline_at ?? d.due_at ?? d.sla_deadline_at),
   };
 }
 

@@ -11,7 +11,6 @@ export const cpC = {
     notSet: "Kiritilmagan",
     card: "Bank kartasi",
     subscription: "Obuna",
-    subActive: "Standard · faol",
     idTitle: "Shaxsni tasdiqlash",
     idLead: "MyID (asosiy) yoki OneID orqali shaxsingizni tasdiqlang — ishonch va xavfsizlik uchun. Advokat va yuristlar uchun majburiy, mijoz uchun ixtiyoriy.",
     idVerified: "Shaxs tasdiqlangan",

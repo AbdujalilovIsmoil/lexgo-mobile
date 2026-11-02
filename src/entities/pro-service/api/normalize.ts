@@ -27,7 +27,8 @@ export function normService(v: unknown): ProService {
   const promo = normPromo(d.promotion);
   return {
     id,
-    name: asStr(d.title_uz_latn ?? d.title ?? d.name).trim(),
+    // The first title that is really there: an empty title_uz_latn ("") must not hide the title (?? would keep the empty string).
+    name: [d.title_uz_latn, d.title, d.service_title, asDict(d.service).title, d.name].map((x) => asStr(x).trim()).find(Boolean) ?? "",
     categoryTitle: asStr(d.category_title),
     subcategory: asStr(d.subcategory),
     catalogPrice: uzs(d, "standard_price", "base_price"),

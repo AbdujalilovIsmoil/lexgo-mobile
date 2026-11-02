@@ -6,13 +6,10 @@ import Animated, { useAnimatedStyle, useSharedValue, withSpring } from "react-na
 import { scheduleOnRN } from "react-native-worklets";
 import { useSession } from "@/entities/session";
 import { useT } from "@/shared/i18n";
-import { useColors, useTheme } from "@/shared/theme";
-import { GlassBackdrop, useGlass } from "@/shared/ui";
 import { useTabRole } from "@/widgets/tab-bar/useTabRole";
 import { GUEST_OPEN } from "./navItems";
 import { useSidebarHidden } from "./useSidebarHidden";
 import { useTablet } from "@/shared/lib/useTablet";
-import { SidebarPanel } from "./SidebarPanel";
 import { MenuPanel } from "./MenuPanel";
 import { useSidebar } from "./sidebarStore";
 import { SPRING, useDrawer } from "./useDrawer";
@@ -22,9 +19,6 @@ import { SPRING, useDrawer } from "./useDrawer";
 // area, drag the drawer (or the dim area) to the left, or press back to close.
 export function ClientSidebar() {
   const { t } = useT();
-  const c = useColors();
-  const { dark } = useTheme();
-  const lens = !!useGlass(true); // the drawer stays glass
   const router = useRouter();
   const role = useTabRole();
   const { width } = useWindowDimensions();
@@ -61,7 +55,7 @@ export function ClientSidebar() {
     x.value = -w;
   }, [hidden, who, w, x]);
   if (hidden || docked) return null;
-  const client = role !== "seller"; // the client's (and the visitor's) drawer is the design's navy MenuPanel
+  // Every role's drawer is the design's navy MenuPanel (a professional's with their own rows); the tablet's docked rail keeps SidebarPanel.
   // A visitor may open the public pages; every other row is personal, so it leads to sign-in. The drawer closes first and the page
   // opens once it is out of the way (a heavy page mounting during the closing spring made both stutter); a second tap while that is
   // pending is ignored.
@@ -78,10 +72,9 @@ export function ClientSidebar() {
         <Animated.View pointerEvents={open ? "auto" : "none"} style={[StyleSheet.absoluteFill, s.scrim, scrim]}><Pressable style={s.fill} onPress={hide} accessibilityRole="button" accessibilityLabel={t("a11y.close")} /></Animated.View>
       </GestureDetector>
       <GestureDetector gesture={drag}>
-        <Animated.View pointerEvents={open ? "auto" : "none"} accessibilityViewIsModal={open} style={[s.panel, { width: w, backgroundColor: client ? "#0A1430" : lens ? "transparent" : c.surface, borderColor: client ? "rgba(255,255,255,0.08)" : c.line }, panel]}>
-          {lens && !client ? <GlassBackdrop always radius={0} tint={dark ? "rgba(10,17,32,0.6)" : "rgba(255,255,255,0.68)"} /> : null}
+        <Animated.View pointerEvents={open ? "auto" : "none"} accessibilityViewIsModal={open} style={[s.panel, { width: w, backgroundColor: "#0A1430", borderColor: "rgba(255,255,255,0.08)" }, panel]}>
           {/* the panel's empty parts claim the touch too, so it never reaches the page behind (rows and buttons claim theirs first) */}
-          <View style={s.fill} onStartShouldSetResponder={() => true}>{client ? <MenuPanel onGo={go} /> : <SidebarPanel p={p} onGo={go} />}</View>
+          <View style={s.fill} onStartShouldSetResponder={() => true}><MenuPanel onGo={go} /></View>
         </Animated.View>
       </GestureDetector>
     </>

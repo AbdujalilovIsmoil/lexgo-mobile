@@ -22,9 +22,10 @@ export function Hero({ label, amount, series, loading }: Props) {
   const calm = useReducedMotion();
   const counted = useCountUp(amount ?? 0, 1300, 150);
   const value = amount == null ? "—" : fmtMoney(calm ? amount : counted);
-  const d = series.length >= 2 ? deltaPct(series[series.length - 1], series[series.length - 2]) : null;
+  // No change is shown next to a zero amount: "0 so'm · −90 %" reads as nonsense (the change comes from the payout series, not this number).
+  const d = series.length >= 2 && (amount ?? 0) > 0 ? deltaPct(series[series.length - 1], series[series.length - 2]) : null;
   const trend = trendOf(d);
-  const heights = sparkHeights(series);
+  const heights = (amount ?? 0) > 0 ? sparkHeights(series) : [];
   const trendWord = trend ? t(`statUx.${trend}`) : "";
   const a11y = `${label}: ${amount == null ? "—" : `${value} ${cur}`}${d != null ? `, ${trendWord} ${Math.abs(d)}%` : ""}`;
   return (

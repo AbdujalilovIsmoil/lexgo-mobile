@@ -9,7 +9,7 @@ export type ProClient = {
   lastActiveAt: string;
 };
 
-export type Linked = { id: string; title: string; sub: string; status: string; at: string };
+export type Linked = { id: string; title: string; sub: string; status: string; at: string; ref: string }; // ref: the case number / work id shown above the title
 
 export type ClientDetail = {
   manual: boolean;

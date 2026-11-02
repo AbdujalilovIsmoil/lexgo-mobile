@@ -3,3 +3,4 @@ export { HeaderActions } from "./HeaderActions";
 export { useTabHeader } from "./tabScroll";
 export { TabScrollView } from "./TabScrollView";
 export { lazyTab } from "./lazyTab";
+export { NavyBar } from "./NavyBar";

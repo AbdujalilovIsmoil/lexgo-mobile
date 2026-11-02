@@ -42,7 +42,7 @@ export function ProfileSummary() {
             <Fact label={t("cpr.email")} value={p?.email || unset} />
             <Fact label={t("cpr.card")} value={card ? `•••• ${card.last4}` : unset} />
             <Divider vertical={6} />
-            <Fact label={t("cpr.subscription")} value={p?.planName ? `${p.planName}${p.planStatus ? ` · ${statusLabel(p.planStatus, t)}` : ""}` : t("cpr.subActive")} />
+            <Fact label={t("cpr.subscription")} value={p?.planName ? `${p.planName}${p.planStatus ? ` · ${statusLabel(p.planStatus, t)}` : ""}` : t("cdash.side.freePlan")} />
           </>
         )}
       </Card>

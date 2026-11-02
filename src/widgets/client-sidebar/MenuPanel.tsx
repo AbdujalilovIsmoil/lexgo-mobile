@@ -1,19 +1,23 @@
 import { Fragment } from "react";
 import { ScrollView, StyleSheet, View } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
+import { usePathname } from "expo-router";
 import * as Application from "expo-application";
 import { useUnreadCount } from "@/entities/notification";
 import { displayName, useSession } from "@/entities/session";
 import { useFeature, useMyFeatures, usePlans } from "@/entities/plan";
 import { useReferral } from "@/entities/profile-extras";
+import { useAccess } from "@/entities/access";
+import { useCabinet } from "@/entities/pro-workspace";
 import { useLogout } from "@/features/auth";
 import { useBadge } from "@/shared/lib";
 import { useInsets } from "@/shared/lib/insets";
 import { formatAnyPhone } from "@/shared/lib/phone";
 import { Avatar, Icon, PressableScale, Text, type IconName } from "@/shared/ui";
 import { useT } from "@/shared/i18n";
+import { useTabRole } from "@/widgets/tab-bar/useTabRole";
 import { useSidebar } from "./sidebarStore";
-import { NAV, EXTRA, type NavItem } from "./navItems";
+import { NAV, EXTRA, TEAM_TASKS, isActive, sellerSections, type NavItem } from "./navItems";
 
 const INK = "#F1F5FC";
 const MUTED = "#AEB9CF";
@@ -24,11 +28,14 @@ const AVATAR = ["#F7A066", "#E8662E"] as const;
 // Which card each of the client's rows sits in (anything not listed is a "main" row).
 const ACCOUNT_KEYS = new Set(["subscription", "payments", "gifts", "referrals", "reviews", "warranty", "complaints", "entitlements", "consents"]);
 
-type Row = { key: string; icon: IconName; label: string; value?: string; badge?: number; tone?: string; onPress: () => void };
+type Row = { key: string; icon: IconName; label: string; value?: string; badge?: number; tone?: string; active?: boolean; onPress: () => void };
 
-// The client's drawer (and the visitor's): the brand row with the close button, the profile card, the plan card (free / current plan, the AI
-// questions left, the way to Pro — the whole card opens the plans), the rows in cards under Asosiy / Hisob (language, privacy and settings live in the profile), sign out and the
-// app version — always on the deep navy of the design, whatever the theme.
+// The drawer of every role on a phone: the brand row with the close button, the profile card, the plan card (free / current plan, the AI
+// questions left, the way to Pro — the whole card opens the plans), the rows in cards, sign out and the app version — always on the deep
+// navy of the design, whatever the theme. A client (and a visitor) gets the web portal's rows under Asosiy / Hisob (language, privacy and
+// settings live in the profile); an advokat and a yurist get the very same look with their own rows (navItems' sellerSections: the web
+// sidebar of their role + the mobile tools under Asosiy, the account screens under Hisob, the app settings under Ilova), the profile card
+// opening their professional profile and showing their role.
 export function MenuPanel({ onGo }: { onGo: (route: string) => void }) {
   const { t } = useT();
   const insets = useInsets();
@@ -39,17 +46,27 @@ export function MenuPanel({ onGo }: { onGo: (route: string) => void }) {
   const plans = usePlans().data;
   const ai = useFeature("ai_requests");
   const referral = useReferral().data;
+  const role = useTabRole();
+  const path = usePathname();
+  const access = useAccess();
+  const cabinet = useCabinet().data;
   const badges = { notifications: useUnreadCount(), support: useBadge("support") };
   const paid = !!features?.active;
   const planName = paid ? plans?.find((p) => p.id === features?.planId)?.name ?? t("cdash.side.myPlan") : t("cdash.side.pro");
   const aiLine = !ai ? "" : ai.mode === "unlimited" ? t("cdash.side.aiUnlimited") : ai.remaining != null ? t("cdash.side.aiLeft", { n: ai.remaining }) : "";
   const goal = referral ? referral.eligibleAfter || 5 : 0;
   const valueOf = (key: string) =>
-    key === "subscription" ? (paid ? planName : t("cdash.side.free")) : key === "referrals" && referral ? `${Math.min(referral.joined, goal)}/${goal}` : undefined;
-  const toRow = (it: NavItem, label: string): Row => ({ key: it.key, icon: it.icon, label, value: valueOf(it.key), badge: it.badge ? badges[it.badge] : undefined, onPress: () => onGo(it.route) });
+    key === "subscription" ? (paid ? planName : t("cdash.side.free")) : key === "referrals" && referral && !pro ? `${Math.min(referral.joined, goal)}/${goal}` : undefined;
+  const toRow = (it: NavItem, label: string): Row => ({ key: it.key, icon: it.icon, label, value: valueOf(it.key), badge: it.badge ? badges[it.badge] : undefined, active: isActive(it.route, path), onPress: () => onGo(it.route) });
+  const pro = role === "seller";
+  const sections = pro ? sellerSections({ kind: user?.role, limited: cabinet ? cabinet.limited : user?.accountStatus === "pending", actions: cabinet?.actions }) : null;
   const rows = [...NAV.map((it) => toRow(it, t(it.label ?? `cpd.menu.${it.key}`))), ...(user ? EXTRA.map((it) => toRow(it, t(`nav1.menu.${it.key}`))) : [])];
-  const main = rows.filter((r) => !ACCOUNT_KEYS.has(r.key));
-  const account = rows.filter((r) => ACCOUNT_KEYS.has(r.key));
+  const proRow = (it: NavItem) => toRow(it, t(it.label ?? `cpd.menu.${it.key}`));
+  const team = access.can("tasks.view") && user ? [proRow(TEAM_TASKS)] : [];
+  // A client: Asosiy / Hisob. A professional: their groups (sellerSections), the team's tasks first in Asosiy.
+  const groups: { key: string; rows: Row[] }[] = sections
+    ? sections.map((g) => ({ key: g.key, rows: [...(g.key === "main" ? team : []), ...g.items.map(proRow)] }))
+    : [{ key: "main", rows: rows.filter((r) => !ACCOUNT_KEYS.has(r.key)) }, { key: "account", rows: rows.filter((r) => ACCOUNT_KEYS.has(r.key)) }];
   const name = user ? displayName(user) || user.phone : "";
   return (
     <View style={s.fill}>
@@ -62,10 +79,11 @@ export function MenuPanel({ onGo }: { onGo: (route: string) => void }) {
         </View>
 
         {user ? (
-          <PressableScale onPress={() => onGo("/profile")} scale={0.98} accessibilityRole="button" style={[s.card, s.profile]}>
+          <PressableScale onPress={() => onGo(pro ? "/pro/profile" : "/profile")} scale={0.98} accessibilityRole="button" style={[s.card, s.profile]}>
             <Avatar name={name} size={56} colors={AVATAR} />
             <View style={s.flex}>
               <Text variant="h4" numberOfLines={1} style={{ color: INK, fontSize: 18 }}>{name}</Text>
+              {pro ? <Text variant="small" weight="semibold" numberOfLines={1} style={{ color: "#F5C451" }}>{t(user.role === "advocate" ? "profile.roleAdvocate" : "profile.roleLawyer")}</Text> : null}
               {user.phone ? <Text variant="small" numberOfLines={1} style={{ color: MUTED }}>{formatAnyPhone(user.phone)}</Text> : null}
             </View>
             <Icon name="chevron-right" size={20} color={MUTED} />
@@ -96,8 +114,7 @@ export function MenuPanel({ onGo }: { onGo: (route: string) => void }) {
           </PressableScale>
         ) : null}
 
-        <Section title={t("cdash.side.main")} rows={main} />
-        {account.length ? <Section title={t("cdash.side.account")} rows={account} /> : null}
+        {groups.map((g) => (g.rows.length ? <Section key={g.key} title={t(`cdash.side.${g.key}`)} rows={g.rows} /> : null))}
 
         <PressableScale onPress={user ? confirm : () => onGo("/auth/login")} scale={0.98} accessibilityRole="button" style={[s.card, s.out]}>
           <Icon name={user ? "log-out" : "log-in"} size={21} color={INK} />
@@ -117,9 +134,9 @@ function Section({ title, rows }: { title: string; rows: Row[] }) {
       <View style={s.card}>
         {rows.map((r, i) => (
           <Fragment key={r.key}>
-            <PressableScale onPress={r.onPress} scale={0.99} accessibilityRole="menuitem" style={s.row}>
-              <Icon name={r.icon} size={21} color={r.tone ?? "#D6DEEE"} />
-              <Text variant="body" weight="medium" numberOfLines={1} style={[s.flex, { color: r.tone ?? INK }]}>{r.label}</Text>
+            <PressableScale onPress={r.onPress} scale={0.99} accessibilityRole="menuitem" accessibilityState={{ selected: !!r.active }} style={[s.row, r.active && s.on]}>
+              <Icon name={r.icon} size={21} color={r.active ? "#FFFFFF" : r.tone ?? "#D6DEEE"} />
+              <Text variant="body" weight={r.active ? "bold" : "medium"} numberOfLines={1} style={[s.flex, { color: r.active ? "#FFFFFF" : r.tone ?? INK }]}>{r.label}</Text>
               {r.badge ? <View style={s.badge}><Text variant="caption" weight="bold" tone="white">{r.badge > 99 ? "99+" : r.badge}</Text></View> : null}
               {r.value ? <Text variant="body" numberOfLines={1} style={s.value}>{r.value}</Text> : null}
               <Icon name="chevron-right" size={18} color={MUTED} />
@@ -150,6 +167,7 @@ const s = StyleSheet.create({
   section: { gap: 10 },
   head: { color: "#B9C6E4", letterSpacing: 0.8, marginLeft: 4, marginTop: 6 },
   row: { flexDirection: "row", alignItems: "center", gap: 14, paddingHorizontal: 18, paddingVertical: 15 },
+  on: { backgroundColor: "rgba(110,168,255,0.16)" },
   rule: { height: StyleSheet.hairlineWidth, backgroundColor: "rgba(255,255,255,0.14)", marginLeft: 53 },
   value: { color: MUTED, maxWidth: 120 },
   badge: { minWidth: 22, height: 22, paddingHorizontal: 6, borderRadius: 11, backgroundColor: "#E5484D", alignItems: "center", justifyContent: "center" },

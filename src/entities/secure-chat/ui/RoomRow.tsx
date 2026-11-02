@@ -14,12 +14,13 @@ export const ROOM_AVATAR = 56;
 // One conversation, Telegram-style: a flat row on the page (no card), a round avatar, the name with the time at the right
 // and the last message under it with the unread count at the right. A third small line carries the work tag / role / kind.
 // Rows are told apart by a hairline (see RoomsList). Unread rows are bold; archived ones are muted.
-export function RoomRow({ room, myId, onPress, tag }: { room: Room; myId: string; onPress: () => void; tag?: string }) {
+// `showRole` false: a professional, whose every room is with a client — the role line would only repeat "Mijoz".
+export function RoomRow({ room, myId, onPress, tag, showRole = true }: { room: Room; myId: string; onPress: () => void; tag?: string; showRole?: boolean }) {
   const { t, locale } = useT();
   const c = useColors();
   const title = roomTitle(room, myId) || t("admChat.room");
   const peer = peerOf(room, myId);
-  const role = peer && roleKey(peer.role) ? t(roleKey(peer.role)) : "";
+  const role = showRole && peer && roleKey(peer.role) ? t(roleKey(peer.role)) : "";
   const kind = roomKind(room);
   const archived = room.status === "archived" || room.status === "completed";
   const unread = room.unread > 0 && room.status !== "archived";

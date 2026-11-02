@@ -14,4 +14,6 @@ export type ReqItem = {
   route: string; // where tapping it goes (the owning package's screen)
   action: boolean; // needs the professional's attention now (also drives the tab badge)
   active: boolean; // not finished / cancelled
+  ref: string; // the number people quote (work id / case or request number), "" when the backend sends none
+  due: string; // ISO deadline (response window, due date, scheduled time), "" when none
 };

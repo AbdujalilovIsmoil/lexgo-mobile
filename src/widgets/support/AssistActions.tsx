@@ -3,7 +3,7 @@ import { useRouter } from "expo-router";
 import { Button } from "@/shared/ui";
 import { useInsets } from "@/shared/lib/insets";
 import { openUrl } from "@/shared/lib/links";
-import { useColors } from "@/shared/theme";
+import { useColors, usePaneColor } from "@/shared/theme";
 import { useT } from "@/shared/i18n";
 import { assistRoute, canDecline, type AssistInfo } from "@/entities/support";
 import { useAssistActions } from "@/features/support";
@@ -15,13 +15,14 @@ type Props = { card: AssistInfo; onClose: () => void };
 export function AssistActions({ card, onClose }: Props) {
   const { t } = useT();
   const c = useColors();
+  const pane = usePaneColor(); // solid in the glass theme
   const insets = useInsets();
   const router = useRouter();
   const act = useAssistActions(card);
   const go = (path: string) => { onClose(); router.push(path as never); };
   const pending = card.pay === "pending";
   return (
-    <View style={[s.bar, { borderTopColor: c.line, backgroundColor: c.surface, paddingBottom: insets.bottom + 10 }]}>
+    <View style={[s.bar, { borderTopColor: c.line, backgroundColor: pane, paddingBottom: insets.bottom + 10 }]}>
       {pending && card.telegramSent === false ? <Button title={t("sp7.linkTelegram")} variant="soft" icon="send" full loading={act.busy === "link"} onPress={() => void act.linkTelegram()} /> : null}
       {pending && card.telegramSent !== false ? <Button title={t("sp7.openTelegram")} variant="soft" icon="send" full onPress={() => openUrl("tg://")} /> : null}
       <Button title={t(`sp7.open.${card.kind}`)} variant="gradient" icon="arrow-right" iconRight full onPress={() => go(assistRoute(card))} />

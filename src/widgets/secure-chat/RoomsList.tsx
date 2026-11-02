@@ -12,10 +12,10 @@ import { filterRooms, kindOptions, type InboxKind } from "./inbox";
 
 const Line = () => <Divider inset={ROOM_AVATAR + 14} />;
 
-type Props = { query: UseQueryResult<Room[]>; rooms: Room[]; myId: string; bottom: number; onOpen: (r: Room) => void; header?: ReactElement | null; action?: { label: string; onPress: () => void }; tagOf?: (r: Room) => string };
+type Props = { query: UseQueryResult<Room[]>; rooms: Room[]; myId: string; bottom: number; onOpen: (r: Room) => void; header?: ReactElement | null; action?: { label: string; onPress: () => void }; tagOf?: (r: Room) => string; showRole?: boolean };
 
 // The inbox, Telegram-style: search, kind chips, newest conversation first as flat rows split by hairlines, pull to refresh, skeleton / error / empty states.
-export function RoomsList({ query, rooms, myId, bottom, onOpen, header, action, tagOf }: Props) {
+export function RoomsList({ query, rooms, myId, bottom, onOpen, header, action, tagOf, showRole = true }: Props) {
   const top = useTabHeader(16);
   const { t } = useT();
   const [search, setSearch] = useState("");
@@ -34,7 +34,7 @@ export function RoomsList({ query, rooms, myId, bottom, onOpen, header, action, 
     <FlashList // hundreds of rooms for a lawyer: rows are recycled
       data={query.isLoading ? [] : rows}
       keyExtractor={(r) => r.id}
-      renderItem={({ item }) => <RoomRow room={item} myId={myId} onPress={() => onOpen(item)} tag={tagOf?.(item)} />}
+      renderItem={({ item }) => <RoomRow room={item} myId={myId} onPress={() => onOpen(item)} tag={tagOf?.(item)} showRole={showRole} />}
       ListHeaderComponent={<View>{top}<View style={{ gap: 10, marginBottom: 12 }}>{header}<View style={{ flexDirection: "row", gap: 8, alignItems: "center" }}><Icon name="lock" size={14} tone="gray" /><Text variant="caption" tone="gray" style={{ flex: 1 }}>{t("ms1.lead")}</Text></View>{rooms.length > 0 ? <View style={{ gap: 10, marginHorizontal: -16 }}><View style={{ flexDirection: "row", alignItems: "center", paddingRight: 16 }}><View style={{ flex: 1 }}><SearchBox value={search} onChangeText={setSearch} placeholder={t("admChat.search")} /></View><IconButton icon="sliders" label={t("dm11.filters")} badge={kind !== "all"} onPress={() => setSheet(true)} /></View>{kind !== "all" ? <View style={{ flexDirection: "row", paddingHorizontal: 16 }}><Chip label={options.find((o) => o.value === kind)?.label ?? kind} active icon="x" onPress={() => setKind("all")} /></View> : null}</View> : null}</View></View>}
       ListEmptyComponent={empty}
       ItemSeparatorComponent={Line}

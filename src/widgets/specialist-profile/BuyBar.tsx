@@ -1,6 +1,6 @@
 import { StyleSheet, View } from "react-native";
 import { Button, IconButton, Text } from "@/shared/ui";
-import { useColors } from "@/shared/theme";
+import { useColors, usePaneColor } from "@/shared/theme";
 import { useInsets } from "@/shared/lib/insets";
 import { fmtMoney } from "@/shared/lib/money";
 import { useT } from "@/shared/i18n";
@@ -12,11 +12,12 @@ type Props = { service: LawyerService | null; fallback: number; canChat: boolean
 // gradient "Sotib olish" (never dead: with nothing to buy it becomes "Xizmat tanlash", see SpecialistView).
 export function BuyBar({ service, fallback, canChat, chatBusy, onChat, onBuy }: Props) {
   const c = useColors();
+  const pane = usePaneColor(); // solid in the glass theme: the page must not show through the bar
   const { t } = useT();
   const insets = useInsets();
   const price = service?.price || fallback;
   return (
-    <View style={[s.bar, { backgroundColor: c.surface, borderTopColor: c.line, paddingBottom: insets.bottom + 12 }]}>
+    <View style={[s.bar, { backgroundColor: pane, borderTopColor: c.line, paddingBottom: insets.bottom + 12 }]}>
       <View style={s.price}>
         <Text variant="caption" tone="gray" numberOfLines={1}>{service?.title ?? t("mkd.selectService")}</Text>
         <Text variant="h4" tone="accent" numberOfLines={1}>{price ? `${fmtMoney(price)} ${t("common.currency")}` : "—"}</Text>

@@ -13,7 +13,7 @@ export async function listClients(): Promise<ProClient[]> {
   });
 }
 
-const link = (d: Dict, title: string, sub: string[]): Linked => ({ id: asStr(d.id), title: title || "—", sub: sub.filter(Boolean).join(" · "), status: asStr(d.status).toLowerCase(), at: asStr(d.updated_at ?? d.created_at) });
+const link = (d: Dict, title: string, sub: string[], ref = ""): Linked => ({ id: asStr(d.id), title: title || "—", sub: sub.filter(Boolean).join(" · "), status: asStr(d.status).toLowerCase(), at: asStr(d.updated_at ?? d.created_at), ref });
 
 // GET /lawyers/me/clients/{id} — everything shared with one client; 404 when they never worked together.
 export async function clientDetail(id: string): Promise<ClientDetail> {
@@ -22,10 +22,10 @@ export async function clientDetail(id: string): Promise<ClientDetail> {
   const each = (k: string) => asArr(d[k]).map(asDict);
   return {
     manual: asStr(d.type) === "manual", id: asStr(c.id, id), name: asStr(c.name), phone: asStr(c.phone), region: asStr(c.region), company: asStr(c.company), notes: asStr(c.notes), createdAt: asStr(c.created_at),
-    cases: each("cases").map((x) => link(x, asStr(x.title ?? x.case_type), [asStr(x.case_number ?? x.work_id), asStr(x.stage)])),
-    orders: each("orders").map((x) => link(x, asStr(x.title ?? asDict(x.service).name ?? x.service_title), [asStr(x.work_id), uzs(x, "price", "amount") ? String(uzs(x, "price", "amount")) : ""])),
+    cases: each("cases").map((x) => link(x, asStr(x.title ?? x.case_type), [asStr(x.case_number ?? x.work_id), asStr(x.stage)], asStr(x.case_number ?? x.work_id))),
+    orders: each("orders").map((x) => link(x, asStr(x.title ?? asDict(x.service).name ?? x.service_title), [asStr(x.work_id), uzs(x, "price", "amount") ? String(uzs(x, "price", "amount")) : ""], asStr(x.work_id))),
     payments: each("payments").map((x) => link(x, String(uzs(x, "amount")), [asStr(x.method ?? x.provider), asStr(x.description)])),
-    documents: each("documents").map((x) => link(x, asStr(x.title ?? x.document_type), [asStr(x.work_id)])),
+    documents: each("documents").map((x) => link(x, asStr(x.title ?? x.document_type), [asStr(x.work_id)], asStr(x.work_id))),
     timeline: each("timeline").map((x) => ({ ...link(x, asStr(x.title), []), type: asStr(x.type) })),
     chats: each("chats").map((x) => ({ id: asStr(x.id), status: asStr(x.status), caseId: asStr(x.case_id), orderId: asStr(x.order_id) })),
   };

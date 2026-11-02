@@ -190,5 +190,6 @@ export const shm = {
   },
   "sec": { "title": "Account security", "sum": "2FA, Telegram and notification switches" },
   "alert": { "title": "{n} new requests waiting", "sub": "The response clock is running — tap to open" },
+  "ws": { "alertTitle": "A new order was assigned to you", "alertUrgent": "A new urgent request", "alertMore": "{n} more", "open": "Open", "left": "{time} left", "timeUp": "Response time is up", "freePlan": "Free plan", "statRequests": "Requests", "statDue": "Due today", "statRating": "Rating", "ratingNew": "New", "waiting": "{n} waiting", "none": "None yet", "fresh": "{n} new", "todayN": "{n} today", "count": "{n}", "clientsN": "{n} clients", "today": "Today", "soon": "Coming up", "calendar": "Calendar", "todayEmpty": "Nothing planned for today", "todayEmptySub": "Open the calendar to add a meeting or a deadline", "due": "Deadline", "caseDue": "Case deadline", "reputation": "Reputation and rating", "reviews": "{n} reviews", "topRank": "Complete your profile to rank higher", "sectionsLeft": "{n} sections left", "profileDone": "Your profile is complete", "profileDoneSub": "Clients see you among the first in search", "security": "Account security", "twoFaOn": "2FA is on", "twoFaOff": "2FA is off — we recommend turning it on" },
   "phone": { "country": "Choose a country" }
 };

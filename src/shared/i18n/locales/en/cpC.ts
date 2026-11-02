@@ -13,7 +13,6 @@ export const cpC: Pick<Messages, "cpr"> = {
     notSet: "Not set",
     card: "Bank card",
     subscription: "Subscription",
-    subActive: "Standard · active",
     idTitle: "Identity verification",
     idLead: "Verify your identity with MyID (primary) or OneID — for trust and safety. Required for advocates and lawyers, optional for clients.",
     idVerified: "Identity verified",

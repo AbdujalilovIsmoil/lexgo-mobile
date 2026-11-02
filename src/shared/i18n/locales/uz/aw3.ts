@@ -59,4 +59,5 @@ export const aw3 = {
   card: "Mijoz kartasi",
   history: "Tarix va hujjatlar",
   region: "Hudud",
+  page: { docInfo: "Hujjat ma'lumotlari", number: "Raqam", state: "Holat", updated: "Yangilangan", docLocked: "Bu hujjat sizga biriktirilmagan — mijoz uni hali to'ldirmoqda yoki boshqa mutaxassisga yuborilgan. Hujjat sizga biriktirilgach, u Hujjat so'rovlarida to'liq ochiladi.", save: "Saqlash", name: "Ism familiya", namePh: "Kiriting", phone: "Telefon raqam", notesPh: "Qo'shimcha ma'lumot", more: "Qo'shimcha ma'lumotlar", moreSub: "JShShIR, kompaniya, qarshi tomon — ziddiyat tekshiruvi uchun", private: "Qo'lda kiritilgan mijoz faqat sizga ko'rinadi.", activeN: "{n} faol ish", newCase: "Yangi ish", works: "Ishlar", worksEmpty: "Bu mijoz bilan hali ish yo'q", contact: "Aloqa ma'lumotlari", callTitle: "Qo'ng'iroq turi", callAudio: "Audio qo'ng'iroq", callAudioSub: "Ilova ichida, maxfiy chat orqali", callVideo: "Video qo'ng'iroq", callVideoSub: "Yuzma-yuz, ilova ichida", callTel: "Telefon orqali", noAccount: "Bu mijoz LexGo'da ro'yxatdan o'tmagan — faqat telefon orqali bog'lanish mumkin", case: "Ish", order: "Buyurtma", doc: "Hujjat" },
 };

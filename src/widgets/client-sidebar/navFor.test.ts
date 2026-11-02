@@ -1,4 +1,4 @@
-import { TEAM_TASKS, isActive, navFor } from "./navItems";
+import { TEAM_TASKS, isActive, navFor, sellerSections } from "./navItems";
 
 const keys = (r: Parameters<typeof navFor>[0]) => navFor(r).map((x) => x.key);
 
@@ -113,5 +113,30 @@ describe("a professional's profile links live in the sidebar", () => {
 describe("the team's tasks row", () => {
   it("is one fixed row with the web's title, and a route inside the app", () => {
     expect(TEAM_TASKS).toMatchObject({ key: "teamTasks", route: "/team-tasks", label: "ttm.title" });
+  });
+});
+
+describe("a professional's phone drawer", () => {
+  const all = (kind: string) => sellerSections({ kind }).flatMap((g) => g.items.map((i) => i.key));
+  it("starts with the day's work and never repeats the tab bar or the header", () => {
+    for (const kind of ["lawyer", "advocate"]) {
+      const groups = sellerSections({ kind });
+      expect(groups[0].key).toBe("main");
+      expect(groups[0].items[0].key).toBe("urgentAssigned");
+      expect(all(kind)).not.toEqual(expect.arrayContaining(["dashboard"]));
+      for (const k of ["dashboard", "clients", "chat", "messages", "notifications"]) expect(all(kind)).not.toContain(k);
+    }
+  });
+  it("keeps every other row of the full list, each once", () => {
+    for (const kind of ["lawyer", "advocate"]) {
+      const flatKeys = navFor("seller", { kind }).map((i) => i.key).filter((k) => !["dashboard", "clients", "chat", "messages", "notifications"].includes(k));
+      expect(new Set(all(kind))).toEqual(new Set(flatKeys));
+      expect(all(kind)).toHaveLength(new Set(all(kind)).size);
+    }
+  });
+  it("follows the permission rules (an account under review keeps only its allowed rows)", () => {
+    const keys = sellerSections({ kind: "advocate", limited: true }).flatMap((g) => g.items.map((i) => i.key));
+    expect(keys).not.toContain("opportunities");
+    expect(keys).toContain("subscription");
   });
 });
