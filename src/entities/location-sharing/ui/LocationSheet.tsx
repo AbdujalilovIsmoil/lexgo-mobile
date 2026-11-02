@@ -6,6 +6,7 @@ import { BottomSheet, Button, confirmDialog, Icon, PressableScale, SheetScroll, 
 import { selectHaptic } from "@/shared/lib/haptics";
 import { clockTime } from "../lib/duration";
 import { LOCATION_DURATIONS, shownAccuracy } from "../lib/sharing";
+import { bgLocationAvailable } from "../lib/bgAvailable";
 import { LocationFailure, askPermission, readPermission, readPosition } from "../model/position";
 import { useLocationSharing } from "../model/useLocationSharing";
 import type { Fix, LocErrorKind } from "../model/types";
@@ -152,7 +153,7 @@ function SheetBody({ onClose, onStarted }: { onClose: () => void; onStarted?: ()
             ))}
           </View>
           <Tile wide on={duration === null} title={t("svcRules.locManual")} hint={t("svcRules.locManualHint")} onPress={() => setDuration(null)} />
-          <View style={[s.bgRow, { backgroundColor: c.surface, borderColor: bg ? c.accent : c.line }]}>
+          {bgLocationAvailable(Platform.OS) ? <View style={[s.bgRow, { backgroundColor: c.surface, borderColor: bg ? c.accent : c.line }]}>
             <Icon name="moon" size={18} color={c.accent} />
             <View style={s.flex}>
               <Text variant="small" weight="bold">{t("svcRules.locBgTitle")}</Text>
@@ -163,7 +164,7 @@ function SheetBody({ onClose, onStarted }: { onClose: () => void; onStarted?: ()
               // Prominent disclosure before the OS asks for "allow all the time" (Google Play background-location policy).
               confirmDialog({ title: t("svcRules.locBgDiscloseTitle"), message: t(Platform.OS === "ios" ? "svcRules.locBgDiscloseTextIos" : "svcRules.locBgDiscloseText", { min: Math.round(state.policy.backgroundIntervalSec / 60) }), confirmLabel: t("svcRules.locBgAllow"), cancelLabel: t("svcRules.locCancel"), icon: "map-pin", onConfirm: () => setBg(true) });
             }} />
-          </View>
+          </View> : null}
           {serverErr ? (
             <View style={[s.note, { backgroundColor: c.errBg }]} accessibilityRole="alert" accessibilityLiveRegion="polite">
               <Text variant="small" tone="err">{serverErr}</Text>
