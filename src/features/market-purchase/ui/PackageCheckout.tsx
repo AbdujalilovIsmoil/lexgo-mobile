@@ -5,6 +5,7 @@ import { useT } from "@/shared/i18n";
 import { fmtMoney } from "@/shared/lib/money";
 import { usePackagePurchase } from "../model/usePackagePurchase";
 import { PurchaseForm } from "./PurchaseForm";
+import { CardGateSheet } from "@/features/payments";
 import { PurchaseReceipt } from "./PurchaseReceipt";
 import { PurchaseSteps } from "./PurchaseSteps";
 
@@ -31,6 +32,7 @@ export function PackageCheckout({ pkg, seller, onBack, onOrders, onChat, onLogin
       ) : (
         <PurchaseForm p={p} blocked="" />
       )}
+      <CardGateSheet {...p.cardGate} />
     </View>
   );
 }

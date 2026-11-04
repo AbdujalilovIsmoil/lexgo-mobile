@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useRouter } from "expo-router";
 import { callHref, channelsOf, groupsOf, isPriorPurchase, minutesOf, priceOf, useCatalog, useCreateUrgent, useUrgentFlash } from "@/entities/urgent";
+import { useCardGate } from "@/features/payments";
 import { useT } from "@/shared/i18n";
 import { ApiError } from "@/shared/api";
 
@@ -23,6 +24,7 @@ export function useOrderForm(startKey: string, fromUrgent = false) {
   const [miss, setMiss] = useState<Miss>("");
   const [gate, setGate] = useState("");
   const create = useCreateUrgent((e) => isPriorPurchase(e));
+  const card = useCardGate();
 
   const services = cat.data?.services ?? [];
   const service = services.find((s) => s.key === key);
@@ -35,11 +37,8 @@ export function useOrderForm(startKey: string, fromUrgent = false) {
 
   const askDirections = service?.key !== ROAD_ACCIDENT;
 
-  const submit = async () => {
-    if (!service || create.isPending) return;
-    if (askDirections && !dirs.length) return setMiss("dirs");
-    if (need.trim().length < MIN_NEED) return setMiss("need");
-    setMiss("");
+  const send = async () => {
+    if (!service) return;
     try {
       const r = await create.mutateAsync({ serviceKind: service.key, channel, need: need.trim(), directions: askDirections ? dirs : ROAD_DIRECTIONS, lawyerCount: isGroup ? count : undefined });
       // Back on /urgent (the web page stays put too): the banner and the new row highlighted there; an immediate call rings on top.
@@ -52,9 +51,18 @@ export function useOrderForm(startKey: string, fromUrgent = false) {
     }
   };
 
+  // A paid order is sent only after the card step (CardGateSheet); a free one goes straight out.
+  const submit = () => {
+    if (!service || create.isPending) return;
+    if (askDirections && !dirs.length) return setMiss("dirs");
+    if (need.trim().length < MIN_NEED) return setMiss("need");
+    setMiss("");
+    card.request(price, service.title, () => void send());
+  };
+
   return {
     cat, service, services, group, channels, channel, setPref, isGroup, askDirections, count, setLawyers, dirs, setDirs, need, setNeed, miss, setMiss,
-    price, minutes: minutesOf(service, channel), pick: (k: string) => { setKey(k); setGate(""); }, gate, closeGate: () => setGate(""), submit, pending: create.isPending, minNeed: MIN_NEED,
+    price, minutes: minutesOf(service, channel), pick: (k: string) => { setKey(k); setGate(""); }, gate, closeGate: () => setGate(""), submit, cardGate: card.sheet, pending: create.isPending, minNeed: MIN_NEED,
   };
 }
 export type OrderFormState = ReturnType<typeof useOrderForm>;

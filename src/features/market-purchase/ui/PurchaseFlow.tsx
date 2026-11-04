@@ -1,6 +1,7 @@
 import { StyleSheet, View } from "react-native";
 import type { LawyerService } from "@/entities/lawyer";
 import { Button, SheetScroll, Text } from "@/shared/ui";
+import { CardGateSheet } from "@/features/payments";
 import { useColors } from "@/shared/theme";
 import { useInsets } from "@/shared/lib/insets";
 import { useT } from "@/shared/i18n";
@@ -44,6 +45,7 @@ export function PurchaseFlow({ lawyerId, lawyerName, service, blocked, onBack, o
           <Button title={p.sending ? t("mk3.sending") : t("mk3.submit")} onPress={() => void p.submit()} loading={p.sending} disabled={!!blocked || !p.q.settled || p.att.uploading} variant="gradient" icon="send" />
         </View>
       ) : null}
+      <CardGateSheet {...p.cardGate} />
     </View>
   );
 }

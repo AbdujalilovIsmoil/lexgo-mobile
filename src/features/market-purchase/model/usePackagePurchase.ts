@@ -10,5 +10,7 @@ export function usePackagePurchase(pkg: ServicePackage, seller: PackageSeller, o
     quote: (ids) => quotePackage(pkg.id, ids),
     send: (v: SendInput) => requestPackagePurchase(seller.purchaseUrl, v),
     onLogin,
+    title: pkg.title,
+    price: pkg.price,
   });
 }

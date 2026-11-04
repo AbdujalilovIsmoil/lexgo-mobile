@@ -15,5 +15,7 @@ export function usePurchase(lawyerId: string, service: LawyerService, onLogin: (
     quote: (ids) => quoteService(service.id, lawyerId, ids),
     send: (v) => requestPurchase(lawyerId, service.id, v),
     onLogin,
+    title: service.title,
+    price: service.price,
   });
 }

@@ -1,10 +1,10 @@
 import { useRef, useState } from "react";
 import { View } from "react-native";
 import { useQueryClient } from "@tanstack/react-query";
-import { allowedPeriods, entitlementKeys, type BillingPeriod, type Plan } from "@/entities/plan";
+import { allowedPeriods, entitlementKeys, usePlanQuote, type BillingPeriod, type Plan } from "@/entities/plan";
 import { payKeys } from "@/entities/payment";
 import { PeriodTiles, TelegramNotice, usePlanCheckout, useTelegramRequest, type CheckoutOutcome } from "@/features/choose-plan";
-import { useOpenPayment } from "@/features/payments";
+import { CardGateSheet, useCardGate, useOpenPayment } from "@/features/payments";
 import { ProfileSheet } from "@/shared/ui/profile";
 import { Button, Text } from "@/shared/ui";
 import { useKept } from "@/shared/lib";
@@ -33,20 +33,27 @@ export function TelegramRequestSheet({ plan, period, onClose }: Props) {
     setInvoice(o);
     if (o.paymentUrl) void open(o.paymentUrl);
   });
+  const card = useCardGate();
   const kept = useKept(plan);
   const [per, setPer] = useState(period);
   useSheetReset(!!plan, () => { setPer(period); tg.reset(); checkout.reset(); setInvoice(null); });
   const p = plan ?? kept;
   const periods = tg.only ?? (p ? allowedPeriods(p) : []);
   const eff = periods.includes(per) ? per : periods[0];
+  const quote = usePlanQuote(p?.id ?? "", eff ?? period, (p?.monthlyPrice ?? 0) > 0);
   const sent = tg.sent;
   const done = !!sent || !!invoice;
+  // The checkout is created only after the card step; a paid plan always asks (the list price stands in while the quote is still loading).
   const submit = () => {
     if (!p || checkout.isPending || tg.pending) return;
-    last.current = { id: p.id, period: eff };
-    checkout.mutate({ plan: p, period: eff, autoRenew: false });
+    const amount = quote.data?.amount || p.monthlyPrice;
+    card.request(amount, p.name, () => {
+      last.current = { id: p.id, period: eff };
+      checkout.mutate({ plan: p, period: eff, autoRenew: false });
+    });
   };
   return (
+    <>
     <ProfileSheet visible={!!plan} onClose={onClose} icon="send" accent="sky" title={t("tgp.tgTitle")} subtitle={p?.name} snaps={done ? [0.52, 0.8] : [0.7, 0.9]}
       onSubmit={done ? undefined : submit} submitLabel={t(tg.pending ? "tgp.tgSending" : "tgp.tgSubmit")} submitting={checkout.isPending || tg.pending}>
       {!p ? null : invoice ? (
@@ -73,5 +80,7 @@ export function TelegramRequestSheet({ plan, period, onClose }: Props) {
         </View>
       )}
     </ProfileSheet>
+      <CardGateSheet {...card.sheet} />
+    </>
   );
 }

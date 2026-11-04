@@ -7,6 +7,7 @@ import { FormInput, FormPhoneInput, useAppForm } from "@/shared/form";
 import { Segmented, Text } from "@/shared/ui";
 import { normPhone } from "@/shared/lib/phone";
 import { useSheetReset } from "@/shared/lib/useSheetReset";
+import { CardGateSheet, useCardGate } from "@/features/payments";
 import { useT } from "@/shared/i18n";
 import { giftSchema } from "./giftSchema";
 import { ServicePick } from "./ServicePick";
@@ -25,13 +26,17 @@ export function GiftSheet({ visible, onClose, onCreated }: { visible: boolean; o
   const [svc, setSvc] = useState<{ id: string; name: string } | null>(null);
   const f = useAppForm(giftSchema, { hint: "", phone: "+998 ", message: "" });
   useSheetReset(visible, () => { setKind("plan"); setSlug(""); setMonths(6); setSvc(null); f.reset({ hint: "", phone: "+998 ", message: "" }); });
+  const card = useCardGate();
   const create = useCreateGift((g) => { onClose(); setTimeout(() => onCreated(g), 350); });
   const plan = plans.find((p) => p.slug === slug) ?? plans[0];
   const terms = plan ? allowedGiftMonths(plan) : [];
   const term = terms.includes(months) ? months : terms[0] ?? 6;
   const ok = kind === "plan" ? !!plan : !!svc;
-  const submit = f.handleSubmit((v) => create.mutate({ planSlug: kind === "plan" ? plan?.slug : undefined, serviceId: kind === "service" ? svc?.id : undefined, months: term, hint: v.hint, phone: normPhone(v.phone), message: v.message }));
+  // A gift is paid for by the sender: the card step comes first (the amount is the estimate shown; a service gift has no list price here, so
+  // it asks with 1 so that the step is never skipped — the backend prices the gift).
+  const submit = f.handleSubmit((v) => card.request(kind === "plan" && plan ? estimateGift(plan, term) || 1 : 1, kind === "plan" ? plan?.name ?? "" : svc?.name ?? "", () => create.mutate({ planSlug: kind === "plan" ? plan?.slug : undefined, serviceId: kind === "service" ? svc?.id : undefined, months: term, hint: v.hint, phone: normPhone(v.phone), message: v.message })));
   return (
+    <>
     <FormSheet visible={visible} onClose={onClose} title={t("py8.give")} subtitle={t("py8.giveLead")} submitLabel={t("py8.send")} disabled={!ok} submitting={create.isPending} onSubmit={() => void submit()}>
       <Segmented value={kind} onChange={setKind} options={[{ value: "plan", label: t("py8.kindPlan") }, { value: "service", label: t("py8.kindService") }]} />
       {kind === "plan" ? (
@@ -47,5 +52,7 @@ export function GiftSheet({ visible, onClose, onCreated }: { visible: boolean; o
       <FormPhoneInput control={f.control} name="phone" label={t("py8.phone")} />
       <FormInput control={f.control} name="message" label={t("py8.message")} placeholder={t("py8.messagePh")} multiline maxLength={300} />
     </FormSheet>
+    <CardGateSheet {...card.sheet} />
+    </>
   );
 }

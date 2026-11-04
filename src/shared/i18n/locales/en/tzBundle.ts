@@ -28,6 +28,7 @@ import { dcl } from "./dcl";
 import { mf } from "./mf";
 import { srt } from "./srt";
 import { scfg } from "./scfg";
+import { cardGate } from "./cardGate";
 import { pxp } from "./pxp";
 import { prm } from "./prm";
 import { subq } from "./subq";
@@ -43,5 +44,5 @@ export const tzBundle = {
   ...tzAw, ...tzSl, ...tzMk, ...tzUg, ...tzPy, ...tzNt, ccs, ...tzCx,
   ...cpA, ...cpC, ...cpD, ...tzCsv, ...tgp, ...so1, ...dcat, ...dcf, ...dcl, ...mf,
   ...srt, ...scfg, ...pxp, ...prm, ...subq, ...dset, ...ra,
-  ...ach, ...rt3,
+  ...ach, ...rt3, ...cardGate,
 };

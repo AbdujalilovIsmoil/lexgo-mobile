@@ -2,6 +2,7 @@ import { ScrollView, StyleSheet, View } from "react-native";
 import { Button, ErrorView, Skeleton, Text } from "@/shared/ui";
 import { AdminPage, KeyboardLift } from "@/shared/ui/admin";
 import { GateSheet, OrderForm, useOrderForm } from "@/features/urgent-request";
+import { CardGateSheet } from "@/features/payments";
 import { useUrgentLabels } from "@/entities/urgent";
 import { useColors } from "@/shared/theme";
 import { useInsets } from "@/shared/lib/insets";
@@ -29,10 +30,11 @@ export function OrderScreen({ service, fromUrgent }: { service: string; fromUrge
               <Text variant="caption" tone="gray">{t("ug2.total")}</Text>
               <Text variant="h3">{fmtMoney(f.price)} {t("adm.currency")}</Text>
             </View>
-            <Button title={t("ug2.submit")} icon="send" variant="gradient" loading={f.pending} onPress={() => void f.submit()} />
+            <Button title={t("ug2.submit")} icon="send" variant="gradient" loading={f.pending} onPress={f.submit} />
           </View>
         ) : null}
       </KeyboardLift>
+      <CardGateSheet {...f.cardGate} />
       <GateSheet message={f.gate} services={f.services} onClose={f.closeGate} onPick={f.pick} />
     </AdminPage>
   );

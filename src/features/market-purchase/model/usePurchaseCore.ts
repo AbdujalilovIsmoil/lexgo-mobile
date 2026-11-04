@@ -7,6 +7,7 @@ import { ApiError } from "@/shared/api";
 import { errorHaptic, successHaptic } from "@/shared/lib/haptics";
 import { useAppForm } from "@/shared/form";
 import { useErrorText } from "@/shared/ui";
+import { useCardGate } from "@/features/payments";
 import { purchaseSchema } from "./purchaseSchema";
 import { phaseOfOrder, phaseOfStatus, type PurchasePhase } from "./phase";
 import { useAttachments } from "./useAttachments";
@@ -14,7 +15,7 @@ import { useAttachments } from "./useAttachments";
 export type Tracked = { orderId: string; workId: string; status: string; amount: number; existing: boolean; telegramSent: boolean; paymentStatus: string; paymentUrl: string };
 export type SendInput = { note: string; time: string; channel: PreferredChannel; optionIds: string[]; contactSpeed?: ContactSpeed; urgency?: Urgency; provider?: PaymentProvider; attachments?: PurchaseAttachment[]; voices?: PurchaseVoice[] };
 type Send = (v: SendInput) => Promise<MarketPurchase>;
-type Opts = { options: { data?: PriceOptions }; quote: (ids: string[]) => Promise<Quote>; send: Send; onLogin: () => void };
+type Opts = { options: { data?: PriceOptions }; quote: (ids: string[]) => Promise<Quote>; send: Send; onLogin: () => void; title: string; price: number };
 
 // An online provider that is switched off or failed (Enterprise contract §5): the request is offered once more through the Telegram approval.
 const PROVIDER_FAILED = new Set(["payment_provider_not_configured", "payment_provider_unavailable", "payment_invoice_rejected", "marketplace_payment_provider_invalid"]);
@@ -23,7 +24,7 @@ const ONLINE: PaymentProvider[] = ["payme", "click"];
 // The purchase request shared by a service and a package: options → backend quote → purchase-request with exactly the quoted
 // option ids → follow the order. The full payment is approved before a seller gets the order (Enterprise contract §4); the approval
 // arrives through the user socket (useMarketSync), nothing polls. Online providers are offered only while the platform enables them.
-export function usePurchaseCore({ options, quote, send, onLogin }: Opts) {
+export function usePurchaseCore({ options, quote, send, onLogin, title, price }: Opts) {
   const qc = useQueryClient();
   const errText = useErrorText();
   const f = useAppForm(purchaseSchema, { note: "", time: "" });
@@ -37,6 +38,7 @@ export function usePurchaseCore({ options, quote, send, onLogin }: Opts) {
   const [providerFailed, setProviderFailed] = useState(false);
   const [tracked, setTracked] = useState<Tracked | null>(null);
   const [error, setError] = useState("");
+  const card = useCardGate();
   const att = useAttachments(); // files and voice notes, uploaded as they are added; only finished ones are sent
   const track = (r: Pick<MarketPurchase, "orderId" | "workId" | "status" | "amount"> & Partial<Pick<MarketPurchase, "paymentStatus" | "paymentUrl">>, existing: boolean, telegramSent = true) =>
     setTracked({ orderId: r.orderId, workId: r.workId, status: r.status, amount: r.amount, existing, telegramSent, paymentStatus: r.paymentStatus ?? "", paymentUrl: r.paymentUrl ?? "" });
@@ -62,11 +64,13 @@ export function usePurchaseCore({ options, quote, send, onLogin }: Opts) {
   const order = useMarketOrder(key, !!tracked);
   const found = order.data ?? null;
   const phase: PurchasePhase | null = tracked ? (found ? phaseOfOrder(found) : phaseOfStatus(tracked.status, tracked.paymentStatus)) : null;
-  const submit = f.handleSubmit((v) => { if (att.uploading) return; setError(""); go.mutate(v); });
+  // A paid request goes out only after the card step (CardGateSheet, mounted by the flow from `cardGate`); the quote is the amount shown.
+  const amount = q.quote?.totalPrice || price;
+  const submit = f.handleSubmit((v) => { if (att.uploading) return; setError(""); card.request(amount, title, () => go.mutate(v)); });
   // After an online provider refused: the same request once more, approved through Telegram.
-  const viaTelegram = f.handleSubmit((v) => { setError(""); setProvider("telegram_manual"); go.mutate({ ...v, via: "telegram_manual" }); });
+  const viaTelegram = f.handleSubmit((v) => { setError(""); card.request(amount, title, () => { setProvider("telegram_manual"); go.mutate({ ...v, via: "telegram_manual" }); }); });
   return {
-    form: f, att, options, q, channel, setChannel, contactSpeed, setContactSpeed, urgency, setUrgency, providers, provider, setProvider, providerFailed, viaTelegram,
+    cardGate: card.sheet, form: f, att, options, q, channel, setChannel, contactSpeed, setContactSpeed, urgency, setUrgency, providers, provider, setProvider, providerFailed, viaTelegram,
     tracked, found, phase, error, sending: go.isPending, submit, reset: () => { setTracked(null); setError(""); setProviderFailed(false); att.reset(); }, check: () => order.refetch(), checking: order.isFetching,
   };
 }
