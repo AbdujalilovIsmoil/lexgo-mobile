@@ -9,7 +9,7 @@ export const ug4 = {
   kind: {
     video_consultation: "Advokat bilan videokonsultatsiya",
     express_video_consultation: "Shoshilinch videokonsultatsiya",
-    traffic_accident_consultation: "YTH bo‘yicha konsultatsiya",
+    traffic_accident_consultation: "Yo‘l-transport hodisasi (avtoavariya) bo‘yicha konsultatsiya",
     chat_consultation: "Chat orqali konsultatsiya",
     second_opinion_single: "Ikkinchi fikr — yakka advokat",
     second_opinion_group: "Ikkinchi fikr — advokatlar guruhi",
@@ -23,7 +23,7 @@ export const ug4 = {
     iqtisodiy: "Iqtisodiy ishlar",
     soliq: "Soliq nizolari",
     shartnoma: "Shartnoma",
-    ytx: "YTH",
+    ytx: "Yo‘l-transport hodisasi",
     avtoavariya: "Avtoavariya",
   },
   status: {

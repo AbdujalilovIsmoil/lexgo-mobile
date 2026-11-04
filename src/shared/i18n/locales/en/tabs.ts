@@ -1,13 +1,13 @@
 import type { Messages } from "../uz";
 
 export const tabs: Messages["tabs"] = {
-  bar: { home: "Home", services: "Documents", works: "My works" },
+  bar: { home: "Home", services: "Service types", works: "My works", orders: "Orders" },
   ceo: "CEO",
   hrm: "HRM",
   analytics: "Analytics",
   admin: "Manage",
   home: "Home",
-  services: "Documents",
+  services: "Service types",
   ai: "AI",
   lawyers: "Lawyers",
   orders: "Orders",
@@ -24,4 +24,5 @@ export const tabs: Messages["tabs"] = {
   notifications: "Alerts",
   signIn: "Sign in",
   profile: "Profile",
+  svt: { lead: "Every kind of service in one place", docsTitle: "Documents", docsSub: "Template catalogue: download and fill in", lawyersTitle: "Advocates and lawyers", lawyersSub: "Pick a specialist and order their service", aiTitle: "AI assistant", aiSub: "Ask a question and the AI answers", more: "Other services", back: "Back to service types" },
 };

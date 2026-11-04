@@ -1,5 +1,5 @@
 export { useChoosePlan } from "./model/useChoosePlan";
-export { type CheckoutInput, type CheckoutOutcome } from "./model/usePlanCheckout";
+export { usePlanCheckout, type CheckoutInput, type CheckoutOutcome } from "./model/usePlanCheckout";
 export { useAutoRenew } from "./model/useAutoRenew";
 
 export { useTelegramRequest, type TelegramProblem } from "./model/useTelegramRequest";

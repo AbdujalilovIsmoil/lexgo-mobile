@@ -3,11 +3,15 @@ import type { Messages } from "../uz";
 export const tgp: Pick<Messages, "tgp"> = {
   tgp: {
     activated: "{plan} tariff activated!",
-    tgTitle: "Telegram approval",
-    tgLead: "A request for the “{plan}” plan will be sent. No payment provider is connected yet — the request goes to the admin Telegram chat and the plan activates itself once it is approved.",
+    tgTitle: "Payment and approval",
+    tgLead: "The “{plan}” plan is bought through a payment provider: tap the button and the payment page opens. If no provider is connected, the request goes to the admin’s Telegram and the plan activates once it is approved.",
     tgPeriod: "Period",
     tgAmount: "Amount",
-    tgSubmit: "Send request",
+    tgSubmit: "Go to payment",
+    payOpened: "The payment page is open.",
+    payOpenedLead: "The plan activates by itself once the payment goes through. If you closed the page, open it again.",
+    payAgain: "Open payment page",
+    payNoLink: "The payment was created. You can continue it in Payments.",
     tgSending: "Sending...",
     tgSent: "Your plan request has been sent.",
     tgSentLead: "The plan activates automatically once it is approved.",

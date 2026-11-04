@@ -6,6 +6,9 @@ import { ApiError } from "@/shared/api";
 
 export type Miss = "" | "dirs" | "need";
 const MIN_NEED = 10;
+// A road accident goes to the advocate on duty for it, so the client is not asked for a practice area; the backend still wants one.
+export const ROAD_ACCIDENT = "traffic_accident_consultation";
+const ROAD_DIRECTIONS = ["mamuriy"];
 
 // State + submit of the order form. The gate (402) is explained, never silently failed (TZ 42.2).
 export function useOrderForm(startKey: string, fromUrgent = false) {
@@ -30,13 +33,15 @@ export function useOrderForm(startKey: string, fromUrgent = false) {
   const group = groupsOf(cat.data).find((g) => g.items.includes(key));
   const price = priceOf(service, channel, isGroup ? count : 1);
 
+  const askDirections = service?.key !== ROAD_ACCIDENT;
+
   const submit = async () => {
     if (!service || create.isPending) return;
-    if (!dirs.length) return setMiss("dirs");
+    if (askDirections && !dirs.length) return setMiss("dirs");
     if (need.trim().length < MIN_NEED) return setMiss("need");
     setMiss("");
     try {
-      const r = await create.mutateAsync({ serviceKind: service.key, channel, need: need.trim(), directions: dirs, lawyerCount: isGroup ? count : undefined });
+      const r = await create.mutateAsync({ serviceKind: service.key, channel, need: need.trim(), directions: askDirections ? dirs : ROAD_DIRECTIONS, lawyerCount: isGroup ? count : undefined });
       // Back on /urgent (the web page stays put too): the banner and the new row highlighted there; an immediate call rings on top.
       const call = r.immediate && r.roomId && r.callId;
       useUrgentFlash.getState().show(call ? null : r.immediate ? { ok: true, msg: r.message || t("ug2.noDuty") } : { ok: true, msg: t("ntd.ugSent"), next: t("ntd.ugSentNext") }, r.request.id);
@@ -48,7 +53,7 @@ export function useOrderForm(startKey: string, fromUrgent = false) {
   };
 
   return {
-    cat, service, services, group, channels, channel, setPref, isGroup, count, setLawyers, dirs, setDirs, need, setNeed, miss, setMiss,
+    cat, service, services, group, channels, channel, setPref, isGroup, askDirections, count, setLawyers, dirs, setDirs, need, setNeed, miss, setMiss,
     price, minutes: minutesOf(service, channel), pick: (k: string) => { setKey(k); setGate(""); }, gate, closeGate: () => setGate(""), submit, pending: create.isPending, minNeed: MIN_NEED,
   };
 }

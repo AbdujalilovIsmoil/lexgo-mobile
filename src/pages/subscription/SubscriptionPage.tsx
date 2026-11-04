@@ -30,8 +30,10 @@ export function SubscriptionPage() {
   const ai = sellable.filter(isAiPlan);
   const other = sellable.filter((p) => !isAiPlan(p));
   const cur = useClientProfile().data?.planName;
-  // Web rule (PlansPanel): a card is "current" only when its name equals the subscription name of GET /clients/me.
-  const active = (data ?? []).filter((p) => !!cur && p.name === cur).map((p) => p.id);
+  // A card is "current" when the active subscription (GET /clients/me/entitlements) is of its plan, or — the web's rule (PlansPanel) —
+  // its name equals the subscription name of GET /clients/me (the id is the exact one; the name still covers a renamed plan).
+  const owned = new Set(ent.data?.planIds ?? []);
+  const active = (data ?? []).filter((p) => owned.has(p.id) || (!!cur && p.name === cur)).map((p) => p.id);
   const refresh = () => void Promise.all([refetch(), ent.refetch()]);
   return (
     <View style={[s.fill, { backgroundColor: c.canvas }]}>

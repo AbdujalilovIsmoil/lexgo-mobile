@@ -12,3 +12,11 @@ play-store/
 .env
 .env.local
 .DS_Store
+# local Gradle outputs of the in-repo native modules (machine-specific; the cloud build makes its own)
+modules/*/android/build/
+modules/*/android/.gradle/
+# not used by a build — keeps the upload small (a 131 MB upload broke off midway): git history, store screenshots, design reviews, agent files
+.git/
+/app-store/
+.impeccable/
+.claude/

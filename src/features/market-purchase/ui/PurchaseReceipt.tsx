@@ -1,3 +1,4 @@
+import { useEffect, useRef } from "react";
 import { StyleSheet, View } from "react-native";
 import { useColors } from "@/shared/theme";
 import { Button, Icon, Text, type IconName } from "@/shared/ui";
@@ -18,6 +19,13 @@ export function PurchaseReceipt({ phase, tracked, roomId, checking, onCheck, onO
   const pay = useOpenPayment(onCheck);
   const tone = phase === "cancelled" ? c.err : phase === "pending" ? c.warn : c.ok;
   const bg = phase === "cancelled" ? c.errBg : phase === "pending" ? c.warnBg : c.okBg;
+  // A fresh request that came with a provider page opens it straight away (a tap on "To'lov" opens it again).
+  const autoOpened = useRef(false);
+  useEffect(() => {
+    if (autoOpened.current || tracked.existing || phase !== "pending" || !tracked.paymentUrl) return;
+    autoOpened.current = true;
+    void pay(tracked.paymentUrl);
+  }, [tracked.existing, tracked.paymentUrl, phase, pay]);
   const active = tracked.existing && (phase === "pending" || phase === "paid" || phase === "chat");
   return (
     <View style={s.col}>

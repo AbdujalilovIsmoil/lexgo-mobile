@@ -1,5 +1,5 @@
-import { useMemo, useState, type ReactNode } from "react";
-import { RefreshControl, StyleSheet, View } from "react-native";
+import { useEffect, useMemo, useState, type ReactNode } from "react";
+import { BackHandler, RefreshControl, StyleSheet, View } from "react-native";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useQueryClient } from "@tanstack/react-query";
 import { useOfferedServiceIds } from "@/entities/lawyer";
@@ -13,13 +13,16 @@ import { TabPage, useTabPad, TabScrollView } from "@/widgets/tab-page";
 import { useColors } from "@/shared/theme";
 import { RA_OPENER, raOk, useRaControl, useRaPage } from "@/shared/remote-assist";
 import { useT } from "@/shared/i18n";
+import { Icon, PressableScale, Text } from "@/shared/ui";
 import { CatalogSheets } from "./CatalogSheets";
+import { ServiceTypes } from "./ServiceTypes";
 import { useDeepService } from "./useDeepService";
 
 type Params = { cat?: string; subcat?: string; q?: string; lawyer?: string; name?: string; service?: string; package?: string };
 
-// The Services tab — "Hujjatlar": the ready-documents catalogue (search pinned, category chips, the two quiet pills to the AI intake and urgent
-// help, every template ten at a time; a tap opens the template's own page), closed by the "new document" order. When a directory advocate was picked (?lawyer=…) the tab
+// The Services tab — "Xizmat turlari": the kinds of service (ServiceTypes). Its "Hujjatlar" row opens the ready-documents catalogue in
+// place (search pinned, category chips, every template ten at a time; a tap opens the template's own page), closed by the "new document"
+// order, with a way back to the types. When a directory advocate was picked (?lawyer=…) the tab
 // is that advocate's service list instead (the old hub), narrowed to what they sell.
 // Sheets: new-document order, the order form (advocate, price, payment), the download plan gates.
 export function ServicesPage() {
@@ -28,6 +31,13 @@ export function ServicesPage() {
   const [pre, setPre] = useState<{ id: string; name: string } | null>(() => (p.lawyer ? { id: String(p.lawyer), name: String(p.name ?? "") } : null));
   const [order, setOrder] = useState<Service | null>(null);
   const [newDoc, setNewDoc] = useState(false);
+  const [docs, setDocs] = useState(false);
+  // Android's back button leaves the catalogue for the types first.
+  useEffect(() => {
+    if (!docs) return;
+    const sub = BackHandler.addEventListener("hardwareBackPress", () => { setDocs(false); return true; });
+    return () => sub.remove();
+  }, [docs]);
   const dl = useTemplateDownload();
   useDeepService(String(p.service ?? ""), setOrder);
   // Remote assistance (`client.documents`): the catalogue's search and filters (DocCatalog) and the new-document order are on the map.
@@ -48,8 +58,13 @@ export function ServicesPage() {
   const sheets = <CatalogSheets order={order} onOrder={setOrder} newDoc={newDoc} onNewDoc={setNewDoc} dl={dl} pre={pre ?? undefined} packageId={p.package ? String(p.package) : undefined} />;
   if (pre) return <AdvocateServices pre={pre} onClear={() => setPre(null)} onOrder={setOrder} onNewDoc={() => setNewDoc(true)} sheets={sheets} />;
   return (
-    <TabPage title={t("tabs.services")}>
-      <DocCatalog footer={<View {...newRa} style={s.foot}><NewDocOrder onNewDoc={() => setNewDoc(true)} /></View>} />
+    <TabPage title={docs ? t("tabs.svt.docsTitle") : t("tabs.services")} subtitle={docs ? undefined : t("tabs.svt.lead")}>
+      {docs ? (
+        <DocCatalog
+          top={<PressableScale onPress={() => setDocs(false)} scale={0.98} accessibilityRole="button" accessibilityLabel={t("tabs.svt.back")} style={s.back}><Icon name="chevron-left" size={18} tone="accent" /><Text variant="small" weight="bold" tone="accent">{t("tabs.svt.back")}</Text></PressableScale>}
+          footer={<View {...newRa} style={s.foot}><NewDocOrder onNewDoc={() => setNewDoc(true)} /></View>}
+        />
+      ) : <ServiceTypes onDocs={() => setDocs(true)} />}
       {sheets}
     </TabPage>
   );
@@ -88,4 +103,4 @@ function AdvocateServices({ pre, onClear, onNewDoc, sheets }: Advocate) {
   );
 }
 
-const s = StyleSheet.create({ foot: { alignSelf: "stretch" }, content: { paddingTop: 4, paddingHorizontal: 16, gap: 14 } });
+const s = StyleSheet.create({ foot: { alignSelf: "stretch" }, back: { flexDirection: "row", alignItems: "center", gap: 4, alignSelf: "flex-start", paddingVertical: 6, paddingHorizontal: 12 }, content: { paddingTop: 4, paddingHorizontal: 16, gap: 14 } });

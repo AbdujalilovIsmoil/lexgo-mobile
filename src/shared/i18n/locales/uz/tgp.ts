@@ -1,11 +1,15 @@
 export const tgp = {
   tgp: {
     activated: "{plan} tarifi faollashtirildi!",
-    tgTitle: "Telegram orqali tasdiqlash",
-    tgLead: "«{plan}» paketi uchun so'rov yuboriladi. To'lov tizimi hozircha ulanmagan — so'rov admin Telegramiga boradi va tasdiqlangach paket avtomatik faollashadi.",
+    tgTitle: "To'lov va tasdiqlash",
+    tgLead: "«{plan}» paketi to'lov tizimi orqali sotib olinadi: tugmani bossangiz to'lov sahifasi ochiladi. To'lov tizimi ulanmagan bo'lsa, so'rov admin Telegramiga yuboriladi va tasdiqlangach paket faollashadi.",
     tgPeriod: "Muddat",
     tgAmount: "Summa",
-    tgSubmit: "So'rov yuborish",
+    tgSubmit: "To'lovga o'tish",
+    payOpened: "To'lov sahifasi ochildi.",
+    payOpenedLead: "To'lov tugagach paket avtomatik faollashadi. Sahifa yopilgan bo'lsa, uni qayta oching.",
+    payAgain: "To'lov sahifasini ochish",
+    payNoLink: "To'lov yaratildi. Uni «To'lovlar» bo'limida davom ettirishingiz mumkin.",
     tgSending: "Yuborilmoqda...",
     tgSent: "Paket so'rovingiz yuborildi.",
     tgSentLead: "Tasdiqlangandan keyin paket avtomatik faollashadi.",

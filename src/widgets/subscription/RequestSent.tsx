@@ -9,7 +9,7 @@ import { useT } from "@/shared/i18n";
 
 // The receipt after a Telegram request: a green check that pops in, the message, the SUB-xxxx number to quote and the price breakdown
 // the backend stored with the request (`pricing`: the amount, and under a campaign what it took off).
-export function RequestSent({ workId, pricing }: { workId: string; pricing?: PlanQuote | null }) {
+export function RequestSent({ workId, pricing, title, lead }: { workId: string; pricing?: PlanQuote | null; title?: string; lead?: string }) {
   const { t } = useT();
   const c = useColors();
   return (
@@ -17,8 +17,8 @@ export function RequestSent({ workId, pricing }: { workId: string; pricing?: Pla
       <Animated.View entering={ZoomIn.springify().damping(12)}>
         <LinearGradient colors={["#00A870", "#34D399"]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={s.badge}><Icon name="check" size={38} tone="white" /></LinearGradient>
       </Animated.View>
-      <Text variant="h3" center>{t("tgp.tgSent")}</Text>
-      <Text variant="small" tone="gray" center>{t("tgp.tgSentLead")}</Text>
+      <Text variant="h3" center>{title ?? t("tgp.tgSent")}</Text>
+      <Text variant="small" tone="gray" center>{lead ?? t("tgp.tgSentLead")}</Text>
       {workId ? <View style={[s.id, { backgroundColor: c.tint2 }]}><Text variant="caption" tone="gray">ID</Text><Text variant="body" weight="bold" selectable>{workId}</Text></View> : null}
       {pricing ? (
         <View style={[s.sum, { backgroundColor: c.surface2 }]}>

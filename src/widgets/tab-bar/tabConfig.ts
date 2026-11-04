@@ -12,14 +12,15 @@ const messages = t("messages", "message-circle", "tabs.messages", "messages");
 // lives behind the avatar in the page headers.
 export const TABS: Record<TabRole, TabDef[]> = {
   // A visitor gets the client's bar and pages; the two tabs that hold personal data (`auth`) send them to sign in when pressed.
-  guest: [t("index", "home", "tabs.bar.home"), t("services", "file-text", "tabs.bar.services"), ai, { ...t("works", "briefcase", "tabs.bar.works"), auth: true }, { ...messages, auth: true }],
-  client: [t("index", "home", "tabs.bar.home"), t("services", "file-text", "tabs.bar.services"), ai, t("works", "briefcase", "tabs.bar.works"), messages],
+  // The fourth slot is the client's orders (Buyurtmalarim): the backend closes the works page (client_works) to the client role.
+  guest: [t("index", "home", "tabs.bar.home"), t("services", "grid", "tabs.bar.services"), ai, { ...t("orders", "shopping-bag", "tabs.bar.orders"), auth: true }, { ...messages, auth: true }],
+  client: [t("index", "home", "tabs.bar.home"), t("services", "grid", "tabs.bar.services"), ai, t("orders", "shopping-bag", "tabs.bar.orders"), messages],
   seller: [t("workspace", "home", "tabs.bar.home"), t("requests", "inbox", "tabs.requests", "requests"), ai, t("clients", "users", "tabs.clients"), messages],
 };
 
 // Tab routes that belong to a role's bar are listed above; these extra routes are
 // still reachable (pushed from Home, the profile, deep links) without a bar slot.
-const ALWAYS = ["services", "lawyers", "orders", "messages"];
+const ALWAYS = ["services", "lawyers", "orders", "works", "messages"];
 export const allowedRoutes = (role: TabRole): string[] => [...TABS[role].map((x) => x.route), ...ALWAYS];
 
 // A professional's bar follows the same permission rules as the drawer (the web PortalShell): an account still under
