@@ -9,10 +9,11 @@ import { PurchaseFlow } from "@/features/market-purchase";
 import { ProfileTabs, type TabDef } from "@/widgets/client-profile";
 import { PriceExplainer, useBuyGate } from "@/widgets/lawyer-sheet";
 import { ProfileCover } from "@/widgets/profile";
-import { AboutPanel, BuyBar, ServicesPanel, SpecialistIdentity, SpecialistStats } from "@/widgets/specialist-profile";
-import { BottomSheet, Header, HeroScroll, Reveal, SheetScroll, toast } from "@/shared/ui";
+import { AboutPanel, BuyBar, ServiceOption, ServicesPanel, SpecialistIdentity, SpecialistStats } from "@/widgets/specialist-profile";
+import { BottomSheet, EmptyState, Header, HeroScroll, Reveal, SheetScroll, toast } from "@/shared/ui";
 import { useColors } from "@/shared/theme";
 import { useInsets } from "@/shared/lib/insets";
+import { useT } from "@/shared/i18n";
 import { ReviewsPanel } from "./ReviewsPanel";
 
 export type SpecialistTab = "services" | "about" | "reviews";
@@ -33,6 +34,7 @@ export function SpecialistView({ lawyer: base, initialTab }: { lawyer: Lawyer; i
   const l: Lawyer = pub ? { ...base, rated: pub.rated, rating: pub.rating, reviews: pub.reviews } : base;
   const c = useColors();
   const insets = useInsets();
+  const { t } = useT();
   const router = useRouter();
   const authed = useIsAuthed();
   const blocked = useBuyGate(l);
@@ -45,14 +47,22 @@ export function SpecialistView({ lawyer: base, initialTab }: { lawyer: Lawyer; i
   const [picked, setPicked] = useState("");
   const [buy, setBuy] = useState<LawyerService | null>(null);
   const [explain, setExplain] = useState(false);
+  const [choose, setChoose] = useState(false); // "Xizmat tanlash": this specialist's own services in a sheet
   const sel = services.find((x) => x.id === picked) ?? services.find((x) => x.price > 0) ?? services[0] ?? null;
   const go = (next: SpecialistTab) => setNav({ tab: next, dir: TABS.findIndex((x) => x.key === next) >= TABS.findIndex((x) => x.key === nav.tab) ? 1 : -1 });
-  // The bar's one button is never dead: closed purchase → the reason, nothing on sale → the catalogue narrowed to this specialist.
+  // The bar's one button is never dead: closed purchase → the reason, nothing priced picked → his services in a sheet (never the app's
+  // service-types tab), none at all → a short note.
   const start = (sv: LawyerService | null) => {
     if (!authed) return router.push("/auth/login");
     if (blocked) return toast(blocked, "info");
-    if (!sv?.price) return router.push({ pathname: "/services", params: { lawyer: l.userId, name: l.name } });
+    if (!sv?.price) return services.length ? setChoose(true) : toast(t("mkd.noServices"), "info");
     setBuy(sv);
+  };
+  // A service picked in the sheet: a priced one goes on to its purchase (once the sheet has closed), one on request just stays picked.
+  const choosen = (sv: LawyerService) => {
+    setPicked(sv.id);
+    setChoose(false);
+    if (sv.price) setTimeout(() => setBuy(sv), 380);
   };
   const leave = (fn: () => void) => { setBuy(null); setTimeout(fn, 380); };
   return (
@@ -76,6 +86,11 @@ export function SpecialistView({ lawyer: base, initialTab }: { lawyer: Lawyer; i
       <BuyBar service={sel} fallback={l.basePrice} canChat={!!room} chatBusy={false} onChat={() => router.push({ pathname: "/chat/[roomId]", params: { roomId: room } })} onBuy={() => start(sel)} />
       <BottomSheet visible={!!buy} onClose={() => setBuy(null)} snaps={[0.72, 0.93]}>
         {buy ? <PurchaseFlow lawyerId={l.userId} lawyerName={l.name} service={buy} blocked={blocked} onBack={() => setBuy(null)} onOrders={() => leave(() => router.navigate("/(tabs)/orders"))} onChat={(room) => leave(() => router.push({ pathname: "/chat/[roomId]", params: { roomId: room } }))} onLogin={() => leave(() => router.push("/auth/login"))} onClose={() => setBuy(null)} /> : null}
+      </BottomSheet>
+      <BottomSheet visible={choose} onClose={() => setChoose(false)} title={t("mkd.selectService")} snaps={[0.7, 0.93]}>
+        <SheetScroll>
+          {services.length ? services.map((sv) => <ServiceOption key={sv.id} service={sv} selected={sv.id === sel?.id} onSelect={() => choosen(sv)} />) : <EmptyState compact icon="briefcase" title={t("mkd.noServices")} />}
+        </SheetScroll>
       </BottomSheet>
       <BottomSheet visible={explain} onClose={() => setExplain(false)}>
         <SheetScroll><PriceExplainer service={sel} onBack={() => setExplain(false)} /></SheetScroll>

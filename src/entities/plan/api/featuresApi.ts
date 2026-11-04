@@ -82,7 +82,8 @@ export function normContract(v: unknown, id: string): PlanContract {
 
 export const getContract = async (id: string): Promise<PlanContract> => normContract(await http(`/subscriptions/${encodeURIComponent(id)}/contract`), id);
 
-// The client agrees to the plan's new terms for the next period (the current one keeps its snapshot).
+// The client agrees to the plan's new terms for the next period (the current one keeps its snapshot). The live backend wants `{action}` —
+// accept | cancel | continue — and answers 422 {allowed} to the TZ's `{accepted: true}` (checked on 2026-11-04).
 export async function acceptRenewal(id: string): Promise<void> {
-  await http(`/subscriptions/${encodeURIComponent(id)}/renewal-consent`, { method: "POST", body: { accepted: true } });
+  await http(`/subscriptions/${encodeURIComponent(id)}/renewal-consent`, { method: "POST", body: { action: "accept" } });
 }

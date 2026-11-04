@@ -18,7 +18,7 @@ import { CatalogSheets } from "./CatalogSheets";
 import { ServiceTypes } from "./ServiceTypes";
 import { useDeepService } from "./useDeepService";
 
-type Params = { cat?: string; subcat?: string; q?: string; lawyer?: string; name?: string; service?: string; package?: string };
+type Params = { docs?: string; cat?: string; subcat?: string; q?: string; lawyer?: string; name?: string; service?: string; package?: string };
 
 // The Services tab — "Xizmat turlari": the kinds of service (ServiceTypes). Its "Hujjatlar" row opens the ready-documents catalogue in
 // place (search pinned, category chips, every template ten at a time; a tap opens the template's own page), closed by the "new document"
@@ -31,7 +31,18 @@ export function ServicesPage() {
   const [pre, setPre] = useState<{ id: string; name: string } | null>(() => (p.lawyer ? { id: String(p.lawyer), name: String(p.name ?? "") } : null));
   const [order, setOrder] = useState<Service | null>(null);
   const [newDoc, setNewDoc] = useState(false);
-  const [docs, setDocs] = useState(false);
+  const [docs, setDocs] = useState(() => !!p.docs);
+  const router = useRouter();
+  // `?docs=1` (the home "Shablonlar" tile) opens the ready-documents catalogue (state derived while rendering, like useSheetReset); the param is
+  // then cleared so the tile works again next time.
+  const [docsAsked, setDocsAsked] = useState(!!p.docs);
+  if (!!p.docs !== docsAsked) {
+    setDocsAsked(!!p.docs);
+    if (p.docs) setDocs(true);
+  }
+  useEffect(() => {
+    if (p.docs) router.setParams({ docs: undefined } as never);
+  }, [p.docs, router]);
   // Android's back button leaves the catalogue for the types first.
   useEffect(() => {
     if (!docs) return;
