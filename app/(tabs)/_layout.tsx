@@ -6,6 +6,7 @@ import { NativeTabsBar } from "@/widgets/tab-bar/NativeTabsBar";
 import { allowedRoutes, homeRoute } from "@/widgets/tab-bar/tabConfig";
 import { useTabRole } from "@/widgets/tab-bar/useTabRole";
 import { registerOverlayPage } from "@/widgets/tab-bar/tabOverlay";
+import { useTabBarHidden } from "@/shared/lib/tabBarHidden";
 import { LawyersPage } from "@/pages/lawyers/LawyersPage";
 import { OrdersPage } from "@/pages/orders/OrdersPage";
 
@@ -23,6 +24,7 @@ export default function TabsLayout() {
   const segments = useSegments();
   const current = segments[0] === "(tabs)" ? (segments[1] ?? "index") : null;
   const first = homeRoute(role);
+  const barHidden = useTabBarHidden((s) => s.hidden);
 
   // A route that does not belong to the role (after sign-out or a role switch) → the role's first tab.
   useEffect(() => {
@@ -33,7 +35,7 @@ export default function TabsLayout() {
   }, [role, current, first, router]);
 
   // iOS: the system tab bar (Liquid Glass on iOS 26). Android keeps the flat bar below.
-  if (Platform.OS === "ios") return <NativeTabsBar bar={current !== "ai"} />;
+  if (Platform.OS === "ios") return <NativeTabsBar bar={current !== "ai" && !barHidden} />;
   return (
     <Tabs tabBar={(props) => <TabBar {...props} />} screenOptions={{ headerShown: false, lazy: true, freezeOnBlur: true }}>
       {ROUTES.slice(0, 1).map((n) => <Tabs.Screen key={n} name={n} />)}

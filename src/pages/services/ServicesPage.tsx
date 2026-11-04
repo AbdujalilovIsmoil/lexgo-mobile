@@ -1,6 +1,6 @@
-import { useEffect, useMemo, useState, type ReactNode } from "react";
+import { useCallback, useEffect, useMemo, useState, type ReactNode } from "react";
 import { BackHandler, RefreshControl, StyleSheet, View } from "react-native";
-import { useLocalSearchParams, useRouter } from "expo-router";
+import { useFocusEffect, useLocalSearchParams, useRouter } from "expo-router";
 import { useQueryClient } from "@tanstack/react-query";
 import { useOfferedServiceIds } from "@/entities/lawyer";
 import { useResponseNote } from "@/entities/response-window";
@@ -11,6 +11,7 @@ import { DocCatalog } from "@/widgets/doc-catalog";
 import { MoreWays, NewDocOrder, ServicesHub, useServicesHub } from "@/widgets/services-hub";
 import { TabPage, useTabPad, TabScrollView } from "@/widgets/tab-page";
 import { useColors } from "@/shared/theme";
+import { useTabBarHidden } from "@/shared/lib/tabBarHidden";
 import { RA_OPENER, raOk, useRaControl, useRaPage } from "@/shared/remote-assist";
 import { useT } from "@/shared/i18n";
 import { Icon, PressableScale, Text } from "@/shared/ui";
@@ -43,6 +44,12 @@ export function ServicesPage() {
   useEffect(() => {
     if (p.docs) router.setParams({ docs: undefined } as never);
   }, [p.docs, router]);
+  // The Hujjatlar catalogue is a page of its own: no tab bar while it is open (and none left behind when this tab loses focus).
+  const setBarHidden = useTabBarHidden((s) => s.set);
+  useFocusEffect(useCallback(() => {
+    setBarHidden(docs);
+    return () => setBarHidden(false);
+  }, [docs, setBarHidden]));
   // Android's back button leaves the catalogue for the types first.
   useEffect(() => {
     if (!docs) return;
