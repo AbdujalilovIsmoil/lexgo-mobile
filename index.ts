@@ -1,5 +1,9 @@
 // The app's entry. Background work is defined here, before anything renders: the OS can start the app without a screen just to run
 // it (a data push while the app is closed, the periodic background check), and then only the imports of this file run.
+
+// Reactotron (dev only) first, so it catches the logs of everything below.
+import "./src/core/dev/devtools";
+
 import "./src/core/push/task";
 import "./src/core/push/remote";
 import "./src/entities/location-sharing/model/background"; // the seller's background location task (only runs when they turned it on)

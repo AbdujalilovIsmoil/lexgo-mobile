@@ -2,9 +2,10 @@ import { useEffect } from "react";
 import { StyleSheet } from "react-native";
 import Animated, { useAnimatedStyle, useReducedMotion, useSharedValue, withSequence, withSpring, withTiming } from "react-native-reanimated";
 import { useColors } from "@/shared/theme";
-import { Icon, PressableScale, Text } from "@/shared/ui";
+import { PressableScale, Text } from "@/shared/ui";
 import { useT } from "@/shared/i18n";
 import { TabBadge } from "./TabBadge";
+import { TabIcon } from "./tabIcons";
 import type { TabDef } from "./tabConfig";
 
 const BOUNCE = { damping: 9, stiffness: 260, mass: 0.6 };
@@ -28,7 +29,7 @@ export function FlatItem({ def, focused, onPress }: { def: TabDef; focused: bool
   return (
     <PressableScale onPress={onPress} haptic={false} scale={0.94} style={s.item} accessibilityRole="button" accessibilityState={{ selected: focused }}>
       <Animated.View collapsable={false} style={[s.icon, icon]}>
-        <Icon name={def.icon} size={25} color={tint} />
+        <TabIcon name={def.icon} color={focused ? c.accent : c.gray} />
         <TabBadge id={def.badge} />
       </Animated.View>
       <Text variant="caption" weight={focused ? "bold" : "medium"} numberOfLines={1} maxFontSizeMultiplier={1.1} style={[s.label, { color: tint }]}>

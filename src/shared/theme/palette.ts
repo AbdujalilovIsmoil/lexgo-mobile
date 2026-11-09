@@ -17,6 +17,49 @@ export const brand = {
   white: "#FFFFFF",
 } as const;
 
+// General colour scale: fixed values, the same in every theme. For colours that must follow light/dark/glass, use useColors().
+export const palette = {
+  primary25: "#F5F3FF",
+  primary50: "#EEF2FF",
+  primary100: "#E0E7FF",
+  primary400: "#7C7EDB",
+  primary500: "#5E60CE",
+  primary600: "#4F46E5",
+
+  success50: "#F0FDF4",
+  success100: "#D1FAE5",
+  success200: "#A7F3D0",
+  success300: "#6EE7B7",
+  success400: "#34D399", // not in the light semantic scales: mapped to emerald-400
+  success500: "#10B981",
+  success600: "#059669",
+
+  warning50: "#FFF7ED",
+  warning100: "#FFEDD5",
+  warning200: "#FED7AA",
+  warning300: "#FDBA74",
+  warning400: "#FB923C",
+  warning500: "#F59E0B",
+  warning600: "#D97706",
+  warning700: "#B45309",
+  warning800: "#92400E",
+
+  error50: "#FEF2F2",
+  error500: "#EF4444",
+
+  neutral50: "#F9FAFB",
+  neutral75: "#F0F2F5",
+  neutral100: "#F3F4F6",
+  neutral200: "#E5E7EB",
+  neutral400: "#9CA3AF",
+  neutral500: "#6B7280",
+  neutral700: "#374151",
+  neutral900: "#111827",
+  neutral950: "#1A1A2E",
+
+  white: "#FFFFFF",
+} as const;
+
 export const gradient = {
   // --grad: linear-gradient(135deg,#1668F0 0%,#00A6E6 62%,#00CFE8 100%)
   primary: ["#1668F0", "#00A6E6", "#00CFE8"] as const,

@@ -1,5 +1,6 @@
 import { Platform, StyleSheet, View } from "react-native";
-import { Icon, PressableScale, Text } from "@/shared/ui";
+import { ArrowRight } from "lucide-react-native";
+import { PressableScale, Text } from "@/shared/ui";
 import { useTheme } from "@/shared/theme";
 
 export type ChipTone = "done" | "busy" | "open";
@@ -24,7 +25,7 @@ export function RequestRow({ row, last }: { row: ActiveRowData; last: boolean })
       ) : null}
       {row.next ? (
         <View style={s.next}>
-          <Icon name="arrow-right" size={16} tone="accent" />
+          <ArrowRight size={16} color={c.accent} />
           <Text variant="body" weight="bold" tone="accent" numberOfLines={2} style={s.flex}>{row.next}</Text>
         </View>
       ) : null}

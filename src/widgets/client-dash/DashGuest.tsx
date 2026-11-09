@@ -2,7 +2,8 @@ import { StyleSheet, View } from "react-native";
 import { useRouter } from "expo-router";
 import { SpecialistInvite } from "@/features/auth";
 import { radius, useColors } from "@/shared/theme";
-import { Button, Icon, Text } from "@/shared/ui";
+import { User } from "lucide-react-native";
+import { Button, Text } from "@/shared/ui";
 import { useT } from "@/shared/i18n";
 
 // What a visitor sees where a signed-in client has their active requests and referral progress: one card that says what the account
@@ -13,7 +14,7 @@ export function DashGuest() {
   const router = useRouter();
   return (
     <View style={[s.card, { backgroundColor: c.glassFill, borderColor: c.glassLine }]}>
-      <View style={[s.ico, { backgroundColor: c.tint2 }]}><Icon name="user" size={24} color={c.accent} /></View>
+      <View style={[s.ico, { backgroundColor: c.tint2 }]}><User size={24} color={c.accent} /></View>
       <Text variant="h4" center>{t("au1.guestTitle")}</Text>
       <Text variant="small" tone="gray" center>{t("au1.guestSub")}</Text>
       <View style={s.actions}>

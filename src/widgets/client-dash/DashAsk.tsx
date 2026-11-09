@@ -2,9 +2,9 @@ import { useEffect, useState } from "react";
 import { Platform, StyleSheet, TextInput, View } from "react-native";
 import { useRouter } from "expo-router";
 import { LinearGradient } from "expo-linear-gradient";
-import { Ionicons } from "@expo/vector-icons";
+import { ArrowUp, Paperclip, Sparkles } from "lucide-react-native";
 import Animated, { Easing, cancelAnimation, useAnimatedStyle, useSharedValue, withRepeat, withTiming } from "react-native-reanimated";
-import { Icon, PressableScale } from "@/shared/ui";
+import { PressableScale } from "@/shared/ui";
 import { useMotionOn } from "@/shared/lib/useMotionOn";
 import { GLASS_SOLID, useTheme } from "@/shared/theme";
 import { useT } from "@/shared/i18n";
@@ -51,15 +51,15 @@ export function DashAsk() {
           </Animated.View>
         ) : null}
         <View style={[s.box, { backgroundColor: glass ? GLASS_SOLID : dark ? c.surface : "#FFFFFF" }]}>
-          <Ionicons name="sparkles" size={18} color="#2F6BFF" />
+          <Sparkles size={18} color="#2F6BFF" fill="#2F6BFF" />
           <TextInput value={q} onChangeText={setQ} onSubmitEditing={go} submitBehavior="submit" returnKeyType="send" multiline numberOfLines={2} placeholder={t("cdash.home.askPh")} placeholderTextColor={c.gray2} style={[s.input, { color: c.ink }]} accessibilityLabel={t("cdash.home.askPh")} />
           {q.trim() ? (
             <PressableScale onPress={go} hitSlop={8} style={[s.clip, s.send]} accessibilityRole="button" accessibilityLabel={t("cdash.home.send")}>
-              <Icon name="arrow-up" size={20} color="#FFFFFF" />
+              <ArrowUp size={20} color="#FFFFFF" />
             </PressableScale>
           ) : (
             <PressableScale onPress={() => void attach()} hitSlop={8} style={s.clip} accessibilityRole="button" accessibilityLabel={t("cdash.home.attach")}>
-              <Icon name="paperclip" size={20} tone="gray" />
+              <Paperclip size={20} color={c.gray} />
             </PressableScale>
           )}
         </View>

@@ -1,7 +1,9 @@
 export { DashHero } from "./DashHero";
+export { DashTopBar } from "./DashTopBar";
 export { DashAsk } from "./DashAsk";
 export { DashTiles } from "./DashTiles";
 export { DashQuick } from "./DashQuick";
 export { DashRequests } from "./DashRequests";
 export { DashReferral } from "./DashReferral";
 export { DashGuest } from "./DashGuest";
+export { DashBackdrop, HOME_BG } from "./DashBackdrop";

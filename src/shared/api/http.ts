@@ -30,7 +30,6 @@ async function run(path: string, init: HttpInit, token: string | null): Promise<
     if (!(init.body instanceof FormData)) headers["Content-Type"] = "application/json";
   }
   if (token && init.auth !== false) headers.Authorization = `Bearer ${token}`;
-  if (typeof __DEV__ !== "undefined" && __DEV__) console.log(`[api] ${init.method ?? "GET"} ${path}`); // dev only: the request log shows duplicates
   try {
     return await timed(() => fetch(`${API_BASE}${path.startsWith("/") ? "" : "/"}${path}`, { ...init, headers, body }), !(init.body instanceof FormData));
   } catch {

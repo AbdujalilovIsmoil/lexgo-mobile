@@ -1,9 +1,9 @@
-import type { IconName } from "@/shared/ui";
+import type { TabIconName } from "./tabIcons";
 
 export type TabRole = "guest" | "client" | "seller";
-export type TabDef = { route: string; icon: IconName; labelKey: string; center?: boolean; badge?: string; auth?: boolean };
+export type TabDef = { route: string; icon: TabIconName; labelKey: string; center?: boolean; badge?: string; auth?: boolean };
 
-const t = (route: string, icon: IconName, labelKey: string, badge?: string): TabDef => ({ route, icon, labelKey, badge });
+const t = (route: string, icon: TabIconName, labelKey: string, badge?: string): TabDef => ({ route, icon, labelKey, badge });
 const ai: TabDef = { route: "ai", icon: "zap", labelKey: "tabs.ai", center: true };
 const messages = t("messages", "message-circle", "tabs.messages", "messages");
 

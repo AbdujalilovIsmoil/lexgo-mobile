@@ -7,7 +7,8 @@ import { gradient } from "@/shared/theme";
 //   the hero's top colour sits above the content and makes the hero seem to go on. Android has no bounce / overscroll stretch.
 // - Keyboard aware: a focused input scrolls into view above the keyboard on
 //   both platforms, also with Android edge-to-edge.
-export function HeroScroll({ children, ...props }: ScrollViewProps) {
+// `capColor`: the colour of that cap when the hero does not start with the dark gradient (transparent over the light Home backdrop, which is fixed behind the scroll view).
+export function HeroScroll({ children, capColor, ...props }: ScrollViewProps & { capColor?: string }) {
   const ios = Platform.OS === "ios";
   return (
     <KeyboardAwareScrollView
@@ -19,7 +20,7 @@ export function HeroScroll({ children, ...props }: ScrollViewProps) {
       showsVerticalScrollIndicator={false}
       {...props}
     >
-      {ios ? <View pointerEvents="none" style={s.cap} /> : null}
+      {ios ? <View pointerEvents="none" style={[s.cap, capColor ? { backgroundColor: capColor } : null]} /> : null}
       {children}
     </KeyboardAwareScrollView>
   );

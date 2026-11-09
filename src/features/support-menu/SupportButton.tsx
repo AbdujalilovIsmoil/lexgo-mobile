@@ -1,7 +1,8 @@
 import { useEffect } from "react";
 import { StyleSheet, View } from "react-native";
 import Animated, { Easing, useAnimatedStyle, useSharedValue, withSequence, withTiming } from "react-native-reanimated";
-import { Icon, PressableScale } from "@/shared/ui";
+import { Headphones } from "lucide-react-native";
+import { PressableScale } from "@/shared/ui";
 import { useColors } from "@/shared/theme";
 import { useSheetsOpen } from "@/shared/lib/sheetsOpen";
 import { useMotionOn } from "@/shared/lib/useMotionOn";
@@ -43,7 +44,7 @@ export function SupportButton({ onPress, label, glass, active }: { onPress: () =
     <View style={s.box}>
       {active || covered ? null : <><Wave p={a} color={ring} /><Wave p={b} color={ring} /></>}
       <PressableScale onPress={onPress} accessibilityRole="button" accessibilityLabel={label} hitSlop={6} style={[s.btn, { backgroundColor: glass ? "rgba(255,255,255,0.14)" : c.tint2 }]}>
-        <Animated.View style={icon}><Icon name="headphones" size={19} color={glass ? "#FFFFFF" : c.accent} /></Animated.View>
+        <Animated.View style={icon}><Headphones size={19} color={glass ? "#FFFFFF" : c.accent} /></Animated.View>
       </PressableScale>
     </View>
   );

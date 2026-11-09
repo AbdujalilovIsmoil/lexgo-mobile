@@ -1,5 +1,6 @@
 import { StyleSheet, View } from "react-native";
 import { useRouter } from "expo-router";
+import { Bell, User } from "lucide-react-native";
 import { displayName, useSession } from "@/entities/session";
 import { useUnreadCount } from "@/entities/notification";
 import { SupportMenu } from "@/features/support-menu";
@@ -19,13 +20,13 @@ export function HeaderActions({ glass }: { glass?: boolean }) {
   return (
     <View style={s.row}>
       {role === "client" || role === "seller" ? <SupportMenu glass={glass} client={role === "client"} /> : null}
-      <IconButton icon="bell" size={40} tone={glass ? "glass" : "tint"} badge={unread > 0} onPress={() => router.push(session ? "/notifications" : "/auth/login")} />
+      <IconButton icon="bell" size={40} tone={glass ? "glass" : "tint"} badge={unread > 0} glyph={(color, size) => <Bell size={size} color={color} />} onPress={() => router.push(session ? "/notifications" : "/auth/login")} />
       {session && name ? (
         <PressableScale onPress={() => router.push("/profile")} accessibilityLabel="profile">
           <Avatar name={name} size={40} />
         </PressableScale>
       ) : (
-        <IconButton icon="user" size={40} tone={glass ? "glass" : "tint"} onPress={() => router.push(session ? "/profile" : "/auth/login")} />
+        <IconButton icon="user" size={40} tone={glass ? "glass" : "tint"} glyph={(color, size) => <User size={size} color={color} />} onPress={() => router.push(session ? "/profile" : "/auth/login")} />
       )}
     </View>
   );

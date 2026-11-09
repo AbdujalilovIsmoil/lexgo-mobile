@@ -16,16 +16,10 @@ import { installTabReach, setBarRoutes } from "./tabReach";
 import { TABS, type TabDef } from "./tabConfig";
 import { useTabRole } from "./useTabRole";
 import { useVisibleTabs } from "./useTabItems";
+import { TAB_IMAGES } from "./tabIcons";
 import { useTabOverlay } from "./tabOverlay";
-import { useBarImages } from "./useBarImages";
 
-// Feather names of tabConfig → SF Symbols of the system tab bar: the outline at rest, the filled one when selected.
-const SF: Record<string, string> = {
-  home: "house", "file-text": "doc.text", grid: "square.grid.2x2", zap: "sparkles", briefcase: "briefcase", "message-circle": "message",
-  layers: "square.stack.3d.up", inbox: "tray", users: "person.2",
-};
-const sfIcon = (icon: string) => ({ default: SF[icon], selected: `${SF[icon]}.fill` }) as never;
-// The selected tab in ink (white in the dark), as the design has it; Liquid Glass picks the rest of the colours itself.
+// The selected caption in ink (white in the dark), its icon in the accent colour; Liquid Glass picks the rest of the colours itself.
 // Only on iOS: this module is imported by the tabs layout on Android too, where DynamicColorIOS throws.
 const INK = Platform.OS === "ios" ? DynamicColorIOS({ light: "#0A1526", dark: "#FFFFFF" }) : "#0A1526";
 
@@ -39,6 +33,7 @@ const GLASS = !!loadGlass(); // iOS 26 sizes the items by their captions; the cl
 
 // The system tab bar (UITabBar): Liquid Glass on iOS 26 with no custom drawing. Every route is declared, in the role's order first;
 // the ones outside the role or not allowed right now are hidden. `bar` is false on screens that ask for no bar (the AI chat).
+// iOS 18 and older would drop the bar's background at the end of a scroll, and on pages whose scroll view it does not find (disableTransparentOnScrollEdge).
 export const NativeTabsBar = memo(function NativeTabsBar({ bar }: { bar: boolean }) {
   const { t } = useT();
   const router = useRouter();
@@ -57,12 +52,11 @@ export const NativeTabsBar = memo(function NativeTabsBar({ bar }: { bar: boolean
     const row = [...others.slice(0, left), ai, ...others.slice(left)];
     return visible.length % 2 === 0 ? [...row.slice(0, left + 1), GAP, ...row.slice(left + 1)] : row;
   })();
-  const images = useBarImages(shown.filter((d) => !d.center && d.route !== GAP.route).map((d) => d.icon));
   const centerAt = shown.findIndex((d) => d.center);
   const barKey = shown.map((d) => d.route).join(",");
   useEffect(() => { setBarRoutes(barKey ? barKey.split(",") : []); }, [barKey]); // links to any other tab page open it as a stack screen
   const aurora = useAuroraStyle(); // every tab page sits on the aurora / the glass ground (the pages themselves are transparent)
-  const { glass } = useTheme();
+  const { colors: c, glass } = useTheme();
   const ground = AURORA || glass;
   const rest = [...new Set(Object.values(TABS).flat().map((d) => d.route))].filter((r) => !shown.some((d) => d.route === r));
   // Captions that fit: the bar cuts a caption it has no room for to "Xab…", so their real widths (measured at 10 pt by the hidden texts below)
@@ -84,7 +78,7 @@ export const NativeTabsBar = memo(function NativeTabsBar({ bar }: { bar: boolean
     <View style={{ flex: 1 }}>
     <CaptionMeter texts={[...new Set([...fulls, ...shorts])]} onWidths={(w) => setMeasured((m) => ({ ...m, ...w }))} />
     <ReturnWatcher onSettled={() => setNudge((n) => n + 1)} />
-    <NativeTabs hidden={!bar || tablet} tintColor={INK} labelStyle={{ fontSize: fit.size + (nudge % 2) * 0.01 }}>
+    <NativeTabs hidden={!bar || tablet} tintColor={INK} iconColor={{ selected: c.accent }} disableTransparentOnScrollEdge labelStyle={{ fontSize: fit.size + (nudge % 2) * 0.01 }}>
       {shown.map((def) => {
         const n = def.badge ? (badges[def.badge] ?? 0) : 0;
         const guard = (def.auth && !authed) || def.route === GAP.route;
@@ -97,7 +91,7 @@ export const NativeTabsBar = memo(function NativeTabsBar({ bar }: { bar: boolean
             disabled={guard} // a visitor's tap on a personal tab never switches it: the (still emitted) press sends them to sign in
             listeners={guard && def.route !== GAP.route ? { tabPress: () => router.push("/auth/login") } : { tabPress: () => useTabOverlay.getState().close() } /* a tab press closes a page opened over the tab */}
           >
-            {def.center || def.route === GAP.route ? <NativeTabs.Trigger.Icon src={AI_SLOT} renderingMode="original" /> : images?.[def.icon] ? <NativeTabs.Trigger.Icon src={images[def.icon] as never} renderingMode="template" /> : <NativeTabs.Trigger.Icon sf={sfIcon(def.icon)} />}
+            {def.center || def.route === GAP.route ? <NativeTabs.Trigger.Icon src={AI_SLOT} renderingMode="original" /> : <NativeTabs.Trigger.Icon src={TAB_IMAGES[def.icon] as never} renderingMode="template" />}
             <NativeTabs.Trigger.Label hidden={def.route === GAP.route || fit.mode === "hidden"}>{caption(t(def.labelKey))}</NativeTabs.Trigger.Label>
             {n ? <NativeTabs.Trigger.Badge>{n > 99 ? "99+" : String(n)}</NativeTabs.Trigger.Badge> : null}
           </NativeTabs.Trigger>

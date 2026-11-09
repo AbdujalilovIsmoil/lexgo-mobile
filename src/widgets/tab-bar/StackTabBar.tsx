@@ -7,10 +7,11 @@ import { useBadge } from "@/shared/lib";
 import { selectHaptic } from "@/shared/lib/haptics";
 import { useInsets } from "@/shared/lib/insets";
 import { useTheme } from "@/shared/theme";
-import { Icon, LiquidGlass, PressableScale, Text, useLiquidGlass } from "@/shared/ui";
+import { LiquidGlass, PressableScale, Text, useLiquidGlass } from "@/shared/ui";
 import { useT } from "@/shared/i18n";
 import { AiRaisedButton } from "./AiRaisedButton";
 import type { TabDef } from "./tabConfig";
+import { TabIcon } from "./tabIcons";
 import { useVisibleTabs } from "./useTabItems";
 
 // The geometry of iOS 26's system tab bar, so this bar sits exactly where that one does (measured against it on screen): its bottom
@@ -59,7 +60,7 @@ function Item({ def, dark, onPress }: { def: TabDef; dark: boolean; onPress: () 
   return (
     <PressableScale onPress={def.center ? undefined : onPress} disabled={def.center} haptic={false} scale={0.92} accessibilityRole="button" accessibilityLabel={t(def.labelKey)} style={s.item}>
       <View style={s.icon}>
-        {def.center ? null : <Icon name={def.icon} size={25} color={tint} />}
+        {def.center ? null : <TabIcon name={def.icon} color={tint} />}
         {n ? <View style={s.badge}><Text variant="caption" weight="bold" tone="white" style={s.badgeTx}>{n > 99 ? "99+" : n}</Text></View> : null}
       </View>
       <Text numberOfLines={1} allowFontScaling={false} style={[s.label, { color: tint }]}>{t(def.labelKey)}</Text>
