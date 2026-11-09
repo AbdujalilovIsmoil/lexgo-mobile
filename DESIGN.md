@@ -13,6 +13,7 @@ familiar platform patterns, brand shows in details.
   `line` (borders, dividers), `ink` / `gray` / `gray2` (text tiers), `tint` / `tint2` (soft brand fills),
   `accent` / `accentStrong` (interactive + selected), status pairs `ok/okBg`, `err/errBg`, `warn/warnBg`, `cyBg/cyText`.
 - **Brand** — `brand.*`, `gradient.primary` / `gradient.dark` for hero bands and primary CTAs only.
+- **Main colour** — `mainColor` (`#0B347F`, the top of Home): header bands such as Home and the client profile.
   White text / `rgba(255,255,255,x)` is correct *on* those gradients.
 - **Radius** — `radius.sm` 10 (small chips, icon tiles), `radius.r` 14 (fields, inner tiles), `radius.rl` 20 (cards),
   `radius.rx` 28 (sheets, hero bands), `radius.pill`.

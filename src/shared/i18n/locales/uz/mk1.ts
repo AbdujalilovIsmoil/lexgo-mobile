@@ -2,6 +2,7 @@ export const mk1 = {
   dir: { searchPh: "Ism, yo'nalish yoki xizmat…", all: "Barchasi", aiTitle: "Muammoingizni yozing", aiSub: "AI mos mutaxassisni topib beradi", aiPh: "Vaziyatingizni yozing, masalan: ishdan asossiz bo'shatishdi", aiFind: "Topish", aiCancel: "Bekor qilish", recommended: "Tavsiya etilgan mutaxassislar", found: "{n} ta mutaxassis", recent: "Oxirgi qidiruvlar", clearRecent: "Tozalash", popular: "Ko'p qidiriladi", sLawyers: "Mutaxassislar", sAreas: "Yo'nalishlar", sServices: "Xizmatlar", sRegions: "Viloyatlar", askAi: "AI bilan izlash: «{q}»", searchAll: "«{q}» bo'yicha barcha natijalar", years: "{n} yil tajriba", success: "{n}% muvaffaqiyat", noRating: "Hali baholanmagan", busy: "Band", top: "TOP" },
   pageTitle: "Advokat va yuristlar",
   pageLead: "Tasdiqlangan advokat va yuristlar, real reyting va shaffof narxlar.",
+  headLead: "Tasdiqlangan mutaxassislar",
   ad: "Reklama",
   avail: "Hozir mavjud",
   busy: "Hozir band",

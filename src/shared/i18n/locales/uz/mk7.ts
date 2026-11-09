@@ -4,5 +4,5 @@ export const mk7 = {
   "video": "Video",
   "calling": "Ulanmoqda…",
   "callError": "Qo'ng'iroqni boshlab bo'lmadi.",
-  "clientLead": "Marketplace orqali sotib olgan xizmatlaringiz: holati, chat va qo'ng'iroq."
+  "clientLead": "Xizmatlaringiz holati, chat va qo'ng'iroq"
 };

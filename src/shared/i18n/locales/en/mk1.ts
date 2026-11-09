@@ -4,6 +4,7 @@ export const mk1: Messages["mk1"] = {
   dir: { searchPh: "Name, practice area or service…", all: "All", aiTitle: "Describe your problem", aiSub: "AI finds the right specialist", aiPh: "Describe your situation, e.g. I was fired without cause", aiFind: "Find", aiCancel: "Cancel", recommended: "Recommended specialists", found: "{n} specialists", recent: "Recent searches", clearRecent: "Clear", popular: "Popular", sLawyers: "Specialists", sAreas: "Practice areas", sServices: "Services", sRegions: "Regions", askAi: "Search with AI: “{q}”", searchAll: "All results for “{q}”", years: "{n} yrs experience", success: "{n}% success", noRating: "No ratings yet", busy: "Busy", top: "TOP" },
   pageTitle: "Advocates and lawyers",
   pageLead: "Verified advocates and lawyers, real ratings and clear prices.",
+  headLead: "Verified specialists",
   ad: "Ad",
   avail: "Available now",
   busy: "Busy now",

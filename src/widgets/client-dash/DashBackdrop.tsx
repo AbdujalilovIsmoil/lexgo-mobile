@@ -1,12 +1,13 @@
 import { Image, StyleSheet } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import Animated, { useAnimatedStyle, type SharedValue } from "react-native-reanimated";
+import { mainColor } from "@/shared/theme";
 
 // The light theme's Home background: a vertical blue that fades into the page behind the ask field, done by the top of the first tiles — no hard
 // edge where the hero ends.
 // The light Home page ground: a soft whitish grey, so the pure-white cards stand apart from it.
 export const HOME_BG = "#F2F4F7";
-const BLUES = ["#0B347F", "#10499F", "#2865C1", "#80A9E5", "#DCE7F8"] as const;
+const BLUES = [mainColor, "#10499F", "#2865C1", "#80A9E5", "#DCE7F8"] as const;
 const STOPS = [0, 0.3, 0.55, 0.72, 0.87, 1] as const;
 // Soft light on the blue: one in the top right corner, one on the left edge, a little below the top left corner. Fixed sizes (the pictures' own), so a
 // tablet does not blow them up. Part of each hangs off the screen.

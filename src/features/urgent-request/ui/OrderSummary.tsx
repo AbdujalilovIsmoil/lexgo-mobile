@@ -21,7 +21,7 @@ export function OrderSummary({ f }: { f: OrderFormState }) {
     { icon: "message-circle", color: "#00A870", text: t("ug2.filesInChat") },
   ];
   return (
-    <View style={[st.card, { backgroundColor: c.glassFill, borderColor: c.glassLine }]}>
+    <View style={[st.card, { backgroundColor: c.surface, borderColor: c.line }]}>
       <View style={[st.rail, { backgroundColor: c.line }]} />
       {rows.map((r) => (
         <View key={r.text} style={st.row}>
@@ -34,7 +34,7 @@ export function OrderSummary({ f }: { f: OrderFormState }) {
 }
 
 const st = StyleSheet.create({
-  card: { gap: 14, padding: 14, borderRadius: radius.rl, borderWidth: 1.5 },
+  card: { gap: 14, padding: 14, borderRadius: radius.rl, borderWidth: 1 },
   rail: { position: "absolute", left: 27, top: 28, bottom: 28, width: 2 },
   row: { flexDirection: "row", alignItems: "center", gap: 12 },
   bubble: { width: 28, height: 28, borderRadius: 14, alignItems: "center", justifyContent: "center", borderWidth: 2 },

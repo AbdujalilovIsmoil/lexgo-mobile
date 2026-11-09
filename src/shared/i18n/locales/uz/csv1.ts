@@ -1,6 +1,6 @@
 export const csv1 = {
   title: "Xizmat buyurtma qilish",
-  lead: "LexGo katalogini ko'ring, mutaxassis tanlang va boshlang.",
+  lead: "Katalogdan mutaxassis tanlang",
   aiHelp: "Muammongizni yozing",
   aiHelpSub: "AI eng mos xizmat va advokatni tanlab beradi",
   urgent: "Shoshilinch advokat",

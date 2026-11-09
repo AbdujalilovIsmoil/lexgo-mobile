@@ -17,6 +17,9 @@ export const brand = {
   white: "#FFFFFF",
 } as const;
 
+// The app's main colour: the deep blue at the very top of Home. The same in every theme.
+export const mainColor = "#0B347F";
+
 // General colour scale: fixed values, the same in every theme. For colours that must follow light/dark/glass, use useColors().
 export const palette = {
   primary25: "#F5F3FF",

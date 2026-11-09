@@ -3,6 +3,7 @@ export const fonts = {
   display: "Onest_800ExtraBold",
   displayBold: "Onest_700Bold",
   body: "Inter_400Regular",
+  italic: "Inter_400Regular_Italic",
   medium: "Inter_500Medium",
   semibold: "Inter_600SemiBold",
   bold: "Inter_700Bold",

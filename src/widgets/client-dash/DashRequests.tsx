@@ -1,5 +1,6 @@
 import { StyleSheet, View } from "react-native";
 import { useRouter } from "expo-router";
+import { ChevronRight } from "lucide-react-native";
 import { detailHref, isFinal, useMine, useUrgentLabels, type UrgentRequest } from "@/entities/urgent";
 import { useOpenCases, type OpenCase } from "@/entities/open-cases";
 import { EmptyState, PressableScale, Skeleton, Text } from "@/shared/ui";
@@ -56,7 +57,7 @@ export function DashRequests() {
     <View style={s.wrap}>
       <View style={s.head}>
         <Text variant="h3" style={{ fontSize: 19 }}>{t("cdash.home.active")}</Text>
-        <PressableScale onPress={() => router.navigate("/(tabs)/works")} hitSlop={8}><Text variant="small" weight="bold" tone="accent" style={{ fontSize: 15 }}>{t("cdash.home.all")}</Text></PressableScale>
+        <PressableScale onPress={() => router.navigate("/(tabs)/works")} hitSlop={8} style={s.all}><Text variant="small" weight="regular" tone="accent" style={{ fontSize: 15 }}>{t("cdash.home.all")}</Text><ChevronRight size={18} color={c.accent} /></PressableScale>
       </View>
       {loading ? <Skeleton height={72} round={20} /> : !urgent.length && !open.length ? (
         <EmptyState icon="star" title={t("cdash.emptyTitle")} text={t("cdash.emptyText")} compact />
@@ -73,5 +74,6 @@ export function DashRequests() {
 const s = StyleSheet.create({
   wrap: { paddingHorizontal: 16, marginTop: 26, gap: 10 },
   head: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginBottom: 2 },
+  all: { flexDirection: "row", alignItems: "center", gap: 2 },
   card: { borderRadius: 20, borderWidth: 1, ...cardShadow },
 });

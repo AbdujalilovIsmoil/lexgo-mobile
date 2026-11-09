@@ -24,7 +24,7 @@ export function KindSwitch({ group, services, value, onPick }: Props) {
             <PressableScale key={it.key} onPress={() => onPick(it.key)} scale={0.985} accessibilityRole="radio" accessibilityState={{ selected: on }} style={[s.row, { borderColor: on ? tint : c.line, backgroundColor: on ? `${tint}18` : c.surface }]}>
               <View style={[s.icon, { backgroundColor: on ? tint : `${tint}22` }]}><Icon name={kindIcon(it.key)} size={18} color={on ? "#FFFFFF" : tint} /></View>
               <View style={s.flex}>
-                <Text variant="body" weight="bold">{label.kind(it.key, it.title)}</Text>
+                <Text variant="h4" weight="semibold" style={s.name}>{label.kind(it.key, it.title)}</Text>
                 <Text variant="caption" tone="gray">{t(`ug1.about.${it.key}`)}</Text>
               </View>
               <View style={[s.dot, { borderColor: on ? tint : c.gray2 }]}>{on ? <View style={[s.fill, { backgroundColor: tint }]} /> : null}</View>
@@ -38,9 +38,10 @@ export function KindSwitch({ group, services, value, onPick }: Props) {
 
 const s = StyleSheet.create({
   col: { gap: 8 },
-  row: { flexDirection: "row", alignItems: "center", gap: 12, padding: 12, borderRadius: radius.r, borderWidth: 1.5 },
+  row: { flexDirection: "row", alignItems: "center", gap: 12, padding: 12, borderRadius: radius.r, borderWidth: 1 },
   icon: { width: 38, height: 38, borderRadius: 12, alignItems: "center", justifyContent: "center" },
   flex: { flex: 1, gap: 1 },
+  name: { fontSize: 14, lineHeight: 19 },
   dot: { width: 22, height: 22, borderRadius: 11, borderWidth: 2, alignItems: "center", justifyContent: "center" },
   fill: { width: 10, height: 10, borderRadius: 5 },
 });

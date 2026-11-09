@@ -14,7 +14,7 @@ export function CourseCard({ course, category }: Props) {
   const { t } = useT();
   const level = t(`cpd.academy.level.${course.level}`);
   return (
-    <Card padded={false} style={s.card}>
+    <Card padded={false} style={[s.card, { backgroundColor: c.surface, borderColor: c.line }]}>
       <View style={[s.cover, { backgroundColor: COVERS[course.title.length % 4] }]}>
         <Pill label={level.startsWith("cpd.") ? course.level : level} tone="glass" small />
       </View>

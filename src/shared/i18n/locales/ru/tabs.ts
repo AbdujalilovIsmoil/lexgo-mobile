@@ -1,7 +1,7 @@
 import type { Messages } from "../uz";
 
 export const tabs: Messages["tabs"] = {
-  bar: { home: "Главная", services: "Виды услуг", works: "Мои дела", orders: "Заказы" },
+  bar: { home: "Главная", services: "Услуги", works: "Мои дела", orders: "Заказы" },
   ceo: "CEO",
   hrm: "HRM",
   analytics: "Аналитика",
@@ -24,5 +24,5 @@ export const tabs: Messages["tabs"] = {
   notifications: "Уведомления",
   signIn: "Войти",
   profile: "Профиль",
-  svt: { lead: "Все виды услуг в одном месте", docsTitle: "Документы", docsSub: "Каталог шаблонов: скачайте и заполните", lawyersTitle: "Адвокаты и юристы", lawyersSub: "Выберите специалиста и закажите его услугу", aiTitle: "ИИ-помощник", aiSub: "Напишите вопрос — ИИ ответит", more: "Другие услуги", back: "Назад к видам услуг" },
+  svt: { lead: "Все виды услуг в одном месте", docsTitle: "Документы", docsSub: "Шаблоны: скачать и заполнить", lawyersTitle: "Адвокаты и юристы", lawyersSub: "Поиск специалистов и заказ услуг", academyTitle: "Академия", academySub: "Правовые знания и руководства", main: "Основные услуги", more: "Другие услуги", back: "Назад к видам услуг" },
 };

@@ -1,5 +1,5 @@
 export const tabs = {
-  bar: { home: "Asosiy", services: "Xizmat turlari", works: "Ishlarim", orders: "Buyurtmalar" },
+  bar: { home: "Asosiy", services: "Xizmatlar", works: "Ishlarim", orders: "Buyurtmalar" },
   ceo: "CEO",
   hrm: "HRM",
   analytics: "Tahlil",
@@ -22,5 +22,5 @@ export const tabs = {
   notifications: "Xabarnoma",
   signIn: "Kirish",
   profile: "Profil",
-  svt: { lead: "Barcha xizmat turlari bir joyda", docsTitle: "Hujjatlar", docsSub: "Shablonlar katalogi: yuklab olish va to'ldirish", lawyersTitle: "Advokat va yuristlar", lawyersSub: "Mutaxassisni tanlang, uning xizmatlariga buyurtma bering", aiTitle: "AI yordamchi", aiSub: "Savolingizni yozing, AI javob beradi", more: "Boshqa xizmatlar", back: "Xizmat turlariga qaytish" },
+  svt: { lead: "Barcha xizmat turlari bir joyda", docsTitle: "Hujjatlar", docsSub: "Shablonlar, yuklab olish va to'ldirish", lawyersTitle: "Advokat va yuristlar", lawyersSub: "Mutaxassislarni topish va buyurtma berish", academyTitle: "Akademiya", academySub: "Huquqiy bilim va amaliy qo'llanmalar", main: "Asosiy xizmatlar", more: "Boshqa xizmatlar", back: "Xizmat turlariga qaytish" },
 };

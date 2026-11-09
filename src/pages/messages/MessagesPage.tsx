@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { Platform, StyleSheet } from "react-native";
 import { useRouter } from "expo-router";
-import { EmptyState, Icon, PressableScale } from "@/shared/ui";
+import { SquarePen } from "lucide-react-native";
+import { EmptyState, PressableScale } from "@/shared/ui";
 import { TabPage } from "@/widgets/tab-page";
 import { RoomsList } from "@/widgets/secure-chat";
 import { PushPermissionCard } from "@/widgets/push-permission";
@@ -11,10 +12,11 @@ import { useMine } from "@/entities/urgent";
 import { chatPath } from "@/entities/call";
 import { useSession } from "@/entities/session";
 import { useRequests, type ReqItem } from "@/entities/pro-requests";
+import { HOME_BG } from "@/widgets/client-dash";
 import { useTabRole } from "@/widgets/tab-bar/useTabRole";
 import { useSocketState } from "@/shared/realtime";
 import { useInsets } from "@/shared/lib/insets";
-import { shadows } from "@/shared/theme";
+import { mainColor, shadows, useTheme } from "@/shared/theme";
 import { useT } from "@/shared/i18n";
 
 // "Xabarlar" tab — the secure-chat inbox of every role: my conversations, newest first, unread counters
@@ -32,6 +34,8 @@ export function MessagesPage() {
   const locked = !useSellerActions().chat;
   const [creating, setCreating] = useState(false);
   const seller = useTabRole() === "seller";
+  const { dark } = useTheme();
+  const ground = seller || dark ? undefined : HOME_BG;
   const reqs = useMine().data ?? [];
   // A professional's rooms are named after the work they belong to (service / document / urgent request, with its number), from the
   // same lists as So'rovlar; a client's urgent rooms after their own request.
@@ -47,17 +51,17 @@ export function MessagesPage() {
   };
   const mine = myRooms(q.data ?? [], myId);
   const unread = unreadTotal(q.data ?? [], myId);
-  if (!myId) return <TabPage navy={seller} title={t("tabs.messages")}><EmptyState icon="lock" title={t("ms1.signIn")} text={t("ms1.signInText")} actionLabel={t("guest.login")} onAction={() => router.push("/auth/login")} /></TabPage>;
-  if (locked) return <TabPage navy={seller} title={t("tabs.messages")}><EmptyState icon="shield" title={t("ms1.locked")} text={t("ms1.lockedText")} /></TabPage>;
+  if (!myId) return <TabPage navy={seller} secondary={!seller} ground={ground} title={t("tabs.messages")}><EmptyState icon="lock" title={t("ms1.signIn")} text={t("ms1.signInText")} actionLabel={t("guest.login")} onAction={() => router.push("/auth/login")} /></TabPage>;
+  if (locked) return <TabPage navy={seller} secondary={!seller} ground={ground} title={t("tabs.messages")}><EmptyState icon="shield" title={t("ms1.locked")} text={t("ms1.lockedText")} /></TabPage>;
   return (
-    <TabPage navy={seller} title={t("tabs.messages")} subtitle={unread ? t("ms1.unreadN", { n: unread }) : t("admChat.count", { n: mine.length })}>
+    <TabPage navy={seller} secondary={!seller} ground={ground} title={t("tabs.messages")} subtitle={unread ? t("ms1.unreadN", { n: unread }) : t("admChat.count", { n: mine.length })}>
       <RoomsList tagOf={tagOf} showRole={!seller} query={q} rooms={mine} myId={myId} bottom={pad} onOpen={(r) => router.push(chatPath(r.id) as never)} header={<PushPermissionCard />} action={{ label: t("ms1.newChat"), onPress: () => setCreating(true) }} />
       <PressableScale onPress={() => setCreating(true)} accessibilityRole="button" accessibilityLabel={t("ms1.newChat")} style={[styles.fab, shadows.blue, { bottom: barTop + 12 }]}>
-        <Icon name="edit-2" size={24} color="#FFFFFF" />
+        <SquarePen size={24} color="#FFFFFF" />
       </PressableScale>
       <NewChatSheet visible={creating} onClose={() => setCreating(false)} />
     </TabPage>
   );
 }
 
-const styles = StyleSheet.create({ fab: { position: "absolute", right: 18, width: 58, height: 58, borderRadius: 29, backgroundColor: "#1668F0", alignItems: "center", justifyContent: "center" } });
+const styles = StyleSheet.create({ fab: { position: "absolute", right: 18, width: 58, height: 58, borderRadius: 29, backgroundColor: mainColor, alignItems: "center", justifyContent: "center" } });

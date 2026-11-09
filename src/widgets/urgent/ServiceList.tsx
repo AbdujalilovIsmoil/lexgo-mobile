@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, type ReactNode } from "react";
 import { StyleSheet, View } from "react-native";
 import { useRouter } from "expo-router";
 import { BottomSheet, Card, ErrorView, Icon, PressableScale, SheetScroll, Skeleton, Text, type IconName } from "@/shared/ui";
@@ -15,11 +15,11 @@ const FLOWS: { kind: "custom" | "review"; icon: IconName; title: string; sub: st
 // "Xizmatni tanlang": the services of the catalog in one card, kinds that are one decision on one row (ordinary + express video, single +
 // panel second opinion — the order form switches between them) — icon tile in the service's colour, the name, under it how it runs
 // (channel · length, or single / panel) with the lowest price at the right, a chevron — and the document flows as the last row (a sheet with the two duty-advocate document
-// ways). A row opens the order form on its first kind.
-export function ServiceList() {
+// ways). A row opens the order form on its first kind. `head` replaces the list's own title.
+export function ServiceList({ head }: { head?: ReactNode }) {
   const { t } = useT();
   const router = useRouter();
-  const { colors: c, dark } = useTheme();
+  const { colors: c } = useTheme();
   const label = useUrgentLabels();
   const cat = useCatalog();
   const [docs, setDocs] = useState(false);
@@ -45,20 +45,20 @@ export function ServiceList() {
   };
   const base = (card: UrgentCard) => (card.key === VIDEO_GROUP ? "video_consultation" : card.items[0].key);
   const title = (card: UrgentCard) => (card.group ? label.text(`ug1.groups.${card.key}`, card.group.title || card.key) : label.kind(card.items[0].key, card.items[0].title));
-  const line = dark ? c.line : "#E9EDF4";
+  const line = c.line;
   const rows = [
     ...cards.map((card) => ({ key: card.key, icon: kindIcon(base(card)), tint: kindTint(base(card)), title: title(card), sub: sub(card), price: price(card), lock: card.items.every((x) => x.requiresPriorPurchase), onPress: () => router.push(orderHref(base(card), "urgent")) })),
     { key: "docs", icon: "file-text" as IconName, tint: "#5C6E85", title: t("cxUg.docsTitle"), sub: t("ug1.page.docsSub"), price: "", lock: false, onPress: () => setDocs(true) },
   ];
   return (
     <View style={s.wrap}>
-      <Text variant="caption" weight="bold" tone="gray" style={s.label}>{t("ug1.page.pick").toUpperCase()}</Text>
-      <View style={[s.card, { backgroundColor: dark ? c.surface : "#FFFFFF", borderColor: dark ? c.line : "#EEF2FA" }]}>
+      {head ?? <Text variant="caption" weight="bold" tone="gray" style={s.label}>{t("ug1.page.pick").toUpperCase()}</Text>}
+      <View style={[s.card, { backgroundColor: c.surface, borderColor: c.line }]}>
         {rows.map((r, i) => (
-          <PressableScale key={r.key} onPress={r.onPress} scale={0.99} accessibilityRole="button" style={[s.row, i < rows.length - 1 && { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: line }]}>
+          <PressableScale key={r.key} onPress={r.onPress} scale={0.99} accessibilityRole="button" style={[s.row, i < rows.length - 1 && { borderBottomWidth: 1, borderBottomColor: line }]}>
             <View style={[s.ico, { backgroundColor: `${r.tint}1A` }]}><Icon name={r.icon} size={20} color={r.tint} /></View>
             <View style={s.flex}>
-              <Text variant="h4" numberOfLines={2}>{r.title}</Text>
+              <Text variant="h4" weight="semibold" numberOfLines={2} style={s.name}>{r.title}</Text>
               <View style={s.subRow}>
                 {r.lock ? <Icon name="lock" size={12} tone="gray" /> : null}
                 <Text variant="small" tone="gray" numberOfLines={2} style={s.flex}>{r.sub}</Text>
@@ -95,6 +95,7 @@ const s = StyleSheet.create({
   row: { flexDirection: "row", alignItems: "center", gap: 12, paddingHorizontal: 14, paddingVertical: 13 },
   ico: { width: 44, height: 44, borderRadius: 13, alignItems: "center", justifyContent: "center" },
   flex: { flex: 1, minWidth: 0 },
+  name: { fontSize: 14, lineHeight: 19 },
   subRow: { flexDirection: "row", alignItems: "center", gap: 6, marginTop: 3 },
   flow: { flexDirection: "row", alignItems: "center", gap: 12, padding: 14 },
 });

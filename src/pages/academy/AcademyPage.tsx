@@ -2,15 +2,17 @@ import { useMemo, useState } from "react";
 import { StyleSheet, View } from "react-native";
 import { humanizeSlug, useAcademyCourses } from "@/entities/academy";
 import { AcademyFilters, CourseCard } from "@/widgets/academy";
-import { EmptyState, ErrorView, Header, Screen, SkeletonCard, Text } from "@/shared/ui";
-import { useColors } from "@/shared/theme";
+import { EmptyState, ErrorView, Screen, SecondaryHeader, SkeletonCard } from "@/shared/ui";
+import { useTheme } from "@/shared/theme";
 import { useT } from "@/shared/i18n";
+import { HOME_BG } from "@/widgets/client-dash";
 
 const SEARCH_FROM = 7;
 
 // Client academy (web /portal/client/academy): hero, category + search filters, course cards.
 export function AcademyPage() {
-  const c = useColors();
+  const { colors: c, dark } = useTheme();
+  const ground = dark ? c.canvas : HOME_BG;
   const { t } = useT();
   const { data = [], isLoading, error, refetch, isRefetching } = useAcademyCourses();
   const [cat, setCat] = useState("");
@@ -23,11 +25,9 @@ export function AcademyPage() {
   const list = found.filter((x) => !cat || x.category === cat);
   const opts = [{ value: "", label: `${t("cpd.academy.all")} (${found.length})` }, ...cats.map((k) => ({ value: k, label: `${catLabel(k)} (${found.filter((x) => x.category === k).length})` }))];
   return (
-    <View style={[s.fill, { backgroundColor: c.canvas }]}>
-      <Header title={t("cpd.menu.academy")} />
-      <Screen topInset={false} refreshing={isRefetching} onRefresh={() => void refetch()} contentContainerStyle={s.content}>
-        <Text variant="h2">{t("cpd.academy.title")}</Text>
-        <Text variant="small" tone="gray">{t("cpd.academy.subtitle")}</Text>
+    <View style={[s.fill, { backgroundColor: ground }]}>
+      <SecondaryHeader title={t("cpd.menu.academy")} description={t("cpd.academy.subtitle")} />
+      <Screen topInset={false} ground={ground} refreshing={isRefetching} onRefresh={() => void refetch()} contentContainerStyle={s.content}>
         {!isLoading && (cats.length > 1 || searchable) ? <AcademyFilters cats={opts} cat={cat} onCat={setCat} q={q} onQ={setQ} searchable={searchable} /> : null}
         {error ? <ErrorView error={error} onRetry={() => void refetch()} /> : isLoading ? [0, 1, 2].map((i) => <SkeletonCard key={i} />) : !list.length && data.length ? (
           <EmptyState icon="search" title={t("cpd.academy.noMatch")} text={t("cpd.academy.noMatchText")} />
@@ -39,4 +39,4 @@ export function AcademyPage() {
   );
 }
 
-const s = StyleSheet.create({ fill: { flex: 1 }, content: { gap: 14, paddingTop: 6 } });
+const s = StyleSheet.create({ fill: { flex: 1 }, content: { gap: 14, paddingTop: 16 } });

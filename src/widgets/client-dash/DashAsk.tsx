@@ -4,9 +4,9 @@ import { useRouter } from "expo-router";
 import { LinearGradient } from "expo-linear-gradient";
 import { ArrowUp, Paperclip, Sparkles } from "lucide-react-native";
 import Animated, { Easing, cancelAnimation, useAnimatedStyle, useSharedValue, withRepeat, withTiming } from "react-native-reanimated";
-import { PressableScale } from "@/shared/ui";
+import { PressableScale, Text } from "@/shared/ui";
 import { useMotionOn } from "@/shared/lib/useMotionOn";
-import { GLASS_SOLID, useTheme } from "@/shared/theme";
+import { fonts, GLASS_SOLID, useTheme } from "@/shared/theme";
 import { useT } from "@/shared/i18n";
 import { freshAiChat } from "@/features/ai-chat";
 import { usePickForAnalysis } from "@/features/doc-analysis";
@@ -52,7 +52,15 @@ export function DashAsk() {
         ) : null}
         <View style={[s.box, { backgroundColor: glass ? GLASS_SOLID : dark ? c.surface : "#FFFFFF" }]}>
           <Sparkles size={18} color="#2F6BFF" fill="#2F6BFF" />
-          <TextInput value={q} onChangeText={setQ} onSubmitEditing={go} submitBehavior="submit" returnKeyType="send" multiline numberOfLines={2} placeholder={t("cdash.home.askPh")} placeholderTextColor={c.gray2} style={[s.input, { color: c.ink }]} accessibilityLabel={t("cdash.home.askPh")} />
+          {/* The hint is drawn here, not as the field's placeholder: a placeholder takes one style, and the example is in italics. While it shows it also gives the field its height. */}
+          <View style={s.field}>
+            {q ? null : (
+              <Text numberOfLines={2} pointerEvents="none" style={[s.hint, { color: c.gray2 }]}>
+                {t("cdash.home.askPhLead")} <Text style={[s.example, { color: c.gray2 }]}>{t("cdash.home.askPhExample")}</Text>
+              </Text>
+            )}
+            <TextInput value={q} onChangeText={setQ} onSubmitEditing={go} submitBehavior="submit" returnKeyType="send" multiline numberOfLines={2} style={[s.input, { color: c.ink }, q ? null : StyleSheet.absoluteFill]} accessibilityLabel={`${t("cdash.home.askPhLead")} ${t("cdash.home.askPhExample")}`} />
+          </View>
           {q.trim() ? (
             <PressableScale onPress={go} hitSlop={8} style={[s.clip, s.send]} accessibilityRole="button" accessibilityLabel={t("cdash.home.send")}>
               <ArrowUp size={20} color="#FFFFFF" />
@@ -78,5 +86,8 @@ const s = StyleSheet.create({
   box: { flexDirection: "row", alignItems: "center", gap: 10, borderRadius: RADIUS - EDGE, paddingLeft: 16, paddingRight: 6, minHeight: 56 - EDGE * 2 },
   clip: { width: 40, height: 40, alignItems: "center", justifyContent: "center" },
   send: { borderRadius: 20, backgroundColor: "#1668F0" },
-  input: { flex: 1, minWidth: 0, fontSize: 15, lineHeight: 20, maxHeight: 64, paddingTop: 12, paddingBottom: 12, textAlignVertical: "center" }, // two lines: the example question in the placeholder fits whole
+  field: { flex: 1, minWidth: 0 },
+  hint: { fontSize: 15, lineHeight: 20, paddingVertical: 12 },
+  example: { fontFamily: fonts.italic, fontSize: 15, lineHeight: 20 },
+  input: { fontSize: 15, lineHeight: 20, maxHeight: 64, paddingTop: 12, paddingBottom: 12, textAlignVertical: "center" }, // two lines: the example question in the placeholder fits whole
 });

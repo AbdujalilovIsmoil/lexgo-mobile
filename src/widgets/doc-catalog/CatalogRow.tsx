@@ -1,7 +1,7 @@
 import { StyleSheet, View } from "react-native";
 import type { DocTemplate, TemplateCategoryInfo } from "@/entities/doc-template";
 import { fmtMoney } from "@/shared/lib/money";
-import { radius, shadows, useColors } from "@/shared/theme";
+import { radius, useColors } from "@/shared/theme";
 import { Icon, PressableScale, Text } from "@/shared/ui";
 import { useT } from "@/shared/i18n";
 import { PaperTile } from "./PaperTile";
@@ -21,10 +21,10 @@ export function CatalogRow({ item, cats, onOpen }: Props) {
   const mins = item.fields ? fillMinutes(item.fields) : 0;
   const label = [item.name, cat, mins ? t("dcat.minutes", { n: mins }) : ""].filter(Boolean).join(". ");
   return (
-    <PressableScale onPress={onOpen} accessibilityRole="button" accessibilityLabel={label} style={[s.card, { backgroundColor: c.glassFill, borderColor: c.glassLine }, shadows.s1]}>
+    <PressableScale onPress={onOpen} accessibilityRole="button" accessibilityLabel={label} style={[s.card, { backgroundColor: c.surface, borderColor: c.line }]}>
       <PaperTile color={color} paper={c.surface2} file={item.hasSource} />
       <View style={s.col}>
-        <Text variant="body" weight="semibold" numberOfLines={2}>{item.name}</Text>
+        <Text variant="body" weight="semibold" numberOfLines={2} style={s.name}>{item.name}</Text>
         <View style={s.meta}>
           <View style={s.cat}><View style={[s.dot, { backgroundColor: color }]} /><Text variant="caption" weight="semibold" numberOfLines={1} style={{ color }}>{cat}</Text></View>
           {mins ? <View style={s.cat}><Icon name="clock" size={12} tone="gray" /><Text variant="caption" tone="gray">{t("dcat.minutes", { n: mins })}</Text></View> : null}
@@ -39,6 +39,7 @@ export function CatalogRow({ item, cats, onOpen }: Props) {
 const s = StyleSheet.create({
   card: { flexDirection: "row", alignItems: "center", gap: 14, paddingVertical: 12, paddingLeft: 12, paddingRight: 10, borderRadius: radius.rl, borderWidth: 1, minHeight: 76 },
   col: { flex: 1, gap: 5 },
+  name: { fontSize: 14, lineHeight: 19 },
   meta: { flexDirection: "row", alignItems: "center", flexWrap: "wrap", columnGap: 12, rowGap: 4 },
   cat: { flexDirection: "row", alignItems: "center", gap: 5, flexShrink: 1 },
   dot: { width: 8, height: 8, borderRadius: 4 },

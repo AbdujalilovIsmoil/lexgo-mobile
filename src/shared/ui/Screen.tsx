@@ -15,11 +15,12 @@ type Props = ScrollViewProps & {
   onRefresh?: () => void;
   bottomInset?: boolean;
   topInset?: boolean;
+  ground?: string; // the page colour, when it is not the canvas
   ref?: Ref<KeyboardAwareScrollViewRef>; // the scroll view itself (passed on with the other props)
 };
 
 // Page container: content starts below the status bar and never scrolls under it.
-export function Screen({ children, scroll = true, padded = true, refreshing, onRefresh, bottomInset = true, topInset = true, contentContainerStyle, ...rest }: Props) {
+export function Screen({ children, scroll = true, padded = true, refreshing, onRefresh, bottomInset = true, topInset = true, ground, contentContainerStyle, ...rest }: Props) {
   const c = useColors();
   const insets = useInsets();
   const { tablet } = useTablet();
@@ -55,7 +56,7 @@ export function Screen({ children, scroll = true, padded = true, refreshing, onR
     <View style={[s.fill, padded && s.padded, padding, tablet && s.column]}>{children}</View>
   );
   return (
-    <View style={[s.fill, { backgroundColor: c.canvas }, bleed ? { marginTop: -bleed } : null]}>
+    <View style={[s.fill, { backgroundColor: ground ?? c.canvas }, bleed ? { marginTop: -bleed } : null]}>
       {body}
       {top > 0 ? <View pointerEvents="none" style={[s.mask, { height: top, backgroundColor: c.canvas }]} /> : null}
     </View>

@@ -14,19 +14,19 @@ export function RequestRow({ row, last }: { row: ActiveRowData; last: boolean })
   return (
     <PressableScale onPress={row.onPress} scale={0.99} accessibilityRole="button" style={[s.row, !last && { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: dark ? c.line : "#E6EBF3" }]}>
       <View style={s.top}>
-        <Text variant="h4" numberOfLines={2} style={s.title}>{row.title}</Text>
+        <Text variant="h4" weight="semibold" numberOfLines={2} maxFontSizeMultiplier={1.15} style={s.title}>{row.title}</Text>
         <View style={[s.chip, { backgroundColor: dark ? `${chip.fg}33` : chip.bg }]}><Text variant="caption" weight="bold" numberOfLines={1} style={{ color: dark ? c.ink : chip.fg }}>{row.status}</Text></View>
       </View>
       {row.id || row.stage ? (
         <View style={s.meta}>
           {row.id ? <View style={[s.id, { backgroundColor: c.surface2 }]}><Text variant="caption" weight="bold" tone="gray" style={s.mono}>{row.id}</Text></View> : null}
-          {row.stage ? <Text variant="small" tone="gray">{row.stage}</Text> : null}
+          {row.stage ? <Text variant="caption" weight="regular" tone="gray" maxFontSizeMultiplier={1.15} style={s.stage}>{row.stage}</Text> : null}
         </View>
       ) : null}
       {row.next ? (
         <View style={s.next}>
           <ArrowRight size={16} color={c.accent} />
-          <Text variant="body" weight="bold" tone="accent" numberOfLines={2} style={s.flex}>{row.next}</Text>
+          <Text variant="h4" weight="semibold" tone="accent" numberOfLines={2} maxFontSizeMultiplier={1.15} style={[s.flex, s.title]}>{row.next}</Text>
         </View>
       ) : null}
     </PressableScale>
@@ -36,7 +36,8 @@ export function RequestRow({ row, last }: { row: ActiveRowData; last: boolean })
 const s = StyleSheet.create({
   row: { paddingHorizontal: 16, paddingVertical: 14, gap: 8 },
   top: { flexDirection: "row", alignItems: "flex-start", gap: 10 },
-  title: { flex: 1, fontSize: 16, lineHeight: 21 },
+  title: { flex: 1, fontSize: 14, lineHeight: 18 },
+  stage: { fontSize: 12, lineHeight: 14 },
   chip: { borderRadius: 999, paddingHorizontal: 10, paddingVertical: 4, maxWidth: "60%" },
   meta: { flexDirection: "row", alignItems: "center", flexWrap: "wrap", gap: 8 },
   id: { borderRadius: 7, paddingHorizontal: 8, paddingVertical: 3 },

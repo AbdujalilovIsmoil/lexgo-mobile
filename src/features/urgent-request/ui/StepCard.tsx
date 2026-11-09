@@ -12,7 +12,7 @@ export function StepCard({ n, title, aside, done, children }: Props) {
     <View style={[s.card, { backgroundColor: c.surface, borderColor: done ? c.ok : c.line }]}>
       <View style={s.head}>
         <View style={[s.num, { backgroundColor: done ? c.ok : c.accent }]}><Text variant="caption" weight="bold" tone="white">{done ? "✓" : n}</Text></View>
-        <Text variant="h4" style={s.flex}>{title}</Text>
+        <Text variant="h4" weight="semibold" style={s.title}>{title}</Text>
         {aside}
       </View>
       {children}
@@ -21,8 +21,8 @@ export function StepCard({ n, title, aside, done, children }: Props) {
 }
 
 const s = StyleSheet.create({
-  card: { gap: 12, padding: 14, borderRadius: radius.rl, borderWidth: 1.5 },
+  card: { gap: 12, padding: 14, borderRadius: radius.rl, borderWidth: 1 },
   head: { flexDirection: "row", alignItems: "center", gap: 10 },
   num: { width: 26, height: 26, borderRadius: 13, alignItems: "center", justifyContent: "center" },
-  flex: { flex: 1 },
+  title: { flex: 1, fontSize: 14, lineHeight: 19 },
 });

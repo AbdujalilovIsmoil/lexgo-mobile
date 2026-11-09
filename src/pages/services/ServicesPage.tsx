@@ -10,11 +10,11 @@ import { PreSellerBanner } from "@/widgets/services-catalog";
 import { DocCatalog } from "@/widgets/doc-catalog";
 import { MoreWays, NewDocOrder, ServicesHub, useServicesHub } from "@/widgets/services-hub";
 import { TabPage, useTabPad, TabScrollView } from "@/widgets/tab-page";
-import { useColors } from "@/shared/theme";
+import { HOME_BG } from "@/widgets/client-dash";
+import { useColors, useTheme } from "@/shared/theme";
 import { useTabBarHidden } from "@/shared/lib/tabBarHidden";
 import { RA_OPENER, raOk, useRaControl, useRaPage } from "@/shared/remote-assist";
 import { useT } from "@/shared/i18n";
-import { Icon, PressableScale, Text } from "@/shared/ui";
 import { CatalogSheets } from "./CatalogSheets";
 import { ServiceTypes } from "./ServiceTypes";
 import { useDeepService } from "./useDeepService";
@@ -28,6 +28,7 @@ type Params = { docs?: string; cat?: string; subcat?: string; q?: string; lawyer
 // Sheets: new-document order, the order form (advocate, price, payment), the download plan gates.
 export function ServicesPage() {
   const { t } = useT();
+  const { dark } = useTheme();
   const p = useLocalSearchParams<Params>();
   const [pre, setPre] = useState<{ id: string; name: string } | null>(() => (p.lawyer ? { id: String(p.lawyer), name: String(p.name ?? "") } : null));
   const [order, setOrder] = useState<Service | null>(null);
@@ -76,10 +77,9 @@ export function ServicesPage() {
   const sheets = <CatalogSheets order={order} onOrder={setOrder} newDoc={newDoc} onNewDoc={setNewDoc} dl={dl} pre={pre ?? undefined} packageId={p.package ? String(p.package) : undefined} />;
   if (pre) return <AdvocateServices pre={pre} onClear={() => setPre(null)} onOrder={setOrder} onNewDoc={() => setNewDoc(true)} sheets={sheets} />;
   return (
-    <TabPage title={docs ? t("tabs.svt.docsTitle") : t("tabs.services")} subtitle={docs ? undefined : t("tabs.svt.lead")}>
+    <TabPage secondary ground={dark ? undefined : HOME_BG} onBack={docs ? () => setDocs(false) : undefined} title={docs ? t("tabs.svt.docsTitle") : t("tabs.services")} subtitle={docs ? undefined : t("tabs.svt.lead")}>
       {docs ? (
         <DocCatalog
-          top={<PressableScale onPress={() => setDocs(false)} scale={0.98} accessibilityRole="button" accessibilityLabel={t("tabs.svt.back")} style={s.back}><Icon name="chevron-left" size={18} tone="accent" /><Text variant="small" weight="bold" tone="accent">{t("tabs.svt.back")}</Text></PressableScale>}
           footer={<View {...newRa} style={s.foot}><NewDocOrder onNewDoc={() => setNewDoc(true)} /></View>}
         />
       ) : <ServiceTypes onDocs={() => setDocs(true)} />}
@@ -110,7 +110,7 @@ function AdvocateServices({ pre, onClear, onNewDoc, sheets }: Advocate) {
     setRefreshing(false);
   };
   return (
-    <TabPage title={t("csv.title")} subtitle={t("csv.lead")}>
+    <TabPage secondary title={t("csv.title")} subtitle={t("csv.lead")}>
       <TabScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={() => void refresh()} tintColor={c.accent} />} contentContainerStyle={{ ...s.content, paddingBottom: pad }}>
         <PreSellerBanner name={pre.name} offered={offered} narrowed={!!offered?.size} afterHours={note.afterHours} onClear={onClear} />
         <ServicesHub hub={hub} onOpen={open} />
@@ -121,4 +121,4 @@ function AdvocateServices({ pre, onClear, onNewDoc, sheets }: Advocate) {
   );
 }
 
-const s = StyleSheet.create({ foot: { alignSelf: "stretch" }, back: { flexDirection: "row", alignItems: "center", gap: 4, alignSelf: "flex-start", paddingVertical: 6, paddingHorizontal: 12 }, content: { paddingTop: 4, paddingHorizontal: 16, gap: 14 } });
+const s = StyleSheet.create({ foot: { alignSelf: "stretch" }, content: { paddingTop: 4, paddingHorizontal: 16, gap: 14 } });

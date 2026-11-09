@@ -6,5 +6,5 @@ export const mk7: Messages["mk7"] = {
   "video": "Video",
   "calling": "Connecting…",
   "callError": "Could not start the call.",
-  "clientLead": "Services you bought in the marketplace: status, chat and calls."
+  "clientLead": "Service status, chat and calls"
 };

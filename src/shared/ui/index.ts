@@ -22,6 +22,7 @@ export { ListRow } from "./ListRow";
 export { Divider } from "./Divider";
 export { GradientBox } from "./GradientBox";
 export { Header } from "./Header";
+export { SecondaryHeader } from "./SecondaryHeader";
 export { HeaderExtra, HeaderRight, registerHeaderExtra, registerHeaderRight } from "./headerExtra";
 export { ErrorView, useErrorText } from "./ErrorView";
 export { Toaster } from "./Toaster";

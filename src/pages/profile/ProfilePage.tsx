@@ -26,21 +26,18 @@ export function ProfilePage() {
   const back = () => (router.canGoBack() ? router.back() : router.replace("/"));
   const floating = <View style={[s.back, { top: insets.top + HEADER_GAP }]}><IconButton icon={backIcon} tone="glass" onPress={back} /></View>;
   if (!session) return <View style={s.fill}><GuestWelcome />{floating}</View>;
+  if (client) return <ClientProfile user={session.user} onBack={back} />;
   return (
     <View style={s.fill}>
     <HeroScroll style={{ backgroundColor: c.canvas }} contentContainerStyle={{ paddingBottom: insets.bottom + 32 }}>
-      {client ? <ClientProfile user={session.user} onBack={back} /> : <ProfileHeader user={session.user} />}
-      {client ? null : (
-        <>
-          <ProfileSummary />
-          <View style={{ paddingHorizontal: 16, marginTop: 14 }}><IdentityCard /></View>
-        </>
-      )}
-      {client || seller ? null : <ProfileMenu />}
-      {client || seller ? null : <ProfileExtrasMenu />}
+      <ProfileHeader user={session.user} />
+      <ProfileSummary />
+      <View style={{ paddingHorizontal: 16, marginTop: 14 }}><IdentityCard /></View>
+      {seller ? null : <ProfileMenu />}
+      {seller ? null : <ProfileExtrasMenu />}
       <AppSettings />
     </HeroScroll>
-    {client ? null : floating}
+    {floating}
     </View>
   );
 }

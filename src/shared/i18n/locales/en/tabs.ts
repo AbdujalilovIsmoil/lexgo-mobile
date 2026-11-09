@@ -1,7 +1,7 @@
 import type { Messages } from "../uz";
 
 export const tabs: Messages["tabs"] = {
-  bar: { home: "Home", services: "Service types", works: "My works", orders: "Orders" },
+  bar: { home: "Home", services: "Services", works: "My works", orders: "Orders" },
   ceo: "CEO",
   hrm: "HRM",
   analytics: "Analytics",
@@ -24,5 +24,5 @@ export const tabs: Messages["tabs"] = {
   notifications: "Alerts",
   signIn: "Sign in",
   profile: "Profile",
-  svt: { lead: "Every kind of service in one place", docsTitle: "Documents", docsSub: "Template catalogue: download and fill in", lawyersTitle: "Advocates and lawyers", lawyersSub: "Pick a specialist and order their service", aiTitle: "AI assistant", aiSub: "Ask a question and the AI answers", more: "Other services", back: "Back to service types" },
+  svt: { lead: "Every kind of service in one place", docsTitle: "Documents", docsSub: "Templates: download and fill in", lawyersTitle: "Advocates and lawyers", lawyersSub: "Find specialists and order services", academyTitle: "Academy", academySub: "Legal knowledge and practical guides", main: "Main services", more: "Other services", back: "Back to service types" },
 };

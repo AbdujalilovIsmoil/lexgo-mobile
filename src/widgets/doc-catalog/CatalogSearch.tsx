@@ -1,8 +1,9 @@
 import { useState, type Ref } from "react";
 import { StyleSheet, TextInput, View } from "react-native";
-import { radius, useColors } from "@/shared/theme";
+import { radius, useTheme } from "@/shared/theme";
 import { Chip, IconButton, Icon, PressableScale, singleLineText, Text } from "@/shared/ui";
 import { useT } from "@/shared/i18n";
+import { HOME_BG } from "@/widgets/client-dash";
 
 type Box = { ref: Ref<View>; collapsable: false };
 // `field` / `filters` / `inputRef`: the search field and the filter button as remote-assistance controls (measured, focusable).
@@ -12,12 +13,12 @@ type Props = { value: string; onChange: (v: string) => void; onFilters: () => vo
 // one by one, and a live line under it ("23 results of 989"). It stays on screen while the list scrolls.
 export function CatalogSearch({ value, onChange, onFilters, active, chips, line, field, filters, inputRef }: Props) {
   const { t } = useT();
-  const c = useColors();
+  const { colors: c, dark } = useTheme();
   const [focus, setFocus] = useState(false);
   return (
-    <View style={[s.wrap, { backgroundColor: c.canvas }]}>
+    <View style={[s.wrap, { backgroundColor: dark ? c.canvas : HOME_BG }]}>
       <View style={s.row}>
-        <View style={[s.field, { backgroundColor: c.surface2, borderColor: focus ? c.accent : c.line }]} {...field}>
+        <View style={[s.field, { backgroundColor: c.surface, borderColor: focus ? c.accent : c.line }]} {...field}>
           <Icon name="search" size={20} color={focus ? c.accent : c.gray} />
           <TextInput
             ref={inputRef}
