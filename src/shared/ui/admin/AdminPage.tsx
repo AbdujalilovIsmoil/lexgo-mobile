@@ -6,20 +6,28 @@ import { useColors } from "@/shared/theme";
 import { ChromeFrame } from "../ChromeFrame";
 import { backIcon } from "../Icon";
 import { IconButton } from "../IconButton";
+import { SecondaryHeader } from "../SecondaryHeader";
 import { Text } from "../Text";
 import { HeaderExtra, HeaderRight } from "../headerExtra";
 
-type Props = { hideBack?: boolean; title: string; subtitle?: string; onBack?: () => void; right?: ReactNode; footer?: ReactNode; children: ReactNode };
+type Props = { hideBack?: boolean; title: string; subtitle?: string; onBack?: () => void; right?: ReactNode; footer?: ReactNode; secondary?: boolean; ground?: string; children: ReactNode };
 
 // Frame of every admin screen: back button, title (+ optional subtitle), a row of
 // header actions, the body, and an optional sticky footer above the home indicator.
-export function AdminPage({ hideBack, title, subtitle, onBack, right, footer, children }: Props) {
+// `secondary`: the pinned SecondaryHeader instead of that bar. `ground`: the page colour, when it is not the canvas.
+export function AdminPage({ hideBack, title, subtitle, onBack, right, footer, secondary, ground, children }: Props) {
   const c = useColors();
   const insets = useInsets();
   const router = useRouter();
   const back = onBack ?? (() => (router.canGoBack() ? router.back() : router.replace("/")));
   return (
-    <View style={[s.fill, { backgroundColor: c.canvas }]}>
+    <View style={[s.fill, { backgroundColor: ground ?? c.canvas }]}>
+      {secondary ? (
+        <>
+          <SecondaryHeader title={title} description={subtitle} right={right} onBack={onBack} hideButton={hideBack} />
+          <HeaderExtra />
+        </>
+      ) : (
       <ChromeFrame>
       <View style={[s.bar, { paddingTop: insets.top + HEADER_GAP }]}>
         {hideBack ? null : <IconButton icon={backIcon} onPress={back} />}
@@ -31,8 +39,9 @@ export function AdminPage({ hideBack, title, subtitle, onBack, right, footer, ch
       </View>
       <HeaderExtra />
       </ChromeFrame>
+      )}
       <View style={s.fill}>{children}</View>
-      {footer ? <View style={[s.footer, { borderTopColor: c.line, backgroundColor: c.bg, paddingBottom: insets.bottom + 10 }]}>{footer}</View> : null}
+      {footer ? <View style={[s.footer, { borderTopColor: c.line, backgroundColor: secondary ? c.surface : c.bg, paddingBottom: insets.bottom + 10 }]}>{footer}</View> : null}
     </View>
   );
 }

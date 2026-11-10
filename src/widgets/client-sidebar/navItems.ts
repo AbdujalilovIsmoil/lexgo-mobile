@@ -9,11 +9,11 @@ export type NavItem = { key: string; icon: IconName; route: string; badge?: "not
 // The web client sidebar (law-main PortalShell CLIENT_NAV) in its exact order, without Boshqaruv paneli, Tezkor advokat, Huquqiy hujjatlar and Advokat va yuristlar (Home and the tab bar lead there), SOS (Home has its own button), Mening so'rovlarim (a row on /urgent), AI, Mening ishlarim and Xabarlar (the tab bar has them), Mening hujjatlarim (the works page links to it), Shikoyatlar, Roziliklar, To'lovlar, Sovg'alar, Do'stni taklif qilish and Yordam markazi (the profile has them; the header's headset opens support); titles are cpd.menu.<key> (or `label` when the web has no such row).
 export const NAV: NavItem[] = storeRows([
   { key: "intake", icon: "clipboard", route: "/intake" },
-  { key: "academy", icon: "book-open", route: "/academy" },
+  // { key: "academy", icon: "book-open", route: "/academy" }, // off for now
   { key: "packages", icon: "package", route: "/packages" },
   { key: "marketplaceOrders", icon: "tag", route: "/orders" },
   { key: "matches", icon: "target", route: "/matches" },
-  { key: "nearby", icon: "map", route: "/nearby", label: "mmap.entry" },
+  // { key: "nearby", icon: "map", route: "/nearby", label: "mmap.entry" }, // off for now
   { key: "subscription", icon: "award", route: "/subscription" },
   { key: "reviews", icon: "star", route: "/ratings" },
   { key: "warranty", icon: "shield", route: "/warranty" },

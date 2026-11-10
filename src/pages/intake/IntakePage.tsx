@@ -3,15 +3,17 @@ import { useRouter } from "expo-router";
 import { useLegalCorpus } from "@/entities/intake";
 import { IntakeForm, MatchPicks, MatchPicksSkeleton, SourceList, SourcesSkeleton, UrgentBlock, useIntake } from "@/features/intake-analyze";
 import { ResultCard } from "@/widgets/intake-result";
-import { Button, Card, Header, Icon, Screen, Text } from "@/shared/ui";
-import { useColors } from "@/shared/theme";
+import { Button, Card, Icon, Screen, SecondaryHeader, Text } from "@/shared/ui";
+import { useTheme } from "@/shared/theme";
+import { HOME_BG } from "@/widgets/client-dash";
 import { useT } from "@/shared/i18n";
 import { useInstructorTarget } from "@/shared/instructor";
 
 // AI problem intake (web /portal/client/intake): describe → POST /ai/classify → urgency, offers,
 // matched advocates, sources. Before the first analysis the official legal sources are listed.
 export function IntakePage() {
-  const c = useColors();
+  const { colors: c, dark } = useTheme();
+  const ground = dark ? c.canvas : HOME_BG;
   const { t } = useT();
   const router = useRouter();
   const i = useIntake();
@@ -19,9 +21,9 @@ export function IntakePage() {
   const corpus = corpusQ.data ?? [];
   const res = useInstructorTarget("intake:result", { label: t("cxIn.resultTitle"), type: "section" });
   return (
-    <View style={[s.fill, { backgroundColor: c.canvas }]}>
-      <Header title={t("cxIn.title")} />
-      <Screen topInset={false} contentContainerStyle={s.content} keyboardShouldPersistTaps="handled">
+    <View style={[s.fill, { backgroundColor: ground }]}>
+      <SecondaryHeader title={t("cxIn.title")} />
+      <Screen topInset={false} ground={ground} contentContainerStyle={s.content} keyboardShouldPersistTaps="handled">
         <Text variant="small" tone="gray">{t("cxIn.subtitle")}</Text>
         <IntakeForm intake={i} />
         {!i.result && i.prevLoading ? <MatchPicksSkeleton /> : null}
@@ -46,4 +48,4 @@ export function IntakePage() {
   );
 }
 
-const s = StyleSheet.create({ fill: { flex: 1 }, content: { gap: 14, paddingTop: 4 }, col: { gap: 12 }, row: { flexDirection: "row", alignItems: "center", gap: 8 } });
+const s = StyleSheet.create({ fill: { flex: 1 }, content: { gap: 14, paddingTop: 16 }, col: { gap: 12 }, row: { flexDirection: "row", alignItems: "center", gap: 8 } });

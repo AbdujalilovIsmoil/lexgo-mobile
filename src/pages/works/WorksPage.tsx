@@ -1,26 +1,23 @@
-import { useState } from "react";
-import { useWorks, useWorksRealtime, type Work } from "@/entities/work";
 import { useIsAuthed } from "@/entities/session";
+import { ActiveRequestsList, HOME_BG } from "@/widgets/client-dash";
 import { TabPage, useTabPad } from "@/widgets/tab-page";
-import { WorkSheet, WorksGuest, WorksList } from "@/widgets/works";
+import { WorksGuest } from "@/widgets/works";
 import { useRaPage } from "@/shared/remote-assist";
+import { useTheme } from "@/shared/theme";
 import { useT } from "@/shared/i18n";
 
-// "Ishlar" tab (TZ 15): every business process of the client from GET /clients/me/works —
-// document requests to lawyers, urgent services, marketplace orders, cases and complaints. A tap opens the work in a
-// bottom sheet (web modal); the full page is one more tap away. Remote assistance: `client.my_works`, the rows on screen.
+// /works: every active request of the client. The backend closes GET /clients/me/works (client_works) to the client role, so the page
+// reads the same two sources as Home's "Faol so'rovlar"; Home's "Barchasi", the profile, the menu and deep links all land here.
+// Remote assistance: `client.my_works`.
 export function WorksPage() {
   const { t } = useT();
+  const { dark } = useTheme();
   const authed = useIsAuthed();
-  const works = useWorks();
   const pad = useTabPad();
-  useWorksRealtime();
   useRaPage("client.my_works");
-  const [picked, setPicked] = useState<Work | null>(null);
   return (
-    <TabPage title={t("cl1.title")} subtitle={works.total ? t("cl1.count", { n: works.total }) : t("cl1.sub")}>
-      {authed ? <WorksList lead works={works} onOpen={setPicked} bottom={pad} /> : <WorksGuest />}
-      <WorkSheet work={picked} onClose={() => setPicked(null)} />
+    <TabPage secondary ground={dark ? undefined : HOME_BG} title={t("cdash.home.active")}>
+      {authed ? <ActiveRequestsList bottom={pad} /> : <WorksGuest />}
     </TabPage>
   );
 }

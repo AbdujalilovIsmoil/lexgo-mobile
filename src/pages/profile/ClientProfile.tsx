@@ -27,7 +27,8 @@ import {
 import { displayName, type User } from "@/entities/session";
 import { needsAction, useClientProfile, useConsents, useReferral } from "@/entities/profile-extras";
 import { useMyFeatures, usePlans } from "@/entities/plan";
-import { isOpenWork, useWorks } from "@/entities/work";
+import { useOpenCases } from "@/entities/open-cases";
+import { isFinal, useMine } from "@/entities/urgent";
 import { HOME_BG } from "@/widgets/client-dash";
 import { AppSettings } from "@/widgets/profile";
 import { Avatar, FocusStatusBar, HeroScroll, IconButton, PressableScale, Text, backIcon } from "@/shared/ui";
@@ -94,7 +95,8 @@ export function ClientProfile({ user, onBack }: { user: User; onBack: () => void
   const insets = useInsets();
   const router = useRouter();
   const photo = useClientProfile().data?.avatarUrl;
-  const works = useWorks();
+  const openCases = useOpenCases().open.length;
+  const liveUrgent = (useMine().data ?? []).filter((r) => !isFinal(r)).length;
   const referral = useReferral().data;
   const consents = useConsents().data ?? [];
   const features = useMyFeatures().data;
@@ -107,14 +109,17 @@ export function ClientProfile({ user, onBack }: { user: User; onBack: () => void
   const barH = insets.top + HEADER_GAP + HEADER_ROW + 8;
   const on = whoY + colY - barH + NAME_SIZE / 2;
   const off = on - 12;
+  // Until the band is measured (whoY is still 0) the threshold is meaningless (negative): the name stays in the band.
+  const measured = whoY > 0;
   useAnimatedReaction(
     () => scrollY.value,
     (y) => {
-      const now = past.value ? y > off : y > on;
+      const now = measured && (past.value ? y > off : y > on);
       if (now === past.value) return;
       past.value = now;
       inBar.value = withTiming(now ? 1 : 0, { duration: NAME_MOVE_MS });
     },
+    [measured, on, off],
   );
   const grow = NAME_SIZE / BAR_NAME_SIZE;
   const startX = NAME_LEFT + (nameW * grow) / 2 - width / 2;
@@ -144,7 +149,7 @@ export function ClientProfile({ user, onBack }: { user: User; onBack: () => void
     { key: "help", icon: CircleHelp, title: t("profile.pp.help"), href: "/support" },
   ];
   const tiles: { key: string; icon: LucideIcon; title: string; sub: string; href: string }[] = [
-    { key: "works", icon: Briefcase, title: t("profile.pp.works"), sub: t("profile.pp.worksSub", { n: works.items.filter((w) => isOpenWork(w.status)).length }), href: "/(tabs)/works" },
+    { key: "works", icon: Briefcase, title: t("profile.pp.works"), sub: t("profile.pp.worksSub", { n: openCases + liveUrgent }), href: "/dashboard-lists/works" },
     { key: "docs", icon: File, title: t("profile.pp.docs"), sub: t("cl1.list.docs"), href: "/documents" },
     { key: "pay", icon: CreditCard, title: t("profile.pp.payments"), sub: t("profile.pp.paymentsSub"), href: "/payments" },
   ];

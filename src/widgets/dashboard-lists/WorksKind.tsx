@@ -1,16 +1,13 @@
-import { useWorks, useWorksRealtime } from "@/entities/work";
-import { useKindNav } from "@/features/dashboard-kinds";
-import type { GroupFilter } from "@/features/work-filters";
+import { ActiveRequestsList } from "@/widgets/client-dash";
+import { useRaPage } from "@/shared/remote-assist";
 import { useInsets } from "@/shared/lib/insets";
-import { WorksList } from "@/widgets/works";
+import { useT } from "@/shared/i18n";
 
-const GROUPS: GroupFilter[] = ["open", "queue", "active", "review", "done", "all"];
-
-// Counter "Faol ishlar": the works list preset to everything not finished yet.
+// Home's "Barchasi" and the profile's "Ishlarim": the client's active requests (the works API is closed to the client role, see WorksPage).
+// Remote assistance: `client.my_works`, as on /works.
 export function WorksKind() {
-  const nav = useKindNav();
-  const works = useWorks();
+  const { t } = useT();
   const insets = useInsets();
-  useWorksRealtime();
-  return <WorksList works={works} onOpen={(w) => nav.work(w.workId || w.id)} bottom={insets.bottom + 24} groups={GROUPS} initialGroup="open" />;
+  useRaPage("client.my_works");
+  return <ActiveRequestsList bottom={insets.bottom + 24} lead={t("cl7.kinds.works.sub")} />;
 }

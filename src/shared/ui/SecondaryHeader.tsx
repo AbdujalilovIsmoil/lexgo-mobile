@@ -3,7 +3,7 @@ import { StyleSheet, View } from "react-native";
 import { useRouter } from "expo-router";
 import { ChevronLeft } from "lucide-react-native";
 import { useInsets } from "@/shared/lib/insets";
-import { fonts, useColors } from "@/shared/theme";
+import { fonts, useTheme } from "@/shared/theme";
 import { useT } from "@/shared/i18n";
 import { HeaderRight } from "./headerExtra";
 import { PressableScale } from "./PressableScale";
@@ -23,7 +23,7 @@ type Props = {
 
 // A plain page header, pinned above the page: the back button, the title with an optional line under it, and the support button at the right end.
 export function SecondaryHeader({ title, description, right, onBack, hideButton = false, hideLine }: Props) {
-  const c = useColors();
+  const { colors: c, dark } = useTheme();
   const { t } = useT();
   const insets = useInsets();
   const router = useRouter();
@@ -31,8 +31,9 @@ export function SecondaryHeader({ title, description, right, onBack, hideButton 
   return (
     <View style={[s.bar, { paddingTop: insets.top, backgroundColor: c.surface, borderBottomColor: c.line }, hideLine ? s.noLine : null]}>
       {hideButton ? null : (
-        <PressableScale onPress={back} scale={0.94} hitSlop={8} accessibilityRole="button" accessibilityLabel={t("svc.detail.back")} style={[s.back, { backgroundColor: c.surface2 }]}>
-          <ChevronLeft size={22} color={c.ink} />
+        <PressableScale onPress={back} scale={0.94} hitSlop={8} accessibilityRole="button" accessibilityLabel={t("svc.detail.back")} style={[s.back, { backgroundColor: dark ? c.tint2 : c.surface2 }]}>
+          {/* Dark theme: the same blue tint and icon colour as the support button at the right end. */}
+          <ChevronLeft size={22} color={dark ? c.accent : c.ink} />
         </PressableScale>
       )}
       <View style={s.titles}>

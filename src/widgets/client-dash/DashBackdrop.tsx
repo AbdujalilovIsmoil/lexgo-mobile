@@ -1,13 +1,14 @@
 import { Image, StyleSheet } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import Animated, { useAnimatedStyle, type SharedValue } from "react-native-reanimated";
-import { mainColor } from "@/shared/theme";
+import { mainColor, useTheme } from "@/shared/theme";
 
-// The light theme's Home background: a vertical blue that fades into the page behind the ask field, done by the top of the first tiles — no hard
-// edge where the hero ends.
+// Home's background, in both themes: a vertical blue that fades into the page behind the ask field, done by the top of the first tiles — no hard
+// edge (and no rounded corners) where the hero ends. The dark theme's blue starts a lighter blue and settles into the dark page colour.
 // The light Home page ground: a soft whitish grey, so the pure-white cards stand apart from it.
 export const HOME_BG = "#F2F4F7";
 const BLUES = [mainColor, "#10499F", "#2865C1", "#80A9E5", "#DCE7F8"] as const;
+const DARK_BLUES = ["#2A6FD6", "#1D58B8", "#174592", "#12326A", "#0E1E40"] as const;
 const STOPS = [0, 0.3, 0.55, 0.72, 0.87, 1] as const;
 // Soft light on the blue: one in the top right corner, one on the left edge, a little below the top left corner. Fixed sizes (the pictures' own), so a
 // tablet does not blow them up. Part of each hangs off the screen.
@@ -16,9 +17,10 @@ const SHADOW_LEFT = require("../../../assets/shadow2.png");
 
 // `end`: where the fade ends, measured from the top of the screen (the top edge of the first tiles row and a little more).
 function Blue({ end }: { end: number }) {
+  const { colors: c, dark } = useTheme();
   return (
     <LinearGradient
-      colors={[...BLUES, HOME_BG]} // the last stop is the page colour itself, so the fade ends exactly where the page begins
+      colors={dark ? [...DARK_BLUES, c.bg] : [...BLUES, HOME_BG]} // the last stop is the page colour itself, so the fade ends exactly where the page begins
       locations={[...STOPS]}
       start={{ x: 0.5, y: 0 }}
       end={{ x: 0.5, y: 1 }}
@@ -28,10 +30,12 @@ function Blue({ end }: { end: number }) {
 }
 
 function Shadows() {
+  const { dark } = useTheme();
+  const tone = dark ? s.soft : null; // a little quieter on the darker blue
   return (
     <>
-      <Image source={SHADOW_TOP_RIGHT} style={s.topRight} />
-      <Image source={SHADOW_LEFT} style={s.left} />
+      <Image source={SHADOW_TOP_RIGHT} style={[s.topRight, tone]} />
+      <Image source={SHADOW_LEFT} style={[s.left, tone]} />
     </>
   );
 }
@@ -67,4 +71,5 @@ const s = StyleSheet.create({
   top: { position: "absolute", top: 0, left: 0, right: 0 },
   topRight: { position: "absolute", top: -80, right: -80, width: 320, height: 320 },
   left: { position: "absolute", top: 120, left: -80, width: 240, height: 240 },
+  soft: { opacity: 0.8 },
 });

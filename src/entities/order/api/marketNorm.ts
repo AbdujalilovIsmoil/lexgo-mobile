@@ -21,6 +21,7 @@ export function normMarketOrder(v: unknown, clientActions: string[] = []): Marke
     workId: asStr(d.work_id ?? details.work_id),
     status: asStr(d.status).toLowerCase(),
     paymentStatus: asStr(d.payment_status ?? payment.status).toLowerCase(),
+    serviceId: asStr(d.service_id ?? details.service_id ?? asDict(d.service).id),
     serviceTitle: clean(asStr(d.service_title ?? details.service_title)),
     price: uzs(d, "price") || uzs(payment, "amount"),
     currency: asStr(d.currency, "UZS") || "UZS",

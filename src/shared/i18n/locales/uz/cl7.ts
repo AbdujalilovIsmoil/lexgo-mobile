@@ -2,7 +2,7 @@ export const cl7 = {
   unknown: "Bo'lim topilmadi",
   unknownText: "Bunday ro'yxat mavjud emas.",
   kinds: {
-    works: { title: "Faol ishlar", sub: "Hali yakunlanmagan ishlaringiz" },
+    works: { title: "Faol so'rovlar", sub: "Hali yakunlanmagan so'rovlaringiz" },
     documents: { title: "Mening hujjatlarim", sub: "Hujjatlar arxivi" },
     orders: { title: "Buyurtmalar", sub: "Marketplace buyurtmalaringiz" },
     payments: { title: "To'lovlar", sub: "To'lov so'rovlaringiz" },

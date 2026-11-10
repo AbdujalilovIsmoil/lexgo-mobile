@@ -7,6 +7,7 @@ export { categoryIcon } from "./lib/categoryIcon";
 export { cleanDocTitle } from "@/shared/lib/doc/cleanTitle";
 export { executorKey } from "./lib/executor";
 export { usePriceLabel } from "./lib/usePriceLabel";
+export { CategoryIcon, hasCategoryIcon } from "./ui/CategoryIcon";
 export { ServiceCard } from "./ui/ServiceCard";
 export { ServiceCardSkeleton } from "./ui/ServiceCardSkeleton";
 export { ServiceList } from "./ui/ServiceList";

@@ -35,24 +35,22 @@ export function ClientHome() {
   });
   return (
     <View style={{ flex: 1, backgroundColor: dark ? c.canvas : HOME_BG }}>
-      {dark ? null : <DashBackdrop end={end} scrollY={scrollY} />}
+      <DashBackdrop end={end} scrollY={scrollY} />
       <HeroScroll
         contentContainerStyle={{ paddingBottom: insets.bottom + 130 }}
         showsVerticalScrollIndicator={false}
         onScroll={onScroll}
         scrollEventThrottle={16}
-        capColor={dark ? undefined : "transparent"}
+        capColor="transparent"
       >
         <DashHero top={top} />
         <DashAsk />
-        {/* Where the ask field ends; the tiles start TILES_GAP below it — the light backdrop fades out a little below that. */}
-        {dark ? null : (
-          <View
-            onLayout={(e) =>
-              setFadeEnd(e.nativeEvent.layout.y + TILES_GAP + FADE_INTO_TILES)
-            }
-          />
-        )}
+        {/* Where the ask field ends; the tiles start TILES_GAP below it — the backdrop fades out a little below that. */}
+        <View
+          onLayout={(e) =>
+            setFadeEnd(e.nativeEvent.layout.y + TILES_GAP + FADE_INTO_TILES)
+          }
+        />
         <TabletColumn>
           <DashTiles />
           <DashQuick />

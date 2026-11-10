@@ -24,5 +24,6 @@ export const tabs: Messages["tabs"] = {
   notifications: "Alerts",
   signIn: "Sign in",
   profile: "Profile",
-  svt: { lead: "Every kind of service in one place", docsTitle: "Documents", docsSub: "Templates: download and fill in", lawyersTitle: "Advocates and lawyers", lawyersSub: "Find specialists and order services", academyTitle: "Academy", academySub: "Legal knowledge and practical guides", main: "Main services", more: "Other services", back: "Back to service types" },
+  svt: { more: "Other services", accidentTitle: "Road accident consultation", accidentSub: "Quick advice from an advocate", docsTitle: "Documents", lawyersTitle: "Advocates and lawyers", lawyersSub: "Find specialists and order services", back: "Back to service types" },
+  svb: { search: "Search by service name", clear: "Clear search", all: "All", sellers: "Specialists: {n}", noSellers: "No specialists yet", price: "{price} UZS", bought: "Purchased", cardAria: "{name}: specialists: {n}, find", cardOff: "{name}: no specialists yet", cardBought: "{name}: already purchased, open the order", empty: "No services yet", noMatch: "No such service found" },
 };

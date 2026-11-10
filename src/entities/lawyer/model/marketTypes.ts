@@ -1,9 +1,11 @@
 import type { Lawyer } from "./types";
 
 // What GET /marketplace/meta returns (filter options), trimmed to what the app shows.
-export type MarketCategory = { id: string; title: string };
+export type MarketCategory = { id: string; title: string; slug?: string };
 export type MarketMetaService = { id: string; title: string; categoryId: string; basePrice: number };
 export type MarketMeta = { categories: MarketCategory[]; services: MarketMetaService[] };
+// The directory read for browsing by service: who sells what, and the catalogue around it.
+export type MarketBrowse = { sellers: Lawyer[]; meta: MarketMeta };
 
 // A paid placement from the list's `banners`, the AI search or /promotions/active.
 export type PromoSurface = {

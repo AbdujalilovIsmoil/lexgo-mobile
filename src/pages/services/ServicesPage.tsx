@@ -8,6 +8,7 @@ import type { Service } from "@/entities/service";
 import { useTemplateDownload } from "@/features/service-open";
 import { PreSellerBanner } from "@/widgets/services-catalog";
 import { DocCatalog } from "@/widgets/doc-catalog";
+import type { ServicePick } from "@/widgets/service-browser";
 import { MoreWays, NewDocOrder, ServicesHub, useServicesHub } from "@/widgets/services-hub";
 import { TabPage, useTabPad, TabScrollView } from "@/widgets/tab-page";
 import { HOME_BG } from "@/widgets/client-dash";
@@ -21,7 +22,7 @@ import { useDeepService } from "./useDeepService";
 
 type Params = { docs?: string; cat?: string; subcat?: string; q?: string; lawyer?: string; name?: string; service?: string; package?: string };
 
-// The Services tab — "Xizmat turlari": the kinds of service (ServiceTypes). Its "Hujjatlar" row opens the ready-documents catalogue in
+// The Services tab — "Xizmat turlari": the way to the advocates and lawyers and the marketplace's services by category (ServiceTypes). `?docs=1` opens the ready-documents catalogue in
 // place (search pinned, category chips, every template ten at a time; a tap opens the template's own page), closed by the "new document"
 // order, with a way back to the types. When a directory advocate was picked (?lawyer=…) the tab
 // is that advocate's service list instead (the old hub), narrowed to what they sell.
@@ -31,17 +32,23 @@ export function ServicesPage() {
   const { dark } = useTheme();
   const p = useLocalSearchParams<Params>();
   const [pre, setPre] = useState<{ id: string; name: string } | null>(() => (p.lawyer ? { id: String(p.lawyer), name: String(p.name ?? "") } : null));
-  const [order, setOrder] = useState<Service | null>(null);
+  const [order, setOrder] = useState<ServicePick | null>(null);
   const [newDoc, setNewDoc] = useState(false);
   const [docs, setDocs] = useState(() => !!p.docs);
   const router = useRouter();
   // `?docs=1` (the home "Shablonlar" tile) opens the ready-documents catalogue (state derived while rendering, like useSheetReset); the param is
   // then cleared so the tile works again next time.
   const [docsAsked, setDocsAsked] = useState(!!p.docs);
+  // Opened from Home: back returns to Home, not to the Services types.
+  const [fromHome, setFromHome] = useState(() => !!p.docs);
   if (!!p.docs !== docsAsked) {
     setDocsAsked(!!p.docs);
-    if (p.docs) setDocs(true);
+    if (p.docs) { setDocs(true); setFromHome(true); }
   }
+  const closeDocs = useCallback(() => {
+    setDocs(false);
+    if (fromHome) { setFromHome(false); router.navigate("/(tabs)" as never); }
+  }, [fromHome, router]);
   useEffect(() => {
     if (p.docs) router.setParams({ docs: undefined } as never);
   }, [p.docs, router]);
@@ -51,12 +58,12 @@ export function ServicesPage() {
     setBarHidden(docs);
     return () => setBarHidden(false);
   }, [docs, setBarHidden]));
-  // Android's back button leaves the catalogue for the types first.
+  // Android's back button leaves the catalogue first (for Home when it was opened from there, else for the types).
   useEffect(() => {
     if (!docs) return;
-    const sub = BackHandler.addEventListener("hardwareBackPress", () => { setDocs(false); return true; });
+    const sub = BackHandler.addEventListener("hardwareBackPress", () => { closeDocs(); return true; });
     return () => sub.remove();
-  }, [docs]);
+  }, [docs, closeDocs]);
   const dl = useTemplateDownload();
   useDeepService(String(p.service ?? ""), setOrder);
   // Remote assistance (`client.documents`): the catalogue's search and filters (DocCatalog) and the new-document order are on the map.
@@ -77,12 +84,12 @@ export function ServicesPage() {
   const sheets = <CatalogSheets order={order} onOrder={setOrder} newDoc={newDoc} onNewDoc={setNewDoc} dl={dl} pre={pre ?? undefined} packageId={p.package ? String(p.package) : undefined} />;
   if (pre) return <AdvocateServices pre={pre} onClear={() => setPre(null)} onOrder={setOrder} onNewDoc={() => setNewDoc(true)} sheets={sheets} />;
   return (
-    <TabPage secondary ground={dark ? undefined : HOME_BG} onBack={docs ? () => setDocs(false) : undefined} title={docs ? t("tabs.svt.docsTitle") : t("tabs.services")} subtitle={docs ? undefined : t("tabs.svt.lead")}>
+    <TabPage secondary ground={dark ? undefined : HOME_BG} onBack={docs ? closeDocs : undefined} title={docs ? t("tabs.svt.docsTitle") : t("tabs.services")}>
       {docs ? (
         <DocCatalog
           footer={<View {...newRa} style={s.foot}><NewDocOrder onNewDoc={() => setNewDoc(true)} /></View>}
         />
-      ) : <ServiceTypes onDocs={() => setDocs(true)} />}
+      ) : <ServiceTypes onOrder={setOrder} />}
       {sheets}
     </TabPage>
   );

@@ -22,5 +22,6 @@ export const tabs = {
   notifications: "Xabarnoma",
   signIn: "Kirish",
   profile: "Profil",
-  svt: { lead: "Barcha xizmat turlari bir joyda", docsTitle: "Hujjatlar", docsSub: "Shablonlar, yuklab olish va to'ldirish", lawyersTitle: "Advokat va yuristlar", lawyersSub: "Mutaxassislarni topish va buyurtma berish", academyTitle: "Akademiya", academySub: "Huquqiy bilim va amaliy qo'llanmalar", main: "Asosiy xizmatlar", more: "Boshqa xizmatlar", back: "Xizmat turlariga qaytish" },
+  svt: { more: "Boshqa xizmatlar", accidentTitle: "YTH (avtoavariya) bo'yicha konsultatsiya", accidentSub: "Advokat bilan tezkor maslahat", docsTitle: "Hujjatlar", lawyersTitle: "Advokat va yuristlar", lawyersSub: "Mutaxassislarni topish va buyurtma berish", back: "Xizmat turlariga qaytish" },
+  svb: { search: "Xizmat nomi bo'yicha qidirish", clear: "Qidiruvni tozalash", all: "Hammasi", sellers: "{n} ta mutaxassis", noSellers: "Hozircha mutaxassis yo'q", price: "{price} so'm", bought: "Sotib olingan", cardAria: "{name}: {n} ta mutaxassis — topish", cardOff: "{name}: hozircha mutaxassis yo'q", cardBought: "{name}: allaqachon sotib olingan — buyurtmani ochish", empty: "Hozircha xizmatlar yo'q", noMatch: "Bunday xizmat topilmadi" },
 };

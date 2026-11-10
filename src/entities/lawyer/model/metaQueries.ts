@@ -1,11 +1,14 @@
 import { useQuery } from "@tanstack/react-query";
 import { getLawyerServices } from "../api/profileApi";
-import { getMarketMeta } from "../api/metaApi";
+import { getCategoryTree } from "../api/categoryTreeApi";
+import { getMarketBrowse, getMarketMeta } from "../api/metaApi";
 import { getMyMatches } from "../api/matchApi";
 import { getPricingPolicy } from "../api/pricingApi";
 import { listActivePromos } from "../api/promoApi";
 
 export const useMarketMeta = () => useQuery({ queryKey: ["market-meta"], queryFn: getMarketMeta, staleTime: 10 * 60 * 1000 });
+export const useMarketBrowse = () => useQuery({ queryKey: ["market-browse"], queryFn: getMarketBrowse, staleTime: 2 * 60 * 1000 });
+export const useCategoryTree = () => useQuery({ queryKey: ["service-category-tree"], queryFn: getCategoryTree, staleTime: 5 * 60 * 1000 });
 
 // Services he sells right now — fresher than the copy inside the profile.
 export const useLawyerServices = (id: string) =>

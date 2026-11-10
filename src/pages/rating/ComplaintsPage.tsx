@@ -1,5 +1,6 @@
 import { ComplaintsTab, RatingsTab, WarrantyTab } from "@/widgets/rating";
 import { AdminPage } from "@/shared/ui/admin";
+import { useClientFrame } from "@/widgets/client-dash";
 import { useT } from "@/shared/i18n";
 
 export type ComplaintsTabKey = "complaints" | "ratings" | "warranty";
@@ -10,8 +11,9 @@ type Props = { initial?: ComplaintsTabKey; work?: string };
 
 export function ComplaintsPage({ initial = "complaints", work }: Props) {
   const { t } = useT();
+  const frame = useClientFrame();
   return (
-    <AdminPage title={t(`py5.tab.${initial}`)}>
+    <AdminPage {...frame} title={t(`py5.tab.${initial}`)}>
       {initial === "complaints" ? <ComplaintsTab work={work} /> : initial === "ratings" ? <RatingsTab /> : <WarrantyTab />}
     </AdminPage>
   );

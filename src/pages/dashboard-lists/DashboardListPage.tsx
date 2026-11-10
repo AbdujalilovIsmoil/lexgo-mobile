@@ -1,21 +1,26 @@
 import { useLocalSearchParams } from "expo-router";
 import { useIsAuthed } from "@/entities/session";
 import { ChatsKind, DocsKind, OrdersKind, PaymentsKind, WorksKind } from "@/widgets/dashboard-lists";
+import { HOME_BG } from "@/widgets/client-dash";
 import { WorksGuest } from "@/widgets/works";
 import { EmptyState } from "@/shared/ui";
 import { AdminPage } from "@/shared/ui/admin";
+import { useTheme } from "@/shared/theme";
 import { useT } from "@/shared/i18n";
 
 const KINDS = { works: WorksKind, documents: DocsKind, orders: OrdersKind, payments: PaymentsKind, chats: ChatsKind } as const;
 
-// /dashboard-lists/[kind] — the filtered list behind a Home counter (TZ 7).
+// /dashboard-lists/[kind] — the filtered list behind a Home counter (TZ 7). `works` (Home's "Barchasi") has the header and ground of the
+// document analysis page, its line sitting above the list.
 export function DashboardListPage() {
   const { t } = useT();
+  const { colors: c, dark } = useTheme();
   const { kind } = useLocalSearchParams<{ kind: string }>();
   const authed = useIsAuthed();
   const Body = kind && kind in KINDS ? KINDS[kind as keyof typeof KINDS] : null;
+  const works = kind === "works";
   return (
-    <AdminPage title={Body ? t(`cl7.kinds.${kind}.title`) : t("cl7.unknown")} subtitle={Body ? t(`cl7.kinds.${kind}.sub`) : undefined}>
+    <AdminPage secondary={works} ground={works ? (dark ? c.canvas : HOME_BG) : undefined} title={Body ? t(`cl7.kinds.${kind}.title`) : t("cl7.unknown")} subtitle={Body && !works ? t(`cl7.kinds.${kind}.sub`) : undefined}>
       {!authed ? <WorksGuest /> : Body ? <Body /> : <EmptyState icon="help-circle" title={t("cl7.unknown")} text={t("cl7.unknownText")} />}
     </AdminPage>
   );

@@ -25,6 +25,7 @@ export type MarketOrder = {
   workId: string; // the number the client sees (ADV-…)
   status: string;
   paymentStatus: string;
+  serviceId: string;
   serviceTitle: string;
   price: number;
   currency: string;

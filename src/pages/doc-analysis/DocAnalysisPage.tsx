@@ -5,9 +5,10 @@ import { ModeNotice } from "@/entities/doc-settings";
 import { FeatureUsage } from "@/entities/plan";
 import { useIsAuthed } from "@/entities/session";
 import { AnalysisInput, HandoffCard, UpsellCard, useDocAnalysis, useHandoff } from "@/features/doc-analysis";
-import { Button, Header, Screen, Text } from "@/shared/ui";
+import { HOME_BG } from "@/widgets/client-dash";
+import { Button, Screen, SecondaryHeader, Text } from "@/shared/ui";
 import { PlanGateSheet } from "@/features/plan-gate";
-import { useColors } from "@/shared/theme";
+import { useTheme } from "@/shared/theme";
 import { useT } from "@/shared/i18n";
 
 // AI document analysis (TZ 16): file or text → result → optional advocate review.
@@ -15,7 +16,8 @@ import { useT } from "@/shared/i18n";
 // reset) is the backend's; a refusal on the plan's grounds (402) opens the plan sheet with the backend's code.
 // A closed analysis mode (switched off, or not in the plan — TZ.md §4) shows why instead of the form; a result already on screen stays.
 export function DocAnalysisPage() {
-  const c = useColors();
+  const { colors: c, dark } = useTheme();
+  const ground = dark ? c.canvas : HOME_BG;
   const { t } = useT();
   const router = useRouter();
   const authed = useIsAuthed();
@@ -23,9 +25,9 @@ export function DocAnalysisPage() {
   const h = useHandoff(d.file, d.result);
   const done = d.status === "done" && !!d.result;
   return (
-    <View style={[s.fill, { backgroundColor: c.canvas }]}>
-      <Header title={t("docs.title")} />
-      <Screen topInset={false} contentContainerStyle={s.content}>
+    <View style={[s.fill, { backgroundColor: ground }]}>
+      <SecondaryHeader title={t("docs.title")} />
+      <Screen topInset={false} ground={ground} contentContainerStyle={s.content}>
         <Text variant="small" tone="gray">{t("docs.sub")}</Text>
         {d.gate.state !== "open" && !done ? (
           <ModeNotice gate={d.gate} onPlan={() => router.push("/subscription")} />
@@ -53,4 +55,4 @@ export function DocAnalysisPage() {
   );
 }
 
-const s = StyleSheet.create({ fill: { flex: 1 }, content: { gap: 14, paddingTop: 4 } });
+const s = StyleSheet.create({ fill: { flex: 1 }, content: { gap: 14, paddingTop: 16 } });

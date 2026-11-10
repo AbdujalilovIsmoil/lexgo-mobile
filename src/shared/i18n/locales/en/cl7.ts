@@ -4,7 +4,7 @@ export const cl7: Messages["cl7"] = {
   unknown: "Section not found",
   unknownText: "This list does not exist.",
   kinds: {
-    works: { title: "Active works", sub: "Works that are not finished yet" },
+    works: { title: "Active requests", sub: "Requests that are not finished yet" },
     documents: { title: "My documents", sub: "Document archive" },
     orders: { title: "Orders", sub: "Your marketplace orders" },
     payments: { title: "Payments", sub: "Your payment requests" },

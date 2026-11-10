@@ -1,6 +1,7 @@
 import { ReferralHero, ReferralStats, ReferralSteps } from "@/widgets/profile-extras";
 import { useReferral } from "@/entities/profile-extras";
 import { AdminPage, QueryBoundary, RowCard } from "@/shared/ui/admin";
+import { useClientFrame } from "@/widgets/client-dash";
 import { PayScroll } from "@/shared/ui/pay/PayScroll";
 import { Text } from "@/shared/ui";
 import { fmtUzs } from "@/entities/payment";
@@ -11,10 +12,11 @@ import { useT } from "@/shared/i18n";
 // Referral: code + share + QR, progress to the discount, how it works, and who joined.
 export function ReferralPage() {
   const { t, locale } = useT();
+  const frame = useClientFrame();
   const q = useReferral();
   const r = q.data;
   return (
-    <AdminPage title={t("py7.ref.page")}>
+    <AdminPage {...frame} title={t("py7.ref.page")}>
       <QueryBoundary query={q}>
         <PayScroll refreshing={q.isRefetching} onRefresh={() => void q.refetch()}>
           {r ? <ReferralHero r={r} /> : null}

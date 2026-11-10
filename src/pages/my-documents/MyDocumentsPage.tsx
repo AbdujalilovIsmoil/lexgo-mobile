@@ -3,6 +3,7 @@ import { View } from "react-native";
 import { useRouter } from "expo-router";
 import { IconButton } from "@/shared/ui";
 import { ActionList, AdminPage } from "@/shared/ui/admin";
+import { useClientFrame } from "@/widgets/client-dash";
 import { RA_OPENER, raOk, useRaControl, useRaPage } from "@/shared/remote-assist";
 import { useT } from "@/shared/i18n";
 import { useDocSettings } from "@/entities/doc-settings";
@@ -15,6 +16,7 @@ import { DocList, DocListHeader } from "@/widgets/my-documents";
 // modes the platform keeps on; one outside the plan carries a lock and its page says why (TZ.md §4).
 export default function MyDocumentsPage() {
   const { t } = useT();
+  const frame = useClientFrame();
   const router = useRouter();
   const ds = useDocSettings();
   const l = useDocList();
@@ -45,7 +47,7 @@ export default function MyDocumentsPage() {
     ...modes.map((m) => ({ key: m.key, label: m.label, icon: m.gate.state === "locked" ? ("lock" as const) : m.icon, onPress: () => go(m.path) })),
   ];
   return (
-    <AdminPage title={t("dm1.title")} subtitle={l.countsLoading ? t("dm1.lead") : t("docSheet.count", { n: l.counts.all ?? 0 })} right={<View {...newRa}><IconButton icon="plus" label={t("dm1.new")} onPress={() => setMenu(true)} /></View>}>
+    <AdminPage {...frame} title={t("dm1.title")} subtitle={l.countsLoading ? t("dm1.lead") : t("docSheet.count", { n: l.counts.all ?? 0 })} right={<View {...newRa}><IconButton icon="plus" label={t("dm1.new")} onPress={() => setMenu(true)} /></View>}>
       <DocList
         rows={l.items}
         query={l.query}

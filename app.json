@@ -6,7 +6,7 @@
     "scheme": "lexgo",
     "orientation": "portrait",
     "icon": "./logos/app-store/lexgo-app-store-1024.png",
-    "userInterfaceStyle": "automatic",
+    "userInterfaceStyle": "light",
     "ios": {
       "supportsTablet": true,
       "requireFullScreen": true,

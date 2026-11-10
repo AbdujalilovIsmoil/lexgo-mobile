@@ -1,5 +1,6 @@
 import { useRouter } from "expo-router";
 import { AdminPage, PagedList } from "@/shared/ui/admin";
+import { useClientFrame } from "@/widgets/client-dash";
 import { RA_OPENER, raOk, useRaControl, useRaPage } from "@/shared/remote-assist";
 import { useT } from "@/shared/i18n";
 import { useSession } from "@/entities/session";
@@ -14,6 +15,7 @@ import { useChatFilter } from "./useChatFilter";
 // Remote assistance (`client.support`): the new-chat button opens the window, whose fields are on the map too (NewTicketFields).
 export default function SupportPage() {
   const { t } = useT();
+  const frame = useClientFrame();
   const router = useRouter();
   const signedIn = Boolean(useSession());
   const nc = useNewChat(signedIn);
@@ -35,7 +37,7 @@ export default function SupportPage() {
     signedIn,
   );
   return (
-    <AdminPage title={t("sp1.title")}>
+    <AdminPage {...frame} title={t("sp1.title")}>
       {signedIn ? (
         <PagedList
           data={f.shown}

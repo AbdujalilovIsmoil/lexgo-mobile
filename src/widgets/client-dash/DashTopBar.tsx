@@ -15,21 +15,20 @@ const SHADOW = ["rgba(11,31,69,0.12)", "rgba(11,31,69,0)"] as const;
 type Props = { end: number; scrollY: SharedValue<number>; onLayout: (e: LayoutChangeEvent) => void };
 
 // Points of scroll at which the bar's ground appears, and the lower point at which it goes again. The gap between them keeps a finger resting near one point from
-// switching it back and forth. The dark themes start sooner: their bar has no ground at rest, and the page is under it almost at once.
+// switching it back and forth.
 const LIGHT = { on: 56, off: 24 };
-const DARK = { on: 24, off: 8 };
 const FADE_MS = 280;
 
 // Home's menu button, greeting and header buttons: fixed to the top of the screen, the page scrolling away under them.
-// Light theme: the ground is the backdrop itself, clipped, so at rest there is nothing to see of the bar; further down the page it turns white, and half way there
-// the row and the status bar change to dark type. The dark themes have a hero with its own diagonal gradient, so their bar is clear at rest and turns solid.
+// The ground is the backdrop itself, clipped, so at rest there is nothing to see of the bar; further down the page it turns white (light theme, and half way there
+// the row and the status bar change to dark type) or the solid dark blue (dark theme).
 // The change runs on a timer once a point is passed, not with the scroll: following the finger, the ground shook with every small move near the top of the page.
 export function DashTopBar({ end, scrollY, onLayout }: Props) {
   const insets = useInsets();
   const { dark } = useTheme();
   const name = displayName(useSession()?.user);
   const [scrolled, setScrolled] = useState(false);
-  const { on, off } = dark ? DARK : LIGHT;
+  const { on, off } = LIGHT; // both themes now have the backdrop under the bar at rest
   const past = useSharedValue(false);
   const ground = useSharedValue(0);
   useAnimatedReaction(
@@ -53,7 +52,7 @@ export function DashTopBar({ end, scrollY, onLayout }: Props) {
     <View onLayout={onLayout} style={[s.bar, { paddingTop: insets.top + HEADER_GAP }]}>
       {onWhite ? <FocusStatusBar style="dark" /> : null}
       <View pointerEvents="none" style={s.ground}>
-        {dark ? null : <BackdropStill end={end} />}
+        <BackdropStill end={end} />
         <Animated.View style={[s.ground, dark ? s.solid : s.white, fade]} />
       </View>
       {/* The shadow under the bar, appearing with its ground. A gradient strip: an Android elevation would lift it over the row. */}

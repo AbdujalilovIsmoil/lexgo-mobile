@@ -3,6 +3,7 @@ import { IdentityCard } from "@/widgets/identity";
 import { NotifPrefsCard, TelegramCard, TwoFactorCard } from "@/widgets/security";
 import { ActivityPanel, CardsPanel, EventsPanel, FamilyPanel, PaymentsPanel, PersonalPanel, SessionsPanel, SubscriptionPanel } from "@/widgets/client-profile";
 import { AdminPage } from "@/shared/ui/admin";
+import { useClientFrame } from "@/widgets/client-dash";
 import { useInsets } from "@/shared/lib/insets";
 import { useT } from "@/shared/i18n";
 import { NotFoundPage } from "@/pages/not-found/NotFoundPage";
@@ -24,11 +25,12 @@ const BODY: Record<ProfileSection, { title: string; body: () => React.ReactNode 
 
 export function ProfileSectionPage({ section }: { section: string }) {
   const { t } = useT();
+  const frame = useClientFrame();
   const insets = useInsets();
   const s = BODY[section as ProfileSection];
   if (!s) return <NotFoundPage />;
   return (
-    <AdminPage title={t(s.title)}>
+    <AdminPage {...frame} title={t(s.title)}>
       <ScrollView keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false} contentContainerStyle={{ padding: 16, paddingBottom: insets.bottom + 32 }}>
         <View style={{ gap: 14 }}>{s.body()}</View>
       </ScrollView>

@@ -24,5 +24,6 @@ export const tabs: Messages["tabs"] = {
   notifications: "Уведомления",
   signIn: "Войти",
   profile: "Профиль",
-  svt: { lead: "Все виды услуг в одном месте", docsTitle: "Документы", docsSub: "Шаблоны: скачать и заполнить", lawyersTitle: "Адвокаты и юристы", lawyersSub: "Поиск специалистов и заказ услуг", academyTitle: "Академия", academySub: "Правовые знания и руководства", main: "Основные услуги", more: "Другие услуги", back: "Назад к видам услуг" },
+  svt: { more: "Другие услуги", accidentTitle: "Консультация по ДТП (автоавария)", accidentSub: "Быстрая консультация адвоката", docsTitle: "Документы", lawyersTitle: "Адвокаты и юристы", lawyersSub: "Поиск специалистов и заказ услуг", back: "Назад к видам услуг" },
+  svb: { search: "Поиск по названию услуги", clear: "Очистить поиск", all: "Все", sellers: "Специалистов: {n}", noSellers: "Пока нет специалистов", price: "{price} сум", bought: "Куплено", cardAria: "{name}: специалистов — {n}, найти", cardOff: "{name}: пока нет специалистов", cardBought: "{name}: уже куплено — открыть заказ", empty: "Пока нет услуг", noMatch: "Такая услуга не найдена" },
 };

@@ -4,6 +4,7 @@ import { GiftRowCard, useGifts, type Gift, type GiftCreated } from "@/entities/p
 import { ClaimSheet, GiftSheet } from "@/features/profile-extras";
 import { GiftActions, GiftShareSheet, type ShareView } from "@/widgets/profile-extras";
 import { AdminPage, ChipBar, PagedList } from "@/shared/ui/admin";
+import { useClientFrame } from "@/widgets/client-dash";
 import { useSlicedList } from "@/shared/lib/pay/useSlicedList";
 import { useT } from "@/shared/i18n";
 
@@ -13,6 +14,7 @@ const freshOf = (g: GiftCreated, title: string): ShareView => ({ title, code: g.
 // Gifts sent and received: create one, claim one by its code, open one to share its link or QR.
 export function GiftsPage({ code = "" }: { code?: string }) {
   const { t } = useT();
+  const frame = useClientFrame();
   const q = useGifts();
   const [create, setCreate] = useState(false);
   const [claim, setClaim] = useState(!!code);
@@ -23,7 +25,7 @@ export function GiftsPage({ code = "" }: { code?: string }) {
   const count = (d: string) => (d === "all" ? all.length : all.filter((g) => (g.direction === "received") === (d === "received")).length);
   const { items, query } = useSlicedList(rows, q, dir);
   return (
-    <AdminPage title={t("py8.title")}>
+    <AdminPage {...frame} title={t("py8.title")}>
       <PagedList
         data={items}
         query={query}

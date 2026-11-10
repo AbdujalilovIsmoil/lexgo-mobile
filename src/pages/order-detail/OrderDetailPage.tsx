@@ -6,12 +6,15 @@ import { useIsAuthed } from "@/entities/session";
 import { DetailActions, MarketOrderDetail, ServiceOrderDetail } from "@/widgets/order-detail";
 import { EmptyState, ErrorView, Skeleton } from "@/shared/ui";
 import { AdminPage } from "@/shared/ui/admin";
+import { HOME_BG } from "@/widgets/client-dash";
+import { useTheme } from "@/shared/theme";
 import { useT } from "@/shared/i18n";
 
 // /orders/[id]: a marketplace purchase (by order id or ADV number) or, failing
 // that, a catalogue service order. Live: socket events refresh it, pull to refresh too.
 export function OrderDetailPage() {
   const { t } = useT();
+  const { dark } = useTheme();
   const router = useRouter();
   const qc = useQueryClient();
   const { id = "" } = useLocalSearchParams<{ id: string }>();
@@ -32,5 +35,5 @@ export function OrderDetailPage() {
     : service.data ? <ServiceOrderDetail order={service.data} onDone={() => router.back()} />
     : market.isError ? <ErrorView error={market.error} onRetry={() => void market.refetch()} />
     : <EmptyState icon="search" title={t("mk4.notFound")} actionLabel={t("mk4.title")} onAction={() => router.replace("/(tabs)/orders")} />;
-  return <AdminPage title={title} subtitle={order?.serviceTitle} footer={order ? <DetailActions order={order} /> : undefined}>{body}</AdminPage>;
+  return <AdminPage secondary ground={dark ? undefined : HOME_BG} title={title} subtitle={order?.serviceTitle} footer={order ? <DetailActions order={order} /> : undefined}>{body}</AdminPage>;
 }

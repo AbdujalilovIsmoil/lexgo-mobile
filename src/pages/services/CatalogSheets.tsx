@@ -1,11 +1,10 @@
-import type { Service } from "@/entities/service";
-import { OrderSheet } from "@/features/order-service";
+import { OrderSheet, type OrderTarget } from "@/features/order-service";
 import { useTemplateDownload } from "@/features/service-open";
 import { PlanGateSheet } from "@/features/plan-gate";
 import { NewDocSheet } from "@/widgets/services-catalog";
 
 type Dl = ReturnType<typeof useTemplateDownload>;
-type Props = { order: Service | null; onOrder: (s: Service | null) => void; newDoc: boolean; onNewDoc: (v: boolean) => void; dl: Dl; pre?: { id: string; name: string }; packageId?: string };
+type Props = { order: (OrderTarget & { price?: number }) | null; onOrder: (s: null) => void; newDoc: boolean; onNewDoc: (v: boolean) => void; dl: Dl; pre?: { id: string; name: string }; packageId?: string };
 
 // The three sheets every catalogue page can raise: the new-document order, the service order (advocate, price, payment)
 // and the template-download plan gates. Shared by the catalogue tab and the page of one direction.
