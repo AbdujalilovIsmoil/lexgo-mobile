@@ -6,14 +6,15 @@ import { useTabHeader } from "@/widgets/tab-page";
 import { RequestCard } from "./RequestCard";
 import { useActiveRequests } from "./useActiveRequests";
 
-// Every active request of the client, behind Home's "Barchasi": the same two cards without Home's limits. When only one source fails,
+// Every active request of the client, behind Home's "Barchasi": each request in its own card, without Home's limits. When only one source fails,
 // the other one still shows and the error sits under it. `lead`: a line above the cards, spaced off the page header.
 export function ActiveRequestsList({ bottom, lead }: { bottom: number; lead?: string }) {
   const { t } = useT();
   const a = useActiveRequests();
   const top = useTabHeader(16);
   const pull = usePullRefresh(a.refetch);
-  const cards = [{ key: "urgent", rows: a.urgent }, { key: "cases", rows: a.open }].filter((x) => x.rows.length);
+  // Every request in a card of its own (urgent ones first), 6 pt apart.
+  const cards = [...a.urgent, ...a.open];
   const empty = a.anyLoading ? <Skeleton height={72} round={20} />
     : a.bothFailed ? <ErrorView error={a.error} onRetry={() => void a.refetch()} />
     : a.error ? null
@@ -22,7 +23,7 @@ export function ActiveRequestsList({ bottom, lead }: { bottom: number; lead?: st
     <FlatList
       data={cards}
       keyExtractor={(x) => x.key}
-      renderItem={({ item }) => <RequestCard rows={item.rows} />}
+      renderItem={({ item }) => <RequestCard rows={[item]} />}
       ListHeaderComponent={<View>{top}{lead ? <Text variant="small" tone="gray" style={s.lead}>{lead}</Text> : null}</View>}
       ListEmptyComponent={empty}
       ListFooterComponent={a.error && !a.bothFailed ? <ErrorView error={a.error} onRetry={() => void a.refetch()} compact /> : null}
@@ -36,6 +37,6 @@ export function ActiveRequestsList({ bottom, lead }: { bottom: number; lead?: st
 }
 
 const s = StyleSheet.create({
-  sep: { height: 10 },
+  sep: { height: 6 },
   lead: { paddingTop: 16, paddingBottom: 14 },
 });

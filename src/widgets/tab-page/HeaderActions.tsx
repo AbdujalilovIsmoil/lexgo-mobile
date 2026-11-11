@@ -3,6 +3,7 @@ import { useRouter } from "expo-router";
 import { Bell, User } from "lucide-react-native";
 import { displayName, useSession } from "@/entities/session";
 import { useUnreadCount } from "@/entities/notification";
+import { useClientProfile } from "@/entities/profile-extras";
 import { SupportMenu } from "@/features/support-menu";
 import { useTabRole } from "@/widgets/tab-bar/useTabRole";
 import { Avatar, IconButton, PressableScale } from "@/shared/ui";
@@ -17,13 +18,15 @@ export function HeaderActions({ glass }: { glass?: boolean }) {
   const unread = useUnreadCount();
   const role = useTabRole();
   const name = displayName(session?.user) || session?.user.phone;
+  // The client's photo (set in Profil) — the same query the profile reads, so a new photo shows here at once.
+  const photo = useClientProfile(role === "client").data?.avatarUrl || undefined;
   return (
     <View style={s.row}>
       {role === "client" || role === "seller" ? <SupportMenu glass={glass} client={role === "client"} /> : null}
       <IconButton icon="bell" size={40} tone={glass ? "glass" : "tint"} badge={unread > 0} glyph={(color, size) => <Bell size={size} color={color} />} onPress={() => router.push(session ? "/notifications" : "/auth/login")} />
       {session && name ? (
         <PressableScale onPress={() => router.push("/profile")} accessibilityLabel="profile">
-          <Avatar name={name} size={40} />
+          <Avatar name={name} uri={photo} size={40} />
         </PressableScale>
       ) : (
         <IconButton icon="user" size={40} tone={glass ? "glass" : "tint"} glyph={(color, size) => <User size={size} color={color} />} onPress={() => router.push(session ? "/profile" : "/auth/login")} />

@@ -5,10 +5,10 @@ import { brand, radius, shadows, useTheme } from "@/shared/theme";
 import { PressableScale, Text } from "@/shared/ui";
 import { tabOffset } from "./model/cards";
 
-type Tab = { id: string; label: string; dot?: string };
+type Tab = { id: string; label: string; dot?: string; count?: number };
 type Props = { tabs: Tab[]; value: string; onChange: (id: string) => void };
 
-// The category tabs on top of the services: white pills that float on the page, each with its category's colour. The selected one
+// The category tabs on top of the services: white pills that float on the page, each with its category's colour (and an optional count badge). The selected one
 // stays white and takes the brand outline and text, and the rail slides to bring it fully into view.
 export function CategoryTabs({ tabs, value, onChange }: Props) {
   const { colors: c, dark } = useTheme();
@@ -45,6 +45,7 @@ export function CategoryTabs({ tabs, value, onChange }: Props) {
           >
             {x.dot ? <View style={[s.dot, { backgroundColor: x.dot }]} /> : null}
             <Text variant="small" weight={on ? "bold" : undefined} numberOfLines={1} style={{ color: on ? c.accent : c.ink }}>{x.label}</Text>
+            {x.count ? <View style={[s.count, { backgroundColor: on ? c.accent : c.surface2 }]}><Text variant="caption" weight="bold" style={{ color: on ? brand.white : c.gray }}>{x.count}</Text></View> : null}
           </PressableScale>
         );
       })}
@@ -57,4 +58,5 @@ const s = StyleSheet.create({
   row: { gap: 8, paddingHorizontal: 16, paddingBottom: 4 },
   tab: { flexDirection: "row", alignItems: "center", gap: 8, minHeight: 44, paddingHorizontal: 16, borderRadius: radius.pill, borderWidth: 1.5 },
   dot: { width: 8, height: 8, borderRadius: 4 },
+  count: { minWidth: 20, height: 20, paddingHorizontal: 6, borderRadius: 10, alignItems: "center", justifyContent: "center" },
 });

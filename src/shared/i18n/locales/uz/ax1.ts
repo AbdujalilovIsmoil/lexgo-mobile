@@ -32,6 +32,7 @@ export const ax1 = {
   totalText: "Davom etish uchun ro'yxatdan o'ting — sizni yana {n} ta bepul savol kutmoqda.",
   totalTextPlain: "Davom etish uchun ro'yxatdan o'ting.",
   usedOf: "Ishlatildi: {used} / {cap}",
+  checkLimit: "Limitni tekshirish",
   resetsAt: "Kunlik limit {when} da yangilanadi",
   hint: "Qoldi: bugun {today} ta, jami {total} ta bepul savol",
   registerMore: "Ro'yxatdan o'ting: +{n} ta bepul savol",

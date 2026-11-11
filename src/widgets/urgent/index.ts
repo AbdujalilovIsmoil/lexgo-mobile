@@ -1,4 +1,4 @@
-export { ClientHeader } from "./ClientHeader";
+export { ClientHeader, UrgentTop } from "./ClientHeader";
 export { OrderScreen } from "./OrderScreen";
 export { DetailScreen } from "./DetailScreen";
 export { ProUrgent } from "./ProUrgent";

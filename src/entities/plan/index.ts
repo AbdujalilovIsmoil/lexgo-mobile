@@ -1,6 +1,6 @@
 export * from "./model/types";
 export * from "./model/period";
-export type { ContractVersion } from "./model/features";
+export type { ContractVersion, PlanFeature } from "./model/features";
 export type { ActiveSub, SharedMember, PlanRequestRow } from "./model/entitlement";
 export { usePlans, useEntitlements, useMyFeatures, useFeature, useContract, usePlanQuote, planKeys, entitlementKeys, featureKeys } from "./model/queries";
 export { useFeatureLabel, useGateText, gateWords, gateFacts, ownFeatureName } from "./model/useFeatureLabel";

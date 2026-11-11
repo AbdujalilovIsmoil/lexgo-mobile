@@ -4,14 +4,15 @@ import { useMarkAllRead, useMarkMany } from "@/entities/notification";
 import { useIsAuthed } from "@/entities/session";
 import { TabPage, useTabPad } from "@/widgets/tab-page";
 import { useT } from "@/shared/i18n";
-import { useColors } from "@/shared/theme";
-import { Header, Icon, PressableScale } from "@/shared/ui";
+import { HOME_BG } from "@/widgets/client-dash";
+import { useTheme } from "@/shared/theme";
+import { HeaderRight, Icon, PressableScale, SecondaryHeader } from "@/shared/ui";
 import { NotificationFeed } from "./NotificationFeed";
 import { useFeed } from "./useFeed";
 
 // /notifications (stack) and the staff "Xabarnoma" tab share one body; only the frame differs.
 export function NotificationsPage() {
-  const c = useColors();
+  const { colors: c, dark } = useTheme();
   const { t } = useT();
   const authed = useIsAuthed();
   const inTabs = useSegments()[0] === "(tabs)";
@@ -30,11 +31,12 @@ export function NotificationsPage() {
   ) : undefined;
   if (inTabs) return <TabPage title={t("profile.notifications")} right={markAllBtn}><NotificationFeed feed={feed} bottomPad={tabPad} /></TabPage>;
   return (
-    <View style={[s.fill, { backgroundColor: c.canvas }]}>
-      <Header title={t("profile.notifications")} right={markAllBtn} />
+    // The Xizmatlar tab's frame: the white SecondaryHeader (mark-all next to the support button) over Home's ground.
+    <View style={[s.fill, { backgroundColor: dark ? c.canvas : HOME_BG }]}>
+      <SecondaryHeader title={t("profile.notifications")} right={<View style={s.right}>{markAllBtn}<HeaderRight /></View>} />
       <NotificationFeed feed={feed} />
     </View>
   );
 }
 
-const s = StyleSheet.create({ fill: { flex: 1 } });
+const s = StyleSheet.create({ fill: { flex: 1 }, right: { flexDirection: "row", alignItems: "center", gap: 12 } });

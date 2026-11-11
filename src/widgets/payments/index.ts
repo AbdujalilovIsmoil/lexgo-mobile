@@ -6,3 +6,4 @@ export { SplitSection } from "./SplitSection";
 export { RefundSheet } from "./RefundSheet";
 export { PayoutsList } from "./PayoutsList";
 export { PaymentHistory } from "./PaymentHistory";
+export { PaymentFilterSheet } from "./PaymentFilterSheet";

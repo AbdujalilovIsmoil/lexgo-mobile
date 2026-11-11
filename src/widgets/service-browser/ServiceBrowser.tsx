@@ -12,6 +12,8 @@ import type { BrowseCard } from "./model/cards";
 import { HUES, ServiceCard } from "./ServiceCard";
 import { useServiceBrowser } from "./useServiceBrowser";
 
+// eslint-disable-next-line @typescript-eslint/no-require-imports -- bundled asset (metro assetExts: lottie)
+const NOT_FOUND = require("../../../assets/lottie/NotFound.lottie") as string;
 const TABS = { kind: "tabs" } as const;
 const SEARCH = { kind: "search" } as const;
 type Item = typeof TABS | typeof SEARCH | BrowseCard;
@@ -36,7 +38,7 @@ export function ServiceBrowser({ footer, onPick }: Props) {
   ) : b.error ? (
     <ErrorView error={b.error} onRetry={() => void b.refetch()} />
   ) : !b.shown.length ? (
-    <EmptyState icon={filtered ? "search" : "briefcase"} title={t(filtered ? "tabs.svb.noMatch" : "tabs.svb.empty")} />
+    filtered ? <EmptyState icon="search" title={t("tabs.svb.noMatch")} /> : <EmptyState lottie={NOT_FOUND} title={t("tabs.svb.empty")} />
   ) : null;
   const tabs = b.chips.length > 1 ? (
     <View style={[s.tabs, { backgroundColor: dark ? c.canvas : HOME_BG }]}>
@@ -75,8 +77,10 @@ export function ServiceBrowser({ footer, onPick }: Props) {
       keyExtractor={(x) => ("kind" in x ? x.kind : x.id)}
       stickyHeaderIndices={[1]}
       ListHeaderComponent={<>{header}</>}
-      ListFooterComponent={<>{state}{footer}</>}
-      contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: clearance }}
+      // The content fills the screen at least, so `footer` sits at its bottom (flex-end) when the services are few; with many it follows them.
+      ListFooterComponent={<>{state}{footer ? <View style={s.foot}>{footer}</View> : null}</>}
+      ListFooterComponentStyle={s.footWrap}
+      contentContainerStyle={{ flexGrow: 1, paddingHorizontal: 16, paddingBottom: clearance }}
       refreshing={pull.refreshing}
       onRefresh={pull.onRefresh}
       keyboardShouldPersistTaps="handled"
@@ -103,6 +107,8 @@ export function ServiceBrowser({ footer, onPick }: Props) {
 }
 
 const s = StyleSheet.create({
+  footWrap: { flexGrow: 1 },
+  foot: { flexGrow: 1, justifyContent: "flex-end" },
   tabs: { paddingTop: 2, paddingBottom: 8, marginHorizontal: -16, paddingHorizontal: 16 },
   search: { paddingTop: 2, paddingBottom: 12 },
   field: { flexDirection: "row", alignItems: "center", gap: 10, minHeight: 48, paddingHorizontal: 14, borderRadius: radius.r, borderWidth: 1 },

@@ -12,11 +12,14 @@ import { useDocSettings } from "@/entities/doc-settings";
 import { docCan, docKeys, useDoc, useDocPolicy } from "@/entities/my-document";
 import { AnswersSheet, CtorSheet, RatingSheet, ReviewSheet, useCtorPrompt, useDocRealtime } from "@/features/my-documents";
 import { DocDetailBody, type SheetKey } from "@/widgets/my-documents";
+import { useClientFrame } from "@/widgets/client-dash";
 
 // One document: status timeline, answers, file, advocate chat/call, payment and rating (TZ 15).
 export default function DocumentDetailPage({ id }: { id: string }) {
   const { t } = useT();
   const insets = useInsets();
+  // The list's frame (MyDocumentsPage): for a client the white SecondaryHeader over Home's ground.
+  const frame = useClientFrame();
   const qc = useQueryClient();
   const router = useRouter();
   const q = useDoc(id);
@@ -34,7 +37,7 @@ export default function DocumentDetailPage({ id }: { id: string }) {
   const openFile = (f: FileRef) => { const wait = sheet ? 320 : 0; close(); setTimeout(() => setFile(f), wait); };
   const refresh = () => qc.invalidateQueries({ queryKey: docKeys.all });
   return (
-    <AdminPage title={t("dm3.title")} subtitle={doc?.workId}>
+    <AdminPage {...frame} title={t("dm3.title")} subtitle={doc?.workId}>
       {q.isLoading ? <Skeleton height={320} round={20} style={{ margin: 16 }} /> : null}
       {q.isError ? <ErrorView error={q.error} onRetry={() => void q.refetch()} /> : null}
       {doc && can ? (

@@ -31,6 +31,8 @@ function hostClipboard(req, res) {
 }
 
 const config = getDefaultConfig(__dirname);
+// dotLottie animations (assets/lottie/*.lottie) are bundled as assets for lottie-react-native.
+config.resolver.assetExts = [...config.resolver.assetExts, "lottie"];
 const enhance = config.server && config.server.enhanceMiddleware;
 config.server = {
   ...config.server,

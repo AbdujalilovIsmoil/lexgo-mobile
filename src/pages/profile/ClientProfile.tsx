@@ -134,7 +134,8 @@ export function ClientProfile({ user, onBack }: { user: User; onBack: () => void
   const sections: Row[] = [
     { key: "personal", icon: UserIcon, title: t("profile.pp.personal"), sub: t("profile.pp.personalSub"), href: "/profile/section/personal" },
     { key: "family", icon: Users, title: t("profile.pp.family"), href: "/profile/section/family" },
-    { key: "payments", icon: CreditCard, title: t("profile.pp.payPlan"), sub: t("profile.pp.payPlanSub"), href: "/profile/section/payments" },
+    // "To'lovlar va obuna" is the "To'lovlar" tile under the header now — the same screen is not listed twice.
+    // { key: "payments", icon: CreditCard, title: t("profile.pp.payPlan"), sub: t("profile.pp.payPlanSub"), href: "/profile/section/payments" },
     { key: "consents", icon: SquareCheck, title: t("profile.pp.consents"), badge: todo, href: "/profile/consents" },
     { key: "complaints", icon: MessageSquare, title: t("profile.pp.complaints"), href: "/complaints" },
     ...(DIGITAL_SALES ? [{ key: "gifts", icon: Gift, title: t("profile.pp.gifts"), href: "/profile/gifts" } as Row] : []),
@@ -151,7 +152,7 @@ export function ClientProfile({ user, onBack }: { user: User; onBack: () => void
   const tiles: { key: string; icon: LucideIcon; title: string; sub: string; href: string }[] = [
     { key: "works", icon: Briefcase, title: t("profile.pp.works"), sub: t("profile.pp.worksSub", { n: openCases + liveUrgent }), href: "/dashboard-lists/works" },
     { key: "docs", icon: File, title: t("profile.pp.docs"), sub: t("cl1.list.docs"), href: "/documents" },
-    { key: "pay", icon: CreditCard, title: t("profile.pp.payments"), sub: t("profile.pp.paymentsSub"), href: "/payments" },
+    { key: "pay", icon: CreditCard, title: t("profile.pp.payments"), sub: t("profile.pp.paymentsSub"), href: "/profile/section/payments" },
   ];
   const tile = (Glyph: LucideIcon, order: number) => {
     const tone = TONES[order % TONES.length];

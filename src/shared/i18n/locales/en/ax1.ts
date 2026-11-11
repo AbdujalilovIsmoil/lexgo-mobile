@@ -34,6 +34,7 @@ export const ax1: Messages["ax1"] = {
   totalText: "Sign up to continue — {n} more free questions are waiting.",
   totalTextPlain: "Sign up to continue.",
   usedOf: "Used: {used} / {cap}",
+  checkLimit: "Check my limit",
   resetsAt: "Daily limit resets {when}",
   hint: "Free questions left: {today} today, {total} total",
   registerMore: "Sign up: +{n} free questions",
