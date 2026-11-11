@@ -1,7 +1,7 @@
 import type { Messages } from "../uz";
 
 export const auth: Messages["auth"] = {
-  loginTitle: "Sign in to LexGo",
+  loginTitle: "Sign in to Tezkor Himoya",
   loginSub: "Sign in with your phone number",
   phone: "Phone",
   phonePh: "+998 __ ___ __ __",

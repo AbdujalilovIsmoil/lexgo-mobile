@@ -17,7 +17,7 @@ export function DetailPeople({ req, staff }: { req: UrgentRequest; staff: boolea
       {staff ? (
         <SectionCard title={t("ug7.client")}>
           <Text variant="body" weight="bold">{req.clientName || t("ug7.unknownClient")}</Text>
-          <FactRows rows={[{ label: t("adm.phone"), value: req.clientPhone }, { label: "LexGo ID", value: req.client?.lexgoId }]} />
+          <FactRows rows={[{ label: t("adm.phone"), value: req.clientPhone }, { label: "Tezkor Himoya ID", value: req.client?.lexgoId }]} />
           {req.clientPhone ? <Button title={t("adm.call")} icon="phone" size="sm" variant="soft" onPress={() => openTel(req.clientPhone)} /> : null}
         </SectionCard>
       ) : null}

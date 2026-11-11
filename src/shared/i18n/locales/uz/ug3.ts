@@ -8,7 +8,7 @@ export const ug3 = {
   closedTitle: "Baholash oynasi yopildi",
   closedText: "15 daqiqalik muddat tugadi — bu ish uchun endi baho qoldirib bo‘lmaydi.",
   gateTitle: "Bu variant hali ochilmagan",
-  gateText: "Advokatlar guruhi bo‘yicha ikkinchi fikr LexGo orqali avval advokat yoki yurist xizmatidan foydalangan mijozlarga ochiladi.",
+  gateText: "Advokatlar guruhi bo‘yicha ikkinchi fikr Tezkor Himoya orqali avval advokat yoki yurist xizmatidan foydalangan mijozlarga ochiladi.",
   gateHow: "Yakka advokat fikrini hoziroq olishingiz mumkin, yoki quyidagilardan birini bajaring — keyin guruh varianti ham ochiladi.",
   ctaSingle: "Yakka advokat fikrini olish",
   ctaVideo: "Advokat bilan online konsultatsiya",

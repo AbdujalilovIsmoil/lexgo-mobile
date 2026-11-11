@@ -16,7 +16,7 @@ export const aw9 = {
     earnings_today: "Bugungi daromad",
     earnings_month: "Oylik daromad",
     pending_payout: "Kutilayotgan to'lov",
-    earnings_via_lexgo: "LexGo orqali",
+    earnings_via_lexgo: "Tezkor Himoya orqali",
     payable: "To'lanadigan",
   },
   p: { response: "Javob berish", acceptance: "Qabul qilish", avg: "O'rtacha javob vaqti", rating: "Reyting" },

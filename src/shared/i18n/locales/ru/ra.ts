@@ -2,10 +2,10 @@
 export const ra = {
   ra: {
     operator: "Оператор",
-    fromSupport: "Поддержка LexGo",
-    lexgoId: "LexGo ID: {id}",
+    fromSupport: "Поддержка Tezkor Himoya",
+    lexgoId: "Tezkor Himoya ID: {id}",
     askTitle: "Оператор хочет помочь в приложении",
-    askLead: "{name} хочет подсказать вам в приложении LexGo. Он видит, на какой вы странице и какие на ней кнопки, — но не то, что вы ввели.",
+    askLead: "{name} хочет подсказать вам в приложении Tezkor Himoya. Он видит, на какой вы странице и какие на ней кнопки, — но не то, что вы ввели.",
     ticket: "Обращение",
     ticketPlain: "Обращение в поддержку",
     modeTitle: "Вид помощи",
@@ -20,7 +20,7 @@ export const ra = {
     scopes: {
       view_page_context: "Видеть структуру страницы",
       highlight: "Выделять элементы",
-      navigate: "Открывать страницы LexGo",
+      navigate: "Открывать страницы Tezkor Himoya",
       scroll: "Прокручивать страницу",
       tooltip: "Показывать пояснения",
       focus: "Переходить к полю",
@@ -34,7 +34,7 @@ export const ra = {
       present_confirmation: "Показывать к подтверждению",
     },
     expires: "Время на ответ",
-    onlyLexgo: "Только действия внутри приложения LexGo",
+    onlyLexgo: "Только действия внутри приложения Tezkor Himoya",
     notShared: "Пароли, SMS-коды, карты, электронная подпись, файлы, управление устройством и внешние страницы не передаются.",
     canStop: "Помощь можно приостановить или отозвать доступ в любой момент",
     accept: "Разрешить",
@@ -117,7 +117,7 @@ export const ra = {
     },
     // Names of the controls the operator sees (in the client's language).
     el: {
-      aiTerm: "Срок LexGo.AI",
+      aiTerm: "Срок Tezkor Himoya AI",
       upfront: "Оплата за год сразу",
       otherTerm: "Срок тарифов",
       otherUpfront: "Тарифы: оплата за год сразу",

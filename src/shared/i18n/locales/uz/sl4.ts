@@ -3,7 +3,7 @@ export const sl4 = {
   kind: "Rol va kasbiy tur",
   empty: "Hali to'ldirilmagan",
   verification: "Verifikatsiya",
-  vstate: { approved: "LexGo tasdiqlagan", pending: "Tekshiruv kutilmoqda", rejected: "Tasdiqlanmadi" },
+  vstate: { approved: "Tezkor Himoya tasdiqlagan", pending: "Tekshiruv kutilmoqda", rejected: "Tasdiqlanmadi" },
   vtext: {
     approved: "Mijozlar sizni marketplace'da ko'ra oladi.",
     pending: "Profil tasdiqlanmaguncha mijozlarga ko'rinmaydi.",

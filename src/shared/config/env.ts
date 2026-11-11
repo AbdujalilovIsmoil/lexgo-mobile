@@ -16,6 +16,6 @@ export const isApiUrl = (url: string): boolean => url === API_BASE || ["/", "?",
 // NEXT_PUBLIC_PAYMENT_PROVIDER; "payme" and "click" answer 503 until connected.
 export const PAYMENT_PROVIDER = (process.env.EXPO_PUBLIC_PAYMENT_PROVIDER || "payme").trim().toLowerCase();
 
-export const APP_NAME = "LexGo";
+export const APP_NAME = "Tezkor Himoya";
 
 export const SUPPORT_PHONE = "+998 78 777 00 00";

@@ -1,5 +1,5 @@
 export const ai = {
-  title: "LexGo.AI",
+  title: "Tezkor Himoya AI",
   status: "Onlayn",
   stop: "Javobni to'xtatish",
   welcomeTitle: "Qanday yordam bera olaman?",

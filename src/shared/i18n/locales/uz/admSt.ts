@@ -35,7 +35,7 @@ export const admSt = {
   connected: "Ulangan",
   ago: { now: "hozir", min: "{n} daq oldin", hour: "{n} soat oldin", day: "{n} kun oldin" },
   picked: "Tanlangan: {n}",
-  userSearchPh: "Ism, telefon yoki LexGo ID",
+  userSearchPh: "Ism, telefon yoki Tezkor Himoya ID",
   userNone: "Hech kim topilmadi",
   userHint: "Qidirish uchun kamida 2 ta belgi yozing",
 };

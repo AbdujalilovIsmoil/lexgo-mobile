@@ -6,6 +6,6 @@ export const cxAi1: typeof base = {
   hi: "Hello, {name}",
   createDocRequest: "Create a document request",
   lastFreeTitle: "That was your last free question",
-  lastFreeText: "{limit} free questions a month. To continue, pick the LexGo.AI Lite or Pro tariff — the limit resets on the 1st.",
+  lastFreeText: "{limit} free questions a month. To continue, pick the Tezkor Himoya AI Lite or Pro tariff — the limit resets on the 1st.",
   upgradePlan: "Upgrade plan",
 };

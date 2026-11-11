@@ -2,7 +2,7 @@ import type { Messages } from "../uz";
 
 export const admSecB: Messages["admSecB"] = {
   tgTitle: "Telegram account",
-  tgDesc: "Link your account to the LexGo Telegram bot to also receive notifications in Telegram.",
+  tgDesc: "Link your account to the Tezkor Himoya Telegram bot to also receive notifications in Telegram.",
   tgConnect: "Connect Telegram",
   tgRelink: "Link a different Telegram account",
   tgLinked: "Telegram connected",

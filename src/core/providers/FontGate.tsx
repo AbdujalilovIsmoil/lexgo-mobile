@@ -30,7 +30,7 @@ export function FontGate({ children }: { children: ReactNode }) {
   return (
     <>
       {ready ? children : null}
-      {intro ? <AnimatedSplash ready={ready} onDone={() => { setIntro(false); useSplash.getState().finish(); }} /> : null}
+      {intro ? <AnimatedSplash ready={ready} fontsReady={fontsReady || !!fontError} onDone={() => { setIntro(false); useSplash.getState().finish(); }} /> : null}
     </>
   );
 }

@@ -129,7 +129,7 @@ export const proSvc = {
     notePh: "e.g. 7 years in family disputes, 120+ cases resolved in clients' favour.",
     noteHint: "Clients see this on the service card. Don't include phone numbers or links.",
     status: "Status",
-    policy: "I agree to the pricing policy: the price stays within the limits LexGo gives, and changes apply to new orders only.",
+    policy: "I agree to the pricing policy: the price stays within the limits Tezkor Himoya gives, and changes apply to new orders only.",
     policyRequired: "Accept the pricing policy to save.",
     cancel: "Cancel",
     save: "Save",

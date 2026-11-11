@@ -13,7 +13,7 @@ export const sp3: Messages["sp3"] = {
   noMessages: "No messages yet.",
   connecting: "An operator is joining…",
   aiHandling: "AI is replying",
-  team: "LexGo support",
+  team: "Tezkor Himoya support",
   operatorIs: "Operator: {name}",
   hours: "Working hours: {hours}",
   waitTitle: "Message received",

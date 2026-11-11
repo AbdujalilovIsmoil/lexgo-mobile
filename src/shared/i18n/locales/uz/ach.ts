@@ -8,7 +8,7 @@ export const ach = {
     add: "Yutuq qo'shish",
     empty: "Hali yutuq qo'shilmagan.",
     newTitle: "Yangi yutuq",
-    verifyNote: "Yutuq LexGo tomonidan tekshiriladi.",
+    verifyNote: "Yutuq Tezkor Himoya tomonidan tekshiriladi.",
     submit: "Tekshiruvga yuborish",
     sent: "Tekshiruvga yuborildi.",
     failed: "Yuborib bo'lmadi.",

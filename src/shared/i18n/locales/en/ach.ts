@@ -8,7 +8,7 @@ export const ach = {
     add: "Add achievement",
     empty: "No achievements added yet.",
     newTitle: "New achievement",
-    verifyNote: "LexGo will verify the achievement.",
+    verifyNote: "Tezkor Himoya will verify the achievement.",
     submit: "Send for review",
     sent: "Sent for review.",
     failed: "Couldn't send.",

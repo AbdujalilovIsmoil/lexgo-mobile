@@ -1,5 +1,5 @@
 export const common = {
-  appName: "LexGo",
+  appName: "Tezkor Himoya",
   currency: "so'm",
   perMonth: "so'm / oy",
   retry: "Qayta urinish",

@@ -14,7 +14,7 @@ export const admSec: Messages["admSec"] = {
   mTelegram: "Код в Telegram",
   mSms: "Код по SMS",
   mTotp: "Приложение-аутентификатор",
-  mTelegramText: "При каждом входе 6-значный код приходит в Telegram-бот LexGo.",
+  mTelegramText: "При каждом входе 6-значный код приходит в Telegram-бот Tezkor Himoya.",
   mTotpText: "Код обновляется каждые 30 секунд в приложении-аутентификаторе.",
   mandatory: "Для вашей роли двухфакторная защита обязательна — отключить её нельзя.",
   mandatoryEnable: "Для вашей роли двухфакторная защита обязательна — включите её сейчас.",

@@ -1,6 +1,6 @@
 import type { Messages } from "../uz";
 export const cpA: Pick<Messages, "cs"> = { cs: {
-    aiTitle: "Тарифы LexGo.AI",
+    aiTitle: "Тарифы Tezkor Himoya AI",
     aiSub: "Free — 5 вопросов в месяц; Lite — 100 вопросов, 5 анализов; Pro — безлимит (fair-use 1000), 20 анализов, судебная практика, экспорт.",
     term: "Срок",
     t1: "1 мес",

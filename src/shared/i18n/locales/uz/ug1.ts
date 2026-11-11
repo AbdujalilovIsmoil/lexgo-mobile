@@ -14,7 +14,7 @@ export const ug1 = {
     traffic_accident_consultation: "Yo‘l-transport hodisasi bo‘yicha ixtisoslashgan navbatchi advokat bilan darhol bog‘lanish.",
     chat_consultation: "Yozma savol-javob: advokat bilan xavfsiz chatda yozishasiz, uchrashuv kerak emas.",
     second_opinion_single: "Boshqa advokat ishingizga mustaqil baho beradi. Hamma mijozlar uchun ochiq.",
-    second_opinion_group: "2 dan 7 gacha advokat birgalikda fikr bildiradi. Avval LexGo orqali advokat yoki yurist xizmatidan foydalangan bo‘lish kerak.",
+    second_opinion_group: "2 dan 7 gacha advokat birgalikda fikr bildiradi. Avval Tezkor Himoya orqali advokat yoki yurist xizmatidan foydalangan bo‘lish kerak.",
   },
   groups: { second_opinion: "Ikkinchi fikr", video_consultation_kind: "Advokat bilan videokonsultatsiya" },
   from: "{price} so'mdan",

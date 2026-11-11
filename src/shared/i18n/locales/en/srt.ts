@@ -30,8 +30,8 @@ export const srt = {
       within: "Resolution time: {time}",
     },
     safe: {
-      title: "Buying through LexGo",
-      fact: "Payment, chat and calls go through LexGo.",
+      title: "Buying through Tezkor Himoya",
+      fact: "Payment, chat and calls go through Tezkor Himoya.",
     },
     w: {
       subtitle: "A problem with an order? Send a request here.",

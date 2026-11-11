@@ -12,7 +12,7 @@ export const lw: Messages["lw"] = {
   noBio: "This specialist hasn't added a bio yet.",
   choose: "Choose a service",
   chat: "Private chat",
-  verified: "LexGo verified identity and license",
+  verified: "Tezkor Himoya verified identity and license",
   reviews: "{n} reviews",
   yearsShort: "yrs",
 };

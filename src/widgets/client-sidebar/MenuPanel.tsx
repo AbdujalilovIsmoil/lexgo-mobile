@@ -75,7 +75,7 @@ export function MenuPanel({ onGo }: { onGo: (route: string) => void }) {
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={[s.list, { paddingTop: insets.top + 10, paddingBottom: insets.bottom + 16 }]}>
         <View style={s.brand}>
           <LinearGradient colors={["#2A4C9C", "#13275E"]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={s.logo}><Text variant="h4" style={s.logoTx}>L</Text></LinearGradient>
-          <Text variant="h3" style={[s.flex, { color: INK }]}>LexGo</Text>
+          <Text variant="h3" style={[s.flex, { color: INK }]}>Tezkor Himoya</Text>
           <PressableScale onPress={hide} hitSlop={10} style={s.x} accessibilityRole="button" accessibilityLabel={t("cdash.side.close")}><Icon name="x" size={24} color={INK} /></PressableScale>
         </View>
 

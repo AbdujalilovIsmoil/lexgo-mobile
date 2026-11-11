@@ -1,7 +1,7 @@
 export const ax4 = {
-  planPro: "LexGo.AI Pro tarifi",
-  planLite: "LexGo.AI Lite tarifi",
-  planFree: "LexGo.AI Free tarifi",
+  planPro: "Tezkor Himoya AI Pro tarifi",
+  planLite: "Tezkor Himoya AI Lite tarifi",
+  planFree: "Tezkor Himoya AI Free tarifi",
   planStandard: "Shaxsiy advokat Standard",
   planPremium: "Shaxsiy advokat Premium",
   docCreate: "Hujjat yaratish",

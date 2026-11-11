@@ -16,7 +16,7 @@ export const ug1: Messages["ug1"] = {
     traffic_accident_consultation: "Немедленная связь с дежурным адвокатом по ДТП.",
     chat_consultation: "Переписка с адвокатом в защищённом чате — встреча не нужна.",
     second_opinion_single: "Другой адвокат даёт независимую оценку вашего дела. Открыто всем.",
-    second_opinion_group: "От 2 до 7 адвокатов дают мнение вместе. Нужна предыдущая услуга адвоката или юриста через LexGo.",
+    second_opinion_group: "От 2 до 7 адвокатов дают мнение вместе. Нужна предыдущая услуга адвоката или юриста через Tezkor Himoya.",
   },
   groups: { second_opinion: "Второе мнение", video_consultation_kind: "Видеоконсультация с адвокатом" },
   from: "от {price} сум",

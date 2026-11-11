@@ -26,10 +26,10 @@ export const mk2 = {
   explain: {
     open: "Narx qanday hisoblanadi?",
     title: "Narx qanday hisoblanadi?",
-    lead: "Narxni mutaxassis o'zi qo'yadi, lekin LexGo belgilagan oraliqdan chiqa olmaydi.",
+    lead: "Narxni mutaxassis o'zi qo'yadi, lekin Tezkor Himoya belgilagan oraliqdan chiqa olmaydi.",
     selected: "«{service}»: katalog narxi {base} so'm, mutaxassis narxi {price} so'm.",
     baseT: "Katalog narxi",
-    baseD: "Hisob xizmatning LexGo katalogidagi asosiy narxidan boshlanadi.",
+    baseD: "Hisob xizmatning Tezkor Himoya katalogidagi asosiy narxidan boshlanadi.",
     regionT: "Hudud",
     regionD: "Hududga qarab narx biroz farq qiladi.",
     expT: "Tajriba",

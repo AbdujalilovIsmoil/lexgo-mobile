@@ -20,7 +20,7 @@ export const py7 = {
     copyLink: "Nusxalash",
     qr: "Taklif havolasi QR kodi",
     qrHint: "Skanerlang yoki do'stingizga ko'rsating",
-    shareText: "LexGo — ishonchli yuridik yordam. Mening havolam orqali qo'shiling:",
+    shareText: "Tezkor Himoya — ishonchli yuridik yordam. Mening havolam orqali qo'shiling:",
     invited: "Taklif qilingan",
     joined: "Qo'shilgan",
     reward: "Bonus",

@@ -42,7 +42,7 @@ export function SidebarPanel({ p, onGo, reveal }: { p: SharedValue<number>; onGo
       <View style={[s.brand, reveal && s.brandDock]}>
         <BrandLogo size={40} />
         <Animated.View style={[s.fill, fade]}>
-          <Text variant="h4">LexGo</Text>
+          <Text variant="h4">Tezkor Himoya</Text>
           <Text variant="caption" tone="gray" numberOfLines={1}>{user ? `${displayName(user) || t("ntd.sbTitle")} · ${t(user.role === "advocate" ? "profile.roleAdvocate" : user.role === "lawyer" ? "profile.roleLawyer" : "profile.roleClient")}` : t("home.guest")}</Text>
         </Animated.View>
       </View>

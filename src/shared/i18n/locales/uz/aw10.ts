@@ -5,7 +5,7 @@ export const aw10 = {
   link: "Taklif havolasi",
   copy: "Nusxalash",
   share: "Ulashish",
-  shareText: "LexGo — yuridik xizmatlar platformasi. Ro'yxatdan o'ting:",
+  shareText: "Tezkor Himoya — yuridik xizmatlar platformasi. Ro'yxatdan o'ting:",
   qrHint: "QR kodni skanerlab ro'yxatdan o'tish mumkin",
   invited: "Taklif qilingan",
   joined: "Qo'shilgan",

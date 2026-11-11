@@ -32,5 +32,5 @@ export const cxSos1 = {
   step1: "Vaziyat turini tanlang va qisqacha yozing.",
   step2: "Navbatchi advokatga so'rov darhol yuboriladi.",
   step3: "Advokat maxfiy chat yoki qo'ng'iroq orqali bog'lanadi.",
-  whyTitle: "Nega LexGo SOS?",
+  whyTitle: "Nega Tezkor Himoya SOS?",
 };

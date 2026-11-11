@@ -1,5 +1,5 @@
 export const auth = {
-  loginTitle: "LexGo ga kirish",
+  loginTitle: "Tezkor Himoyaga kirish",
   loginSub: "Telefon raqamingiz bilan tizimga kiring",
   phone: "Telefon",
   phonePh: "+998 __ ___ __ __",

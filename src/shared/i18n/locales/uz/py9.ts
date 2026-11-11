@@ -30,7 +30,7 @@ export const py9 = {
     giftsSub: "Obunani sovg'a qiling yoki oling",
     complaints: "Shikoyat va baholar",
     complaintsSub: "Holati va call-center javobi",
-    warranty: "LexGo kafolati",
+    warranty: "Tezkor Himoya kafolati",
     warrantySub: "Advokatni almashtirish so'rovi",
   },
 };

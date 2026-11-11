@@ -2,10 +2,10 @@
 export const ra = {
   ra: {
     operator: "Operator",
-    fromSupport: "LexGo yordam xizmati",
-    lexgoId: "LexGo ID: {id}",
+    fromSupport: "Tezkor Himoya yordam xizmati",
+    lexgoId: "Tezkor Himoya ID: {id}",
     askTitle: "Operator ilovada yordam bermoqchi",
-    askLead: "{name} LexGo ilovasida sizga yo'l ko'rsatmoqchi. U qaysi sahifada ekaningizni va undagi tugmalarni ko'radi — kiritganlaringizni emas.",
+    askLead: "{name} Tezkor Himoya ilovasida sizga yo'l ko'rsatmoqchi. U qaysi sahifada ekaningizni va undagi tugmalarni ko'radi — kiritganlaringizni emas.",
     ticket: "Murojaat",
     ticketPlain: "Yordam xizmatiga murojaat",
     modeTitle: "Yordam turi",
@@ -20,7 +20,7 @@ export const ra = {
     scopes: {
       view_page_context: "Sahifa tuzilishini ko'rish",
       highlight: "Elementni belgilash",
-      navigate: "LexGo sahifalarini ochish",
+      navigate: "Tezkor Himoya sahifalarini ochish",
       scroll: "Sahifani aylantirish",
       tooltip: "Izoh ko'rsatish",
       focus: "Maydonga o'tish",
@@ -34,7 +34,7 @@ export const ra = {
       present_confirmation: "Tasdiqlashga ko'rsatish",
     },
     expires: "Javob berish uchun",
-    onlyLexgo: "Faqat LexGo ilovasi ichidagi amallar",
+    onlyLexgo: "Faqat Tezkor Himoya ilovasi ichidagi amallar",
     notShared: "Parollar, SMS kodlar, kartalar, elektron imzo, fayllar, qurilma boshqaruvi va tashqi sahifalar ulashilmaydi.",
     canStop: "Yordamni istalgan vaqtda to'xtatishingiz yoki ruxsatni olib qo'yishingiz mumkin",
     accept: "Ruxsat berish",
@@ -117,7 +117,7 @@ export const ra = {
     },
     // Names of the controls the operator sees (in the client's language).
     el: {
-      aiTerm: "LexGo.AI muddati",
+      aiTerm: "Tezkor Himoya AI muddati",
       upfront: "Yilni oldindan to'lash",
       otherTerm: "Tariflar muddati",
       otherUpfront: "Tariflar: yilni oldindan to'lash",

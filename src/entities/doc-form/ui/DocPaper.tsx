@@ -40,7 +40,7 @@ export function DocPaper({ text, fade, large, slotTotal, kicker }: Props) {
         <View style={s.sheet}>
           <View style={s.head}>
             <Text style={s.kicker} numberOfLines={1}>{(kicker ?? "").toUpperCase()}</Text>
-            <Text style={s.brand}>LEXGO</Text>
+            <Text style={s.brand}>TEZKOR HIMOYA</Text>
           </View>
           <View style={s.headRule} />
           {blocks.map((b, i) => <BlockView key={i} b={b} size={size} line={line} />)}

@@ -1,7 +1,7 @@
 import type { Messages } from "../uz";
 
 export const common: Messages["common"] = {
-  appName: "LexGo",
+  appName: "Tezkor Himoya",
   currency: "UZS",
   perMonth: "UZS / month",
   retry: "Retry",

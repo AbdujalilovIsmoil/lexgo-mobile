@@ -32,7 +32,7 @@ export const py9: Messages["py9"] = {
     giftsSub: "Подарить или получить подписку",
     complaints: "Жалобы и оценки",
     complaintsSub: "Статус и ответ колл-центра",
-    warranty: "Гарантия LexGo",
+    warranty: "Гарантия Tezkor Himoya",
     warrantySub: "Заявка на замену адвоката",
   },
 };

@@ -5,7 +5,7 @@ export const sl4: Messages["sl4"] = {
   kind: "Роль и вид практики",
   empty: "Пока не заполнено",
   verification: "Верификация",
-  vstate: { approved: "Подтверждено LexGo", pending: "Ожидает проверки", rejected: "Не подтверждено" },
+  vstate: { approved: "Подтверждено Tezkor Himoya", pending: "Ожидает проверки", rejected: "Не подтверждено" },
   vtext: {
     approved: "Клиенты видят вас в маркетплейсе.",
     pending: "Пока профиль не подтверждён, клиенты его не видят.",

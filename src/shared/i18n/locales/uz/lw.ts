@@ -10,7 +10,7 @@ export const lw = {
   noBio: "Mutaxassis hali o'zi haqida ma'lumot qo'shmagan.",
   choose: "Xizmat tanlash",
   chat: "Maxfiy chat",
-  verified: "LexGo shaxs va litsenziyani tasdiqlagan",
+  verified: "Tezkor Himoya shaxs va litsenziyani tasdiqlagan",
   reviews: "{n} ta baho",
   yearsShort: "yil",
 };

@@ -3,7 +3,7 @@ import type { Messages } from "../uz";
 export const profile: Messages["profile"] = {
   pp: { title: "Профиль", kicker: "Клиент", edit: "Редактировать профиль", invites: "{n}/{goal} приглашений", works: "Мои дела", worksSub: "{n} активных", docs: "Документы", payments: "Платежи", paymentsSub: "История и карты", sections: "Разделы профиля", settings: "Настройки", personal: "Личные данные", personalSub: "Имя, регион, язык, подтверждение личности", family: "Члены семьи", payPlan: "Платежи и подписка", payPlanSub: "Карты, тариф, история платежей", consents: "Согласия", complaints: "Жалобы", gifts: "Подарки", referral: "Пригласить друзей", security: "Безопасность", securitySub: "2FA, Telegram, активные сессии", notif: "Настройки уведомлений", lock: "Блокировка приложения", storage: "Память и кэш", activity: "Журнал активности", activitySub: "События безопасности и действия", help: "Центр помощи" },
   title: "Профиль",
-  guestTitle: "Добро пожаловать в LexGo",
+  guestTitle: "Добро пожаловать в Tezkor Himoya",
   guestSub: "Войдите, чтобы выбирать адвокатов, оформлять заказы и сохранять историю AI.",
   login: "Войти",
   register: "Регистрация",
@@ -25,7 +25,7 @@ export const profile: Messages["profile"] = {
   logout: "Выйти",
   logoutConfirm: "Выйти из аккаунта?",
   version: "Версия {v}",
-  lexgoId: "LexGo ID",
+  lexgoId: "Tezkor Himoya ID",
   ordersEmpty: "Заказов пока нет",
   ordersEmptyText: "Оформленные услуги появятся здесь.",
   notificationsEmpty: "Уведомлений нет",

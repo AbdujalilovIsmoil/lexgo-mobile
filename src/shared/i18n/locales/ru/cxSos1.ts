@@ -34,5 +34,5 @@ export const cxSos1: typeof base = {
   step1: "Выберите тип ситуации и кратко опишите.",
   step2: "Запрос сразу уходит дежурному адвокату.",
   step3: "Адвокат связывается через приватный чат или звонок.",
-  whyTitle: "Почему LexGo SOS?",
+  whyTitle: "Почему Tezkor Himoya SOS?",
 };

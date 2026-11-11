@@ -27,7 +27,7 @@ export const so1 = {
     errNotFound: "Buyurtma topilmadi",
     errChannel: "Aloqa usulini tanlang",
     errCount: "Advokatlar soni {min} dan {max} gacha bo'lishi kerak",
-    errPrevious: "Advokatlar guruhidan ikkinchi fikr olish uchun avval LexGo advokat xizmatidan foydalanishingiz kerak",
+    errPrevious: "Advokatlar guruhidan ikkinchi fikr olish uchun avval Tezkor Himoya advokat xizmatidan foydalanishingiz kerak",
     errNetwork: "Internet bilan aloqa yo'q",
     errOther: "Xatolik yuz berdi. Qaytadan urinib ko'ring",
   },

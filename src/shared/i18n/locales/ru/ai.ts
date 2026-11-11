@@ -1,7 +1,7 @@
 import type { Messages } from "../uz";
 
 export const ai: Messages["ai"] = {
-  title: "LexGo.AI",
+  title: "Tezkor Himoya AI",
   status: "Онлайн",
   stop: "Остановить ответ",
   welcomeTitle: "Чем могу помочь?",

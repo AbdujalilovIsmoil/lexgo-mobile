@@ -28,10 +28,10 @@ export const mk2: Messages["mk2"] = {
   explain: {
     open: "How is the price set?",
     title: "How is the price set?",
-    lead: "The specialist sets the price, but can’t go outside the range LexGo allows.",
+    lead: "The specialist sets the price, but can’t go outside the range Tezkor Himoya allows.",
     selected: "“{service}”: catalogue price {base} UZS, specialist price {price} UZS.",
     baseT: "Catalogue price",
-    baseD: "It starts from the service’s base price in the LexGo catalogue.",
+    baseD: "It starts from the service’s base price in the Tezkor Himoya catalogue.",
     regionT: "Region",
     regionD: "The price varies a little by region.",
     expT: "Experience",

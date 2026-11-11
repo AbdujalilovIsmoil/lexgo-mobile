@@ -2,10 +2,10 @@
 export const ra = {
   ra: {
     operator: "Operator",
-    fromSupport: "LexGo support",
-    lexgoId: "LexGo ID: {id}",
+    fromSupport: "Tezkor Himoya support",
+    lexgoId: "Tezkor Himoya ID: {id}",
     askTitle: "Support wants to help in the app",
-    askLead: "{name} wants to guide you in the LexGo app. They see which page you are on and its buttons — not what you have typed.",
+    askLead: "{name} wants to guide you in the Tezkor Himoya app. They see which page you are on and its buttons — not what you have typed.",
     ticket: "Request",
     ticketPlain: "Support request",
     modeTitle: "Kind of help",
@@ -20,7 +20,7 @@ export const ra = {
     scopes: {
       view_page_context: "See the page layout",
       highlight: "Point at items",
-      navigate: "Open LexGo pages",
+      navigate: "Open Tezkor Himoya pages",
       scroll: "Scroll the page",
       tooltip: "Show notes",
       focus: "Move to a field",
@@ -34,7 +34,7 @@ export const ra = {
       present_confirmation: "Show for confirmation",
     },
     expires: "Time to answer",
-    onlyLexgo: "Only actions inside the LexGo app",
+    onlyLexgo: "Only actions inside the Tezkor Himoya app",
     notShared: "Passwords, SMS codes, cards, e-signatures, files, device controls and outside pages are never shared.",
     canStop: "You can pause the help or take the access back at any time",
     accept: "Allow",
@@ -117,7 +117,7 @@ export const ra = {
     },
     // Names of the controls the operator sees (in the client's language).
     el: {
-      aiTerm: "LexGo.AI term",
+      aiTerm: "Tezkor Himoya AI term",
       upfront: "Pay the year up front",
       otherTerm: "Plan term",
       otherUpfront: "Plans: pay the year up front",

@@ -16,7 +16,7 @@ export const ug1: Messages["ug1"] = {
     traffic_accident_consultation: "An immediate line to the on-duty advocate who handles road accidents.",
     chat_consultation: "In writing: you and the advocate talk in a secure chat, with no meeting to attend.",
     second_opinion_single: "A different advocate judges your case independently. Open to every client.",
-    second_opinion_group: "Two to seven advocates give their opinion together. Needs an earlier advocate or lawyer service through LexGo.",
+    second_opinion_group: "Two to seven advocates give their opinion together. Needs an earlier advocate or lawyer service through Tezkor Himoya.",
   },
   groups: { second_opinion: "Second opinion", video_consultation_kind: "Video consultation with an advocate" },
   from: "from {price} UZS",

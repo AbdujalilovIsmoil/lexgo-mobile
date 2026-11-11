@@ -7,7 +7,7 @@ export const aw10: Messages["aw10"] = {
   link: "Referral link",
   copy: "Copy",
   share: "Share",
-  shareText: "LexGo — the legal services platform. Sign up:",
+  shareText: "Tezkor Himoya — the legal services platform. Sign up:",
   qrHint: "Scan the QR code to sign up",
   invited: "Invited",
   joined: "Joined",

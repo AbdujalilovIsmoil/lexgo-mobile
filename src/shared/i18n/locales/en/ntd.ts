@@ -98,7 +98,7 @@ export const ntd = {
     "title": "Order a package",
     "done": "{n} completed",
     "online": "Online",
-    "verified": "LexGo verified",
+    "verified": "Tezkor Himoya verified",
     "pickLead": "Choose who will deliver the {tier} package. The order comes from the server.",
     "noSellers": "No specialists yet",
     "noSellersText": "Nobody has enabled this package. Try again later.",
@@ -239,7 +239,7 @@ export const ntd = {
       "activate": "Enable again",
       "empty": "No packages",
       "emptyText": "They appear here once Studio publishes an active package.",
-      "lead": "Studio creates the packages. You only enable or disable the ones you want to sell. PREMIUM needs extended LexGo verification."
+      "lead": "Studio creates the packages. You only enable or disable the ones you want to sell. PREMIUM needs extended Tezkor Himoya verification."
     },
     "ord": {
       "bought": "What the client bought",

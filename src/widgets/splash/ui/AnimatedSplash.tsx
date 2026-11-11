@@ -1,39 +1,42 @@
+import { useState } from "react";
 import { StatusBar } from "expo-status-bar";
-import { StyleSheet, useWindowDimensions, View } from "react-native";
-import { GestureDetector } from "react-native-gesture-handler";
-import Animated, { useAnimatedStyle } from "react-native-reanimated";
+import { StyleSheet, type LayoutChangeEvent } from "react-native";
+import Animated, { interpolate, useAnimatedStyle } from "react-native-reanimated";
 import { useSplashTimeline } from "../model/useSplashTimeline";
-import { useSplashTouch } from "../model/useSplashTouch";
-import { Backdrop } from "./Backdrop";
 import { LogoCanvas } from "./LogoCanvas";
-import { Sparkles } from "./Sparkles";
-import { TouchLayer } from "./TouchLayer";
 import { Wordmark } from "./Wordmark";
 
-// Full-screen animated intro drawn on a Skia canvas. Drag to tilt the logo,
-// tap for ripples, swipe up to skip. Dismisses itself after a few seconds.
-export function AnimatedSplash({ onDone, ready }: { onDone: () => void; ready: boolean }) {
-  const { width, height } = useWindowDimensions();
-  const t = useSplashTimeline(onDone, ready);
-  const touch = useSplashTouch(t.leave);
-  const fade = useAnimatedStyle(() => ({ opacity: 1 - t.exit.value, transform: [{ scale: 1 + t.exit.value * 0.06 }] }));
+const LOGO = 160; // = "imageWidth" of expo-splash-screen in app.json, so the native splash hands over seamlessly
+const GAP = 22; // between the mark and the name
+const FONT = 21; // "Tezkor"; "Himoya" is 1.7× this
+
+// Full-screen intro over the app. The mark is already there (the native splash draws the same
+// mark at the same spot), the name rises in under it, then the mark zooms into the screen while
+// the splash fades, revealing the app already rendered underneath.
+export function AnimatedSplash({ onDone, ready, fontsReady }: { onDone: () => void; ready: boolean; fontsReady: boolean }) {
+  // The real size of the full-screen overlay (the native splash centres in the whole window,
+  // which can differ from useWindowDimensions with edge-to-edge on Android).
+  const [box, setBox] = useState<{ w: number; h: number } | null>(null);
+  const onLayout = (e: LayoutChangeEvent) => {
+    const { width: w, height: h } = e.nativeEvent.layout;
+    setBox((b) => (b && b.w === w && b.h === h ? b : { w, h }));
+  };
+  const t = useSplashTimeline(onDone, ready, fontsReady);
+  // Fade starts once the zoom is under way, so the mark visibly flies at the viewer first.
+  const fade = useAnimatedStyle(() => ({ opacity: interpolate(t.exit.value, [0, 0.35, 1], [1, 1, 0]) }));
   return (
-    <GestureDetector gesture={touch.gesture}>
-      <Animated.View style={[StyleSheet.absoluteFill, s.root, fade]}>
-        <StatusBar style="light" />
-        <Backdrop w={width} h={height} time={t.time} tx={touch.tx} ty={touch.ty} bg={t.bg} />
-        <Sparkles w={width} h={height} time={t.time} />
-        <View style={s.center} pointerEvents="none">
-          <LogoCanvas size={Math.min(width * 0.56, 260)} t={t} tx={touch.tx} ty={touch.ty} />
-          <Wordmark word={t.word} tag={t.tag} />
-        </View>
-        <TouchLayer w={width} h={height} touch={touch} />
-      </Animated.View>
-    </GestureDetector>
+    <Animated.View style={[StyleSheet.absoluteFill, s.root, fade]} onLayout={onLayout}>
+      <StatusBar style="light" />
+      {box ? (
+        <>
+          <LogoCanvas w={box.w} h={box.h} size={LOGO} exit={t.exit} reduceMotion={t.reduceMotion} />
+          <Wordmark top={box.h / 2 + LOGO / 2 + GAP} font={FONT} word={t.word} exit={t.exit} />
+        </>
+      ) : null}
+    </Animated.View>
   );
 }
 
 const s = StyleSheet.create({
   root: { backgroundColor: "#03102B", zIndex: 100 },
-  center: { ...StyleSheet.absoluteFill, alignItems: "center", justifyContent: "center", paddingBottom: 40 },
 });

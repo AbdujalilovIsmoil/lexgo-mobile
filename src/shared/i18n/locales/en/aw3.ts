@@ -14,7 +14,7 @@ export const aw3: Messages["aw3"] = {
   add: "New client",
   check: "Conflict check",
   saved: "Client added",
-  form: { title: "Client outside LexGo", lead: "Name is required. Phone, PINFL and counterparty feed later conflict checks." },
+  form: { title: "Client outside Tezkor Himoya", lead: "Name is required. Phone, PINFL and counterparty feed later conflict checks." },
   f: {
     name: "Full name",
     phone: "Phone",
@@ -61,5 +61,5 @@ export const aw3: Messages["aw3"] = {
   card: "Client card",
   history: "History and documents",
   region: "Region",
-  page: { docInfo: "Document details", number: "Number", state: "Status", updated: "Updated", docLocked: "This document is not assigned to you — the client is still filling it in, or it went to another specialist. Once it is assigned to you, it opens in full under Document requests.", save: "Save", name: "Full name", namePh: "Enter", phone: "Phone number", notesPh: "Additional information", more: "More details", moreSub: "PINFL, company, opposing party — for the conflict check", private: "A client added by hand is visible only to you.", activeN: "{n} active cases", newCase: "New case", works: "Cases", worksEmpty: "No cases with this client yet", contact: "Contact details", callTitle: "Call type", callAudio: "Audio call", callAudioSub: "In the app, through the secure chat", callVideo: "Video call", callVideoSub: "Face to face, in the app", callTel: "By phone", noAccount: "This client has no LexGo account — you can reach them by phone only", case: "Case", order: "Order", doc: "Document" },
+  page: { docInfo: "Document details", number: "Number", state: "Status", updated: "Updated", docLocked: "This document is not assigned to you — the client is still filling it in, or it went to another specialist. Once it is assigned to you, it opens in full under Document requests.", save: "Save", name: "Full name", namePh: "Enter", phone: "Phone number", notesPh: "Additional information", more: "More details", moreSub: "PINFL, company, opposing party — for the conflict check", private: "A client added by hand is visible only to you.", activeN: "{n} active cases", newCase: "New case", works: "Cases", worksEmpty: "No cases with this client yet", contact: "Contact details", callTitle: "Call type", callAudio: "Audio call", callAudioSub: "In the app, through the secure chat", callVideo: "Video call", callVideoSub: "Face to face, in the app", callTel: "By phone", noAccount: "This client has no Tezkor Himoya account — you can reach them by phone only", case: "Case", order: "Order", doc: "Document" },
 };

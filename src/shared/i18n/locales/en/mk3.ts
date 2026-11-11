@@ -12,7 +12,7 @@ export const mk3: Messages["mk3"] = {
   time: "Convenient time",
   timePh: "For example: today after 18:00",
   quick: { today: "Today", evening: "This evening", tomorrow: "Tomorrow", week: "This week" },
-  totalNote: "LexGo sets the price. Once the full payment is confirmed, your order goes to the specialist.",
+  totalNote: "Tezkor Himoya sets the price. Once the full payment is confirmed, your order goes to the specialist.",
   soon: "How soon",
   speed: "When should they contact you?",
   speeds: { within_15_min: "Within 15 minutes", within_1_hour: "Within an hour", today: "Today", tomorrow: "Tomorrow" },

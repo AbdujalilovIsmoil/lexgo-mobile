@@ -1,6 +1,6 @@
 export const admSecB = {
   tgTitle: "Telegram hisobi",
-  tgDesc: "Hisobingizni LexGo Telegram botiga ulang — bildirishnomalar Telegramga ham keladi.",
+  tgDesc: "Hisobingizni Tezkor Himoya Telegram botiga ulang — bildirishnomalar Telegramga ham keladi.",
   tgConnect: "Telegramni ulash",
   tgRelink: "Boshqa Telegram hisobini ulash",
   tgLinked: "Telegram ulangan",

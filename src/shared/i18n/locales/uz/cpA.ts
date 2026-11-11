@@ -1,6 +1,6 @@
 export const cpA = {
   cs: {
-    aiTitle: "LexGo.AI tariflari",
+    aiTitle: "Tezkor Himoya AI tariflari",
     aiSub: "Free — oyiga 5 savol; Lite — 100 savol, 5 hujjat tahlili; Pro — cheksiz (fair-use 1000), 20 tahlil, sud amaliyoti, eksport.",
     term: "Muddat",
     t1: "1 oy",

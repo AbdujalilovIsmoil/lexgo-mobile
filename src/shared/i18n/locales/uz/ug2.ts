@@ -11,7 +11,7 @@ export const ug2 = {
   needHint: "Kamida {n} ta belgi. Batafsil yozsangiz, advokat tezroq tayyorlanadi.",
   missDirection: "Yo‘nalishni tanlang — advokat shunga qarab tanlanadi",
   missNeed: "Muammoni kamida {n} ta harf bilan yozing",
-  priorNote: "Advokatlar guruhi faqat oldin LexGo orqali advokat yoki yurist xizmatidan foydalangan mijozlar uchun ochiladi. Yakka advokat fikri hammaga ochiq.",
+  priorNote: "Advokatlar guruhi faqat oldin Tezkor Himoya orqali advokat yoki yurist xizmatidan foydalangan mijozlar uchun ochiladi. Yakka advokat fikri hammaga ochiq.",
   meetingLen: "Uchrashuv davomiyligi: {n} daqiqa",
   perLawyer: "Har bir advokat uchun {price} so'm × {n} ta",
   next: "So'rov yuborilgach, advokat uni oladi va siz bilan maxfiy chat ochiladi.",

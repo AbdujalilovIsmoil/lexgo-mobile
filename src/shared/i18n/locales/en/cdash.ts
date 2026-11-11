@@ -3,7 +3,7 @@ export const cdash = {
   "emptyTitle": "No active requests",
   "emptyText": "Describe a problem above to get started.",
   "viewAll": "View all",
-  side: { tools: "Tools", growth: "Growth", main: "Main", account: "Account", help: "Help", app: "App", lang: "Language", privacy: "Privacy", settings: "Settings", freePlan: "Free plan", myPlan: "Current plan", free: "Free", aiLeft: "AI: {n} questions", aiUnlimited: "AI: unlimited", pro: "LexGo AI Pro", toPro: "Go Pro", seePlan: "See the plan", version: "LexGo · {v}", guestTitle: "Sign in to your account", guestSub: "Your works, messages and plan live here", close: "Close the menu" },
+  side: { tools: "Tools", growth: "Growth", main: "Main", account: "Account", help: "Help", app: "App", lang: "Language", privacy: "Privacy", settings: "Settings", freePlan: "Free plan", myPlan: "Current plan", free: "Free", aiLeft: "AI: {n} questions", aiUnlimited: "AI: unlimited", pro: "Tezkor Himoya AI Pro", toPro: "Go Pro", seePlan: "See the plan", version: "Tezkor Himoya · {v}", guestTitle: "Sign in to your account", guestSub: "Your works, messages and plan live here", close: "Close the menu" },
   "home": {
     "title": "What help do you need?",
     "askPhLead": "Describe your problem, e.g.",

@@ -22,7 +22,7 @@ export const py7: Messages["py7"] = {
     copyLink: "Copy",
     qr: "Referral link QR code",
     qrHint: "Scan it or show it to a friend",
-    shareText: "LexGo — trusted legal help. Join with my link:",
+    shareText: "Tezkor Himoya — trusted legal help. Join with my link:",
     invited: "Invited",
     joined: "Joined",
     reward: "Bonus",

@@ -1,9 +1,9 @@
 import type { Messages } from "../uz";
 
 export const ax4: Messages["ax4"] = {
-  planPro: "Тариф LexGo.AI Pro",
-  planLite: "Тариф LexGo.AI Lite",
-  planFree: "Тариф LexGo.AI Free",
+  planPro: "Тариф Tezkor Himoya AI Pro",
+  planLite: "Тариф Tezkor Himoya AI Lite",
+  planFree: "Тариф Tezkor Himoya AI Free",
   planStandard: "Личный адвокат Standard",
   planPremium: "Личный адвокат Premium",
   docCreate: "Создать документ",

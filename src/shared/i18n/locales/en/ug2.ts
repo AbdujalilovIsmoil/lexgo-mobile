@@ -13,7 +13,7 @@ export const ug2: Messages["ug2"] = {
   needHint: "At least {n} characters. The more detail, the better prepared the advocate.",
   missDirection: "Choose a practice area — the advocate is matched on it",
   missNeed: "Describe the problem in at least {n} characters",
-  priorNote: "The advocate panel is only open to clients who have already used an advocate or lawyer through LexGo. A single advocate's opinion is open to everyone.",
+  priorNote: "The advocate panel is only open to clients who have already used an advocate or lawyer through Tezkor Himoya. A single advocate's opinion is open to everyone.",
   meetingLen: "Meeting length: {n} minutes",
   perLawyer: "{price} UZS per advocate × {n}",
   next: "Once sent, an advocate picks it up and a private chat opens with you.",
