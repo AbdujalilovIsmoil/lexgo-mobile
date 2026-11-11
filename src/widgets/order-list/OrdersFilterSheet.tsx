@@ -1,25 +1,27 @@
 import { StyleSheet, View } from "react-native";
+import { Layers } from "lucide-react-native";
 import { BottomSheet, SheetOption, Button, IconButton, SheetScroll, Text } from "@/shared/ui";
 import { useColors } from "@/shared/theme";
 import { useInsets } from "@/shared/lib/insets";
 import { useT } from "@/shared/i18n";
+import { STAGE_ICON } from "./OrderListCard";
 import { SORTS, STAGE_TABS, type useMyOrders } from "./useMyOrders";
 
 type Props = { visible: boolean; onClose: () => void; m: ReturnType<typeof useMyOrders> };
 
-// Status (a list with a coloured dot and a live count) and sort in one sheet, with a pinned "reset" + "show N" bar.
+// Status (a list with the stage's icon, as on the rail, and a live count) and sort in one sheet, with a pinned "reset" + "show N" bar.
 export function OrdersFilterSheet({ visible, onClose, m }: Props) {
   const { t } = useT();
   const c = useColors();
   const insets = useInsets();
-  const dot: Record<string, string> = { all: c.gray, pending: c.warn, active: c.accent, completed: c.ok, cancelled: c.gray2 };
+  const color: Record<string, string> = { all: c.ink, pending: c.warn, active: c.accent, completed: c.ok, cancelled: c.err };
   return (
     <BottomSheet visible={visible} onClose={onClose} title={t("dm11.filters")} snaps={[0.7, 0.9]}>
       <View style={s.flex}>
         <SheetScroll>
           <View style={s.group}>
             <Text variant="small" tone="gray">{t("ods.stage")}</Text>
-            {STAGE_TABS.map((k) => <SheetOption key={k} on={m.stage === k} label={t(`mk4.tabs.${k}`)} color={dot[k]} count={m.counts[k]} onPress={() => m.setStage(k)} />)}
+            {STAGE_TABS.map((k) => { const Glyph = k === "all" ? Layers : STAGE_ICON[k]; return <SheetOption key={k} on={m.stage === k} label={t(`mk4.tabs.${k}`)} icon={<Glyph size={18} color={color[k]} strokeWidth={2.2} />} count={m.counts[k]} onPress={() => m.setStage(k)} />; })}
           </View>
           <View style={s.group}>
             <Text variant="small" tone="gray">{t("ods.sort")}</Text>

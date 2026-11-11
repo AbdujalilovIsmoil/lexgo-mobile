@@ -15,9 +15,10 @@ const v = (aurora: string, material: string, plain: string) => (IOS ? (AURORA ? 
 export const lightColors: ThemeColors = {
   bg: v("#EEF4FF", "#F4F7FF", brand.white),
   canvas: v("transparent", "#F4F7FF", brand.white),
-  glassFill: v("rgba(255,255,255,0.68)", "#E8EEFC", brand.white),
-  glassLine: v("rgba(255,255,255,0.95)", "#E8EEFC", "#E4EBF5"),
-  surface: IOS ? brand.white : "#E8EEFC",
+  // Light surfaces are white on Android too (headers, cards) — the tonal blue #E8EEFC read as a tint, not as white like on iOS.
+  glassFill: v("rgba(255,255,255,0.68)", brand.white, brand.white),
+  glassLine: v("rgba(255,255,255,0.95)", "#E4EBF5", "#E4EBF5"),
+  surface: brand.white,
   surface2: v("rgba(231,240,255,0.78)", "#D9E4FA", "#F1F4F9"),
   glass: "rgba(255,255,255,0.9)",
   ink: "#0A1526",

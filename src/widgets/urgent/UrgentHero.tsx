@@ -18,7 +18,8 @@ import type { UrgentCatalog } from "@/entities/urgent";
 
 const BG = require("../../../assets/services/teskorBg.png") as number;
 // The picture's bottom edge is this blue all along: the block's own colour under it, so the picture can be drawn smaller than the block.
-const BASE = "#0034A8";
+// A deeper, less saturated navy than the picture's own blue: with the picture at reduced opacity on top, the whole block reads calmer.
+const BASE = "#0B2A6B";
 
 const DIM = "rgba(255,255,255,0.8)";
 const GLASS = "rgba(255,255,255,0.14)";
@@ -49,19 +50,19 @@ export function UrgentHero({
   const cols: { icon: ReactNode; value: string; label: string }[] = cat
     ? [
         {
-          icon: <Zap size={18} color="#FFFFFF" fill="#FFFFFF" />,
+          icon: <Zap size={14} color="#FFFFFF" fill="#FFFFFF" />,
           value: t("ug4.minutesN", { n: cat.meetingMinutes }),
           label: t("ug1.metaMinutes"),
         },
         {
-          icon: <Gift size={18} color="#FFFFFF" />,
+          icon: <Gift size={14} color="#FFFFFF" />,
           value: t("ug4.minutesN", { n: cat.freeExtensionMinutes }),
           label: t("ug1.metaFree"),
         },
         ...(cat.paidExtensionPerMinute
           ? [
               {
-                icon: <Coins size={18} color="#FFFFFF" />,
+                icon: <Coins size={14} color="#FFFFFF" />,
                 value: t("ug1.perMinute", {
                   price: fmtMoney(cat.paidExtensionPerMinute),
                 }),
@@ -81,7 +82,7 @@ export function UrgentHero({
       />
       {/* The picture's last strip melts into BASE, so where it ends (on a tall block) there is no line. */}
       <LinearGradient
-        colors={["rgba(0,52,168,0)", BASE]}
+        colors={["rgba(11,42,107,0)", BASE]}
         style={[s.fade, { top: art.height - 60 }]}
         pointerEvents="none"
       />
@@ -103,38 +104,36 @@ export function UrgentHero({
         <HeaderRight glass />
       </View>
       <View style={s.texts}>
-        <View style={s.pill}>
-          <Text variant="caption" weight="bold" tone="white" style={s.pillTx}>
-            {t("ug1.page.eyebrow").toUpperCase()}
-          </Text>
-        </View>
         <Text variant="h3" tone="white" style={s.title}>
           {cat?.title || t("ug1.title")}
         </Text>
-        <Text variant="small" style={s.dim}>
+        <Text variant="caption" style={s.dim}>
           {t("ug1.page.lead")}
         </Text>
       </View>
       {loading ? (
-        <Skeleton height={64} round={18} onDark />
+        <Skeleton height={72} round={16} onDark />
       ) : cols.length ? (
         <View style={s.strip}>
           {cols.map((x, i) => (
             <View key={x.label} style={[s.col, i > 0 && s.rule]}>
               <View style={s.ico}>{x.icon}</View>
-              <View style={s.colTx}>
-                <Text
-                  variant="small"
-                  weight="bold"
-                  tone="white"
-                  numberOfLines={2}
-                >
-                  {x.value}
-                </Text>
-                <Text variant="caption" style={s.dim} numberOfLines={2}>
-                  {x.label}
-                </Text>
-              </View>
+              <Text
+                variant="caption"
+                weight="bold"
+                tone="white"
+                numberOfLines={1}
+                style={s.colVal}
+              >
+                {x.value}
+              </Text>
+              <Text
+                variant="caption"
+                numberOfLines={2}
+                style={[s.dim, s.colLbl]}
+              >
+                {x.label}
+              </Text>
             </View>
           ))}
         </View>
@@ -146,20 +145,21 @@ export function UrgentHero({
 const s = StyleSheet.create({
   box: {
     paddingHorizontal: 16,
-    paddingBottom: 18,
-    gap: 14,
+    paddingBottom: 14,
+    gap: 10,
     backgroundColor: BASE,
-    borderBottomLeftRadius: 28,
-    borderBottomRightRadius: 28,
+    borderBottomLeftRadius: 24,
+    borderBottomRightRadius: 24,
     overflow: "hidden",
   },
-  art: { position: "absolute", top: 0 },
+  // Toned down so the picture's blue doesn't shout; BASE shows through underneath.
+  art: { position: "absolute", top: 0, opacity: 0.55 },
   fade: { position: "absolute", left: 0, right: 0, height: 61 },
-  bar: { flexDirection: "row", alignItems: "center", gap: 12 },
+  bar: { flexDirection: "row", alignItems: "center", gap: 10 },
   back: {
-    width: 44,
-    height: 44,
-    borderRadius: 22,
+    width: 40,
+    height: 40,
+    borderRadius: 20,
     alignItems: "center",
     justifyContent: "center",
     backgroundColor: GLASS,
@@ -169,45 +169,38 @@ const s = StyleSheet.create({
     minWidth: 0,
     color: "#FFFFFF",
     fontFamily: fonts.display,
-    fontSize: 20,
-    lineHeight: 26,
+    fontSize: 18,
+    lineHeight: 24,
   },
   // Room on the right so the lines stay mostly off the advocate in the picture.
-  texts: { gap: 6, paddingRight: 72 },
-  pill: {
-    alignSelf: "flex-start",
-    paddingHorizontal: 10,
-    paddingVertical: 4,
-    borderRadius: 999,
-    backgroundColor: "rgba(255,255,255,0.18)",
-  },
-  pillTx: { letterSpacing: 0.4 },
-  title: { fontSize: 20, lineHeight: 25 },
+  texts: { gap: 4, paddingRight: 72 },
+  title: { fontSize: 18, lineHeight: 22 },
   dim: { color: DIM },
   strip: {
     flexDirection: "row",
-    borderRadius: 18,
+    borderRadius: 16,
     backgroundColor: "rgba(255,255,255,0.1)",
     borderWidth: 1,
     borderColor: "rgba(255,255,255,0.12)",
-    paddingVertical: 10,
+    paddingVertical: 8,
   },
+  // Icon on top, value and label centred under it.
   col: {
     flex: 1,
     minWidth: 0,
-    flexDirection: "row",
     alignItems: "center",
-    gap: 6,
-    paddingHorizontal: 6,
+    gap: 3,
+    paddingHorizontal: 4,
   },
   rule: { borderLeftWidth: 1, borderLeftColor: "rgba(255,255,255,0.16)" },
   ico: {
-    width: 32,
-    height: 32,
-    borderRadius: 16,
+    width: 26,
+    height: 26,
+    borderRadius: 13,
     alignItems: "center",
     justifyContent: "center",
     backgroundColor: "rgba(255,255,255,0.16)",
   },
-  colTx: { flex: 1, minWidth: 0 },
+  colVal: { fontSize: 12, lineHeight: 15, textAlign: "center" },
+  colLbl: { fontSize: 10, lineHeight: 13, textAlign: "center" },
 });

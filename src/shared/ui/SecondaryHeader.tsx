@@ -21,6 +21,9 @@ type Props = {
   hideLine?: boolean;
 };
 
+// Light theme back button: the page's grey ground (HOME_BG), the same on iOS and Android (Android's surface2 is a blue tone).
+const BACK_LIGHT = "#F2F4F7";
+
 // A plain page header, pinned above the page: the back button, the title with an optional line under it, and the support button at the right end.
 export function SecondaryHeader({ title, description, right, onBack, hideButton = false, hideLine }: Props) {
   const { colors: c, dark } = useTheme();
@@ -31,7 +34,7 @@ export function SecondaryHeader({ title, description, right, onBack, hideButton 
   return (
     <View style={[s.bar, { paddingTop: insets.top, backgroundColor: c.surface, borderBottomColor: c.line }, hideLine ? s.noLine : null]}>
       {hideButton ? null : (
-        <PressableScale onPress={back} scale={0.94} hitSlop={8} accessibilityRole="button" accessibilityLabel={t("svc.detail.back")} style={[s.back, { backgroundColor: dark ? c.tint2 : c.surface2 }]}>
+        <PressableScale onPress={back} scale={0.94} hitSlop={8} accessibilityRole="button" accessibilityLabel={t("svc.detail.back")} style={[s.back, { backgroundColor: dark ? c.tint2 : BACK_LIGHT }]}>
           {/* Dark theme: the same blue tint and icon colour as the support button at the right end. */}
           <ChevronLeft size={22} color={dark ? c.accent : c.ink} />
         </PressableScale>

@@ -1,13 +1,17 @@
 import { FlatList, StyleSheet, View } from "react-native";
 import { useState } from "react";
 import { useRouter } from "expo-router";
-import { MarketOrderCard, MarketOrderSkeleton, OrderRow } from "@/entities/order";
+import { MarketOrderSkeleton, OrderRow } from "@/entities/order";
 import { EmptyState, ErrorView } from "@/shared/ui";
 import { useInsets } from "@/shared/lib/insets";
 import { useT } from "@/shared/i18n";
 import { useTabHeader } from "@/widgets/tab-page";
+import { OrderListCard } from "./OrderListCard";
 import { OrdersFilterBar } from "./OrdersFilterBar";
 import { useMyOrders } from "./useMyOrders";
+
+// eslint-disable-next-line @typescript-eslint/no-require-imports -- bundled asset (metro assetExts: lottie)
+const BOX_EMPTY = require("../../../assets/lottie/Boxempty.lottie") as string;
 
 // Client "My orders": search with a filter sheet (status, sort), one card per purchase or service order.
 export function MyOrders() {
@@ -22,13 +26,13 @@ export function MyOrders() {
   if (m.error && !m.entries.length) return <View>{top}<ErrorView error={m.error} onRetry={m.refetch} /></View>;
   const header = <View>{top}<OrdersFilterBar m={m} /></View>;
   const empty = m.loading ? <View style={s.gap}>{[0, 1, 2].map((i) => <MarketOrderSkeleton key={i} />)}</View>
-    : m.entries.length ? <EmptyState icon="filter" title={t("mk4.emptyFilter")} compact />
+    : m.entries.length ? <EmptyState lottie={BOX_EMPTY} title={t("mk4.emptyFilter")} />
     : <EmptyState icon="shopping-bag" title={t("mk4.empty")} text={t("mk4.emptyText")} actionLabel={t("mk4.browse")} onAction={() => router.push("/(tabs)/lawyers")} />;
   return (
     <FlatList
       data={m.loading ? [] : m.shown}
       keyExtractor={(e) => e.key}
-      renderItem={({ item }) => item.kind === "market" ? <MarketOrderCard order={item.order} onPress={() => open(item.order.id)} /> : <OrderRow order={item.order} onPress={() => open(item.order.id)} />}
+      renderItem={({ item }) => item.kind === "market" ? <OrderListCard order={item.order} stage={item.stage} onPress={() => open(item.order.id)} /> : <OrderRow order={item.order} onPress={() => open(item.order.id)} />}
       ListHeaderComponent={header}
       ListEmptyComponent={empty}
       ItemSeparatorComponent={() => <View style={s.sep} />}
@@ -42,6 +46,6 @@ export function MyOrders() {
 }
 
 const s = StyleSheet.create({
-  sep: { height: 10 },
-  gap: { gap: 10 },
+  sep: { height: 12 },
+  gap: { gap: 12 },
 });
