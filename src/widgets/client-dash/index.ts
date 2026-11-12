@@ -8,4 +8,4 @@ export { ActiveRequestsList } from "./ActiveRequestsList";
 export { DashReferral } from "./DashReferral";
 export { DashGuest } from "./DashGuest";
 export { DashBackdrop, HOME_BG } from "./DashBackdrop";
-export { useClientFrame } from "./useClientFrame";
+export { ProPageFrame, useClientFrame } from "./useClientFrame";

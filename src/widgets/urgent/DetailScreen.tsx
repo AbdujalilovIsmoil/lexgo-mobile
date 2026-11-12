@@ -22,7 +22,7 @@ export function DetailScreen({ id, scope }: Props) {
   const own = useMemo(() => (req && scope === "client" ? [req] : []), [req, scope]);
   useSecondOpinionPurchased(own); // a request born from the group second opinion: `purchased` once it shows as paid
   return (
-    <AdminPage secondary={scope === "client"} ground={scope === "client" && !dark ? HOME_BG : undefined} title={req ? label.kind(req.serviceKind, req.serviceTitle) : t("ug1.title")} subtitle={req?.workId}>
+    <AdminPage secondary ground={dark ? undefined : HOME_BG} title={req ? label.kind(req.serviceKind, req.serviceTitle) : t("ug1.title")} subtitle={req?.workId}>
       <ScrollView
         contentContainerStyle={{ padding: 16, gap: 14, paddingBottom: insets.bottom + 32 }} showsVerticalScrollIndicator={false}
         refreshControl={<RefreshControl refreshing={q.isRefetching} onRefresh={() => void q.refetch()} />}

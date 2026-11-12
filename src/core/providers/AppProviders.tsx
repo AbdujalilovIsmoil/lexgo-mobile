@@ -7,6 +7,7 @@ import { KeyboardProvider } from "react-native-keyboard-controller";
 import * as SystemUI from "expo-system-ui";
 import { AURORA, ThemeProvider, darkColors, glassColors, lightColors, useTheme, useThemeStore } from "@/shared/theme";
 import { ClientSidebar, TabletFrame, UnderSidebar } from "@/widgets/client-sidebar";
+import { ProPageFrame } from "@/widgets/client-dash";
 import { AuroraBackdrop, RootOverlays, TabletStatusStrip } from "@/shared/ui";
 import { useProfileRefresh } from "@/entities/session";
 import { useHostClipboardSync } from "../dev/useHostClipboardSync";
@@ -30,6 +31,7 @@ function Chrome({ children }: { children: ReactNode }) {
   const { dark, glass } = useTheme();
   return (
     <NavigationTheme>
+      <ProPageFrame>
       <StatusBar style={dark ? "light" : "dark"} />
       <SystemChrome />
       {glass || (Platform.OS === "ios" && AURORA) ? <AuroraBackdrop /> : null}
@@ -42,6 +44,7 @@ function Chrome({ children }: { children: ReactNode }) {
       <SessionBoundary />
       <PackageMounts />
       <UpdateMount />
+      </ProPageFrame>
     </NavigationTheme>
   );
 }

@@ -1,5 +1,6 @@
 // Shared building blocks of every admin screen. Import from "@/shared/ui/admin".
 export { AdminPage } from "./AdminPage";
+export { PageFrameContext, usePageFrame, type PageFrame } from "./PageFrame";
 export { QueryBoundary } from "./QueryBoundary";
 export { PagedList } from "./PagedList";
 export { RowCard } from "./RowCard";

@@ -11,3 +11,4 @@ export { useShowMore, PAGE } from "./useShowMore";
 export { ShowMore } from "./ShowMore";
 export { SheetActions } from "./SheetActions";
 export { ManageRow } from "./ManageRow";
+export { PROFILE_HOME_BG, ProfileBandPage, ProfileGroup, ProfileIconTile, ProfileList, type ProfileRow } from "./ProfileBand";

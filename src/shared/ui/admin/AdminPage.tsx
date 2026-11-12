@@ -9,13 +9,18 @@ import { IconButton } from "../IconButton";
 import { SecondaryHeader } from "../SecondaryHeader";
 import { Text } from "../Text";
 import { HeaderExtra, HeaderRight } from "../headerExtra";
+import { usePageFrame } from "./PageFrame";
 
 type Props = { hideBack?: boolean; title: string; subtitle?: string; onBack?: () => void; right?: ReactNode; footer?: ReactNode; secondary?: boolean; ground?: string; children: ReactNode };
 
 // Frame of every admin screen: back button, title (+ optional subtitle), a row of
 // header actions, the body, and an optional sticky footer above the home indicator.
-// `secondary`: the pinned SecondaryHeader instead of that bar. `ground`: the page colour, when it is not the canvas.
-export function AdminPage({ hideBack, title, subtitle, onBack, right, footer, secondary, ground, children }: Props) {
+// `secondary`: the pinned SecondaryHeader instead of that bar. `ground`: the page colour, when it is not the canvas. Left out, both come from
+// the PageFrameContext (a professional's default frame).
+export function AdminPage({ hideBack, title, subtitle, onBack, right, footer, secondary: ownSecondary, ground: ownGround, children }: Props) {
+  const frame = usePageFrame();
+  const secondary = ownSecondary ?? frame.secondary;
+  const ground = ownGround ?? frame.ground;
   const c = useColors();
   const insets = useInsets();
   const router = useRouter();

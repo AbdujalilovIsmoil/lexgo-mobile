@@ -1,0 +1,759 @@
+<!doctype html>
+<html lang="uz"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tezkor Himoya Home</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=Sora:wght@400;500;600;700&family=Outfit:wght@400;500;600;700&family=Figtree:wght@500;600;700;800&family=Inter:wght@500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:#E4E6EB}
+body{font-family:'Inter',sans-serif;padding:72px;color:#111318;-webkit-font-smoothing:antialiased}
+.board{display:flex;flex-direction:column;gap:120px;width:max-content}
+.cover{display:flex;flex-direction:column;gap:12px;max-width:940px}
+.cover h1{font-size:44px;line-height:52px;font-weight:800;letter-spacing:-1.2px}
+.cover p{font-size:17px;line-height:26px;color:#4B5263}
+.cover-tags{display:flex;gap:8px;margin-top:8px}
+.cover-tags span{height:32px;padding:0 14px;border-radius:16px;background:#FFFFFF;font-size:13px;font-weight:600;display:flex;align-items:center;color:#30364A}
+.variant{display:flex;flex-direction:column;gap:28px}
+.vh{display:flex;align-items:baseline;gap:16px}
+.vh-n{font-size:15px;font-weight:700;color:#FFFFFF;background:#111318;height:32px;padding:0 12px;border-radius:10px;display:flex;align-items:center}
+.vh-t{font-size:32px;font-weight:800;letter-spacing:-.8px}
+.vh-s{font-size:16px;color:#5B6274}
+.vrow{display:flex;gap:56px;align-items:flex-start}
+.fr{display:flex;flex-direction:column;gap:12px}
+.fr-l{font-size:14px;font-weight:700;color:#4B5263}
+.phone{width:390px;min-height:844px;position:relative;overflow:hidden;border-radius:44px;box-shadow:0 30px 60px rgba(17,19,24,.16),0 0 0 1px rgba(17,19,24,.06)}
+.sb{height:50px;padding:0 28px 0 36px;display:flex;align-items:center;justify-content:space-between;position:relative}
+.sb-time{font-family:-apple-system,'SF Pro Text','Inter',sans-serif;font-size:17px;font-weight:600}
+.sb-r{display:flex;align-items:center;gap:6px}
+.hi{position:absolute;left:128px;bottom:8px;width:134px;height:5px;border-radius:3px}
+.row{display:flex}.col{display:flex;flex-direction:column}.f1{flex:1;min-width:0}.rel{position:relative;display:flex}
+.ac{align-items:center}.as{align-items:flex-start}.jb{justify-content:space-between}
+.g2{gap:2px}.g4{gap:4px}.g6{gap:6px}.g8{gap:8px}.g10{gap:10px}.g12{gap:12px}.g14{gap:14px}.g16{gap:16px}
+svg{flex-shrink:0;display:block}
+.spec{width:340px;background:#FFFFFF;border-radius:28px;padding:24px;display:flex;flex-direction:column;gap:22px}
+.sp-t{font-size:20px;font-weight:800;letter-spacing:-.3px}
+.sp-d{font-size:13px;line-height:19px;color:#5B6274}
+.sp-h{font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#8A90A0}
+.sp-font{font-size:14px;font-weight:700}
+.sp-sws{display:flex;flex-wrap:wrap;gap:10px}
+.sp-sw{width:141px;display:flex;align-items:center;gap:10px}
+.sp-sw i{width:32px;height:32px;border-radius:10px;box-shadow:inset 0 0 0 1px rgba(17,19,24,.08);flex-shrink:0}
+.sp-r{display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid #F0F1F4}
+.sp-k{font-size:13px;font-weight:600;color:#111318}
+.sp-v{font-size:12px;font-weight:500;color:#5B6274;font-family:ui-monospace,'SF Mono',Menlo,monospace}
+
+.u{background:#F4F6FA;font-family:'DM Sans',sans-serif;color:#101828}
+.u-head{height:60px;padding:0 20px;display:flex;align-items:center;justify-content:space-between}
+.u-brand{font-size:16px;line-height:20px;font-weight:700;letter-spacing:-.2px}
+.u-cap{font-size:12px;line-height:16px;color:#98A2B3;font-weight:500;display:flex;align-items:center;gap:4px}
+.u-ib{width:44px;height:44px;border-radius:22px;background:#FFFFFF;border:1px solid #E4E7EC;display:flex;align-items:center;justify-content:center;position:relative}
+.u-dot{position:absolute;top:10px;right:11px;width:8px;height:8px;border-radius:4px;background:#F04438;border:2px solid #FFFFFF}
+.u-me{width:44px;height:44px;border-radius:22px;background:linear-gradient(135deg,#0057F2,#5B8DEF);color:#FFFFFF;font-size:14px;font-weight:700;display:flex;align-items:center;justify-content:center}
+.u-body{padding:6px 20px 124px;display:flex;flex-direction:column;gap:16px}
+.u-h1{font-size:26px;line-height:32px;font-weight:700;letter-spacing:-.6px}
+.u-date{height:30px;padding:0 12px;border-radius:15px;background:#FFFFFF;border:1px solid #E4E7EC;font-size:13px;font-weight:600;color:#344054;display:flex;align-items:center}
+.u-h2{font-size:18px;line-height:24px;font-weight:700;letter-spacing:-.3px}
+.u-sec{display:flex;justify-content:space-between;align-items:center;margin-top:6px}
+.u-link{font-size:14px;font-weight:600;color:#0057F2}
+.u-t15{font-size:15px;line-height:20px;font-weight:600}
+.u-t14{font-size:14px;line-height:20px;font-weight:600}
+.u-t13{font-size:13px;line-height:18px;color:#667085}
+.u-t13 b{color:#101828;font-weight:600}
+.u-t12{font-size:12px;line-height:16px;color:#667085}
+.u-help{background:#FFFFFF;border:1px solid #E4E7EC;border-radius:24px;box-shadow:0 1px 2px rgba(16,24,40,.04),0 12px 24px -8px rgba(16,24,40,.08);overflow:hidden}
+.u-help-in{height:64px;padding:0 16px 0 10px;display:flex;align-items:center;gap:12px;border-bottom:1px solid #EAECF0}
+.u-spark{width:44px;height:44px;border-radius:14px;background:linear-gradient(135deg,#0057F2,#3B82F6);display:flex;align-items:center;justify-content:center}
+.u-ph{font-size:15px;color:#667085}
+.u-acts{display:flex;padding:14px 4px}
+.u-act{flex:1;display:flex;flex-direction:column;align-items:center;gap:6px}
+.u-act-ic{width:48px;height:48px;border-radius:24px;display:flex;align-items:center;justify-content:center;margin-bottom:2px}
+.u-act-t{font-size:13px;line-height:16px;font-weight:700}
+.u-act-s{font-size:12px;line-height:16px;color:#667085}
+.u-vd{width:1px;background:#EAECF0;margin:6px 0}
+.u-pill{height:26px;padding:0 10px;border-radius:13px;font-size:12px;font-weight:600;display:inline-flex;align-items:center;gap:6px}
+.u-pill i{width:6px;height:6px;border-radius:3px}
+.u-ticket{background:#FFFFFF;border:1px solid #E4E7EC;border-radius:24px;position:relative}
+.u-tk-top{padding:16px 16px 14px;display:flex;flex-direction:column;gap:12px}
+.u-tk-t{font-size:17px;line-height:24px;font-weight:700;letter-spacing:-.3px}
+.u-perf{height:20px;display:flex;align-items:center;position:relative}
+.u-perf span{flex:1;margin:0 18px;border-top:1.5px dashed #D0D5DD}
+.u-perf i{position:absolute;top:0;width:20px;height:20px;border-radius:10px;background:#F4F6FA;border:1px solid #E4E7EC}
+.u-perf i.l{left:-11px;border-left-color:transparent;border-bottom-color:transparent;transform:rotate(45deg)}
+.u-perf i.r{right:-11px;border-right-color:transparent;border-top-color:transparent;transform:rotate(45deg)}
+.u-tk-bot{padding:12px 16px 16px;display:flex;flex-direction:column;gap:14px}
+.u-track{display:flex;position:relative}
+.u-track:before{content:'';position:absolute;left:12%;right:12%;top:7px;height:2px;background:linear-gradient(90deg,#0057F2 0%,#0057F2 66%,#E4E7EC 66%)}
+.u-node{flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;position:relative}
+.u-node i{width:16px;height:16px;border-radius:8px;background:#FFFFFF;border:2px solid #D0D5DD}
+.u-node.done i{background:#0057F2;border-color:#0057F2}
+.u-node.now i{border-color:#0057F2;box-shadow:0 0 0 4px #D1E0FF}
+.u-node span{font-size:11px;font-weight:600;color:#98A2B3}
+.u-node.now span{color:#0057F2}
+.u-next{height:48px;border-radius:14px;background:#F5F8FF;padding:0 6px 0 12px;display:flex;align-items:center;gap:10px;font-size:13px;font-weight:600}
+.u-mini-btn{height:36px;padding:0 14px;border-radius:10px;background:#0057F2;color:#FFFFFF;font-size:13px;font-weight:700;display:flex;align-items:center}
+.u-svcs{display:flex;flex-wrap:wrap;gap:14px 8px}
+.u-svc{width:81.5px;display:flex;flex-direction:column;align-items:center;gap:8px}
+.u-svc span{font-size:12px;font-weight:600;color:#344054}
+.u-svc-ic{width:60px;height:60px;border-radius:20px;background:#FFFFFF;border:1px solid #E4E7EC;display:flex;align-items:center;justify-content:center}
+.u-card{background:#FFFFFF;border:1px solid #E4E7EC;border-radius:24px;padding:16px;display:flex;flex-direction:column;gap:14px}
+.u-card.p0{padding:0 16px;gap:0}
+.u-lw{display:flex;align-items:center;gap:12px;padding:14px 0;border-bottom:1px solid #F2F4F7}
+.u-lw:last-child{border-bottom:none}
+.u-lw .u-t13{white-space:nowrap}
+.u-av{width:44px;height:44px;border-radius:22px;font-size:14px;font-weight:700;display:flex;align-items:center;justify-content:center;position:relative;flex-shrink:0}
+.u-av.sm{width:32px;height:32px;font-size:12px}
+.u-av i{position:absolute;right:0;bottom:0;width:12px;height:12px;border-radius:6px;background:#17B26A;border:2px solid #FFFFFF}
+.u-av.sm i{display:none}
+.u-ghost{height:34px;padding:0 14px;border-radius:17px;border:1px solid #D0D5DD;font-size:13px;font-weight:600;display:flex;align-items:center}
+.u-seg{height:46px;border-radius:14px;background:#EAECF0;padding:4px;display:flex}
+.u-seg-i{flex:1;border-radius:10px;display:flex;align-items:center;justify-content:center;gap:8px;font-size:14px;font-weight:600;color:#475467}
+.u-seg-i i{width:8px;height:8px;border-radius:4px}
+.u-seg-i.on{background:#FFFFFF;color:#101828;box-shadow:0 1px 3px rgba(16,24,40,.1)}
+.u-chip{height:30px;padding:0 10px;border-radius:10px;border:1px solid #E4E7EC;font-size:13px;font-weight:600;color:#344054;display:flex;align-items:center;gap:4px}
+.u-chip.sm{height:28px;background:#F9FAFB;font-size:12px;gap:5px}
+.u-kpis{display:flex;flex-wrap:wrap;border-top:1px solid #F2F4F7}
+.u-kpi{width:50%;padding:14px 0 2px;display:flex;flex-direction:column;gap:4px}
+.u-kpi:nth-child(odd){padding-right:12px;border-right:1px solid #F2F4F7}
+.u-kpi:nth-child(even){padding-left:16px}
+.u-kpi:nth-child(-n+2){padding-bottom:14px;border-bottom:1px solid #F2F4F7}
+.u-kpi-v{font-size:24px;line-height:30px;font-weight:700;letter-spacing:-.6px}
+.u-kpi-v small{font-size:13px;font-weight:600;color:#667085;letter-spacing:0;margin-left:4px}
+.u-kpi-d{font-size:12px;font-weight:600}
+.u-cd{height:4px;border-radius:2px;background:#FEF0C7}
+.u-cd i{display:block;width:72%;height:4px;border-radius:2px;background:#F79009}
+.u-btn{flex:1;height:48px;border-radius:14px;background:#0057F2;color:#FFFFFF;font-size:15px;font-weight:700;display:flex;align-items:center;justify-content:center}
+.u-btn.ghost{background:#FFFFFF;border:1px solid #D0D5DD;color:#344054}
+.u-hr{display:flex;align-items:center;gap:12px;min-height:22px}
+.u-hr-t{width:40px;font-size:12px;font-weight:600;color:#98A2B3}
+.u-hr-l{flex:1;height:1px;background:#F2F4F7}
+.u-ev{flex:1;border-radius:12px;border-left:3px solid;padding:9px 12px;display:flex;flex-direction:column;gap:2px}
+.u-now{flex:1;display:flex;align-items:center}
+.u-now b{width:8px;height:8px;border-radius:4px;background:#F04438}
+.u-now i{flex:1;height:1.5px;background:#F04438}
+.u-pay{background:#FFFFFF;border:1px solid #E4E7EC;border-radius:20px;padding:14px 16px;display:flex;align-items:center;gap:12px}
+.u-tabbar{position:absolute;left:0;right:0;bottom:0;height:90px;background:#FFFFFF;border-top:1px solid #EAECF0}
+.u-tabrow{height:62px;display:flex;align-items:flex-start;padding:0 8px}
+.u-tab{flex:1;display:flex;flex-direction:column;align-items:center;gap:5px}
+.u-tab span{font-size:11px;line-height:14px}
+.u-tab-bar{width:28px;height:3px;border-radius:0 0 3px 3px;background:#0057F2;margin-bottom:5px}
+.u-ai{width:48px;height:48px;border-radius:16px;background:#101828;display:flex;align-items:center;justify-content:center;margin-top:7px}
+.u-badge{position:absolute;top:-4px;right:-9px;min-width:18px;height:18px;padding:0 5px;border-radius:9px;background:#F04438;color:#FFFFFF;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;border:2px solid #FFFFFF}
+
+.g{background:#0A0C10;font-family:'Sora',sans-serif;color:#F2F4F8}
+.g-head{height:60px;padding:0 20px;display:flex;align-items:center;justify-content:space-between}
+.g-brand{font-size:16px;font-weight:600;letter-spacing:-.3px}
+.g-ib{width:42px;height:42px;border-radius:14px;background:#14171E;border:1px solid #252A35;display:flex;align-items:center;justify-content:center;position:relative}
+.g-dot{position:absolute;top:9px;right:10px;width:8px;height:8px;border-radius:4px;background:#C8F560;border:2px solid #14171E}
+.g-body{padding:8px 20px 132px;display:flex;flex-direction:column;gap:12px}
+.g-cap{font-size:13px;line-height:18px;color:#8B93A7;font-weight:400}
+.g-h1{font-size:28px;line-height:34px;font-weight:600;letter-spacing:-1px;margin-bottom:6px}
+.g-h2{font-size:18px;font-weight:600;letter-spacing:-.4px}
+.g-sec{display:flex;justify-content:space-between;align-items:center;margin-top:8px}
+.g-link{font-size:13px;font-weight:500;color:#C8F560}
+.g-tile{background:#14171E;border:1px solid #252A35;border-radius:24px;padding:16px;display:flex;flex-direction:column;justify-content:space-between;gap:10px;overflow:hidden;position:relative}
+.g-tile.hz{flex-direction:row;align-items:center;justify-content:flex-start;gap:12px;height:72px;padding:0 14px}
+.g-aitile{gap:16px;background:linear-gradient(160deg,#1A2016 0%,#14171E 60%);border-color:#2E3A1E}
+.g-lbl{font-size:12px;font-weight:600;letter-spacing:.3px;display:flex;align-items:center;gap:6px}
+.g-prompt{font-size:19px;line-height:26px;font-weight:500;color:#F2F4F8;letter-spacing:-.4px;display:block}
+.g-prompt i{display:inline-block;width:2px;height:22px;background:#C8F560;margin-left:3px;vertical-align:-4px}
+.g-chip{height:32px;padding:0 12px;border-radius:16px;background:#1F242E;font-size:12px;font-weight:500;color:#C5CBD8;display:flex;align-items:center}
+.g-send{width:44px;height:44px;border-radius:22px;background:#C8F560;display:flex;align-items:center;justify-content:center}
+.g-sos{width:160px;height:212px;border-radius:24px;background:linear-gradient(165deg,#FF6B5E 0%,#E5383B 100%);padding:16px;display:flex;flex-direction:column;justify-content:space-between;position:relative;overflow:hidden}
+.g-sos-ic{width:52px;height:52px;border-radius:26px;background:rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;position:relative}
+.g-sos-t{font-size:30px;line-height:34px;font-weight:700;letter-spacing:-1px;color:#FFFFFF}
+.g-sos-s{font-size:12px;line-height:17px;color:rgba(255,255,255,.85)}
+.g-blue{background:#3F7BF6;border-color:#5A8FFF;flex:1}
+.g-tile.f1{flex:1}
+.g-tt{font-size:16px;line-height:21px;font-weight:600;letter-spacing:-.3px}
+.g-tt.sm{font-size:14px;line-height:19px}
+.g-ts{font-size:12px;line-height:17px;color:#8B93A7}
+.g-avs{display:flex}
+.g-avs i{width:28px;height:28px;border-radius:14px;border:2px solid #3F7BF6;font-size:10px;font-weight:700;color:#0A0C10;font-style:normal;display:flex;align-items:center;justify-content:center}
+.g-sq{width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.g-steps{display:flex;gap:6px}
+.g-st{flex:1;display:flex;flex-direction:column;gap:8px}
+.g-st i{height:24px;border-radius:12px;background:#1F242E;display:flex;align-items:center;justify-content:center}
+.g-st.done i{background:#C8F560}
+.g-st.now i{background:transparent;border:1.5px dashed #C8F560}
+.g-st span{font-size:11px;color:#6E768A;text-align:center}
+.g-st.now span{color:#C8F560;font-weight:600}
+.g-div{height:1px;background:#252A35}
+.g-av{width:40px;height:40px;border-radius:20px;background:#9CC0FF;color:#0A0C10;font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center}
+.g-name{font-size:14px;line-height:19px;font-weight:600}
+.g-lime{height:38px;padding:0 14px;border-radius:19px;background:#C8F560;color:#0A0C10;font-size:13px;font-weight:700;display:flex;align-items:center;gap:6px}
+.g-tabbar{position:absolute;left:24px;right:24px;bottom:30px;height:66px;border-radius:33px;background:#14171E;border:1px solid #252A35;padding:0 10px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 18px 40px rgba(0,0,0,.6)}
+.g-tab{width:48px;display:flex;flex-direction:column;align-items:center;gap:6px;padding-top:6px}
+.g-tab>i{width:4px;height:4px;border-radius:2px}
+.g-ai{width:52px;height:52px;border-radius:26px;background:#C8F560;display:flex;align-items:center;justify-content:center;box-shadow:0 0 0 6px rgba(200,245,96,.12)}
+.g-badge{position:absolute;top:-6px;right:-9px;min-width:18px;height:18px;padding:0 5px;border-radius:9px;background:#FF5D5D;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;color:#FFFFFF}
+.g-tog{height:36px;padding:0 6px 0 12px;border-radius:18px;background:#14171E;border:1px solid #252A35;display:flex;align-items:center;gap:8px;font-size:12px;font-weight:600;color:#C8F560}
+.g-sw{width:38px;height:24px;border-radius:12px;background:#C8F560;padding:3px;display:flex;justify-content:flex-end}
+.g-sw i{width:18px;height:18px;border-radius:9px;background:#0A0C10}
+.g-up{height:24px;padding:0 8px;border-radius:12px;background:rgba(200,245,96,.12);color:#C8F560;font-size:12px;font-weight:600;display:flex;align-items:center;gap:4px}
+.g-big{font-size:36px;line-height:42px;font-weight:600;letter-spacing:-1.6px;display:flex;align-items:baseline;gap:6px}
+.g-big small{font-size:15px;color:#8B93A7;letter-spacing:0;font-weight:500}
+.g-chart{height:92px;display:flex;justify-content:space-between;align-items:flex-end}
+.g-bc{width:32px;height:68px;display:flex;align-items:flex-end}
+.g-bc i{display:block;width:100%;border-radius:10px}
+.g-bd{font-size:11px;font-weight:600}
+.g-ring{width:76px;height:76px;position:relative;display:flex;align-items:center;justify-content:center;align-self:center}
+.g-ring svg{position:absolute;left:0;top:0}
+.g-ring span{font-size:20px;font-weight:700;position:relative}
+.g-ring.sm{width:60px;height:60px;flex-shrink:0}
+.g-mid{font-size:40px;line-height:44px;font-weight:600;letter-spacing:-1.6px}
+.g-mid small{font-size:18px;color:#8B93A7;letter-spacing:0}
+.g-pb{height:6px;border-radius:3px;background:#252A35}
+.g-pb i{display:block;height:6px;border-radius:3px;background:#9CC0FF}
+.g-req{border-radius:24px;padding:16px;background:#17140C;border:1.5px solid #FFB547;display:flex;flex-direction:column;gap:14px}
+.g-b{flex:1;height:48px;border-radius:24px;background:#FFB547;color:#0A0C10;font-size:14px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:6px}
+.g-b.ghost{background:transparent;border:1px solid #4A3B1C;color:#FFE2B3}
+.g-hc{flex:1;height:30px;border-radius:7px;display:block}
+.g-hl{width:12px;height:12px;border-radius:3px;display:block}
+.g-ag{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid #252A35}
+.g-ag:last-child{border-bottom:none}
+.g-ag-t{width:44px;font-size:13px;font-weight:600}
+.g-ag i{width:8px;height:8px;border-radius:4px}
+
+.m{background:#FBF8F4;font-family:'Outfit',sans-serif;color:#1E1B2E}
+.m-head{height:60px;padding:0 20px;display:flex;align-items:center;justify-content:space-between}
+.m-logo{width:40px;height:40px;border-radius:14px;background:#FFFFFF;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(30,27,46,.06)}
+.m-brand{font-size:17px;line-height:20px;font-weight:700}
+.m-cap{font-size:12px;line-height:16px;color:#8A87A0;font-weight:500}
+.m-ib{width:42px;height:42px;border-radius:21px;background:#FFFFFF;display:flex;align-items:center;justify-content:center;position:relative;box-shadow:0 2px 8px rgba(30,27,46,.06)}
+.m-dot{position:absolute;top:9px;right:10px;width:8px;height:8px;border-radius:4px;background:#E11D48;border:2px solid #FFFFFF}
+.m-me{width:42px;height:42px;border-radius:21px;background:#FFE3D0;color:#EA580C;font-size:14px;font-weight:700;display:flex;align-items:center;justify-content:center}
+.m-on{height:32px;padding:0 12px;border-radius:16px;background:#D3F4E4;color:#047857;font-size:13px;font-weight:600;display:flex;align-items:center;gap:6px}
+.m-on i{width:8px;height:8px;border-radius:4px;background:#10B981}
+.m-body{padding:6px 20px 130px;display:flex;flex-direction:column;gap:14px}
+.m-h1{font-size:30px;line-height:36px;font-weight:700;letter-spacing:-.8px}
+.m-sub{font-size:15px;line-height:20px;color:#6B6880}
+.m-h2{font-size:19px;line-height:24px;font-weight:700;letter-spacing:-.3px}
+.m-sec{display:flex;justify-content:space-between;align-items:center;margin-top:6px}
+.m-link{font-size:14px;font-weight:600;color:#6D28D9}
+.m-lbl{font-size:13px;font-weight:600;color:#6D28D9;display:flex;align-items:center;gap:6px}
+.m-beta{height:22px;padding:0 8px;border-radius:11px;background:#FFFFFF;font-size:11px;font-weight:700;color:#6D28D9;display:flex;align-items:center}
+.m-chat{background:#E7E0FF;border-radius:28px;padding:16px;display:flex;flex-direction:column;gap:10px}
+.m-bub{max-width:270px;padding:10px 14px;font-size:14px;line-height:20px}
+.m-bub.me{align-self:flex-end;background:#FFFFFF;border-radius:18px 18px 6px 18px}
+.m-bub.ai{align-self:flex-start;background:#6D28D9;color:#FFFFFF;border-radius:18px 18px 18px 6px}
+.m-inp{height:52px;margin-top:4px;border-radius:26px;background:#FFFFFF;padding:0 6px 0 18px;display:flex;align-items:center;font-size:15px;color:#8A87A0}
+.m-send{width:40px;height:40px;border-radius:20px;background:#1E1B2E;display:flex;align-items:center;justify-content:center}
+.m-tile{border-radius:24px;padding:14px;display:flex;flex-direction:column;justify-content:space-between;height:110px}
+.m-tile.tall{width:166px;height:232px;flex-shrink:0;position:relative}
+.m-tile.hz{flex:1;height:72px;flex-direction:row;align-items:center;justify-content:flex-start;gap:12px;padding:0 14px}
+.m-tile-ic{width:48px;height:48px;border-radius:16px;background:#FFFFFF;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.m-tile-ic.sm{width:40px;height:40px;border-radius:13px}
+.m-tt{font-size:16px;line-height:21px;font-weight:700;letter-spacing:-.2px}
+.m-tt.sm{font-size:15px;line-height:20px}
+.m-ts{font-size:12.5px;line-height:17px;font-weight:500}
+.m-tag{font-size:12px;font-weight:700}
+.m-arrow{position:absolute;right:14px;top:14px;width:36px;height:36px;border-radius:18px;display:flex;align-items:center;justify-content:center}
+.m-card{background:#FFFFFF;border-radius:24px;padding:16px;display:flex;flex-direction:column;gap:14px;box-shadow:0 4px 16px rgba(30,27,46,.05)}
+.m-av{width:44px;height:44px;border-radius:15px;font-size:14px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.m-dots{display:flex;gap:6px}
+.m-dots i{flex:1;height:8px;border-radius:4px;background:#EFEBE4}
+.m-dots i.on{background:#6D28D9}
+.m-cta{height:38px;padding:0 16px;border-radius:19px;background:#1E1B2E;color:#FFFFFF;font-size:13px;font-weight:600;display:flex;align-items:center}
+.m-tabbar{position:absolute;left:20px;right:20px;bottom:30px;height:66px;border-radius:33px;background:#FFFFFF;padding:0 9px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 14px 34px rgba(30,27,46,.12)}
+.m-tab{height:48px;min-width:44px;border-radius:24px;display:flex;align-items:center;justify-content:center;gap:6px}
+.m-tab.on{background:#1E1B2E;padding:0 16px;color:#FFFFFF;font-size:13px;font-weight:600}
+.m-ai{width:48px;height:48px;border-radius:24px;background:linear-gradient(135deg,#8B5CF6,#6D28D9);display:flex;align-items:center;justify-content:center}
+.m-badge{position:absolute;top:-6px;right:-9px;min-width:18px;height:18px;padding:0 5px;border-radius:9px;background:#E11D48;color:#FFFFFF;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;border:2px solid #FFFFFF}
+.m-goal{border-radius:28px;padding:18px;background:linear-gradient(135deg,#D3F4E4 0%,#D9E8FF 100%);display:flex;align-items:center;gap:12px}
+.m-goal-v{font-size:28px;line-height:32px;font-weight:700;letter-spacing:-.8px}
+.m-goal-v small{font-size:14px;font-weight:600;color:#065F46;letter-spacing:0}
+.m-mini{height:26px;padding:0 10px;border-radius:13px;background:rgba(255,255,255,.7);font-size:12px;font-weight:600;color:#065F46;display:flex;align-items:center}
+.m-ring{width:96px;height:96px;position:relative;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.m-ring svg{position:absolute;left:0;top:0}
+.m-ring-v{font-size:20px;font-weight:700;line-height:22px}
+.m-req{border-radius:28px;padding:16px;background:#FFE3D0;display:flex;flex-direction:column;gap:8px}
+.m-tag2{height:28px;padding:0 10px;border-radius:14px;background:#EA580C;color:#FFFFFF;font-size:12px;font-weight:700;display:flex;align-items:center;gap:5px}
+.m-timer{font-size:14px;font-weight:700;color:#9A3412;display:flex;align-items:center;gap:4px}
+.m-b{flex:1;height:48px;margin-top:6px;border-radius:24px;background:#1E1B2E;color:#FFFFFF;font-size:15px;font-weight:600;display:flex;align-items:center;justify-content:center}
+.m-b.ghost{background:#FFFFFF;color:#1E1B2E}
+.m-chips{display:flex;gap:8px;margin-top:-2px;margin-right:-20px;overflow:hidden}
+.m-chip{height:36px;padding:0 16px;border-radius:18px;background:#FFFFFF;font-size:13px;font-weight:600;color:#4B4860;display:flex;align-items:center;white-space:nowrap;box-shadow:0 2px 8px rgba(30,27,46,.04)}
+.m-chip.on{background:#1E1B2E;color:#FFFFFF}
+.m-rq{flex:1;border-radius:24px;padding:14px;display:flex;flex-direction:column;gap:10px}
+.m-price{font-size:18px;font-weight:700;letter-spacing:-.3px}
+.m-price small{font-size:12px;font-weight:500}
+.m-agc{flex:1;height:110px;border-radius:20px;padding:12px;display:flex;flex-direction:column;justify-content:space-between}
+.m-agt{font-size:14px;font-weight:700}
+.m-level{background:#E7E0FF;border-radius:24px;padding:16px;display:flex;gap:14px;align-items:flex-start}
+.m-pb{height:8px;border-radius:4px;background:#FFFFFF}
+.m-pb i{display:block;width:66%;height:8px;border-radius:4px;background:#6D28D9}
+
+.k{background:#FFFFFF;font-family:'Figtree',sans-serif;color:#0C1A33}
+.k-top{height:340px;background:linear-gradient(165deg,#0B66FF 0%,#0057F2 50%,#0043C9 100%);position:relative;overflow:hidden}
+.k-head{height:60px;padding:0 20px;display:flex;align-items:center;justify-content:space-between;position:relative}
+.k-logo{width:40px;height:40px;border-radius:13px;background:#FFFFFF;display:flex;align-items:center;justify-content:center}
+.k-brand{font-size:16px;line-height:20px;font-weight:800;color:#FFFFFF}
+.k-cap{font-size:12px;line-height:16px;font-weight:500;color:rgba(255,255,255,.72)}
+.k-ib{width:42px;height:42px;border-radius:21px;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.22);display:flex;align-items:center;justify-content:center;position:relative}
+.k-dot{position:absolute;top:9px;right:10px;width:8px;height:8px;border-radius:4px;background:#FFC93C;border:2px solid #0057F2}
+.k-tog{height:32px;padding:0 12px;border-radius:16px;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.22);color:#FFFFFF;font-size:13px;font-weight:700;display:flex;align-items:center;gap:6px}
+.k-tog i{width:8px;height:8px;border-radius:4px;background:#4ADE80}
+.k-top-in{padding:10px 20px 0;display:flex;flex-direction:column;gap:10px;position:relative}
+.k-h1{font-size:30px;line-height:36px;font-weight:800;color:#FFFFFF;letter-spacing:-.8px}
+.k-sub{font-size:14px;line-height:20px;color:rgba(255,255,255,.8);font-weight:500;margin-top:-6px}
+.k-search{height:56px;margin-top:6px;border-radius:18px;background:#FFFFFF;padding:0 8px 0 16px;display:flex;align-items:center;gap:12px;font-size:15px;color:#8593AB;box-shadow:0 12px 30px rgba(0,30,90,.25)}
+.k-ai-b{height:36px;padding:0 12px;border-radius:12px;background:#FFC93C;color:#0C1A33;font-size:13px;font-weight:800;display:flex;align-items:center;gap:5px}
+.k-stat{height:30px;padding:0 12px;border-radius:15px;background:rgba(255,255,255,.14);font-size:12px;color:rgba(255,255,255,.88);font-weight:500;display:flex;align-items:center;gap:4px}
+.k-stat b{color:#FFFFFF;font-weight:800}
+.k-sheet{margin-top:-36px;position:relative;background:#F2F5FB;border-radius:30px 30px 0 0;padding:10px 20px 124px;display:flex;flex-direction:column;gap:14px}
+.k-handle{width:40px;height:5px;border-radius:3px;background:#D3DBEA;align-self:center}
+.k-sec{display:flex;justify-content:space-between;align-items:center}
+.k-h2{font-size:18px;line-height:24px;font-weight:800;letter-spacing:-.3px}
+.k-link{font-size:14px;font-weight:700;color:#0057F2}
+.k-qs{display:flex;gap:10px;margin-right:-20px;overflow:hidden}
+.k-q{width:140px;height:124px;flex-shrink:0;border-radius:22px;padding:14px;display:flex;flex-direction:column;justify-content:space-between}
+.k-q-ic{width:42px;height:42px;border-radius:14px;display:flex;align-items:center;justify-content:center}
+.k-q-t{font-size:16px;line-height:20px;font-weight:800}
+.k-q-s{font-size:12px;font-weight:600;opacity:.8}
+.k-svcs{background:#FFFFFF;border-radius:24px;padding:16px 8px;display:flex;flex-wrap:wrap;row-gap:16px}
+.k-svc{width:25%;display:flex;flex-direction:column;align-items:center;gap:8px}
+.k-svc span{font-size:12px;font-weight:600;color:#33415C}
+.k-svc-ic{width:52px;height:52px;border-radius:18px;background:#EEF4FF;display:flex;align-items:center;justify-content:center}
+.k-order{background:#FFFFFF;border-radius:24px;padding:16px;display:flex;flex-direction:column;gap:12px;border-left:4px solid #0057F2}
+.k-pill{height:26px;padding:0 10px;border-radius:13px;background:#EEF4FF;color:#0057F2;font-size:12px;font-weight:800;display:flex;align-items:center}
+.k-t{font-size:17px;line-height:23px;font-weight:800;letter-spacing:-.2px}
+.k-t15{font-size:15px;line-height:20px;font-weight:700}
+.k-ts{font-size:13px;line-height:18px;color:#5A6B85;font-weight:500}
+.k-pb{height:6px;border-radius:3px;background:#E3E9F5}
+.k-pb i{display:block;height:6px;border-radius:3px;background:#0057F2}
+.k-av{width:40px;height:40px;border-radius:20px;background:#FFE7A3;color:#7A5300;font-size:13px;font-weight:800;display:flex;align-items:center;justify-content:center}
+.k-cta{height:38px;padding:0 14px;border-radius:12px;background:#0057F2;color:#FFFFFF;font-size:13px;font-weight:700;display:flex;align-items:center;gap:6px}
+.k-tabbar{position:absolute;left:0;right:0;bottom:0;height:90px;background:#FFFFFF;box-shadow:0 -1px 0 #E3E9F5}
+.k-tabrow{height:62px;display:flex;align-items:center;padding:0 8px}
+.k-tab{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px}
+.k-tab span{font-size:11px;line-height:14px}
+.k-ai{width:52px;height:52px;border-radius:18px;background:#FFC93C;display:flex;align-items:center;justify-content:center;box-shadow:0 8px 18px rgba(255,185,0,.35)}
+.k-badge{position:absolute;top:-4px;right:-9px;min-width:18px;height:18px;padding:0 5px;border-radius:9px;background:#F04438;color:#FFFFFF;font-size:10px;font-weight:800;display:flex;align-items:center;justify-content:center;border:2px solid #FFFFFF}
+.k-seg{height:38px;border-radius:12px;background:rgba(0,20,70,.25);padding:3px;display:flex;align-self:flex-start}
+.k-seg span{width:72px;border-radius:9px;font-size:13px;font-weight:700;color:rgba(255,255,255,.75);display:flex;align-items:center;justify-content:center}
+.k-seg span.on{background:#FFFFFF;color:#0057F2}
+.k-big{font-size:36px;line-height:42px;font-weight:800;color:#FFFFFF;letter-spacing:-1.2px}
+.k-up{height:24px;padding:0 8px;border-radius:12px;background:#FFC93C;color:#0C1A33;font-size:12px;font-weight:800;display:flex;align-items:center}
+.k-box{flex:1;height:60px;border-radius:16px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.18);padding:10px 12px;display:flex;flex-direction:column;justify-content:space-between}
+.k-box-v{font-size:16px;font-weight:800;color:#FFFFFF}
+.k-box-l{font-size:11px;font-weight:600;color:rgba(255,255,255,.72)}
+.k-req{background:#FFFFFF;border-radius:24px;overflow:hidden;box-shadow:0 10px 26px rgba(12,26,51,.08)}
+.k-req-top{height:38px;padding:0 16px;background:#FFC93C;display:flex;align-items:center;justify-content:space-between;font-size:13px;font-weight:800}
+.k-req-in{padding:14px 16px 16px;display:flex;flex-direction:column;gap:10px}
+.k-btn{flex:1;height:48px;margin-top:4px;border-radius:14px;background:#0057F2;color:#FFFFFF;font-size:15px;font-weight:800;display:flex;align-items:center;justify-content:center}
+.k-btn.ghost{background:#EEF2F8;color:#0C1A33}
+.k-list{background:#FFFFFF;border-radius:24px;padding:4px 16px;display:flex;flex-direction:column}
+.k-ag{display:flex;align-items:center;gap:14px;padding:12px 0;border-bottom:1px solid #EEF2F8}
+.k-ag:last-child{border-bottom:none}
+.k-ag-t{width:56px;height:36px;border-radius:10px;background:#F2F5FB;font-size:13px;font-weight:800;display:flex;align-items:center;justify-content:center}
+.k-ag.now .k-ag-t{background:#0057F2;color:#FFFFFF}
+.k-mrow{display:flex;align-items:center;gap:12px;padding:10px 0}
+.k-mbar{width:96px;height:8px;border-radius:4px;background:#EEF2F8}
+.k-mbar i{display:block;height:8px;border-radius:4px}
+.k-mv{width:52px;text-align:right;font-size:15px;font-weight:800}
+.k-prof{background:#FFFFFF;border-radius:24px;padding:14px 16px;display:flex;align-items:center;gap:14px}
+.k-prof-ring{width:52px;height:52px;position:relative;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.k-prof-ring svg{position:absolute;left:0;top:0}
+.k-prof-ring span{font-size:12px;font-weight:800;position:relative}
+</style></head>
+<body><div class="board">
+  <div class="cover">
+    <h1>Tezkor Himoya — Home ekran, 4 yangi variant</h1>
+    <p>Aniq, Tun va Yorqin yo'nalishlari asosida yangi variantlar: Mijoz va Advokat (worker) Home ekranlari, yonida dizayn tokenlari. Frame 390 pt, to'liq scroll balandligi. Logo va nom hozirgidek.</p>
+    <div class="cover-tags"><span>05 Ufq</span><span>06 Grafit</span><span>07 Mozaika</span><span>08 Kobalt</span><span>Flex → Figma Auto Layout</span></div>
+  </div>
+  <section class="variant" data-name="Variant 05 — Ufq">
+  <div class="vh"><span class="vh-n">05</span><span class="vh-t">Ufq</span><span class="vh-s">Clean light 2.0 · DM Sans · bitta action-karta, ticket, soatlik jadval</span></div>
+  <div class="vrow"><div class="fr"><span class="fr-l">Mijoz · Home</span><div class="phone u" data-name="05 Ufq · Mijoz">
+<div class="sb" style="color:#101828">
+  <span class="sb-time">9:41</span>
+  <div class="sb-r">
+    <svg width="18" height="12" viewBox="0 0 18 12" fill="#101828"><rect x="0" y="8" width="3" height="4" rx="1"/><rect x="5" y="5.5" width="3" height="6.5" rx="1"/><rect x="10" y="3" width="3" height="9" rx="1"/><rect x="15" y="0" width="3" height="12" rx="1"/></svg>
+    <svg width="16" height="12" viewBox="0 0 16 12" fill="#101828"><path d="M8 2.2c2.3 0 4.4.9 6 2.4l1.2-1.2A10.2 10.2 0 0 0 8 .5C5.2.5 2.7 1.6.8 3.4L2 4.6a8.5 8.5 0 0 1 6-2.4zm0 3.4c1.4 0 2.6.5 3.6 1.4l1.2-1.2A6.9 6.9 0 0 0 8 3.9 6.9 6.9 0 0 0 3.2 5.8L4.4 7c1-.9 2.2-1.4 3.6-1.4zM8 9a1.6 1.6 0 0 0-1.2.5L8 11.5l1.2-2A1.6 1.6 0 0 0 8 9z"/></svg>
+    <svg width="27" height="13" viewBox="0 0 27 13" fill="none"><rect x=".5" y=".5" width="23" height="12" rx="3.5" stroke="#101828" opacity=".4"/><rect x="2" y="2" width="20" height="9" rx="2" fill="#101828"/><rect x="25" y="4.5" width="1.6" height="4" rx=".8" fill="#101828" opacity=".5"/></svg>
+  </div>
+</div>
+<div class="u-head"><div class="row g10 ac"><svg width="34" height="34" viewBox="156 163 940 940"><path fill="#1B1C20" d="M229 614 C204.1 517.9 204.5 415.9 219 318 L627 170 L1036 316 C1057.3 476.9 1032.5 643.9 961 790 C959.1 660.9 958.9 530.6 938 403 L627 279 L309 401 C304.0 452.3 297.6 504.8 307 556 L229 614 Z"/><path fill="#1B1C20" d="M346 437 C503.0 367.6 684.6 372.5 849 412 L848 508 C761.9 484.6 671.9 476.6 583 483 L583 922 L481 820 L481 494 C433.9 499.4 388.5 515.4 346 536 L346 437 Z"/><path fill="#0057F2" d="M628 532 L723 537 L723 660 L836 660 L838 550 L925 567 L929 812 L836 883 L836 756 L723 756 L723 940 L628 970 L628 532 Z"/><path fill="#0057F2" d="M242 664 L324 603 C370.8 771.3 485.0 921.8 637 1008 C735.8 977.1 831.8 932.3 912 866 C837.2 964.6 735.6 1039.4 627 1097 C448.5 1012.2 295.9 857.0 242 664 Z"/></svg><div class="col g2"><span class="u-brand">Tezkor Himoya</span><span class="u-cap"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#98A2B3" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19.5 10c0 6-7.5 11.5-7.5 11.5S4.5 16 4.5 10a7.5 7.5 0 0 1 15 0z"/><circle cx="12" cy="10" r="2.6"/></svg>Toshkent</span></div></div><div class="row g8 ac"><div class="u-ib"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="#101828" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8.5a6 6 0 1 0-12 0c0 6.5-2.5 8.5-2.5 8.5h17S18 15 18 8.5"/><path d="M10.3 20.5a2 2 0 0 0 3.4 0"/></svg><span class=u-dot></span></div><div class="u-me">AK</div></div></div>
+<div class="u-body">
+  <div class="row jb ac"><span class="u-h1">Xayrli kun, Aziz</span><span class="u-date">12 noy</span></div>
+
+  <div class="u-help">
+    <div class="u-help-in">
+      <div class="u-spark"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.8 5.4L19 10l-5.2 1.6L12 17l-1.8-5.4L5 10l5.2-1.6z"/><path d="M19 15l.7 2.1 2.1.7-2.1.7L19 20.6l-.7-2.1-2.1-.7 2.1-.7z"/></svg></div>
+      <span class="u-ph f1">Muammoingizni yozing…</span>
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#667085" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="2.5" width="6" height="11.5" rx="3"/><path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5v4"/></svg>
+    </div>
+    <div class="u-acts"><div class="u-act"><div class="u-act-ic" style="background:#EFF4FF"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#0057F2" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2.5 4.5 13.5H12l-1 8 8.5-11H12z"/></svg></div><span class="u-act-t">Tezkor advokat</span><span class="u-act-s">24/7 · 15 daq</span></div><i class="u-vd"></i><div class="u-act"><div class="u-act-ic" style="background:#FEF3F2"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#F04438" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 18v-6a5 5 0 0 1 10 0v6"/><path d="M5 18h14v3H5z"/><path d="M12 2v2M4.2 5.2l1.4 1.4M19.8 5.2l-1.4 1.4M2 12h1.5M20.5 12H22"/></svg></div><span class="u-act-t">SOS</span><span class="u-act-s">Bitta tugma</span></div><i class="u-vd"></i><div class="u-act"><div class="u-act-ic" style="background:#FFF6ED"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#EF6820" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 16.5h14M3 16.5V12l2.2-5.2A2 2 0 0 1 7 5.5h10a2 2 0 0 1 1.8 1.3L21 12v4.5"/><path d="M3 12h18"/><circle cx="7.5" cy="16.5" r="2"/><circle cx="16.5" cy="16.5" r="2"/></svg></div><span class="u-act-t">Avtohalokat</span><span class="u-act-s">Joyida maslahat</span></div></div>
+  </div>
+
+  <div class="u-sec"><span class="u-h2">Faol buyurtma</span><span class="u-link">Barchasi</span></div>
+  <div class="u-ticket">
+    <div class="u-tk-top">
+      <div class="row jb ac"><span class="u-pill" style="background:#ECFDF3;color:#067647"><i style="background:#17B26A"></i>Jarayonda</span><span class="u-t13">#LX-2048</span></div>
+      <span class="u-tk-t">Mehnat nizosi bo'yicha maslahat</span>
+      <div class="row g10 ac"><div class="u-av sm" style="background:#DCE8FF;color:#0057F2">DR</div><span class="u-t13 f1"><b>Dilnoza Rahimova</b> · advokat</span><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#101828" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20.5l1.4-4.9A8 8 0 1 1 21 12z"/></svg></div>
+    </div>
+    <div class="u-perf"><i class="l"></i><span></span><i class="r"></i></div>
+    <div class="u-tk-bot">
+      <div class="u-track"><div class="u-node done"><i></i><span>Yuborildi</span></div><div class="u-node done"><i></i><span>Qabul</span></div><div class="u-node now"><i></i><span>Jarayonda</span></div><div class="u-node "><i></i><span>Yakun</span></div></div>
+      <div class="u-next"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0057F2" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="6" width="13" height="12" rx="2.5"/><path d="m15.5 10.5 6-3.5v10l-6-3.5"/></svg><span class="f1">Bugun 15:30 · Video</span><div class="u-mini-btn">Qo'shilish</div></div>
+    </div>
+  </div>
+
+  <div class="u-sec"><span class="u-h2">Xizmatlar</span><span class="u-link">8 ta yo'nalish</span></div>
+  <div class="u-svcs"><div class="u-svc"><div class="u-svc-ic"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#101828" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20.5s-8.5-4.8-8.5-11A4.8 4.8 0 0 1 12 6.6a4.8 4.8 0 0 1 8.5 2.9c0 6.2-8.5 11-8.5 11z"/></svg></div><span>Oilaviy</span></div><div class="u-svc"><div class="u-svc-ic"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#101828" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="7" width="19" height="13.5" rx="2.5"/><path d="M8.5 7V5a1.5 1.5 0 0 1 1.5-1.5h4A1.5 1.5 0 0 1 15.5 5v2M2.5 12.5h19"/></svg></div><span>Mehnat</span></div><div class="u-svc"><div class="u-svc-ic"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#101828" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 21V5a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v16M16 9h3a1 1 0 0 1 1 1v11M2.5 21h19"/><path d="M8 7.5h4M8 11.5h4M8 15.5h4"/></svg></div><span>Mulk</span></div><div class="u-svc"><div class="u-svc-ic"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#101828" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="m3 17 6-6 4 4 8-8"/><path d="M15 7h6v6"/></svg></div><span>Biznes</span></div><div class="u-svc"><div class="u-svc-ic"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#101828" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v18M7.5 21h9M4.5 7h15M12 5.5"/><path d="M4.5 7 2 13.5a2.8 2.8 0 0 0 5 0zM19.5 7 17 13.5a2.8 2.8 0 0 0 5 0z"/></svg></div><span>Jinoiy</span></div><div class="u-svc"><div class="u-svc-ic"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#101828" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2.5H6.5a2 2 0 0 0-2 2v15a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2V8z"/><path d="M14 2.5V8h5.5M8.5 13h7M8.5 17h5"/></svg></div><span>Hujjatlar</span></div><div class="u-svc"><div class="u-svc-ic"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#101828" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2.5H6.5a2 2 0 0 0-2 2v15a2 2 0 0 0 2 2h5"/><path d="M14 2.5V8h5.5v3"/><path d="M17.5 14l.9 2.6 2.6.9-2.6.9-.9 2.6-.9-2.6-2.6-.9 2.6-.9z"/></svg></div><span>Tahlil</span></div><div class="u-svc"><div class="u-svc-ic"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#0057F2" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="2"/><rect x="14" y="3" width="7" height="7" rx="2"/><rect x="3" y="14" width="7" height="7" rx="2"/><rect x="14" y="14" width="7" height="7" rx="2"/></svg></div><span>Barchasi</span></div></div>
+
+  <div class="u-sec"><span class="u-h2">Yaqin advokatlar</span><span class="u-pill" style="background:#ECFDF3;color:#067647"><i style="background:#17B26A"></i>12 onlayn</span></div>
+  <div class="u-card p0"><div class="u-lw"><div class="u-av" style="background:#DCE8FF;color:#0057F2">DR<i></i></div>
+<div class="col g2 f1"><span class="u-t15">Dilnoza Rahimova</span><span class="u-t13 row g4 ac">Oila huquqi · <svg width="12" height="12" viewBox="0 0 24 24" fill="#F79009" stroke="#F79009" stroke-width="0" stroke-linecap="round" stroke-linejoin="round"><path d="m12 2.8 2.8 5.8 6.3.9-4.6 4.4 1.1 6.3L12 17.2l-5.6 3 1.1-6.3-4.6-4.4 6.3-.9z"/></svg>4.9 · 1.2 km</span></div>
+<div class="u-ghost">Yozish</div></div><div class="u-lw"><div class="u-av" style="background:#DCFAE6;color:#079455">SA<i></i></div>
+<div class="col g2 f1"><span class="u-t15">Sardor Aliyev</span><span class="u-t13 row g4 ac">Mehnat huquqi · <svg width="12" height="12" viewBox="0 0 24 24" fill="#F79009" stroke="#F79009" stroke-width="0" stroke-linecap="round" stroke-linejoin="round"><path d="m12 2.8 2.8 5.8 6.3.9-4.6 4.4 1.1 6.3L12 17.2l-5.6 3 1.1-6.3-4.6-4.4 6.3-.9z"/></svg>4.8 · 2.0 km</span></div>
+<div class="u-ghost">Yozish</div></div><div class="u-lw"><div class="u-av" style="background:#FEE4E2;color:#D92D20">MN<i></i></div>
+<div class="col g2 f1"><span class="u-t15">Malika Nur</span><span class="u-t13 row g4 ac">Biznes huquqi · <svg width="12" height="12" viewBox="0 0 24 24" fill="#F79009" stroke="#F79009" stroke-width="0" stroke-linecap="round" stroke-linejoin="round"><path d="m12 2.8 2.8 5.8 6.3.9-4.6 4.4 1.1 6.3L12 17.2l-5.6 3 1.1-6.3-4.6-4.4 6.3-.9z"/></svg>5.0 · 3.4 km</span></div>
+<div class="u-ghost">Yozish</div></div></div>
+</div>
+<div class="u-tabbar"><div class="u-tabrow"><div class="u-tab"><i class="u-tab-bar"></i><div class="rel"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#0057F2" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg></div><span style="color:#0057F2;font-weight:700">Asosiy</span></div><div class="u-tab"><i class="u-tab-bar" style="background:transparent"></i><div class="rel"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#98A2B3" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="2"/><rect x="14" y="3" width="7" height="7" rx="2"/><rect x="3" y="14" width="7" height="7" rx="2"/><rect x="14" y="14" width="7" height="7" rx="2"/></svg></div><span style="color:#98A2B3;font-weight:500">Xizmatlar</span></div><div class="u-tab"><div class="u-ai"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.8 5.4L19 10l-5.2 1.6L12 17l-1.8-5.4L5 10l5.2-1.6z"/><path d="M19 15l.7 2.1 2.1.7-2.1.7L19 20.6l-.7-2.1-2.1-.7 2.1-.7z"/></svg></div></div><div class="u-tab"><i class="u-tab-bar" style="background:transparent"></i><div class="rel"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#98A2B3" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="7" width="18" height="14" rx="2.5"/><path d="M8 7V5.5A2.5 2.5 0 0 1 10.5 3h3A2.5 2.5 0 0 1 16 5.5V7"/><path d="M3 12h18"/></svg></div><span style="color:#98A2B3;font-weight:500">Buyurtmalar</span></div><div class="u-tab"><i class="u-tab-bar" style="background:transparent"></i><div class="rel"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#98A2B3" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20.5l1.4-4.9A8 8 0 1 1 21 12z"/></svg><span class="u-badge">3</span></div><span style="color:#98A2B3;font-weight:500">Xabarlar</span></div></div><div class="hi" style="background:#101828"></div></div>
+</div></div><div class="fr"><span class="fr-l">Advokat / Worker · Home</span><div class="phone u" data-name="05 Ufq · Advokat">
+<div class="sb" style="color:#101828">
+  <span class="sb-time">9:41</span>
+  <div class="sb-r">
+    <svg width="18" height="12" viewBox="0 0 18 12" fill="#101828"><rect x="0" y="8" width="3" height="4" rx="1"/><rect x="5" y="5.5" width="3" height="6.5" rx="1"/><rect x="10" y="3" width="3" height="9" rx="1"/><rect x="15" y="0" width="3" height="12" rx="1"/></svg>
+    <svg width="16" height="12" viewBox="0 0 16 12" fill="#101828"><path d="M8 2.2c2.3 0 4.4.9 6 2.4l1.2-1.2A10.2 10.2 0 0 0 8 .5C5.2.5 2.7 1.6.8 3.4L2 4.6a8.5 8.5 0 0 1 6-2.4zm0 3.4c1.4 0 2.6.5 3.6 1.4l1.2-1.2A6.9 6.9 0 0 0 8 3.9 6.9 6.9 0 0 0 3.2 5.8L4.4 7c1-.9 2.2-1.4 3.6-1.4zM8 9a1.6 1.6 0 0 0-1.2.5L8 11.5l1.2-2A1.6 1.6 0 0 0 8 9z"/></svg>
+    <svg width="27" height="13" viewBox="0 0 27 13" fill="none"><rect x=".5" y=".5" width="23" height="12" rx="3.5" stroke="#101828" opacity=".4"/><rect x="2" y="2" width="20" height="9" rx="2" fill="#101828"/><rect x="25" y="4.5" width="1.6" height="4" rx=".8" fill="#101828" opacity=".5"/></svg>
+  </div>
+</div>
+<div class="u-head"><div class="row g10 ac"><svg width="34" height="34" viewBox="156 163 940 940"><path fill="#1B1C20" d="M229 614 C204.1 517.9 204.5 415.9 219 318 L627 170 L1036 316 C1057.3 476.9 1032.5 643.9 961 790 C959.1 660.9 958.9 530.6 938 403 L627 279 L309 401 C304.0 452.3 297.6 504.8 307 556 L229 614 Z"/><path fill="#1B1C20" d="M346 437 C503.0 367.6 684.6 372.5 849 412 L848 508 C761.9 484.6 671.9 476.6 583 483 L583 922 L481 820 L481 494 C433.9 499.4 388.5 515.4 346 536 L346 437 Z"/><path fill="#0057F2" d="M628 532 L723 537 L723 660 L836 660 L838 550 L925 567 L929 812 L836 883 L836 756 L723 756 L723 940 L628 970 L628 532 Z"/><path fill="#0057F2" d="M242 664 L324 603 C370.8 771.3 485.0 921.8 637 1008 C735.8 977.1 831.8 932.3 912 866 C837.2 964.6 735.6 1039.4 627 1097 C448.5 1012.2 295.9 857.0 242 664 Z"/></svg><div class="col g2"><span class="u-brand">Ish maydoni</span><span class="u-cap">Advokat · Jasur Karimov</span></div></div><div class="row g8 ac"><div class="u-ib"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="#101828" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8.5a6 6 0 1 0-12 0c0 6.5-2.5 8.5-2.5 8.5h17S18 15 18 8.5"/><path d="M10.3 20.5a2 2 0 0 0 3.4 0"/></svg><span class=u-dot></span></div><div class="u-me">JK</div></div></div>
+<div class="u-body">
+  <div class="u-seg"><div class="u-seg-i on"><i style="background:#17B26A"></i>Onlayn</div><div class="u-seg-i"><i style="background:#F79009"></i>Band</div><div class="u-seg-i"><i style="background:#98A2B3"></i>Oflayn</div></div>
+
+  <div class="u-card">
+    <div class="row jb ac"><span class="u-h2">Bugun</span><span class="u-chip">Hafta <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#344054" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></span></div>
+    <div class="u-kpis"><div class="u-kpi"><span class="u-t13">Daromad</span><span class="u-kpi-v">1 250 000<small>so'm</small></span><span class="u-kpi-d" style="color:#079455">+12%</span></div><div class="u-kpi"><span class="u-t13">Buyurtmalar</span><span class="u-kpi-v">4<small>bugun</small></span><span class="u-kpi-d" style="color:#667085">2 yakunlandi</span></div><div class="u-kpi"><span class="u-t13">Reyting</span><span class="u-kpi-v">4.9<small>★</small></span><span class="u-kpi-d" style="color:#667085">128 baho</span></div><div class="u-kpi"><span class="u-t13">Javob vaqti</span><span class="u-kpi-v">6<small>daq</small></span><span class="u-kpi-d" style="color:#079455">maqsad ≤ 10</span></div></div>
+  </div>
+
+  <div class="u-ticket" style="border-color:#FEC84B">
+    <div class="u-tk-top">
+      <div class="row jb ac"><span class="u-pill" style="background:#FFFAEB;color:#B54708"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#B54708" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2.5 4.5 13.5H12l-1 8 8.5-11H12z"/></svg>Yangi tezkor so'rov</span><span class="u-t14" style="color:#B54708">04:59</span></div>
+      <span class="u-tk-t">Avtohalokat bo'yicha maslahat</span>
+      <div class="row g8"><span class="u-chip sm"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#475467" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19.5 10c0 6-7.5 11.5-7.5 11.5S4.5 16 4.5 10a7.5 7.5 0 0 1 15 0z"/><circle cx="12" cy="10" r="2.6"/></svg>2.4 km</span><span class="u-chip sm"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#475467" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 7.5V5.5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-9a2 2 0 0 0-2-2H5"/><circle cx="16.5" cy="14" r="1.3"/></svg>250 000</span><span class="u-chip sm"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#475467" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></svg>~30 daq</span></div>
+      <div class="u-cd"><i></i></div>
+    </div>
+    <div class="u-perf"><i class="l"></i><span></span><i class="r"></i></div>
+    <div class="u-tk-bot" style="flex-direction:row;gap:10px"><div class="u-btn ghost">Rad etish</div><div class="u-btn">Qabul qilish</div></div>
+  </div>
+
+  <div class="u-sec"><span class="u-h2">Kun tartibi</span><span class="u-link">Kalendar</span></div>
+  <div class="u-card" style="gap:6px"><div class="u-hr"><span class="u-hr-t">09:00</span><i class="u-hr-l"></i></div><div class="u-hr"><span class="u-hr-t">10:00</span><div class="u-ev" style="background:#EFF4FF;border-left-color:#0057F2"><span class="u-t14">Konsultatsiya · Malika K.</span><span class="u-t12">Video · 45 daq</span></div></div><div class="u-hr"><span class="u-hr-t" style="color:#F04438;font-weight:700">12:40</span><div class="u-now"><b></b><i></i></div></div><div class="u-hr"><span class="u-hr-t">14:00</span><div class="u-ev" style="background:#FEF3F2;border-left-color:#F04438"><span class="u-t14">Sud majlisi</span><span class="u-t12">Yunusobod tuman sudi, 3-zal</span></div></div><div class="u-hr"><span class="u-hr-t">16:30</span><div class="u-ev" style="background:#ECFDF3;border-left-color:#079455"><span class="u-t14">Da'vo arizasi</span><span class="u-t12">Ish #LX-1987 · muddat bugun</span></div></div></div>
+
+  <div class="u-sec"><span class="u-h2">Yangi so'rovlar</span><span class="u-pill" style="background:#EFF4FF;color:#0057F2">7 ta</span></div>
+  <div class="u-card p0"><div class="u-lw"><div class="col g2 f1"><span class="u-t15">Ajrim va aliment</span><span class="u-t13">Oila huquqi · 12 daq oldin</span></div><div class="col" style="align-items:flex-end"><span class="u-t15">300 000</span><span class="u-t12">so'm</span></div></div><div class="u-lw"><div class="col g2 f1"><span class="u-t15">Ijara shartnomasini tekshirish</span><span class="u-t13">Ko'chmas mulk · 40 daq oldin</span></div><div class="col" style="align-items:flex-end"><span class="u-t15">180 000</span><span class="u-t12">so'm</span></div></div></div>
+
+  <div class="u-pay"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#0057F2" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M19 7.5V5.5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-9a2 2 0 0 0-2-2H5"/><circle cx="16.5" cy="14" r="1.3"/></svg><div class="col g2 f1"><span class="u-t15">Keyingi to'lov · 14-noyabr</span><span class="u-t13">Balans: 3 480 000 so'm</span></div><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#98A2B3" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg></div>
+</div>
+<div class="u-tabbar"><div class="u-tabrow"><div class="u-tab"><i class="u-tab-bar"></i><div class="rel"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#0057F2" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg></div><span style="color:#0057F2;font-weight:700">Asosiy</span></div><div class="u-tab"><i class="u-tab-bar" style="background:transparent"></i><div class="rel"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#98A2B3" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 13h5l1.5 3h6l1.5-3h5"/><path d="M5.5 5h13l3 8v5.5a2 2 0 0 1-2 2h-15a2 2 0 0 1-2-2V13z"/></svg><span class="u-badge">7</span></div><span style="color:#98A2B3;font-weight:500">So'rovlar</span></div><div class="u-tab"><div class="u-ai"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.8 5.4L19 10l-5.2 1.6L12 17l-1.8-5.4L5 10l5.2-1.6z"/><path d="M19 15l.7 2.1 2.1.7-2.1.7L19 20.6l-.7-2.1-2.1-.7 2.1-.7z"/></svg></div></div><div class="u-tab"><i class="u-tab-bar" style="background:transparent"></i><div class="rel"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#98A2B3" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20.5v-1A4.5 4.5 0 0 1 7 15h4a4.5 4.5 0 0 1 4.5 4.5v1"/><path d="M16 4.7a3.5 3.5 0 0 1 0 6.6M21.5 20.5v-1a4.5 4.5 0 0 0-3-4.2"/></svg></div><span style="color:#98A2B3;font-weight:500">Mijozlar</span></div><div class="u-tab"><i class="u-tab-bar" style="background:transparent"></i><div class="rel"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#98A2B3" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20.5l1.4-4.9A8 8 0 1 1 21 12z"/></svg><span class="u-badge">3</span></div><span style="color:#98A2B3;font-weight:500">Xabarlar</span></div></div><div class="hi" style="background:#101828"></div></div>
+</div></div><div class="spec">
+  <div class="col g6"><span class="sp-t">Dizayn tokenlari</span><span class="sp-d">Aniq'ning rivoji: barcha tezkor amallar bitta kartada, chipta (ticket) shaklidagi buyurtma, advokat uchun soatlik kun jadvali va holat tanlagich.</span></div>
+  <div class="col g8"><span class="sp-h">Shrift</span><span class="sp-font">DM Sans (700 / 600 / 500)</span></div>
+  <div class="col g8"><span class="sp-h">Ranglar</span><div class="sp-sws"><div class="sp-sw"><i style="background:#0057F2"></i><div class="col"><span class="sp-k">Primary</span><span class="sp-v">#0057F2</span></div></div><div class="sp-sw"><i style="background:#101828"></i><div class="col"><span class="sp-k">Ink</span><span class="sp-v">#101828</span></div></div><div class="sp-sw"><i style="background:#667085"></i><div class="col"><span class="sp-k">Text 2</span><span class="sp-v">#667085</span></div></div><div class="sp-sw"><i style="background:#98A2B3"></i><div class="col"><span class="sp-k">Muted</span><span class="sp-v">#98A2B3</span></div></div><div class="sp-sw"><i style="background:#F4F6FA"></i><div class="col"><span class="sp-k">Background</span><span class="sp-v">#F4F6FA</span></div></div><div class="sp-sw"><i style="background:#FFFFFF"></i><div class="col"><span class="sp-k">Surface</span><span class="sp-v">#FFFFFF</span></div></div><div class="sp-sw"><i style="background:#E4E7EC"></i><div class="col"><span class="sp-k">Border</span><span class="sp-v">#E4E7EC</span></div></div><div class="sp-sw"><i style="background:#17B26A"></i><div class="col"><span class="sp-k">Success</span><span class="sp-v">#17B26A</span></div></div><div class="sp-sw"><i style="background:#F79009"></i><div class="col"><span class="sp-k">Warning</span><span class="sp-v">#F79009</span></div></div><div class="sp-sw"><i style="background:#F04438"></i><div class="col"><span class="sp-k">Danger</span><span class="sp-v">#F04438</span></div></div></div></div>
+  <div class="col g4"><span class="sp-h">Tipografiya · size / line · weight · tracking</span><div class="sp-r"><span class="sp-k">H1</span><span class="sp-v">26 / 32 · 700 · -0.6</span></div><div class="sp-r"><span class="sp-k">H2</span><span class="sp-v">18 / 24 · 700 · -0.3</span></div><div class="sp-r"><span class="sp-k">Karta sarlavha</span><span class="sp-v">17 / 24 · 700</span></div><div class="sp-r"><span class="sp-k">KPI</span><span class="sp-v">24 / 30 · 700 · -0.6</span></div><div class="sp-r"><span class="sp-k">Body</span><span class="sp-v">15 / 20 · 600</span></div><div class="sp-r"><span class="sp-k">Caption</span><span class="sp-v">13 / 18 · 400</span></div></div>
+  <div class="col g4"><span class="sp-h">Border radius (px)</span><div class="sp-r"><span class="sp-k">Karta / ticket</span><span class="sp-v">24</span></div><div class="sp-r"><span class="sp-k">Servis ikonka</span><span class="sp-v">20 (60×60)</span></div><div class="sp-r"><span class="sp-k">Segment</span><span class="sp-v">14 / 10</span></div><div class="sp-r"><span class="sp-k">Button</span><span class="sp-v">14</span></div><div class="sp-r"><span class="sp-k">Avatar / act</span><span class="sp-v">22–24 (doira)</span></div></div>
+  <div class="col g4"><span class="sp-h">O'lchamlar</span><div class="sp-r"><span class="sp-k">Frame</span><span class="sp-v">390 × auto (min 844)</span></div><div class="sp-r"><span class="sp-k">Gutter</span><span class="sp-v">20 · gap 16</span></div><div class="sp-r"><span class="sp-k">Action card</span><span class="sp-v">input h64 + 3 ustun</span></div><div class="sp-r"><span class="sp-k">Tab bar</span><span class="sp-v">h90 · indikator 28×3</span></div><div class="sp-r"><span class="sp-k">Button</span><span class="sp-v">h48 · mini h36</span></div></div>
+  <div class="col g4"><span class="sp-h">Ikonkalar</span><span class="sp-d">24×24 grid, stroke 1.7–2.2, round cap/join. Tab: 22–24px.</span></div>
+</div></div>
+</section><section class="variant" data-name="Variant 06 — Grafit">
+  <div class="vh"><span class="vh-n">06</span><span class="vh-t">Grafit</span><span class="vh-s">Dark bento 2.0 · Sora · lime urg'u, heatmap</span></div>
+  <div class="vrow"><div class="fr"><span class="fr-l">Mijoz · Home</span><div class="phone g" data-name="06 Grafit · Mijoz">
+<div class="sb" style="color:#FFFFFF">
+  <span class="sb-time">9:41</span>
+  <div class="sb-r">
+    <svg width="18" height="12" viewBox="0 0 18 12" fill="#FFFFFF"><rect x="0" y="8" width="3" height="4" rx="1"/><rect x="5" y="5.5" width="3" height="6.5" rx="1"/><rect x="10" y="3" width="3" height="9" rx="1"/><rect x="15" y="0" width="3" height="12" rx="1"/></svg>
+    <svg width="16" height="12" viewBox="0 0 16 12" fill="#FFFFFF"><path d="M8 2.2c2.3 0 4.4.9 6 2.4l1.2-1.2A10.2 10.2 0 0 0 8 .5C5.2.5 2.7 1.6.8 3.4L2 4.6a8.5 8.5 0 0 1 6-2.4zm0 3.4c1.4 0 2.6.5 3.6 1.4l1.2-1.2A6.9 6.9 0 0 0 8 3.9 6.9 6.9 0 0 0 3.2 5.8L4.4 7c1-.9 2.2-1.4 3.6-1.4zM8 9a1.6 1.6 0 0 0-1.2.5L8 11.5l1.2-2A1.6 1.6 0 0 0 8 9z"/></svg>
+    <svg width="27" height="13" viewBox="0 0 27 13" fill="none"><rect x=".5" y=".5" width="23" height="12" rx="3.5" stroke="#FFFFFF" opacity=".4"/><rect x="2" y="2" width="20" height="9" rx="2" fill="#FFFFFF"/><rect x="25" y="4.5" width="1.6" height="4" rx=".8" fill="#FFFFFF" opacity=".5"/></svg>
+  </div>
+</div>
+<div class="g-head"><div class="row g10 ac"><svg width="32" height="32" viewBox="156 163 940 940"><path fill="#FFFFFF" d="M229 614 C204.1 517.9 204.5 415.9 219 318 L627 170 L1036 316 C1057.3 476.9 1032.5 643.9 961 790 C959.1 660.9 958.9 530.6 938 403 L627 279 L309 401 C304.0 452.3 297.6 504.8 307 556 L229 614 Z"/><path fill="#FFFFFF" d="M346 437 C503.0 367.6 684.6 372.5 849 412 L848 508 C761.9 484.6 671.9 476.6 583 483 L583 922 L481 820 L481 494 C433.9 499.4 388.5 515.4 346 536 L346 437 Z"/><path fill="#0090FF" d="M628 532 L723 537 L723 660 L836 660 L838 550 L925 567 L929 812 L836 883 L836 756 L723 756 L723 940 L628 970 L628 532 Z"/><path fill="#0090FF" d="M242 664 L324 603 C370.8 771.3 485.0 921.8 637 1008 C735.8 977.1 831.8 932.3 912 866 C837.2 964.6 735.6 1039.4 627 1097 C448.5 1012.2 295.9 857.0 242 664 Z"/></svg><span class="g-brand">Tezkor Himoya</span></div><div class="row g8 ac"><div class="g-ib"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#F2F4F8" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m20.5 20.5-4.5-4.5"/></svg></div><div class="g-ib"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#F2F4F8" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8.5a6 6 0 1 0-12 0c0 6.5-2.5 8.5-2.5 8.5h17S18 15 18 8.5"/><path d="M10.3 20.5a2 2 0 0 0 3.4 0"/></svg><span class=g-dot></span></div></div></div>
+<div class="g-body">
+  <div class="col g6"><span class="g-cap">Salom, Aziz</span><span class="g-h1">Bugun qanday<br>yordam kerak?</span></div>
+
+  <div class="g-tile g-aitile">
+    <div class="row jb ac"><span class="g-lbl" style="color:#C8F560"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#C8F560" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.8 5.4L19 10l-5.2 1.6L12 17l-1.8-5.4L5 10l5.2-1.6z"/><path d="M19 15l.7 2.1 2.1.7-2.1.7L19 20.6l-.7-2.1-2.1-.7 2.1-.7z"/></svg>AI yordamchi</span><span class="g-cap">Free · 5 savol</span></div>
+    <span class="g-prompt">Muammoingizni oddiy so'zlar bilan yozing<i></i></span>
+    <div class="row jb ac"><div class="row g6"><span class="g-chip">Ish haqi</span><span class="g-chip">Ajrim</span><span class="g-chip">Ijara</span></div><div class="g-send"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0A0C10" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M6 11l6-6 6 6"/></svg></div></div>
+  </div>
+
+  <div class="row g12">
+    <div class="g-sos"><svg width="150" height="150" viewBox="0 0 150 150" fill="none" style="position:absolute;right:-40px;top:-30px">
+<circle cx="75" cy="75" r="30" stroke="#FFFFFF" stroke-opacity=".28" stroke-width="1.5"/>
+<circle cx="75" cy="75" r="48" stroke="#FFFFFF" stroke-opacity=".18" stroke-width="1.5"/>
+<circle cx="75" cy="75" r="66" stroke="#FFFFFF" stroke-opacity=".10" stroke-width="1.5"/></svg>
+      <div class="g-sos-ic"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 18v-6a5 5 0 0 1 10 0v6"/><path d="M5 18h14v3H5z"/><path d="M12 2v2M4.2 5.2l1.4 1.4M19.8 5.2l-1.4 1.4M2 12h1.5M20.5 12H22"/></svg></div>
+      <div class="col g4"><span class="g-sos-t">SOS</span><span class="g-sos-s">Shoshilinch yordam. Bosib turing 3 s</span></div>
+    </div>
+    <div class="col g12 f1">
+      <div class="g-tile g-blue">
+        <div class="row jb ac"><div class="g-avs"><i style="background:#9CC0FF;margin-left:0px">DR</i><i style="background:#C8F560;margin-left:-8px">SA</i><i style="background:#FFB547;margin-left:-8px">MN</i></div><span class="g-lbl" style="color:#FFFFFF">24/7</span></div>
+        <div class="col g2"><span class="g-tt">Tezkor advokat</span><span class="g-ts" style="color:rgba(255,255,255,.75)">12 onlayn · ~15 daq</span></div>
+      </div>
+      <div class="g-tile">
+        <div class="row jb ac"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#FFB547" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 16.5h14M3 16.5V12l2.2-5.2A2 2 0 0 1 7 5.5h10a2 2 0 0 1 1.8 1.3L21 12v4.5"/><path d="M3 12h18"/><circle cx="7.5" cy="16.5" r="2"/><circle cx="16.5" cy="16.5" r="2"/></svg><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#6E768A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M8 7h9v9"/></svg></div>
+        <div class="col g2"><span class="g-tt">Avtohalokat</span><span class="g-ts">Joyida maslahat</span></div>
+      </div>
+    </div>
+  </div>
+  <div class="row g12">
+    <div class="g-tile f1 hz"><div class="g-sq" style="background:rgba(200,245,96,.12)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#C8F560" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2.5H6.5a2 2 0 0 0-2 2v15a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2V8z"/><path d="M14 2.5V8h5.5M8.5 13h7M8.5 17h5"/></svg></div><div class="col g2"><span class="g-tt sm">Shablonlar</span><span class="g-ts">48 ta hujjat</span></div></div>
+    <div class="g-tile f1 hz"><div class="g-sq" style="background:rgba(156,192,255,.12)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#9CC0FF" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2.5H6.5a2 2 0 0 0-2 2v15a2 2 0 0 0 2 2h5"/><path d="M14 2.5V8h5.5v3"/><path d="M17.5 14l.9 2.6 2.6.9-2.6.9-.9 2.6-.9-2.6-2.6-.9 2.6-.9z"/></svg></div><div class="col g2"><span class="g-tt sm">Hujjat tahlili</span><span class="g-ts">PDF, rasm</span></div></div>
+  </div>
+
+  <div class="g-sec"><span class="g-h2">Buyurtmangiz</span><span class="g-link">Hammasi</span></div>
+  <div class="g-tile" style="gap:16px">
+    <div class="row jb as"><div class="col g4"><span class="g-tt">Mehnat nizosi bo'yicha maslahat</span><span class="g-ts">#LX-2048 · 3/4 bosqich</span></div></div>
+    <div class="g-steps"><div class="g-st done"><i><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#0A0C10" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m4.5 12.5 4.5 4.5L19.5 6.5"/></svg></i><span>Yuborildi</span></div><div class="g-st done"><i><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#0A0C10" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m4.5 12.5 4.5 4.5L19.5 6.5"/></svg></i><span>Qabul</span></div><div class="g-st now"><i></i><span>Jarayonda</span></div><div class="g-st "><i></i><span>Yakun</span></div></div>
+    <div class="g-div"></div>
+    <div class="row g12 ac">
+      <div class="g-av">DR</div>
+      <div class="col g2 f1"><span class="g-name">Dilnoza Rahimova</span><span class="g-ts row g4 ac"><svg width="12" height="12" viewBox="0 0 24 24" fill="#FFB547" stroke="#FFB547" stroke-width="0" stroke-linecap="round" stroke-linejoin="round"><path d="m12 2.8 2.8 5.8 6.3.9-4.6 4.4 1.1 6.3L12 17.2l-5.6 3 1.1-6.3-4.6-4.4 6.3-.9z"/></svg>4.9 · Advokat</span></div>
+      <div class="g-lime"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0A0C10" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="6" width="13" height="12" rx="2.5"/><path d="m15.5 10.5 6-3.5v10l-6-3.5"/></svg>15:30</div>
+    </div>
+  </div>
+</div>
+<div class="g-tabbar"><div class="g-tab"><div class="rel"><svg width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="#C8F560" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg></div><i style="background:#C8F560"></i></div><div class="g-tab"><div class="rel"><svg width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="#6E768A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="2"/><rect x="14" y="3" width="7" height="7" rx="2"/><rect x="3" y="14" width="7" height="7" rx="2"/><rect x="14" y="14" width="7" height="7" rx="2"/></svg></div><i style="background:transparent"></i></div><div class="g-ai"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#0A0C10" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.8 5.4L19 10l-5.2 1.6L12 17l-1.8-5.4L5 10l5.2-1.6z"/><path d="M19 15l.7 2.1 2.1.7-2.1.7L19 20.6l-.7-2.1-2.1-.7 2.1-.7z"/></svg></div><div class="g-tab"><div class="rel"><svg width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="#6E768A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="7" width="18" height="14" rx="2.5"/><path d="M8 7V5.5A2.5 2.5 0 0 1 10.5 3h3A2.5 2.5 0 0 1 16 5.5V7"/><path d="M3 12h18"/></svg></div><i style="background:transparent"></i></div><div class="g-tab"><div class="rel"><svg width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="#6E768A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20.5l1.4-4.9A8 8 0 1 1 21 12z"/></svg><span class="g-badge">3</span></div><i style="background:transparent"></i></div></div><div class="hi" style="background:#FFFFFF"></div>
+</div></div><div class="fr"><span class="fr-l">Advokat / Worker · Home</span><div class="phone g" data-name="06 Grafit · Advokat">
+<div class="sb" style="color:#FFFFFF">
+  <span class="sb-time">9:41</span>
+  <div class="sb-r">
+    <svg width="18" height="12" viewBox="0 0 18 12" fill="#FFFFFF"><rect x="0" y="8" width="3" height="4" rx="1"/><rect x="5" y="5.5" width="3" height="6.5" rx="1"/><rect x="10" y="3" width="3" height="9" rx="1"/><rect x="15" y="0" width="3" height="12" rx="1"/></svg>
+    <svg width="16" height="12" viewBox="0 0 16 12" fill="#FFFFFF"><path d="M8 2.2c2.3 0 4.4.9 6 2.4l1.2-1.2A10.2 10.2 0 0 0 8 .5C5.2.5 2.7 1.6.8 3.4L2 4.6a8.5 8.5 0 0 1 6-2.4zm0 3.4c1.4 0 2.6.5 3.6 1.4l1.2-1.2A6.9 6.9 0 0 0 8 3.9 6.9 6.9 0 0 0 3.2 5.8L4.4 7c1-.9 2.2-1.4 3.6-1.4zM8 9a1.6 1.6 0 0 0-1.2.5L8 11.5l1.2-2A1.6 1.6 0 0 0 8 9z"/></svg>
+    <svg width="27" height="13" viewBox="0 0 27 13" fill="none"><rect x=".5" y=".5" width="23" height="12" rx="3.5" stroke="#FFFFFF" opacity=".4"/><rect x="2" y="2" width="20" height="9" rx="2" fill="#FFFFFF"/><rect x="25" y="4.5" width="1.6" height="4" rx=".8" fill="#FFFFFF" opacity=".5"/></svg>
+  </div>
+</div>
+<div class="g-head"><div class="row g10 ac"><svg width="32" height="32" viewBox="156 163 940 940"><path fill="#FFFFFF" d="M229 614 C204.1 517.9 204.5 415.9 219 318 L627 170 L1036 316 C1057.3 476.9 1032.5 643.9 961 790 C959.1 660.9 958.9 530.6 938 403 L627 279 L309 401 C304.0 452.3 297.6 504.8 307 556 L229 614 Z"/><path fill="#FFFFFF" d="M346 437 C503.0 367.6 684.6 372.5 849 412 L848 508 C761.9 484.6 671.9 476.6 583 483 L583 922 L481 820 L481 494 C433.9 499.4 388.5 515.4 346 536 L346 437 Z"/><path fill="#0090FF" d="M628 532 L723 537 L723 660 L836 660 L838 550 L925 567 L929 812 L836 883 L836 756 L723 756 L723 940 L628 970 L628 532 Z"/><path fill="#0090FF" d="M242 664 L324 603 C370.8 771.3 485.0 921.8 637 1008 C735.8 977.1 831.8 932.3 912 866 C837.2 964.6 735.6 1039.4 627 1097 C448.5 1012.2 295.9 857.0 242 664 Z"/></svg><span class="g-brand">Ish maydoni</span></div><div class="row g8 ac"><div class="g-tog"><span>Onlayn</span><div class="g-sw"><i></i></div></div><div class="g-ib"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#F2F4F8" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8.5a6 6 0 1 0-12 0c0 6.5-2.5 8.5-2.5 8.5h17S18 15 18 8.5"/><path d="M10.3 20.5a2 2 0 0 0 3.4 0"/></svg><span class=g-dot></span></div></div></div>
+<div class="g-body">
+  <div class="g-tile" style="gap:14px">
+    <div class="row jb ac"><span class="g-cap">Bu hafta daromad</span><span class="g-up"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#C8F560" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 17 6-6 4 4 8-8"/><path d="M15 7h6v6"/></svg>+18%</span></div>
+    <span class="g-big">4 850 000<small>so'm</small></span>
+    <div class="g-chart"><div class="col g6 ac"><div class="g-bc"><i style="height:38%;background:#2A303C"></i></div><span class="g-bd" style="color:#6E768A">D</span></div><div class="col g6 ac"><div class="g-bc"><i style="height:56%;background:#2A303C"></i></div><span class="g-bd" style="color:#6E768A">S</span></div><div class="col g6 ac"><div class="g-bc"><i style="height:44%;background:#2A303C"></i></div><span class="g-bd" style="color:#6E768A">C</span></div><div class="col g6 ac"><div class="g-bc"><i style="height:72%;background:#2A303C"></i></div><span class="g-bd" style="color:#6E768A">P</span></div><div class="col g6 ac"><div class="g-bc"><i style="height:60%;background:#2A303C"></i></div><span class="g-bd" style="color:#6E768A">J</span></div><div class="col g6 ac"><div class="g-bc"><i style="height:88%;background:#C8F560"></i></div><span class="g-bd" style="color:#C8F560">S</span></div><div class="col g6 ac"><div class="g-bc"><i style="height:26%;background:#2A303C"></i></div><span class="g-bd" style="color:#6E768A">Y</span></div></div>
+  </div>
+
+  <div class="row g12">
+    <div class="g-tile f1" style="height:150px">
+      <span class="g-cap">Reyting</span>
+      <div class="g-ring"><svg width="76" height="76" viewBox="0 0 76 76"><circle cx="38.0" cy="38.0" r="34.0" fill="none" stroke="#252A35" stroke-width="8"/><circle cx="38.0" cy="38.0" r="34.0" fill="none" stroke="#FFB547" stroke-width="8" stroke-linecap="round" stroke-dasharray="209.4 213.6" transform="rotate(-90 38.0 38.0)"/></svg><span>4.9</span></div>
+      <span class="g-ts">128 baho</span>
+    </div>
+    <div class="g-tile f1" style="height:150px">
+      <span class="g-cap">Javob foizi</span>
+      <span class="g-mid">96<small>%</small></span>
+      <div class="col g6"><div class="g-pb"><i style="width:96%"></i></div><span class="g-ts">O'rt. 6 daqiqa</span></div>
+    </div>
+  </div>
+
+  <div class="g-req">
+    <div class="row g14 ac">
+      <div class="g-ring sm"><svg width="60" height="60" viewBox="0 0 60 60"><circle cx="30.0" cy="30.0" r="27.5" fill="none" stroke="#3A2E14" stroke-width="5"/><circle cx="30.0" cy="30.0" r="27.5" fill="none" stroke="#FFB547" stroke-width="5" stroke-linecap="round" stroke-dasharray="138.2 172.8" transform="rotate(-90 30.0 30.0)"/></svg><span style="color:#FFB547;font-size:14px">4:59</span></div>
+      <div class="col g4 f1"><span class="g-lbl" style="color:#FFB547"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#FFB547" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2.5 4.5 13.5H12l-1 8 8.5-11H12z"/></svg>Tezkor so'rov</span><span class="g-tt">Avtohalokat · maslahat</span><span class="g-ts">Chilonzor · 2.4 km · 250 000 so'm</span></div>
+    </div>
+    <div class="row g10"><div class="g-b ghost">Rad etish</div><div class="g-b">Qabul qilish <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#0A0C10" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div></div>
+  </div>
+
+  <div class="g-tile" style="gap:14px">
+    <div class="row jb ac"><span class="g-tt sm">Faollik · 4 hafta</span><span class="g-ts row g4 ac"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#C8F560" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21.5c4 0 7-2.7 7-6.6 0-4.4-4-6.4-4.4-11.4C11.4 5.8 9.5 8.6 9.6 11.6 8.4 10.8 7.7 9.6 7.5 8.4 5.8 10 5 12.3 5 14.9c0 3.9 3 6.6 7 6.6z"/></svg>9 kun ketma-ket</span></div>
+    <div class="col g6"><div class="row g6"><i class="g-hc" style="background:#1B1F28"></i><i class="g-hc" style="background:#33461B"></i><i class="g-hc" style="background:#5B7E26"></i><i class="g-hc" style="background:#33461B"></i><i class="g-hc" style="background:#8DBF3A"></i><i class="g-hc" style="background:#5B7E26"></i><i class="g-hc" style="background:#1B1F28"></i></div><div class="row g6"><i class="g-hc" style="background:#33461B"></i><i class="g-hc" style="background:#5B7E26"></i><i class="g-hc" style="background:#8DBF3A"></i><i class="g-hc" style="background:#5B7E26"></i><i class="g-hc" style="background:#8DBF3A"></i><i class="g-hc" style="background:#33461B"></i><i class="g-hc" style="background:#1B1F28"></i></div><div class="row g6"><i class="g-hc" style="background:#5B7E26"></i><i class="g-hc" style="background:#8DBF3A"></i><i class="g-hc" style="background:#33461B"></i><i class="g-hc" style="background:#8DBF3A"></i><i class="g-hc" style="background:#C8F560"></i><i class="g-hc" style="background:#5B7E26"></i><i class="g-hc" style="background:#33461B"></i></div><div class="row g6"><i class="g-hc" style="background:#33461B"></i><i class="g-hc" style="background:#5B7E26"></i><i class="g-hc" style="background:#C8F560"></i><i class="g-hc" style="background:#8DBF3A"></i><i class="g-hc" style="background:#C8F560"></i><i class="g-hc" style="background:#8DBF3A"></i><i class="g-hc" style="background:#1B1F28"></i></div></div>
+    <div class="row jb ac"><span class="g-ts">Kam</span><div class="row g4"><i class="g-hl" style="background:#1B1F28"></i><i class="g-hl" style="background:#33461B"></i><i class="g-hl" style="background:#5B7E26"></i><i class="g-hl" style="background:#8DBF3A"></i><i class="g-hl" style="background:#C8F560"></i></div><span class="g-ts">Ko'p</span></div>
+  </div>
+
+  <div class="g-sec"><span class="g-h2">Bugun</span><span class="g-link">Kalendar</span></div>
+  <div class="g-tile" style="padding:6px 16px;gap:0"><div class="g-ag"><span class="g-ag-t">10:00</span><i style="background:#9CC0FF"></i><div class="col g2 f1"><span class="g-name">Konsultatsiya</span><span class="g-ts">Malika K. · video</span></div></div><div class="g-ag"><span class="g-ag-t">14:00</span><i style="background:#FF5D5D"></i><div class="col g2 f1"><span class="g-name">Sud majlisi</span><span class="g-ts">Yunusobod tuman sudi</span></div></div><div class="g-ag"><span class="g-ag-t">16:30</span><i style="background:#C8F560"></i><div class="col g2 f1"><span class="g-name">Da'vo arizasi</span><span class="g-ts">Ish #LX-1987</span></div></div></div>
+</div>
+<div class="g-tabbar"><div class="g-tab"><div class="rel"><svg width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="#C8F560" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg></div><i style="background:#C8F560"></i></div><div class="g-tab"><div class="rel"><svg width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="#6E768A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 13h5l1.5 3h6l1.5-3h5"/><path d="M5.5 5h13l3 8v5.5a2 2 0 0 1-2 2h-15a2 2 0 0 1-2-2V13z"/></svg><span class="g-badge">7</span></div><i style="background:transparent"></i></div><div class="g-ai"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#0A0C10" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.8 5.4L19 10l-5.2 1.6L12 17l-1.8-5.4L5 10l5.2-1.6z"/><path d="M19 15l.7 2.1 2.1.7-2.1.7L19 20.6l-.7-2.1-2.1-.7 2.1-.7z"/></svg></div><div class="g-tab"><div class="rel"><svg width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="#6E768A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20.5v-1A4.5 4.5 0 0 1 7 15h4a4.5 4.5 0 0 1 4.5 4.5v1"/><path d="M16 4.7a3.5 3.5 0 0 1 0 6.6M21.5 20.5v-1a4.5 4.5 0 0 0-3-4.2"/></svg></div><i style="background:transparent"></i></div><div class="g-tab"><div class="rel"><svg width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="#6E768A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20.5l1.4-4.9A8 8 0 1 1 21 12z"/></svg><span class="g-badge">3</span></div><i style="background:transparent"></i></div></div><div class="hi" style="background:#FFFFFF"></div>
+</div></div><div class="spec">
+  <div class="col g6"><span class="sp-t">Dizayn tokenlari</span><span class="sp-d">Tun'ning rivoji: grafit fon, lime urg'u, bento tizimi, AI prompt kartasi, SOS halqalari, faollik xaritasi (heatmap).</span></div>
+  <div class="col g8"><span class="sp-h">Shrift</span><span class="sp-font">Sora (700 / 600 / 500 / 400)</span></div>
+  <div class="col g8"><span class="sp-h">Ranglar</span><div class="sp-sws"><div class="sp-sw"><i style="background:#0A0C10"></i><div class="col"><span class="sp-k">Background</span><span class="sp-v">#0A0C10</span></div></div><div class="sp-sw"><i style="background:#14171E"></i><div class="col"><span class="sp-k">Surface</span><span class="sp-v">#14171E</span></div></div><div class="sp-sw"><i style="background:#1F242E"></i><div class="col"><span class="sp-k">Chip</span><span class="sp-v">#1F242E</span></div></div><div class="sp-sw"><i style="background:#252A35"></i><div class="col"><span class="sp-k">Border</span><span class="sp-v">#252A35</span></div></div><div class="sp-sw"><i style="background:#8B93A7"></i><div class="col"><span class="sp-k">Text 2</span><span class="sp-v">#8B93A7</span></div></div><div class="sp-sw"><i style="background:#C8F560"></i><div class="col"><span class="sp-k">Lime</span><span class="sp-v">#C8F560</span></div></div><div class="sp-sw"><i style="background:#3F7BF6"></i><div class="col"><span class="sp-k">Blue</span><span class="sp-v">#3F7BF6</span></div></div><div class="sp-sw"><i style="background:#9CC0FF"></i><div class="col"><span class="sp-k">Sky</span><span class="sp-v">#9CC0FF</span></div></div><div class="sp-sw"><i style="background:#E5383B"></i><div class="col"><span class="sp-k">SOS</span><span class="sp-v">#E5383B</span></div></div><div class="sp-sw"><i style="background:#FFB547"></i><div class="col"><span class="sp-k">Amber</span><span class="sp-v">#FFB547</span></div></div></div></div>
+  <div class="col g4"><span class="sp-h">Tipografiya · size / line · weight · tracking</span><div class="sp-r"><span class="sp-k">Display</span><span class="sp-v">36 / 42 · 600 · -1.6</span></div><div class="sp-r"><span class="sp-k">H1</span><span class="sp-v">28 / 34 · 600 · -1</span></div><div class="sp-r"><span class="sp-k">Prompt</span><span class="sp-v">19 / 26 · 500</span></div><div class="sp-r"><span class="sp-k">Tile title</span><span class="sp-v">16 / 21 · 600</span></div><div class="sp-r"><span class="sp-k">Body</span><span class="sp-v">14 / 19 · 600</span></div><div class="sp-r"><span class="sp-k">Caption</span><span class="sp-v">12 / 17 · 400</span></div></div>
+  <div class="col g4"><span class="sp-h">Border radius (px)</span><div class="sp-r"><span class="sp-k">Tile</span><span class="sp-v">24</span></div><div class="sp-r"><span class="sp-k">Icon btn</span><span class="sp-v">14</span></div><div class="sp-r"><span class="sp-k">Chip / pill</span><span class="sp-v">16 (to'liq)</span></div><div class="sp-r"><span class="sp-k">Heatmap katak</span><span class="sp-v">7</span></div><div class="sp-r"><span class="sp-k">Tab bar</span><span class="sp-v">33 (pill)</span></div></div>
+  <div class="col g4"><span class="sp-h">O'lchamlar</span><div class="sp-r"><span class="sp-k">Frame</span><span class="sp-v">390 × auto (min 844)</span></div><div class="sp-r"><span class="sp-k">Gutter</span><span class="sp-v">20 · gap 12</span></div><div class="sp-r"><span class="sp-k">SOS tile</span><span class="sp-v">160 × 212</span></div><div class="sp-r"><span class="sp-k">Tab bar</span><span class="sp-v">h66 · inset 24 · bottom 30</span></div><div class="sp-r"><span class="sp-k">Button</span><span class="sp-v">h48 r24</span></div></div>
+  <div class="col g4"><span class="sp-h">Ikonkalar</span><span class="sp-d">24×24 grid, stroke 1.7–2.2, round cap/join. Tab: 22–24px.</span></div>
+</div></div>
+</section><section class="variant" data-name="Variant 07 — Mozaika">
+  <div class="vh"><span class="vh-n">07</span><span class="vh-t">Mozaika</span><span class="vh-s">Pastel mozaika · Outfit · AI chat namunasi</span></div>
+  <div class="vrow"><div class="fr"><span class="fr-l">Mijoz · Home</span><div class="phone m" data-name="07 Mozaika · Mijoz">
+<div class="sb" style="color:#1E1B2E">
+  <span class="sb-time">9:41</span>
+  <div class="sb-r">
+    <svg width="18" height="12" viewBox="0 0 18 12" fill="#1E1B2E"><rect x="0" y="8" width="3" height="4" rx="1"/><rect x="5" y="5.5" width="3" height="6.5" rx="1"/><rect x="10" y="3" width="3" height="9" rx="1"/><rect x="15" y="0" width="3" height="12" rx="1"/></svg>
+    <svg width="16" height="12" viewBox="0 0 16 12" fill="#1E1B2E"><path d="M8 2.2c2.3 0 4.4.9 6 2.4l1.2-1.2A10.2 10.2 0 0 0 8 .5C5.2.5 2.7 1.6.8 3.4L2 4.6a8.5 8.5 0 0 1 6-2.4zm0 3.4c1.4 0 2.6.5 3.6 1.4l1.2-1.2A6.9 6.9 0 0 0 8 3.9 6.9 6.9 0 0 0 3.2 5.8L4.4 7c1-.9 2.2-1.4 3.6-1.4zM8 9a1.6 1.6 0 0 0-1.2.5L8 11.5l1.2-2A1.6 1.6 0 0 0 8 9z"/></svg>
+    <svg width="27" height="13" viewBox="0 0 27 13" fill="none"><rect x=".5" y=".5" width="23" height="12" rx="3.5" stroke="#1E1B2E" opacity=".4"/><rect x="2" y="2" width="20" height="9" rx="2" fill="#1E1B2E"/><rect x="25" y="4.5" width="1.6" height="4" rx=".8" fill="#1E1B2E" opacity=".5"/></svg>
+  </div>
+</div>
+<div class="m-head"><div class="row g10 ac"><div class="m-logo"><svg width="26" height="26" viewBox="156 163 940 940"><path fill="#1B1C20" d="M229 614 C204.1 517.9 204.5 415.9 219 318 L627 170 L1036 316 C1057.3 476.9 1032.5 643.9 961 790 C959.1 660.9 958.9 530.6 938 403 L627 279 L309 401 C304.0 452.3 297.6 504.8 307 556 L229 614 Z"/><path fill="#1B1C20" d="M346 437 C503.0 367.6 684.6 372.5 849 412 L848 508 C761.9 484.6 671.9 476.6 583 483 L583 922 L481 820 L481 494 C433.9 499.4 388.5 515.4 346 536 L346 437 Z"/><path fill="#0057F2" d="M628 532 L723 537 L723 660 L836 660 L838 550 L925 567 L929 812 L836 883 L836 756 L723 756 L723 940 L628 970 L628 532 Z"/><path fill="#0057F2" d="M242 664 L324 603 C370.8 771.3 485.0 921.8 637 1008 C735.8 977.1 831.8 932.3 912 866 C837.2 964.6 735.6 1039.4 627 1097 C448.5 1012.2 295.9 857.0 242 664 Z"/></svg></div><div class="col g2"><span class="m-brand">Tezkor Himoya</span><span class="m-cap">Huquqiy yordam</span></div></div><div class="row g8 ac"><div class="m-ib"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="#1E1B2E" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8.5a6 6 0 1 0-12 0c0 6.5-2.5 8.5-2.5 8.5h17S18 15 18 8.5"/><path d="M10.3 20.5a2 2 0 0 0 3.4 0"/></svg><span class=m-dot></span></div><div class="m-me">AK</div></div></div>
+<div class="m-body">
+  <div class="col g4"><span class="m-h1">Salom, Aziz</span><span class="m-sub">Huquqingizni biz himoya qilamiz</span></div>
+
+  <div class="m-chat">
+    <div class="row jb ac"><span class="m-lbl"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#6D28D9" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.8 5.4L19 10l-5.2 1.6L12 17l-1.8-5.4L5 10l5.2-1.6z"/><path d="M19 15l.7 2.1 2.1.7-2.1.7L19 20.6l-.7-2.1-2.1-.7 2.1-.7z"/></svg>AI yordamchi</span><span class="m-beta">Beta</span></div>
+    <div class="m-bub me">Ish beruvchi 3 oydan beri maosh bermayapti. Nima qilay?</div>
+    <div class="m-bub ai">Mehnat kodeksiga ko'ra, bu holatda talab xati yozasiz. Mehnat huquqi advokatiga ulaymi?</div>
+    <div class="m-inp"><span class="f1">Savolingizni yozing…</span><div class="m-send"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 2.5 10.5 13.5"/><path d="M21.5 2.5 15 21.5l-4.5-8-8-4.5z"/></svg></div></div>
+  </div>
+
+  <div class="m-sec"><span class="m-h2">Tezkor yordam</span></div>
+  <div class="row g12">
+    <div class="m-tile tall" style="background:#FFDCE0">
+      <div class="m-tile-ic"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#E11D48" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 18v-6a5 5 0 0 1 10 0v6"/><path d="M5 18h14v3H5z"/><path d="M12 2v2M4.2 5.2l1.4 1.4M19.8 5.2l-1.4 1.4M2 12h1.5M20.5 12H22"/></svg></div>
+      <div class="col g4"><span class="m-tt" style="font-size:28px;line-height:32px">SOS</span><span class="m-ts" style="color:#9F1239">Shoshilinch yordam. Advokat 5 daqiqada</span></div>
+      <div class="m-arrow" style="background:#E11D48"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+    </div>
+    <div class="col g12 f1">
+      <div class="m-tile" style="background:#D9E8FF"><div class="row jb ac"><div class="m-tile-ic sm"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2563EB" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2.5 4.5 13.5H12l-1 8 8.5-11H12z"/></svg></div><span class="m-tag" style="color:#1D4ED8">24/7</span></div><div class="col g2"><span class="m-tt">Tezkor advokat</span><span class="m-ts" style="color:#1E40AF">~15 daqiqa</span></div></div>
+      <div class="m-tile" style="background:#D3F4E4"><div class="row jb ac"><div class="m-tile-ic sm"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2.5H6.5a2 2 0 0 0-2 2v15a2 2 0 0 0 2 2h5"/><path d="M14 2.5V8h5.5v3"/><path d="M17.5 14l.9 2.6 2.6.9-2.6.9-.9 2.6-.9-2.6-2.6-.9 2.6-.9z"/></svg></div><span class="m-tag" style="color:#047857">AI</span></div><div class="col g2"><span class="m-tt">Hujjat tahlili</span><span class="m-ts" style="color:#065F46">PDF yoki rasm</span></div></div>
+    </div>
+  </div>
+  <div class="row g12">
+    <div class="m-tile hz" style="background:#FFF1BF"><div class="m-tile-ic sm"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#B45309" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2.5H6.5a2 2 0 0 0-2 2v15a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2V8z"/><path d="M14 2.5V8h5.5M8.5 13h7M8.5 17h5"/></svg></div><div class="col g2"><span class="m-tt sm">Shablonlar</span><span class="m-ts" style="color:#92400E">48 ta</span></div></div>
+    <div class="m-tile hz" style="background:#FFE3D0"><div class="m-tile-ic sm"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#EA580C" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 16.5h14M3 16.5V12l2.2-5.2A2 2 0 0 1 7 5.5h10a2 2 0 0 1 1.8 1.3L21 12v4.5"/><path d="M3 12h18"/><circle cx="7.5" cy="16.5" r="2"/><circle cx="16.5" cy="16.5" r="2"/></svg></div><div class="col g2"><span class="m-tt sm">Avtohalokat</span><span class="m-ts" style="color:#9A3412">Maslahat</span></div></div>
+  </div>
+
+  <div class="m-sec"><span class="m-h2">Buyurtmam</span><span class="m-link">Tarix</span></div>
+  <div class="m-card">
+    <div class="row g12 ac"><div class="m-av" style="background:#E7E0FF;color:#6D28D9">DR</div><div class="col g2 f1"><span class="m-tt sm">Mehnat nizosi bo'yicha maslahat</span><span class="m-ts" style="color:#6B6880">Dilnoza Rahimova · ★ 4.9</span></div></div>
+    <div class="m-dots"><i class="on"></i><i class="on"></i><i class="on"></i><i></i></div>
+    <div class="row jb ac"><span class="m-ts" style="color:#6B6880"><b style="color:#1E1B2E">3/4</b> · Video uchrashuv bugun 15:30</span><div class="m-cta">Qo'shilish</div></div>
+  </div>
+</div>
+<div class="m-tabbar"><div class="m-tab on"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg><span>Asosiy</span></div><div class="m-tab"><div class="rel"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#8A87A0" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="2"/><rect x="14" y="3" width="7" height="7" rx="2"/><rect x="3" y="14" width="7" height="7" rx="2"/><rect x="14" y="14" width="7" height="7" rx="2"/></svg></div></div><div class="m-ai"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.8 5.4L19 10l-5.2 1.6L12 17l-1.8-5.4L5 10l5.2-1.6z"/><path d="M19 15l.7 2.1 2.1.7-2.1.7L19 20.6l-.7-2.1-2.1-.7 2.1-.7z"/></svg></div><div class="m-tab"><div class="rel"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#8A87A0" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="7" width="18" height="14" rx="2.5"/><path d="M8 7V5.5A2.5 2.5 0 0 1 10.5 3h3A2.5 2.5 0 0 1 16 5.5V7"/><path d="M3 12h18"/></svg></div></div><div class="m-tab"><div class="rel"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#8A87A0" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20.5l1.4-4.9A8 8 0 1 1 21 12z"/></svg><span class="m-badge">3</span></div></div></div><div class="hi" style="background:#1E1B2E"></div>
+</div></div><div class="fr"><span class="fr-l">Advokat / Worker · Home</span><div class="phone m" data-name="07 Mozaika · Advokat">
+<div class="sb" style="color:#1E1B2E">
+  <span class="sb-time">9:41</span>
+  <div class="sb-r">
+    <svg width="18" height="12" viewBox="0 0 18 12" fill="#1E1B2E"><rect x="0" y="8" width="3" height="4" rx="1"/><rect x="5" y="5.5" width="3" height="6.5" rx="1"/><rect x="10" y="3" width="3" height="9" rx="1"/><rect x="15" y="0" width="3" height="12" rx="1"/></svg>
+    <svg width="16" height="12" viewBox="0 0 16 12" fill="#1E1B2E"><path d="M8 2.2c2.3 0 4.4.9 6 2.4l1.2-1.2A10.2 10.2 0 0 0 8 .5C5.2.5 2.7 1.6.8 3.4L2 4.6a8.5 8.5 0 0 1 6-2.4zm0 3.4c1.4 0 2.6.5 3.6 1.4l1.2-1.2A6.9 6.9 0 0 0 8 3.9 6.9 6.9 0 0 0 3.2 5.8L4.4 7c1-.9 2.2-1.4 3.6-1.4zM8 9a1.6 1.6 0 0 0-1.2.5L8 11.5l1.2-2A1.6 1.6 0 0 0 8 9z"/></svg>
+    <svg width="27" height="13" viewBox="0 0 27 13" fill="none"><rect x=".5" y=".5" width="23" height="12" rx="3.5" stroke="#1E1B2E" opacity=".4"/><rect x="2" y="2" width="20" height="9" rx="2" fill="#1E1B2E"/><rect x="25" y="4.5" width="1.6" height="4" rx=".8" fill="#1E1B2E" opacity=".5"/></svg>
+  </div>
+</div>
+<div class="m-head"><div class="row g10 ac"><div class="m-logo"><svg width="26" height="26" viewBox="156 163 940 940"><path fill="#1B1C20" d="M229 614 C204.1 517.9 204.5 415.9 219 318 L627 170 L1036 316 C1057.3 476.9 1032.5 643.9 961 790 C959.1 660.9 958.9 530.6 938 403 L627 279 L309 401 C304.0 452.3 297.6 504.8 307 556 L229 614 Z"/><path fill="#1B1C20" d="M346 437 C503.0 367.6 684.6 372.5 849 412 L848 508 C761.9 484.6 671.9 476.6 583 483 L583 922 L481 820 L481 494 C433.9 499.4 388.5 515.4 346 536 L346 437 Z"/><path fill="#0057F2" d="M628 532 L723 537 L723 660 L836 660 L838 550 L925 567 L929 812 L836 883 L836 756 L723 756 L723 940 L628 970 L628 532 Z"/><path fill="#0057F2" d="M242 664 L324 603 C370.8 771.3 485.0 921.8 637 1008 C735.8 977.1 831.8 932.3 912 866 C837.2 964.6 735.6 1039.4 627 1097 C448.5 1012.2 295.9 857.0 242 664 Z"/></svg></div><div class="col g2"><span class="m-brand">Tezkor Himoya</span><span class="m-cap">Ish maydoni</span></div></div><div class="row g8 ac"><div class="m-on"><i></i>Onlayn</div><div class="m-ib"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="#1E1B2E" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8.5a6 6 0 1 0-12 0c0 6.5-2.5 8.5-2.5 8.5h17S18 15 18 8.5"/><path d="M10.3 20.5a2 2 0 0 0 3.4 0"/></svg><span class=m-dot></span></div></div></div>
+<div class="m-body">
+  <div class="col g4"><span class="m-h1">Xayrli tong, Jasur</span><span class="m-sub">Adolat yo'lida, har kuni.</span></div>
+
+  <div class="m-goal">
+    <div class="col g10 f1">
+      <span class="m-lbl" style="color:#065F46"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#047857" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.5"/></svg>Bugungi maqsad</span>
+      <span class="m-goal-v">1 250 000<small> so'm</small></span>
+      <div class="row g8"><span class="m-mini">3/4 buyurtma</span><span class="m-mini">+12%</span></div>
+    </div>
+    <div class="m-ring"><svg width="96" height="96" viewBox="0 0 96 96"><circle cx="48.0" cy="48.0" r="43.0" fill="none" stroke="rgba(255,255,255,.7)" stroke-width="10"/><circle cx="48.0" cy="48.0" r="43.0" fill="none" stroke="#059669" stroke-width="10" stroke-linecap="round" stroke-dasharray="202.6 270.2" transform="rotate(-90 48.0 48.0)"/></svg><div class="col ac"><span class="m-ring-v">75%</span><span class="m-ts" style="color:#065F46">reja</span></div></div>
+  </div>
+
+  <div class="m-req">
+    <div class="row jb ac"><span class="m-tag2"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2.5 4.5 13.5H12l-1 8 8.5-11H12z"/></svg>Tezkor so'rov</span><span class="m-timer"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#9A3412" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></svg>04:59</span></div>
+    <span class="m-tt" style="font-size:19px;line-height:24px">Avtohalokat bo'yicha maslahat</span>
+    <span class="m-ts" style="color:#9A3412">Chilonzor · 2.4 km · 250 000 so'm</span>
+    <div class="row g10"><div class="m-b ghost">Rad etish</div><div class="m-b">Qabul qilish</div></div>
+  </div>
+
+  <div class="m-sec"><span class="m-h2">Yangi so'rovlar</span><span class="m-link">7 ta</span></div>
+  <div class="m-chips"><span class="m-chip on">Barchasi</span><span class="m-chip">Tezkor · 2</span><span class="m-chip">Oila · 3</span><span class="m-chip">Mehnat · 2</span></div>
+  <div class="row g12">
+    <div class="m-rq" style="background:#FFDCE0"><div class="row jb ac"><div class="m-tile-ic sm"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#E11D48" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20.5s-8.5-4.8-8.5-11A4.8 4.8 0 0 1 12 6.6a4.8 4.8 0 0 1 8.5 2.9c0 6.2-8.5 11-8.5 11z"/></svg></div><span class="m-ts" style="color:#9F1239">12 daq</span></div><span class="m-tt sm">Ajrim va aliment</span><span class="m-price">300 000 <small>so'm</small></span></div>
+    <div class="m-rq" style="background:#D3F4E4"><div class="row jb ac"><div class="m-tile-ic sm"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 21V5a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v16M16 9h3a1 1 0 0 1 1 1v11M2.5 21h19"/><path d="M8 7.5h4M8 11.5h4M8 15.5h4"/></svg></div><span class="m-ts" style="color:#065F46">40 daq</span></div><span class="m-tt sm">Ijara shartnomasi</span><span class="m-price">180 000 <small>so'm</small></span></div>
+  </div>
+
+  <div class="m-sec"><span class="m-h2">Bugungi reja</span><span class="m-link">Kalendar</span></div>
+  <div class="row g10"><div class="m-agc" style="background:#D9E8FF"><span class="m-agt" style="color:#1D4ED8">10:00</span><div class="col g2"><span class="m-tt sm">Konsultatsiya</span><span class="m-ts" style="color:#1D4ED8">Malika K.</span></div></div><div class="m-agc" style="background:#FFDCE0"><span class="m-agt" style="color:#BE123C">14:00</span><div class="col g2"><span class="m-tt sm">Sud majlisi</span><span class="m-ts" style="color:#BE123C">Yunusobod</span></div></div><div class="m-agc" style="background:#D3F4E4"><span class="m-agt" style="color:#047857">16:30</span><div class="col g2"><span class="m-tt sm">Da'vo arizasi</span><span class="m-ts" style="color:#047857">#LX-1987</span></div></div></div>
+
+  <div class="m-level">
+    <div class="m-tile-ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#6D28D9" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="9" r="6"/><path d="m8.5 14 -1.5 7.5L12 19l5 2.5-1.5-7.5"/></svg></div>
+    <div class="col g8 f1"><div class="row jb"><span class="m-tt sm">Super advokat sari</span><span class="m-tt sm" style="color:#6D28D9">4/6</span></div><div class="m-pb"><i></i></div><span class="m-ts" style="color:#5B21B6">Yana 2 ta yakunlangan buyurtma kerak</span></div>
+  </div>
+</div>
+<div class="m-tabbar"><div class="m-tab on"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg><span>Asosiy</span></div><div class="m-tab"><div class="rel"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#8A87A0" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 13h5l1.5 3h6l1.5-3h5"/><path d="M5.5 5h13l3 8v5.5a2 2 0 0 1-2 2h-15a2 2 0 0 1-2-2V13z"/></svg><span class="m-badge">7</span></div></div><div class="m-ai"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.8 5.4L19 10l-5.2 1.6L12 17l-1.8-5.4L5 10l5.2-1.6z"/><path d="M19 15l.7 2.1 2.1.7-2.1.7L19 20.6l-.7-2.1-2.1-.7 2.1-.7z"/></svg></div><div class="m-tab"><div class="rel"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#8A87A0" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20.5v-1A4.5 4.5 0 0 1 7 15h4a4.5 4.5 0 0 1 4.5 4.5v1"/><path d="M16 4.7a3.5 3.5 0 0 1 0 6.6M21.5 20.5v-1a4.5 4.5 0 0 0-3-4.2"/></svg></div></div><div class="m-tab"><div class="rel"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#8A87A0" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20.5l1.4-4.9A8 8 0 1 1 21 12z"/></svg><span class="m-badge">3</span></div></div></div><div class="hi" style="background:#1E1B2E"></div>
+</div></div><div class="spec">
+  <div class="col g6"><span class="sp-t">Dizayn tokenlari</span><span class="sp-d">Yorqin'ning rivoji: issiq krem fon, turli o'lchamli pastel mozaika, AI chat namunasi, kunlik maqsad halqasi.</span></div>
+  <div class="col g8"><span class="sp-h">Shrift</span><span class="sp-font">Outfit (700 / 600 / 500)</span></div>
+  <div class="col g8"><span class="sp-h">Ranglar</span><div class="sp-sws"><div class="sp-sw"><i style="background:#1E1B2E"></i><div class="col"><span class="sp-k">Ink</span><span class="sp-v">#1E1B2E</span></div></div><div class="sp-sw"><i style="background:#6B6880"></i><div class="col"><span class="sp-k">Text 2</span><span class="sp-v">#6B6880</span></div></div><div class="sp-sw"><i style="background:#FBF8F4"></i><div class="col"><span class="sp-k">Background</span><span class="sp-v">#FBF8F4</span></div></div><div class="sp-sw"><i style="background:#6D28D9"></i><div class="col"><span class="sp-k">Violet</span><span class="sp-v">#6D28D9</span></div></div><div class="sp-sw"><i style="background:#E7E0FF"></i><div class="col"><span class="sp-k">Lilac</span><span class="sp-v">#E7E0FF</span></div></div><div class="sp-sw"><i style="background:#D9E8FF"></i><div class="col"><span class="sp-k">Sky</span><span class="sp-v">#D9E8FF</span></div></div><div class="sp-sw"><i style="background:#FFDCE0"></i><div class="col"><span class="sp-k">Rose</span><span class="sp-v">#FFDCE0</span></div></div><div class="sp-sw"><i style="background:#D3F4E4"></i><div class="col"><span class="sp-k">Mint</span><span class="sp-v">#D3F4E4</span></div></div><div class="sp-sw"><i style="background:#FFF1BF"></i><div class="col"><span class="sp-k">Lemon</span><span class="sp-v">#FFF1BF</span></div></div><div class="sp-sw"><i style="background:#FFE3D0"></i><div class="col"><span class="sp-k">Peach</span><span class="sp-v">#FFE3D0</span></div></div></div></div>
+  <div class="col g4"><span class="sp-h">Tipografiya · size / line · weight · tracking</span><div class="sp-r"><span class="sp-k">H1</span><span class="sp-v">30 / 36 · 700 · -0.8</span></div><div class="sp-r"><span class="sp-k">H2</span><span class="sp-v">19 / 24 · 700</span></div><div class="sp-r"><span class="sp-k">Goal</span><span class="sp-v">28 / 32 · 700</span></div><div class="sp-r"><span class="sp-k">Tile title</span><span class="sp-v">16 / 21 · 700</span></div><div class="sp-r"><span class="sp-k">Chat</span><span class="sp-v">14 / 20 · 400</span></div><div class="sp-r"><span class="sp-k">Caption</span><span class="sp-v">12.5 / 17 · 500</span></div></div>
+  <div class="col g4"><span class="sp-h">Border radius (px)</span><div class="sp-r"><span class="sp-k">Chat / goal</span><span class="sp-v">28</span></div><div class="sp-r"><span class="sp-k">Tile / karta</span><span class="sp-v">24</span></div><div class="sp-r"><span class="sp-k">Bubble</span><span class="sp-v">18 (burchak 6)</span></div><div class="sp-r"><span class="sp-k">Icon box</span><span class="sp-v">16 / 13</span></div><div class="sp-r"><span class="sp-k">Tab bar / input</span><span class="sp-v">33 / 26 (pill)</span></div></div>
+  <div class="col g4"><span class="sp-h">O'lchamlar</span><div class="sp-r"><span class="sp-k">Frame</span><span class="sp-v">390 × auto (min 844)</span></div><div class="sp-r"><span class="sp-k">Gutter</span><span class="sp-v">20 · gap 14/12</span></div><div class="sp-r"><span class="sp-k">SOS tile</span><span class="sp-v">166 × 232</span></div><div class="sp-r"><span class="sp-k">Tab bar</span><span class="sp-v">h66 · inset 20</span></div><div class="sp-r"><span class="sp-k">Button</span><span class="sp-v">h48 r24</span></div></div>
+  <div class="col g4"><span class="sp-h">Ikonkalar</span><span class="sp-d">24×24 grid, stroke 1.7–2.2, round cap/join. Tab: 22–24px.</span></div>
+</div></div>
+</section><section class="variant" data-name="Variant 08 — Kobalt">
+  <div class="vh"><span class="vh-n">08</span><span class="vh-t">Kobalt</span><span class="vh-s">Brend ko'k + oq sheet · Figtree · sariq urg'u</span></div>
+  <div class="vrow"><div class="fr"><span class="fr-l">Mijoz · Home</span><div class="phone k" data-name="08 Kobalt · Mijoz">
+<div class="k-top"><svg width="390" height="360" viewBox="0 0 390 360" fill="none" style="position:absolute;left:0;top:0"><path d="M26 0V360" stroke="#FFFFFF" stroke-opacity=".06"/><path d="M52 0V360" stroke="#FFFFFF" stroke-opacity=".06"/><path d="M78 0V360" stroke="#FFFFFF" stroke-opacity=".06"/><path d="M104 0V360" stroke="#FFFFFF" stroke-opacity=".06"/><path d="M130 0V360" stroke="#FFFFFF" stroke-opacity=".06"/><path d="M156 0V360" stroke="#FFFFFF" stroke-opacity=".06"/><path d="M182 0V360" stroke="#FFFFFF" stroke-opacity=".06"/><path d="M208 0V360" stroke="#FFFFFF" stroke-opacity=".06"/><path d="M234 0V360" stroke="#FFFFFF" stroke-opacity=".06"/><path d="M260 0V360" stroke="#FFFFFF" stroke-opacity=".06"/><path d="M286 0V360" stroke="#FFFFFF" stroke-opacity=".06"/><path d="M312 0V360" stroke="#FFFFFF" stroke-opacity=".06"/><path d="M338 0V360" stroke="#FFFFFF" stroke-opacity=".06"/><path d="M364 0V360" stroke="#FFFFFF" stroke-opacity=".06"/><path d="M0 26H390" stroke="#FFFFFF" stroke-opacity=".06"/><path d="M0 52H390" stroke="#FFFFFF" stroke-opacity=".06"/><path d="M0 78H390" stroke="#FFFFFF" stroke-opacity=".06"/><path d="M0 104H390" stroke="#FFFFFF" stroke-opacity=".06"/><path d="M0 130H390" stroke="#FFFFFF" stroke-opacity=".06"/><path d="M0 156H390" stroke="#FFFFFF" stroke-opacity=".06"/><path d="M0 182H390" stroke="#FFFFFF" stroke-opacity=".06"/><path d="M0 208H390" stroke="#FFFFFF" stroke-opacity=".06"/><path d="M0 234H390" stroke="#FFFFFF" stroke-opacity=".06"/><path d="M0 260H390" stroke="#FFFFFF" stroke-opacity=".06"/><path d="M0 286H390" stroke="#FFFFFF" stroke-opacity=".06"/><path d="M0 312H390" stroke="#FFFFFF" stroke-opacity=".06"/><path d="M0 338H390" stroke="#FFFFFF" stroke-opacity=".06"/><circle cx="340" cy="70" r="120" fill="#3D86FF" fill-opacity=".35"/></svg>
+  <div class="sb" style="color:#FFFFFF">
+  <span class="sb-time">9:41</span>
+  <div class="sb-r">
+    <svg width="18" height="12" viewBox="0 0 18 12" fill="#FFFFFF"><rect x="0" y="8" width="3" height="4" rx="1"/><rect x="5" y="5.5" width="3" height="6.5" rx="1"/><rect x="10" y="3" width="3" height="9" rx="1"/><rect x="15" y="0" width="3" height="12" rx="1"/></svg>
+    <svg width="16" height="12" viewBox="0 0 16 12" fill="#FFFFFF"><path d="M8 2.2c2.3 0 4.4.9 6 2.4l1.2-1.2A10.2 10.2 0 0 0 8 .5C5.2.5 2.7 1.6.8 3.4L2 4.6a8.5 8.5 0 0 1 6-2.4zm0 3.4c1.4 0 2.6.5 3.6 1.4l1.2-1.2A6.9 6.9 0 0 0 8 3.9 6.9 6.9 0 0 0 3.2 5.8L4.4 7c1-.9 2.2-1.4 3.6-1.4zM8 9a1.6 1.6 0 0 0-1.2.5L8 11.5l1.2-2A1.6 1.6 0 0 0 8 9z"/></svg>
+    <svg width="27" height="13" viewBox="0 0 27 13" fill="none"><rect x=".5" y=".5" width="23" height="12" rx="3.5" stroke="#FFFFFF" opacity=".4"/><rect x="2" y="2" width="20" height="9" rx="2" fill="#FFFFFF"/><rect x="25" y="4.5" width="1.6" height="4" rx=".8" fill="#FFFFFF" opacity=".5"/></svg>
+  </div>
+</div>
+  <div class="k-head"><div class="row g10 ac"><div class="k-logo"><svg width="26" height="26" viewBox="156 163 940 940"><path fill="#1B1C20" d="M229 614 C204.1 517.9 204.5 415.9 219 318 L627 170 L1036 316 C1057.3 476.9 1032.5 643.9 961 790 C959.1 660.9 958.9 530.6 938 403 L627 279 L309 401 C304.0 452.3 297.6 504.8 307 556 L229 614 Z"/><path fill="#1B1C20" d="M346 437 C503.0 367.6 684.6 372.5 849 412 L848 508 C761.9 484.6 671.9 476.6 583 483 L583 922 L481 820 L481 494 C433.9 499.4 388.5 515.4 346 536 L346 437 Z"/><path fill="#0057F2" d="M628 532 L723 537 L723 660 L836 660 L838 550 L925 567 L929 812 L836 883 L836 756 L723 756 L723 940 L628 970 L628 532 Z"/><path fill="#0057F2" d="M242 664 L324 603 C370.8 771.3 485.0 921.8 637 1008 C735.8 977.1 831.8 932.3 912 866 C837.2 964.6 735.6 1039.4 627 1097 C448.5 1012.2 295.9 857.0 242 664 Z"/></svg></div><div class="col g2"><span class="k-brand">Tezkor Himoya</span><span class="k-cap">Toshkent</span></div></div><div class="row g8 ac"><div class="k-ib"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8.5a6 6 0 1 0-12 0c0 6.5-2.5 8.5-2.5 8.5h17S18 15 18 8.5"/><path d="M10.3 20.5a2 2 0 0 0 3.4 0"/></svg><span class=k-dot></span></div></div></div>
+  <div class="k-top-in">
+    <span class="k-h1">Salom, Aziz</span>
+    <span class="k-sub">Huquqiy yordam — bir necha soniyada</span>
+    <div class="k-search"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#0C1A33" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m20.5 20.5-4.5-4.5"/></svg><span class="f1">Muammoingizni yozing…</span><span class="k-ai-b"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#0C1A33" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.8 5.4L19 10l-5.2 1.6L12 17l-1.8-5.4L5 10l5.2-1.6z"/><path d="M19 15l.7 2.1 2.1.7-2.1.7L19 20.6l-.7-2.1-2.1-.7 2.1-.7z"/></svg>AI</span></div>
+    <div class="row g8"><span class="k-stat"><b>2</b> faol buyurtma</span><span class="k-stat"><b>3</b> xabar</span><span class="k-stat"><b>10%</b> chegirma</span></div>
+  </div>
+</div>
+<div class="k-sheet">
+  <div class="k-handle"></div>
+  <div class="k-sec"><span class="k-h2">Tezkor yordam</span></div>
+  <div class="k-qs"><div class="k-q" style="background:linear-gradient(160deg,#FF5A5F,#E0263A);color:#FFFFFF"><div class="k-q-ic" style="background:rgba(255,255,255,.2)"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 18v-6a5 5 0 0 1 10 0v6"/><path d="M5 18h14v3H5z"/><path d="M12 2v2M4.2 5.2l1.4 1.4M19.8 5.2l-1.4 1.4M2 12h1.5M20.5 12H22"/></svg></div><div class="col g2"><span class="k-q-t">SOS</span><span class="k-q-s">Shoshilinch</span></div></div><div class="k-q" style="background:linear-gradient(160deg,#0B66FF,#0047D1);color:#FFFFFF"><div class="k-q-ic" style="background:rgba(255,255,255,.2)"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2.5 4.5 13.5H12l-1 8 8.5-11H12z"/></svg></div><div class="col g2"><span class="k-q-t">Tezkor advokat</span><span class="k-q-s">24/7 · 15 daq</span></div></div><div class="k-q" style="background:linear-gradient(160deg,#FFD25E,#FFB800);color:#0C1A33"><div class="k-q-ic" style="background:rgba(12,26,51,.1)"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#0C1A33" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 16.5h14M3 16.5V12l2.2-5.2A2 2 0 0 1 7 5.5h10a2 2 0 0 1 1.8 1.3L21 12v4.5"/><path d="M3 12h18"/><circle cx="7.5" cy="16.5" r="2"/><circle cx="16.5" cy="16.5" r="2"/></svg></div><div class="col g2"><span class="k-q-t">Avtohalokat</span><span class="k-q-s">Maslahat</span></div></div></div>
+  <div class="k-sec"><span class="k-h2">Xizmatlar</span><span class="k-link">Hammasi</span></div>
+  <div class="k-svcs"><div class="k-svc"><div class="k-svc-ic"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#0057F2" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20.5s-8.5-4.8-8.5-11A4.8 4.8 0 0 1 12 6.6a4.8 4.8 0 0 1 8.5 2.9c0 6.2-8.5 11-8.5 11z"/></svg></div><span>Oilaviy</span></div><div class="k-svc"><div class="k-svc-ic"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#0057F2" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="7" width="19" height="13.5" rx="2.5"/><path d="M8.5 7V5a1.5 1.5 0 0 1 1.5-1.5h4A1.5 1.5 0 0 1 15.5 5v2M2.5 12.5h19"/></svg></div><span>Mehnat</span></div><div class="k-svc"><div class="k-svc-ic"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#0057F2" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 21V5a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v16M16 9h3a1 1 0 0 1 1 1v11M2.5 21h19"/><path d="M8 7.5h4M8 11.5h4M8 15.5h4"/></svg></div><span>Mulk</span></div><div class="k-svc"><div class="k-svc-ic"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#0057F2" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m3 17 6-6 4 4 8-8"/><path d="M15 7h6v6"/></svg></div><span>Biznes</span></div><div class="k-svc"><div class="k-svc-ic"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#0057F2" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v18M7.5 21h9M4.5 7h15M12 5.5"/><path d="M4.5 7 2 13.5a2.8 2.8 0 0 0 5 0zM19.5 7 17 13.5a2.8 2.8 0 0 0 5 0z"/></svg></div><span>Jinoiy</span></div><div class="k-svc"><div class="k-svc-ic"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#0057F2" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2.5H6.5a2 2 0 0 0-2 2v15a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2V8z"/><path d="M14 2.5V8h5.5M8.5 13h7M8.5 17h5"/></svg></div><span>Shablon</span></div><div class="k-svc"><div class="k-svc-ic"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#0057F2" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2.5H6.5a2 2 0 0 0-2 2v15a2 2 0 0 0 2 2h5"/><path d="M14 2.5V8h5.5v3"/><path d="M17.5 14l.9 2.6 2.6.9-2.6.9-.9 2.6-.9-2.6-2.6-.9 2.6-.9z"/></svg></div><span>Tahlil</span></div><div class="k-svc"><div class="k-svc-ic"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#0057F2" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="5" cy="12" r="1.4"/><circle cx="12" cy="12" r="1.4"/><circle cx="19" cy="12" r="1.4"/></svg></div><span>Yana</span></div></div>
+  <div class="k-sec"><span class="k-h2">Faol buyurtma</span><span class="k-link">2 ta</span></div>
+  <div class="k-order">
+    <div class="row jb ac"><span class="k-pill">Jarayonda · 3/4</span><span class="k-ts">#LX-2048</span></div>
+    <span class="k-t">Mehnat nizosi bo'yicha maslahat</span>
+    <div class="k-pb"><i style="width:75%"></i></div>
+    <div class="row jb ac"><div class="row g10 ac"><div class="k-av">DR</div><div class="col g2"><span class="k-t15">Dilnoza Rahimova</span><span class="k-ts">Bugun 15:30 · video</span></div></div><div class="k-cta"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="6" width="13" height="12" rx="2.5"/><path d="m15.5 10.5 6-3.5v10l-6-3.5"/></svg>Qo'shilish</div></div>
+  </div>
+</div>
+<div class="k-tabbar"><div class="k-tabrow"><div class="k-tab"><div class="rel"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#0057F2" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg></div><span style="color:#0057F2;font-weight:700">Asosiy</span></div><div class="k-tab"><div class="rel"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#8593AB" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="2"/><rect x="14" y="3" width="7" height="7" rx="2"/><rect x="3" y="14" width="7" height="7" rx="2"/><rect x="14" y="14" width="7" height="7" rx="2"/></svg></div><span style="color:#8593AB;font-weight:500">Xizmatlar</span></div><div class="k-tab"><div class="k-ai"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#0C1A33" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.8 5.4L19 10l-5.2 1.6L12 17l-1.8-5.4L5 10l5.2-1.6z"/><path d="M19 15l.7 2.1 2.1.7-2.1.7L19 20.6l-.7-2.1-2.1-.7 2.1-.7z"/></svg></div></div><div class="k-tab"><div class="rel"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#8593AB" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="7" width="18" height="14" rx="2.5"/><path d="M8 7V5.5A2.5 2.5 0 0 1 10.5 3h3A2.5 2.5 0 0 1 16 5.5V7"/><path d="M3 12h18"/></svg></div><span style="color:#8593AB;font-weight:500">Buyurtmalar</span></div><div class="k-tab"><div class="rel"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#8593AB" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20.5l1.4-4.9A8 8 0 1 1 21 12z"/></svg><span class="k-badge">3</span></div><span style="color:#8593AB;font-weight:500">Xabarlar</span></div></div><div class="hi" style="background:#0C1A33"></div></div>
+</div></div><div class="fr"><span class="fr-l">Advokat / Worker · Home</span><div class="phone k" data-name="08 Kobalt · Advokat">
+<div class="k-top" style="height:372px"><svg width="390" height="360" viewBox="0 0 390 360" fill="none" style="position:absolute;left:0;top:0"><path d="M26 0V360" stroke="#FFFFFF" stroke-opacity=".06"/><path d="M52 0V360" stroke="#FFFFFF" stroke-opacity=".06"/><path d="M78 0V360" stroke="#FFFFFF" stroke-opacity=".06"/><path d="M104 0V360" stroke="#FFFFFF" stroke-opacity=".06"/><path d="M130 0V360" stroke="#FFFFFF" stroke-opacity=".06"/><path d="M156 0V360" stroke="#FFFFFF" stroke-opacity=".06"/><path d="M182 0V360" stroke="#FFFFFF" stroke-opacity=".06"/><path d="M208 0V360" stroke="#FFFFFF" stroke-opacity=".06"/><path d="M234 0V360" stroke="#FFFFFF" stroke-opacity=".06"/><path d="M260 0V360" stroke="#FFFFFF" stroke-opacity=".06"/><path d="M286 0V360" stroke="#FFFFFF" stroke-opacity=".06"/><path d="M312 0V360" stroke="#FFFFFF" stroke-opacity=".06"/><path d="M338 0V360" stroke="#FFFFFF" stroke-opacity=".06"/><path d="M364 0V360" stroke="#FFFFFF" stroke-opacity=".06"/><path d="M0 26H390" stroke="#FFFFFF" stroke-opacity=".06"/><path d="M0 52H390" stroke="#FFFFFF" stroke-opacity=".06"/><path d="M0 78H390" stroke="#FFFFFF" stroke-opacity=".06"/><path d="M0 104H390" stroke="#FFFFFF" stroke-opacity=".06"/><path d="M0 130H390" stroke="#FFFFFF" stroke-opacity=".06"/><path d="M0 156H390" stroke="#FFFFFF" stroke-opacity=".06"/><path d="M0 182H390" stroke="#FFFFFF" stroke-opacity=".06"/><path d="M0 208H390" stroke="#FFFFFF" stroke-opacity=".06"/><path d="M0 234H390" stroke="#FFFFFF" stroke-opacity=".06"/><path d="M0 260H390" stroke="#FFFFFF" stroke-opacity=".06"/><path d="M0 286H390" stroke="#FFFFFF" stroke-opacity=".06"/><path d="M0 312H390" stroke="#FFFFFF" stroke-opacity=".06"/><path d="M0 338H390" stroke="#FFFFFF" stroke-opacity=".06"/><circle cx="340" cy="70" r="120" fill="#3D86FF" fill-opacity=".35"/></svg>
+  <div class="sb" style="color:#FFFFFF">
+  <span class="sb-time">9:41</span>
+  <div class="sb-r">
+    <svg width="18" height="12" viewBox="0 0 18 12" fill="#FFFFFF"><rect x="0" y="8" width="3" height="4" rx="1"/><rect x="5" y="5.5" width="3" height="6.5" rx="1"/><rect x="10" y="3" width="3" height="9" rx="1"/><rect x="15" y="0" width="3" height="12" rx="1"/></svg>
+    <svg width="16" height="12" viewBox="0 0 16 12" fill="#FFFFFF"><path d="M8 2.2c2.3 0 4.4.9 6 2.4l1.2-1.2A10.2 10.2 0 0 0 8 .5C5.2.5 2.7 1.6.8 3.4L2 4.6a8.5 8.5 0 0 1 6-2.4zm0 3.4c1.4 0 2.6.5 3.6 1.4l1.2-1.2A6.9 6.9 0 0 0 8 3.9 6.9 6.9 0 0 0 3.2 5.8L4.4 7c1-.9 2.2-1.4 3.6-1.4zM8 9a1.6 1.6 0 0 0-1.2.5L8 11.5l1.2-2A1.6 1.6 0 0 0 8 9z"/></svg>
+    <svg width="27" height="13" viewBox="0 0 27 13" fill="none"><rect x=".5" y=".5" width="23" height="12" rx="3.5" stroke="#FFFFFF" opacity=".4"/><rect x="2" y="2" width="20" height="9" rx="2" fill="#FFFFFF"/><rect x="25" y="4.5" width="1.6" height="4" rx=".8" fill="#FFFFFF" opacity=".5"/></svg>
+  </div>
+</div>
+  <div class="k-head"><div class="row g10 ac"><div class="k-logo"><svg width="26" height="26" viewBox="156 163 940 940"><path fill="#1B1C20" d="M229 614 C204.1 517.9 204.5 415.9 219 318 L627 170 L1036 316 C1057.3 476.9 1032.5 643.9 961 790 C959.1 660.9 958.9 530.6 938 403 L627 279 L309 401 C304.0 452.3 297.6 504.8 307 556 L229 614 Z"/><path fill="#1B1C20" d="M346 437 C503.0 367.6 684.6 372.5 849 412 L848 508 C761.9 484.6 671.9 476.6 583 483 L583 922 L481 820 L481 494 C433.9 499.4 388.5 515.4 346 536 L346 437 Z"/><path fill="#0057F2" d="M628 532 L723 537 L723 660 L836 660 L838 550 L925 567 L929 812 L836 883 L836 756 L723 756 L723 940 L628 970 L628 532 Z"/><path fill="#0057F2" d="M242 664 L324 603 C370.8 771.3 485.0 921.8 637 1008 C735.8 977.1 831.8 932.3 912 866 C837.2 964.6 735.6 1039.4 627 1097 C448.5 1012.2 295.9 857.0 242 664 Z"/></svg></div><div class="col g2"><span class="k-brand">Tezkor Himoya</span><span class="k-cap">Ish maydoni · Advokat</span></div></div><div class="row g8 ac"><div class="k-tog"><i></i>Onlayn</div><div class="k-ib"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8.5a6 6 0 1 0-12 0c0 6.5-2.5 8.5-2.5 8.5h17S18 15 18 8.5"/><path d="M10.3 20.5a2 2 0 0 0 3.4 0"/></svg><span class=k-dot></span></div></div></div>
+  <div class="k-top-in">
+    <div class="k-seg"><span class="on">Bugun</span><span>Hafta</span><span>Oy</span></div>
+    <span class="k-sub" style="margin-top:6px">Hafta daromadi</span>
+    <div class="row g10 ac"><span class="k-big">4 850 000</span><span class="k-sub" style="font-weight:700;color:#FFFFFF">so'm</span><span class="k-up">+18%</span></div>
+    <div class="row g8"><div class="k-box"><span class="k-box-v">12</span><span class="k-box-l">buyurtma</span></div><div class="k-box"><span class="k-box-v">4.9 ★</span><span class="k-box-l">reyting</span></div><div class="k-box"><span class="k-box-v">3,48 mln</span><span class="k-box-l">balans</span></div></div>
+  </div>
+</div>
+<div class="k-sheet">
+  <div class="k-handle"></div>
+  <div class="k-req">
+    <div class="k-req-top"><span class="row g6 ac"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#0C1A33" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2.5 4.5 13.5H12l-1 8 8.5-11H12z"/></svg>Yangi tezkor buyurtma</span><span>04:59</span></div>
+    <div class="k-req-in">
+      <span class="k-t">Avtohalokat bo'yicha maslahat</span>
+      <span class="k-ts row g4 ac"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#5A6B85" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19.5 10c0 6-7.5 11.5-7.5 11.5S4.5 16 4.5 10a7.5 7.5 0 0 1 15 0z"/><circle cx="12" cy="10" r="2.6"/></svg>Chilonzor · 2.4 km · 250 000 so'm</span>
+      <div class="row g10"><div class="k-btn ghost">Rad etish</div><div class="k-btn">Qabul qilish</div></div>
+    </div>
+  </div>
+  <div class="k-sec"><span class="k-h2">Kun tartibi</span><span class="k-link">Kalendar</span></div>
+  <div class="k-list"><div class="k-ag now"><span class="k-ag-t">10:00</span><div class="col g2 f1"><span class="k-t15">Konsultatsiya</span><span class="k-ts">Malika K. · video</span></div><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#8593AB" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg></div><div class="k-ag"><span class="k-ag-t">14:00</span><div class="col g2 f1"><span class="k-t15">Sud majlisi</span><span class="k-ts">Yunusobod tuman sudi</span></div><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#8593AB" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg></div><div class="k-ag"><span class="k-ag-t">16:30</span><div class="col g2 f1"><span class="k-t15">Da'vo arizasi</span><span class="k-ts">Ish #LX-1987</span></div><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#8593AB" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg></div></div>
+  <div class="k-sec"><span class="k-h2">Ko'rsatkichlar</span><span class="k-link">Batafsil</span></div>
+  <div class="k-list" style="padding:6px 16px"><div class="k-mrow"><span class="k-t15 f1">Javob foizi</span><div class="k-mbar"><i style="width:96%;background:#0057F2"></i></div><span class="k-mv">96%</span></div><div class="k-mrow"><span class="k-t15 f1">Qabul foizi</span><div class="k-mbar"><i style="width:88%;background:#7C5CFF"></i></div><span class="k-mv">88%</span></div><div class="k-mrow"><span class="k-t15 f1">O'rtacha javob</span><div class="k-mbar"><i style="width:80%;background:#12B76A"></i></div><span class="k-mv">6 daq</span></div></div>
+  <div class="k-prof"><div class="k-prof-ring"><svg width="52" height="52" viewBox="0 0 52 52"><circle cx="26.0" cy="26.0" r="23.0" fill="none" stroke="#E3E9F5" stroke-width="6"/><circle cx="26.0" cy="26.0" r="23.0" fill="none" stroke="#0057F2" stroke-width="6" stroke-linecap="round" stroke-dasharray="115.6 144.5" transform="rotate(-90 26.0 26.0)"/></svg><span>80%</span></div><div class="col g2 f1"><span class="k-t15">Profilni to'ldiring</span><span class="k-ts">Litsenziya va tajriba qoldi</span></div><div class="k-cta" style="background:#0C1A33">To'ldirish</div></div>
+</div>
+<div class="k-tabbar"><div class="k-tabrow"><div class="k-tab"><div class="rel"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#0057F2" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg></div><span style="color:#0057F2;font-weight:700">Asosiy</span></div><div class="k-tab"><div class="rel"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#8593AB" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 13h5l1.5 3h6l1.5-3h5"/><path d="M5.5 5h13l3 8v5.5a2 2 0 0 1-2 2h-15a2 2 0 0 1-2-2V13z"/></svg><span class="k-badge">7</span></div><span style="color:#8593AB;font-weight:500">So'rovlar</span></div><div class="k-tab"><div class="k-ai"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#0C1A33" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.8 5.4L19 10l-5.2 1.6L12 17l-1.8-5.4L5 10l5.2-1.6z"/><path d="M19 15l.7 2.1 2.1.7-2.1.7L19 20.6l-.7-2.1-2.1-.7 2.1-.7z"/></svg></div></div><div class="k-tab"><div class="rel"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#8593AB" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20.5v-1A4.5 4.5 0 0 1 7 15h4a4.5 4.5 0 0 1 4.5 4.5v1"/><path d="M16 4.7a3.5 3.5 0 0 1 0 6.6M21.5 20.5v-1a4.5 4.5 0 0 0-3-4.2"/></svg></div><span style="color:#8593AB;font-weight:500">Mijozlar</span></div><div class="k-tab"><div class="rel"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#8593AB" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20.5l1.4-4.9A8 8 0 1 1 21 12z"/></svg><span class="k-badge">3</span></div><span style="color:#8593AB;font-weight:500">Xabarlar</span></div></div><div class="hi" style="background:#0C1A33"></div></div>
+</div></div><div class="spec">
+  <div class="col g6"><span class="sp-t">Dizayn tokenlari</span><span class="sp-d">Brend ko'k yuqori qism (to'r naqshli) va ustiga chiqadigan oq panel (sheet), sariq urg'u. Asosiy raqamlar tepada, amallar panelda.</span></div>
+  <div class="col g8"><span class="sp-h">Shrift</span><span class="sp-font">Figtree (800 / 700 / 600 / 500)</span></div>
+  <div class="col g8"><span class="sp-h">Ranglar</span><div class="sp-sws"><div class="sp-sw"><i style="background:#0057F2"></i><div class="col"><span class="sp-k">Primary</span><span class="sp-v">#0057F2</span></div></div><div class="sp-sw"><i style="background:#0043C9"></i><div class="col"><span class="sp-k">Primary dark</span><span class="sp-v">#0043C9</span></div></div><div class="sp-sw"><i style="background:#0C1A33"></i><div class="col"><span class="sp-k">Ink</span><span class="sp-v">#0C1A33</span></div></div><div class="sp-sw"><i style="background:#5A6B85"></i><div class="col"><span class="sp-k">Text 2</span><span class="sp-v">#5A6B85</span></div></div><div class="sp-sw"><i style="background:#8593AB"></i><div class="col"><span class="sp-k">Muted</span><span class="sp-v">#8593AB</span></div></div><div class="sp-sw"><i style="background:#F2F5FB"></i><div class="col"><span class="sp-k">Sheet</span><span class="sp-v">#F2F5FB</span></div></div><div class="sp-sw"><i style="background:#EEF4FF"></i><div class="col"><span class="sp-k">Tint</span><span class="sp-v">#EEF4FF</span></div></div><div class="sp-sw"><i style="background:#FFC93C"></i><div class="col"><span class="sp-k">Yellow</span><span class="sp-v">#FFC93C</span></div></div><div class="sp-sw"><i style="background:#E0263A"></i><div class="col"><span class="sp-k">Danger</span><span class="sp-v">#E0263A</span></div></div><div class="sp-sw"><i style="background:#12B76A"></i><div class="col"><span class="sp-k">Success</span><span class="sp-v">#12B76A</span></div></div></div></div>
+  <div class="col g4"><span class="sp-h">Tipografiya · size / line · weight · tracking</span><div class="sp-r"><span class="sp-k">Display</span><span class="sp-v">36 / 42 · 800 · -1.2</span></div><div class="sp-r"><span class="sp-k">H1</span><span class="sp-v">30 / 36 · 800 · -0.8</span></div><div class="sp-r"><span class="sp-k">H2</span><span class="sp-v">18 / 24 · 800</span></div><div class="sp-r"><span class="sp-k">Karta</span><span class="sp-v">17 / 23 · 800</span></div><div class="sp-r"><span class="sp-k">Body</span><span class="sp-v">15 / 20 · 700</span></div><div class="sp-r"><span class="sp-k">Caption</span><span class="sp-v">13 / 18 · 500</span></div></div>
+  <div class="col g4"><span class="sp-h">Border radius (px)</span><div class="sp-r"><span class="sp-k">Sheet (tepa)</span><span class="sp-v">30</span></div><div class="sp-r"><span class="sp-k">Karta</span><span class="sp-v">24</span></div><div class="sp-r"><span class="sp-k">Quick tile</span><span class="sp-v">22</span></div><div class="sp-r"><span class="sp-k">Search</span><span class="sp-v">18</span></div><div class="sp-r"><span class="sp-k">Icon box / btn</span><span class="sp-v">14–18</span></div></div>
+  <div class="col g4"><span class="sp-h">O'lchamlar</span><div class="sp-r"><span class="sp-k">Frame</span><span class="sp-v">390 × auto (min 844)</span></div><div class="sp-r"><span class="sp-k">Top</span><span class="sp-v">h340 · grid 26px</span></div><div class="sp-r"><span class="sp-k">Quick tile</span><span class="sp-v">140 × 124</span></div><div class="sp-r"><span class="sp-k">Tab bar</span><span class="sp-v">h90 · AI 52 r18</span></div><div class="sp-r"><span class="sp-k">Button</span><span class="sp-v">h48 / h38</span></div></div>
+  <div class="col g4"><span class="sp-h">Ikonkalar</span><span class="sp-d">24×24 grid, stroke 1.7–2.2, round cap/join. Tab: 22–24px.</span></div>
+</div></div>
+</section>
+</div></body></html>

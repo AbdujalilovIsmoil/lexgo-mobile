@@ -2,23 +2,23 @@ import { StyleSheet, View } from "react-native";
 import type { ProProfile } from "@/entities/pro-profile";
 import { useColors } from "@/shared/theme";
 import { Avatar, Icon, Pill, Skeleton, Text } from "@/shared/ui";
-import { SectionCard } from "@/shared/ui/admin";
+import { ProfileGroup } from "@/shared/ui/profile";
 import { Notice } from "@/shared/ui/sel";
 import { useSom } from "@/shared/lib/sel";
 import { useT } from "@/shared/i18n";
 
 type Props = { pub: ProProfile | null | undefined; loading: boolean; avatarUrl: string };
 
-// "How clients see you" — the marketplace card built from GET /marketplace/lawyers/{id}. The phone is never part of it.
+// "How clients see you" — the marketplace card built from GET /marketplace/lawyers/{id}, in the client profile's look. The phone is never part of it.
 export function PublicPreviewCard({ pub, loading, avatarUrl }: Props) {
   const { t } = useT();
   const c = useColors();
   const som = useSom();
-  if (loading) return <Skeleton height={150} round={20} />;
-  if (!pub) return <SectionCard title={t("sl5.preview.title")}><Notice tone="warn" text={t("sl5.preview.hidden")} /></SectionCard>;
+  if (loading) return <View style={s.wait}><Skeleton height={150} round={20} /></View>;
+  if (!pub) return <ProfileGroup title={t("sl5.preview.title")} padded><Notice tone="warn" text={t("sl5.preview.hidden")} /></ProfileGroup>;
   const rated = pub.reviewsCount >= 5 && pub.rating > 0;
   return (
-    <SectionCard title={t("sl5.preview.title")}>
+    <ProfileGroup title={t("sl5.preview.title")} padded>
       <View style={s.row}>
         <Avatar name={pub.name} uri={avatarUrl || undefined} size={52} />
         <View style={s.col}>
@@ -37,11 +37,12 @@ export function PublicPreviewCard({ pub, loading, avatarUrl }: Props) {
         <Icon name="lock" size={14} tone="gray" />
         <Text variant="caption" tone="gray2" style={s.col}>{t("sl5.preview.noPhone")}</Text>
       </View>
-    </SectionCard>
+    </ProfileGroup>
   );
 }
 
 const s = StyleSheet.create({
+  wait: { paddingHorizontal: 16, marginTop: 20 },
   row: { flexDirection: "row", alignItems: "center", gap: 10 },
   col: { flex: 1, gap: 2 },
   dot: { width: 10, height: 10, borderRadius: 5 },

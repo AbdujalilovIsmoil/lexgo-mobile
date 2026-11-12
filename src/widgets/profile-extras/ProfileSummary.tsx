@@ -17,7 +17,8 @@ function Fact({ label, value }: { label: string; value: string }) {
 }
 
 // "Shaxsiy ma'lumotlar" (web profile, first panel): ID, name, phone, e-mail, card, plan + edit button.
-export function ProfileSummary() {
+// `soft`: the client profile's look — the title as a small grey heading over the card.
+export function ProfileSummary({ soft }: { soft?: boolean } = {}) {
   const { t } = useT();
   const router = useRouter();
   const user = useSession()?.user;
@@ -27,11 +28,12 @@ export function ProfileSummary() {
   const p = q.data;
   const unset = t("cpr.notSet");
   return (
-    <View style={{ paddingHorizontal: 16, marginTop: 20 }}>
+    <View style={{ paddingHorizontal: 16, marginTop: 20, gap: 8 }}>
+      {soft ? <Text variant="caption" weight="bold" tone="gray" style={{ letterSpacing: 1, marginLeft: 4 }}>{t("cpr.personal")}</Text> : null}
       <Card style={{ gap: 4 }}>
         <View style={{ flexDirection: "row", alignItems: "center", gap: 8, marginBottom: 6 }}>
-          <Text variant="h4" style={{ flex: 1 }}>{t("cpr.personal")}</Text>
-          {verified ? <Pill label={t("cpr.verifiedProfile")} tone="ok" icon="shield" small /> : null}
+          {soft ? <View style={{ flex: 1, flexDirection: "row" }}>{verified ? <Pill label={t("cpr.verifiedProfile")} tone="ok" icon="shield" small /> : null}</View> : <Text variant="h4" style={{ flex: 1 }}>{t("cpr.personal")}</Text>}
+          {!soft && verified ? <Pill label={t("cpr.verifiedProfile")} tone="ok" icon="shield" small /> : null}
           <Button title={t("py9.edit")} icon="edit-3" variant="soft" size="sm" onPress={() => router.push("/profile/edit")} />
         </View>
         {q.isLoading ? <Skeleton height={120} round={14} /> : (

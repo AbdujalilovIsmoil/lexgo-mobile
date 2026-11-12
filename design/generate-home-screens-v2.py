@@ -1,0 +1,401 @@
+#!/usr/bin/env python3
+"""Generates design/home-screens-v2.html — 4 Home variants (Classic, Minimal, Card-based, Modern), Figma-importable."""
+import sys
+
+OUT = sys.argv[1] if len(sys.argv) > 1 else "design/home-screens-v2.html"
+
+I = {
+ "home": '<path d="M3.5 10.2 12 3.5l8.5 6.7V19a1.5 1.5 0 0 1-1.5 1.5h-4.2v-5.8H9.2v5.8H5A1.5 1.5 0 0 1 3.5 19z"/>',
+ "grid": '<rect x="3.5" y="3.5" width="7" height="7" rx="2"/><rect x="13.5" y="3.5" width="7" height="7" rx="2"/><rect x="3.5" y="13.5" width="7" height="7" rx="2"/><rect x="13.5" y="13.5" width="7" height="7" rx="2"/>',
+ "bag": '<path d="M5 8h14l-1 12.2A1.6 1.6 0 0 1 16.4 21.7H7.6A1.6 1.6 0 0 1 6 20.2z"/><path d="M9 10.5V7a3 3 0 0 1 6 0v3.5"/>',
+ "msg": '<path d="M20.5 11.6a8.4 8.4 0 0 1-12.3 7.5L3.5 20.5l1.4-4.4a8.4 8.4 0 1 1 15.6-4.5z"/>',
+ "spark": '<path d="M10 3.5c.6 3.6 2.4 5.4 6 6-3.6.6-5.4 2.4-6 6-.6-3.6-2.4-5.4-6-6 3.6-.6 5.4-2.4 6-6z"/><path d="M18 2.5c.3 1.6 1 2.3 2.5 2.5-1.5.3-2.2 1-2.5 2.5-.3-1.5-1-2.2-2.5-2.5 1.5-.2 2.2-.9 2.5-2.5z"/><path d="M18 15c.3 1.4.9 2 2.2 2.2-1.3.3-1.9.9-2.2 2.3-.3-1.4-.9-2-2.2-2.3 1.3-.2 1.9-.8 2.2-2.2z"/>',
+ "bell": '<path d="M18 9a6 6 0 1 0-12 0c0 6.5-2.5 8.3-2.5 8.3h17S18 15.5 18 9"/><path d="M10.3 20.5a2 2 0 0 0 3.4 0"/>',
+ "user": '<circle cx="12" cy="8" r="4"/><path d="M4.5 20.5a7.5 7.5 0 0 1 15 0"/>',
+ "users": '<circle cx="9" cy="8" r="3.6"/><path d="M2.5 20v-.8A4.7 4.7 0 0 1 7.2 14.5h3.6a4.7 4.7 0 0 1 4.7 4.7v.8"/><path d="M15.5 4.6a3.6 3.6 0 0 1 0 6.8M21.5 20v-.8a4.7 4.7 0 0 0-3.2-4.4"/>',
+ "search": '<circle cx="11" cy="11" r="7"/><path d="m20.5 20.5-4.6-4.6"/>',
+ "mic": '<rect x="9" y="2.5" width="6" height="11.5" rx="3"/><path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5v4"/>',
+ "arrowr": '<path d="M5 12h14M13 6l6 6-6 6"/>',
+ "chev": '<path d="m9 6 6 6-6 6"/>',
+ "scale": '<path d="M12 3.5v17M7.5 20.5h9M5 7.5h14M10.5 5h3"/><path d="M5 7.5 2.3 14a2.9 2.9 0 0 0 5.4 0zM19 7.5 16.3 14a2.9 2.9 0 0 0 5.4 0z"/>',
+ "docsearch": '<path d="M13.5 2.5H6.5a2 2 0 0 0-2 2v15a2 2 0 0 0 2 2h4.5"/><path d="M13.5 2.5 19 8v2.5M13.5 2.5V8H19"/><path d="M8 12h3.5M8 15.5h2"/><circle cx="16.3" cy="16.3" r="3.3"/><path d="m18.7 18.7 2.6 2.6"/>',
+ "file": '<path d="M14 2.5H6.5a2 2 0 0 0-2 2v15a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2V8z"/><path d="M14 2.5V8h5.5M8.5 12.5h7M8.5 16h7"/>',
+ "layers": '<path d="M12 3 2.5 8 12 13l9.5-5z"/><path d="m2.5 12 9.5 5 9.5-5"/><path d="m2.5 16 9.5 5 9.5-5"/>',
+ "menu": '<path d="M4.5 6.5h15M4.5 12h15M4.5 17.5h15"/>',
+}
+
+def ic(name, size=24, color="currentColor", sw=1.8, fill="none"):
+    return (f'<svg width="{size}" height="{size}" viewBox="0 0 24 24" fill="{fill}" stroke="{color}" '
+            f'stroke-width="{sw}" stroke-linecap="round" stroke-linejoin="round">{I[name]}</svg>')
+
+def logo(size, ink="#0B1F45", blue="#1E6FE8"):
+    return (f'<svg width="{size}" height="{size}" viewBox="156 163 940 940">'
+            f'<path fill="{ink}" d="M229 614 C204.1 517.9 204.5 415.9 219 318 L627 170 L1036 316 C1057.3 476.9 1032.5 643.9 961 790 C959.1 660.9 958.9 530.6 938 403 L627 279 L309 401 C304.0 452.3 297.6 504.8 307 556 L229 614 Z"/>'
+            f'<path fill="{ink}" d="M346 437 C503.0 367.6 684.6 372.5 849 412 L848 508 C761.9 484.6 671.9 476.6 583 483 L583 922 L481 820 L481 494 C433.9 499.4 388.5 515.4 346 536 L346 437 Z"/>'
+            f'<path fill="{blue}" d="M628 532 L723 537 L723 660 L836 660 L838 550 L925 567 L929 812 L836 883 L836 756 L723 756 L723 940 L628 970 L628 532 Z"/>'
+            f'<path fill="{blue}" d="M242 664 L324 603 C370.8 771.3 485.0 921.8 637 1008 C735.8 977.1 831.8 932.3 912 866 C837.2 964.6 735.6 1039.4 627 1097 C448.5 1012.2 295.9 857.0 242 664 Z"/>'
+            '</svg>')
+
+def status(color):
+    return f'''<div class="sb" style="color:{color}"><span class="sb-t">11:22</span><div class="sb-r">
+<svg width="18" height="12" viewBox="0 0 18 12" fill="{color}"><rect x="0" y="8" width="3" height="4" rx="1"/><rect x="5" y="5.5" width="3" height="6.5" rx="1"/><rect x="10" y="3" width="3" height="9" rx="1"/><rect x="15" y="0" width="3" height="12" rx="1" opacity=".35"/></svg>
+<svg width="16" height="12" viewBox="0 0 16 12" fill="{color}"><path d="M8 2.2c2.3 0 4.4.9 6 2.4l1.2-1.2A10.2 10.2 0 0 0 8 .5C5.2.5 2.7 1.6.8 3.4L2 4.6a8.5 8.5 0 0 1 6-2.4zm0 3.4c1.4 0 2.6.5 3.6 1.4l1.2-1.2A6.9 6.9 0 0 0 8 3.9 6.9 6.9 0 0 0 3.2 5.8L4.4 7c1-.9 2.2-1.4 3.6-1.4zM8 9a1.6 1.6 0 0 0-1.2.5L8 11.5l1.2-2A1.6 1.6 0 0 0 8 9z"/></svg>
+<svg width="27" height="13" viewBox="0 0 27 13" fill="none"><rect x=".5" y=".5" width="23" height="12" rx="3.5" stroke="{color}" opacity=".4"/><rect x="2" y="2" width="20" height="9" rx="2" fill="{color}"/><rect x="25" y="4.5" width="1.6" height="4" rx=".8" fill="{color}" opacity=".5"/></svg>
+</div></div>'''
+
+# ---------------- illustrations ----------------
+COURTHOUSE = '''<svg width="250" height="197" viewBox="0 0 190 150" fill="none">
+<defs>
+<linearGradient id="chCol" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#C3D0E3"/><stop offset=".45" stop-color="#F3F6FB"/><stop offset="1" stop-color="#B9C7DC"/></linearGradient>
+<linearGradient id="chRoof" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#E9EEF6"/><stop offset="1" stop-color="#C8D4E6"/></linearGradient>
+<linearGradient id="chFade" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#F6F8FC" stop-opacity="1"/><stop offset=".38" stop-color="#F6F8FC" stop-opacity="0"/></linearGradient>
+<linearGradient id="chFadeB" x1="0" y1="0" x2="0" y2="1"><stop offset=".7" stop-color="#F6F8FC" stop-opacity="0"/><stop offset="1" stop-color="#F6F8FC" stop-opacity="1"/></linearGradient>
+</defs>
+<path d="M28 44 106 8l78 36z" fill="url(#chRoof)"/>
+<path d="M44 40 106 13l62 27z" fill="#F4F7FB"/>
+<path d="M28 44h156v6H28z" fill="#D6DFEC"/>
+<rect x="24" y="50" width="164" height="10" fill="#E6ECF5"/>
+<rect x="24" y="60" width="164" height="3" fill="#C3D0E3"/>
+''' + "".join(f'<rect x="{x}" y="66" width="13" height="58" fill="url(#chCol)"/><rect x="{x-2}" y="63" width="17" height="4" rx="1" fill="#DCE4EF"/><path d="M{x+4} 70v50M{x+8.5} 70v50" stroke="#C7D3E5" stroke-width=".8"/>' for x in range(34, 186, 26)) + '''
+<rect x="20" y="124" width="172" height="6" fill="#DCE4EF"/>
+<rect x="12" y="130" width="180" height="6" fill="#E8EDF5"/>
+<rect x="4" y="136" width="186" height="8" fill="#D5DEEB"/>
+<rect x="0" y="0" width="190" height="150" fill="url(#chFade)"/>
+<rect x="0" y="0" width="190" height="150" fill="url(#chFadeB)"/>
+</svg>'''
+
+GAVEL = '''<svg width="150" height="124" viewBox="0 0 150 124" fill="none">
+<defs>
+<linearGradient id="gvW" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8A5530"/><stop offset=".45" stop-color="#5A321A"/><stop offset="1" stop-color="#2E180B"/></linearGradient>
+<linearGradient id="gvH" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#3A1F0E"/><stop offset=".35" stop-color="#8C5632"/><stop offset=".6" stop-color="#6A3C1F"/><stop offset="1" stop-color="#2C1709"/></linearGradient>
+<linearGradient id="gvG" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#8A6420"/><stop offset=".4" stop-color="#F2D58A"/><stop offset=".7" stop-color="#C79A3E"/><stop offset="1" stop-color="#7A5518"/></linearGradient>
+<linearGradient id="gvB" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#6E4126"/><stop offset="1" stop-color="#1E0F06"/></linearGradient>
+<radialGradient id="gvS" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#000" stop-opacity=".45"/><stop offset="1" stop-color="#000" stop-opacity="0"/></radialGradient>
+</defs>
+<ellipse cx="88" cy="112" rx="62" ry="10" fill="url(#gvS)"/>
+<path d="M36 92v12c0 6 23 11 52 11s52-5 52-11V92z" fill="url(#gvB)"/>
+<ellipse cx="88" cy="92" rx="52" ry="11" fill="#7A4A2B"/>
+<ellipse cx="88" cy="91" rx="46" ry="8.5" fill="#8E5A36"/>
+<g transform="rotate(-24 82 56)">
+<rect x="2" y="54" width="86" height="10" rx="5" fill="url(#gvW)"/>
+<rect x="76" y="52.5" width="10" height="13" rx="2" fill="url(#gvG)"/>
+<rect x="84" y="20" width="40" height="78" rx="11" fill="url(#gvH)"/>
+<rect x="84" y="29" width="40" height="7" fill="url(#gvG)"/>
+<rect x="84" y="82" width="40" height="7" fill="url(#gvG)"/>
+<ellipse cx="104" cy="21" rx="19" ry="4" fill="#9A6440"/>
+<path d="M94 40v36" stroke="#B57A4E" stroke-width="2.5" stroke-linecap="round" opacity=".55"/>
+</g>
+</svg>'''
+
+CUBE = '''<svg width="132" height="128" viewBox="0 0 132 128" fill="none">
+<defs>
+<linearGradient id="cbT" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FFFFFF" stop-opacity=".95"/><stop offset="1" stop-color="#D7DCFF" stop-opacity=".9"/></linearGradient>
+<linearGradient id="cbL" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#C9D0FF"/><stop offset="1" stop-color="#8F9CF7"/></linearGradient>
+<linearGradient id="cbR" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#B3BCFF"/><stop offset="1" stop-color="#6F7FF0"/></linearGradient>
+<radialGradient id="cbG" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#FFFFFF" stop-opacity=".55"/><stop offset="1" stop-color="#FFFFFF" stop-opacity="0"/></radialGradient>
+</defs>
+<circle cx="66" cy="62" r="62" fill="url(#cbG)"/>
+<path d="M66 14 116 40 66 66 16 40z" fill="url(#cbT)" stroke="#FFFFFF" stroke-opacity=".9" stroke-width="3" stroke-linejoin="round"/>
+<path d="M16 40 66 66v50L16 90z" fill="url(#cbL)" stroke="#FFFFFF" stroke-opacity=".6" stroke-width="3" stroke-linejoin="round"/>
+<path d="M116 40 66 66v50l50-26z" fill="url(#cbR)" stroke="#FFFFFF" stroke-opacity=".45" stroke-width="3" stroke-linejoin="round"/>
+<g transform="translate(43 18) scale(1.7)" stroke="#5B6CF2" stroke-width="1.3" stroke-linejoin="round" fill="#FFFFFF">
+<path d="M10 3.5c.6 3.6 2.4 5.4 6 6-3.6.6-5.4 2.4-6 6-.6-3.6-2.4-5.4-6-6 3.6-.6 5.4-2.4 6-6z"/>
+<path d="M18 2.5c.3 1.6 1 2.3 2.5 2.5-1.5.3-2.2 1-2.5 2.5-.3-1.5-1-2.2-2.5-2.5 1.5-.2 2.2-.9 2.5-2.5z"/>
+</g>
+</svg>'''
+
+CLIPBOARD = '''<svg width="54" height="64" viewBox="0 0 54 64" fill="none">
+<defs><linearGradient id="cpB" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#A9C8F7"/><stop offset="1" stop-color="#6C9BE8"/></linearGradient></defs>
+<rect x="4" y="8" width="44" height="54" rx="6" fill="url(#cpB)"/>
+<rect x="9" y="14" width="34" height="43" rx="3" fill="#FFFFFF"/>
+<rect x="16" y="3" width="20" height="11" rx="3.5" fill="#2F64C9"/>
+<circle cx="26" cy="7.5" r="2" fill="#A9C8F7"/>
+<circle cx="18" cy="25" r="4" fill="#CFE0FB"/><path d="M12.5 35a5.5 5.5 0 0 1 11 0z" fill="#CFE0FB"/>
+<path d="M27 23h11M27 28h8M14 41h24M14 46h24M14 51h16" stroke="#BFD3F5" stroke-width="2.2" stroke-linecap="round"/>
+<circle cx="44" cy="54" r="8" fill="#2F64C9"/><path d="m40.5 54 2.4 2.4 4.6-4.8" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>'''
+
+WAVES = '''<svg width="390" height="300" viewBox="0 0 390 300" fill="none" style="position:absolute;left:0;top:0">
+<path d="M150 0C230 60 260 120 390 130" stroke="#FFFFFF" stroke-opacity=".07" stroke-width="1.5"/>
+<path d="M120 0C210 80 250 150 390 165" stroke="#FFFFFF" stroke-opacity=".06" stroke-width="1.5"/>
+<path d="M180 0C250 50 300 90 390 95" stroke="#FFFFFF" stroke-opacity=".08" stroke-width="1.5"/>
+<path d="M90 300C170 230 260 200 390 210" stroke="#FFFFFF" stroke-opacity=".05" stroke-width="1.5"/>
+<path d="M0 260C120 210 230 240 390 180" stroke="#FFFFFF" stroke-opacity=".05" stroke-width="1.5"/>
+<ellipse cx="330" cy="40" rx="140" ry="90" fill="#3D6BB5" fill-opacity=".14"/>
+</svg>'''
+
+BLOBS = '''<svg width="390" height="300" viewBox="0 0 390 300" fill="none" style="position:absolute;left:0;top:0">
+<defs>
+<linearGradient id="blA" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#E4E8FF"/><stop offset="1" stop-color="#F3F5FD" stop-opacity="0"/></linearGradient>
+<linearGradient id="blB" x1="1" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#DCE4FF"/><stop offset="1" stop-color="#F3F5FD" stop-opacity="0"/></linearGradient>
+</defs>
+<path d="M180 0h210v210C330 150 280 160 230 120S200 40 180 0z" fill="url(#blA)"/>
+<path d="M250 0h140v120C350 90 320 70 300 40S270 10 250 0z" fill="url(#blB)"/>
+<path d="M160 0C210 70 290 110 390 140" stroke="#FFFFFF" stroke-width="2" stroke-opacity=".9"/>
+<path d="M200 0C240 50 310 80 390 95" stroke="#FFFFFF" stroke-width="1.5" stroke-opacity=".8"/>
+</svg>'''
+
+AICHIP = '''<svg width="40" height="40" viewBox="0 0 40 40" fill="none">
+<path d="M14 4v5M20 4v5M26 4v5M14 31v5M20 31v5M26 31v5M4 14h5M4 20h5M4 26h5M31 14h5M31 20h5M31 26h5" stroke="#3B82F6" stroke-width="2" stroke-linecap="round"/>
+<rect x="9" y="9" width="22" height="22" rx="5" fill="#DBEAFE" stroke="#2563EB" stroke-width="2"/>
+<text x="20" y="24.5" text-anchor="middle" font-family="Inter,sans-serif" font-size="11" font-weight="800" fill="#1D4ED8">AI</text>
+</svg>'''
+
+def sos_badge(w=44, h=28, r=8, fs=12):
+    return f'<div class="sos" style="width:{w}px;height:{h}px;border-radius:{r}px;font-size:{fs}px">SOS</div>'
+
+# ---------------- tab bars ----------------
+TABS = [("home", "Asosiy"), ("grid", "Xizmatlar"), ("spark", "AI"), ("bag", "Buyurtmalar"), ("msg", "Xabarlar")]
+
+def tabbar(kind):
+    items = []
+    for i, (n, l) in enumerate(TABS):
+        if n == "spark" and kind != "v1":
+            grad = {"v2": "linear-gradient(145deg,#3E8BFF 0%,#1460E8 100%)",
+                    "v3": "linear-gradient(145deg,#2C56A8 0%,#0F2A5E 100%)",
+                    "v4": "linear-gradient(145deg,#6D7CFF 0%,#3550EE 100%)"}[kind]
+            sh = {"v2": "rgba(20,96,232,.40)", "v3": "rgba(15,42,94,.40)", "v4": "rgba(53,80,238,.40)"}[kind]
+            items.append(f'<div class="tab"><div class="tab-ai" style="background:{grad};box-shadow:0 8px 18px {sh}">{ic("spark", 28, "none", 0, "#FFFFFF")}</div></div>')
+            continue
+        active = i == 0
+        if kind == "v4" and active:
+            items.append(f'<div class="tab"><div class="tab-act">{ic("home", 24, "#FFFFFF", 1.6, "none")}<span>Asosiy</span></div></div>')
+            continue
+        acol = {"v1": "#0B1B33", "v2": "#1670F0", "v3": "#0F2A5E", "v4": "#2F55EA"}[kind]
+        col = acol if active else "#6B778A"
+        if n == "spark":
+            icon = ic("spark", 24, col, 1.5)
+        elif active:
+            icon = ic("home", 24, col, 1.6, col)
+        else:
+            icon = ic(n, 24, col, 1.6)
+        items.append(f'<div class="tab">{icon}<span style="color:{col};font-weight:{700 if active else 500}">{l}</span></div>')
+    return f'<div class="tabbar">{"".join(items)}</div><div class="hi"></div>'
+
+def phone(inner, bg, status_color, name):
+    return f'''<div class="device" data-name="{name}">
+<div class="screen" style="background:{bg}">
+<div class="island"></div>
+{status(status_color)}
+{inner}
+</div>
+</div>'''
+
+# ---------------- V1 Classic ----------------
+def v1():
+    cards = [("scale", "Yuridik xizmatlar", "Onlayn maslahat"), ("docsearch", "Hujjat tahlili", "AI orqali tekshirish"),
+             ("users", "Advokat topish", "Mutaxassislar ro'yxati"), ("layers", "Shablonlar", "Tayyor hujjatlar")]
+    grid = "".join(f'<div class="c1-card"><div class="c1-ic">{ic(n, 30, "#1D4E9E", 1.7)}</div><div class="col g4"><span class="c1-t">{t}</span><span class="c1-s">{s}</span></div></div>' for n, t, s in cards)
+    inner = f'''<div class="c1-body">
+  <div class="hdr">
+    <div class="row ac g10">{logo(38, "#FFFFFF", "#2E8BFF")}<span class="brand" style="color:#FFFFFF">Tezkor Himoya</span></div>
+    <div class="c1-bell">{ic("bell", 22, "#FFFFFF", 1.7)}</div>
+  </div>
+  <div class="row ac g12" style="margin-top:12px">
+    <div class="c1-av">{ic("user", 22, "none", 0, "#FFFFFF")}</div>
+    <div class="col g2"><span class="c1-hi">Assalomu alaykum,</span><span class="c1-name">Mehmon</span></div>
+  </div>
+  <span class="c1-h1">Qanday yordam kerak?</span>
+  <div class="c1-search">{ic("search", 22, "#1B2A44", 2)}<span class="ph f1">Muammoingizni qisqacha yozing...</span><div class="c1-go">{ic("arrowr", 20, "#FFFFFF", 2.2)}</div></div>
+  <div class="c1-grid">{grid}</div>
+  <div class="c1-sos">{sos_badge()}<div class="col g2 f1"><span class="c1-sos-t">Favqulodda yordam</span><span class="c1-sos-s">Zudlik bilan huquqiy yordam oling</span></div>{ic("chev", 22, "#2B1B1B", 2)}</div>
+  <div class="c1-acc"><div class="c1-clip">{CLIPBOARD}</div><div class="col g4 f1"><span class="c1-acc-t">Hisobingizni yarating</span><span class="c1-acc-s">Barcha imkoniyatlardan to'liq foydalaning</span></div>{ic("chev", 22, "#1B2A44", 2)}</div>
+</div>
+{tabbar("v1")}'''
+    bg = "linear-gradient(180deg,#0A2251 0%,#0F2D63 30%,#1A3F7C 42%,#7E97C0 52%,#DCE5F1 58%,#EEF2F8 66%,#EEF2F8 100%)"
+    return phone(inner, bg, "#FFFFFF", "Variant 1 — Classic")
+
+# ---------------- V2 Minimal ----------------
+def v2():
+    rows = [("scale", "Yuridik xizmatlar", "Huquqiy yordam va maslahat"), ("file", "Hujjat tahlili", "AI yordamida tekshirish"),
+            ("user", "Advokat va yuristlar", "Mutaxassis topish"), ("layers", "Hujjat shablonlari", "Tayyor namunalar")]
+    rl = "".join(f'<div class="c2-row"><div class="c2-ic">{ic(n, 28, "#2457B0", 1.6)}</div><div class="col g4 f1"><span class="c2-t">{t}</span><span class="c2-s">{s}</span></div>{ic("chev", 20, "#7A8699", 2)}</div>' for n, t, s in rows)
+    inner = f'''<div class="c2-court">{COURTHOUSE}</div>
+<div class="c2-body">
+  <div class="hdr">
+    <div class="row ac g10">{logo(38)}<span class="brand" style="color:#0B1F45">Tezkor Himoya</span></div>
+    <div class="row ac g16">{ic("bell", 24, "#0B1F45", 1.7)}{ic("user", 24, "#0B1F45", 1.7)}</div>
+  </div>
+  <div class="col g4" style="margin-top:44px"><span class="c2-hi">Assalomu alaykum,</span><span class="c2-name">Mehmon</span></div>
+  <div class="c2-search">{ic("search", 22, "#1B2A44", 2)}<span class="ph f1" style="font-size:16px">Muammoingizni yozing...</span>{ic("mic", 22, "#1B2A44", 1.8)}</div>
+  <div class="col g10">{rl}</div>
+  <div class="c2-ai">{AICHIP}<div class="col g4 f1"><span class="c2-t">AI yordamchi</span><span class="c2-s" style="color:#4A5A75">Savolingizga tez va aniq javob</span></div><div class="c2-go">{ic("arrowr", 20, "#FFFFFF", 2.2)}</div></div>
+</div>
+{tabbar("v2")}'''
+    return phone(inner, "#F6F8FC", "#0B0F18", "Variant 2 — Minimal")
+
+# ---------------- V3 Card-based ----------------
+def v3():
+    tiles = [("scale", "Xizmatlar"), ("file", "Hujjat<br>tahlili"), ("user", "Advokatlar"), ("layers", "Shablonlar")]
+    tl = "".join(f'<div class="c3-tile">{ic(n, 32, "#1D4E9E", 1.6)}<span>{l}</span></div>' for n, l in tiles)
+    inner = f'''{WAVES}
+<div class="c3-body">
+  <div class="c3-hdr">
+    <div class="c3-sq">{ic("menu", 22, "#FFFFFF", 1.8)}</div>
+    <div class="col ac g4">{logo(34, "#FFFFFF", "#2E8BFF")}<span class="c3-brand">Tezkor Himoya</span></div>
+    <div class="c3-sq">{ic("bell", 22, "#FFFFFF", 1.7)}</div>
+  </div>
+  <span class="c3-h1">Huquqiy yordam<br>har doim yoningizda</span>
+  <span class="c3-sub">Maslahat, hujjat, advokat — barchasi<br>bitta ilovada</span>
+  <div class="c3-search">{ic("search", 22, "#3A4A66", 2)}<span class="ph f1">Qanday masalada yordam kerak?</span></div>
+  <div class="c3-tiles">{tl}</div>
+  <div class="c3-banner">
+    <div class="col g10" style="position:relative;z-index:1"><span class="c3-bt">Tezkor advokat</span><span class="c3-bs"><i></i>24/7 onlayn maslahat</span></div>
+    <div class="c3-gavel">{GAVEL}</div>
+  </div>
+  <div class="c3-sos"><div class="sos" style="width:36px;height:36px;border-radius:18px;font-size:11px">SOS</div><span class="c3-sos-t f1">SOS – Favqulodda holat</span>{ic("chev", 22, "#2B1B1B", 2)}</div>
+</div>
+{tabbar("v3")}'''
+    bg = "linear-gradient(180deg,#0B1E40 0%,#132D5A 28%,#203F6E 46%,#4E6890 54%,#D9E1EC 60%,#F0F3F8 66%,#F0F3F8 100%)"
+    return phone(inner, bg, "#FFFFFF", "Variant 3 — Card-based")
+
+# ---------------- V4 Modern ----------------
+def v4():
+    cards = [("scale", "Yuridik xizmatlar", "#2F5BEA", "#DCE6FF"), ("file", "Hujjat tahlili", "#16A34A", "#D7F5E1"),
+             ("user", "Advokat topish", "#2F5BEA", "#DCE6FF"), ("layers", "Hujjat shablonlari", "#7C4DEB", "#E9E1FF")]
+    cg = "".join(f'<div class="c4-card"><div class="row jb as"><div class="c4-ic">{ic(n, 30, c, 1.6, f)}</div>{ic("arrowr", 18, "#5B6478", 1.8)}</div><span class="c4-t">{t}</span></div>' for n, t, c, f in cards)
+    inner = f'''{BLOBS}
+<div class="c4-body">
+  <div class="hdr">
+    <div class="row ac g10">{logo(38)}<span class="brand" style="color:#0B1F45">Tezkor Himoya</span></div>
+    <div class="row ac g10"><div class="c4-circ">{ic("bell", 22, "#0B1F45", 1.7)}</div><div class="c4-circ">{ic("user", 22, "#0B1F45", 1.7)}</div></div>
+  </div>
+  <div class="col g4" style="margin-top:20px"><span class="c2-hi">Assalomu alaykum,</span><span class="c2-name">Mehmon</span></div>
+  <div class="c4-ai">
+    <div class="col g8" style="position:relative;z-index:1;width:190px">
+      <span class="c4-ai-t">AI yordamchi</span>
+      <span class="c4-ai-s">Huquqiy savollaringizga tez javob oling</span>
+      <div class="c4-ai-b">{ic("arrowr", 20, "#3550EE", 2.2)}</div>
+    </div>
+    <div class="c4-cube">{CUBE}</div>
+  </div>
+  <span class="c4-h2">Asosiy xizmatlar</span>
+  <div class="c4-grid">{cg}</div>
+  <span class="c4-h2">Tezkor imkoniyatlar</span>
+  <div class="c4-sos"><div class="sos" style="width:38px;height:38px;border-radius:19px;font-size:11px">SOS</div><div class="col g2 f1"><span class="c4-t">SOS – Favqulodda yordam</span><span class="c4-s">Zudlik bilan huquqiy yordam</span></div>{ic("chev", 22, "#1B2A44", 2)}</div>
+</div>
+{tabbar("v4")}'''
+    return phone(inner, "#F3F5FB", "#0B0F18", "Variant 4 — Modern")
+
+VARIANTS = [
+ (v1, "Variant 1 — Classic", "Ishonchli va rasmiy ko'rinish", ["#0B1F45", "#1F64C8", "#E4E9F2", "#EEF2F8"]),
+ (v2, "Variant 2 — Minimal", "Sof va tartibli, e'tiborni mazmunga qaratadi", ["#1670F0", "#BBD6FB", "#D3D9E2", "#FFFFFF"]),
+ (v3, "Variant 3 — Card-based", "Vizual jihatdan boy, zamonaviy kartalar", ["#0B1E40", "#5A79A8", "#D5DCE6", "#F0F3F8"]),
+ (v4, "Variant 4 — Modern", "Yengil va kreativ, AI'ga urg'u beradi", ["#2F55EA", "#B7CBFA", "#C9C2FA", "#E9ECFB"]),
+]
+
+CSS = """
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:#F5F6F9}
+body{font-family:'Inter',sans-serif;padding:56px 48px 64px;-webkit-font-smoothing:antialiased;color:#0B1B33}
+.board{display:flex;gap:40px;width:max-content;align-items:flex-start}
+.col{display:flex;flex-direction:column}.row{display:flex}.f1{flex:1;min-width:0}
+.ac{align-items:center}.as{align-items:flex-start}.jb{justify-content:space-between}
+.g2{gap:2px}.g4{gap:4px}.g8{gap:8px}.g10{gap:10px}.g12{gap:12px}.g16{gap:16px}
+svg{display:block;flex-shrink:0}
+.variant{display:flex;flex-direction:column;align-items:center;gap:22px}
+.label{height:44px;padding:0 34px;border-radius:22px;background:#E7EAF0;font-size:19px;font-weight:700;letter-spacing:-.3px;display:flex;align-items:center;color:#0B1B33}
+.desc{font-size:16px;line-height:22px;color:#3B4659;margin-top:-6px}
+.sw{display:flex;gap:14px}
+.sw i{width:34px;height:34px;border-radius:9px;box-shadow:inset 0 0 0 1px rgba(11,27,51,.08)}
+.device{width:414px;height:868px;padding:12px;border-radius:64px;background:#0E0F13;box-shadow:0 0 0 2px #2A2C33,0 30px 60px rgba(11,27,51,.22)}
+.screen{width:390px;height:844px;border-radius:52px;position:relative;overflow:hidden}
+.island{position:absolute;left:133px;top:11px;width:124px;height:36px;border-radius:18px;background:#000000;z-index:5}
+.sb{height:54px;padding:4px 30px 0 40px;display:flex;align-items:center;justify-content:space-between;position:relative;z-index:2}
+.sb-t{font-size:17px;font-weight:600;letter-spacing:-.2px}
+.sb-r{display:flex;align-items:center;gap:6px}
+.hdr{height:52px;display:flex;align-items:center;justify-content:space-between}
+.brand{font-size:20px;font-weight:700;letter-spacing:-.4px}
+.ph{font-size:15px;color:#7A8597;font-weight:400;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sos{background:linear-gradient(180deg,#F04444 0%,#D92D2D 100%);color:#FFFFFF;font-weight:800;display:flex;align-items:center;justify-content:center;letter-spacing:.2px;flex-shrink:0}
+.tabbar{position:absolute;left:0;right:0;bottom:0;height:86px;background:#FFFFFF;padding:10px 6px 0;display:flex;align-items:flex-start;box-shadow:0 -1px 0 rgba(11,27,51,.06),0 -8px 24px rgba(11,27,51,.05);z-index:3}
+.tab{flex:1;display:flex;flex-direction:column;align-items:center;gap:5px}
+.tab span{font-size:11px;line-height:14px}
+.tab-ai{width:60px;height:60px;border-radius:30px;margin-top:-34px;display:flex;align-items:center;justify-content:center}
+.tab-act{width:60px;height:56px;margin-top:-6px;border-radius:16px;background:linear-gradient(180deg,#3B63F0,#2A4FE3);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;box-shadow:0 6px 14px rgba(47,85,234,.32)}
+.tab-act span{font-size:11px;color:#FFFFFF;font-weight:700}
+.hi{position:absolute;left:128px;bottom:8px;width:134px;height:5px;border-radius:3px;background:#0B0F18;z-index:4}
+
+/* V1 */
+.c1-body{padding:0 16px;display:flex;flex-direction:column;position:relative}
+.c1-bell{width:42px;height:42px;border-radius:12px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center}
+.c1-av{width:44px;height:44px;border-radius:22px;background:linear-gradient(160deg,#5B9BFF 0%,#2B63D1 100%);display:flex;align-items:flex-end;justify-content:center;padding-bottom:4px;border:2px solid rgba(255,255,255,.35)}
+.c1-hi{font-size:14.5px;color:rgba(255,255,255,.88);font-weight:500}
+.c1-name{font-size:20px;line-height:24px;color:#FFFFFF;font-weight:600}
+.c1-h1{font-size:25px;line-height:30px;font-weight:700;color:#FFFFFF;letter-spacing:-.5px;margin-top:16px}
+.c1-search{height:54px;margin-top:16px;border-radius:12px;background:#FFFFFF;padding:0 8px 0 16px;display:flex;align-items:center;gap:12px;box-shadow:0 8px 24px rgba(4,18,48,.25)}
+.c1-go{width:38px;height:38px;border-radius:10px;background:linear-gradient(180deg,#2A7BF4,#1660DA);display:flex;align-items:center;justify-content:center}
+.c1-grid{display:flex;flex-wrap:wrap;gap:10px;margin-top:18px}
+.c1-card{width:174px;height:118px;border-radius:14px;background:#FFFFFF;padding:14px 16px;display:flex;flex-direction:column;justify-content:space-between;box-shadow:0 6px 18px rgba(11,27,51,.10)}
+.c1-ic{width:38px;height:38px;display:flex;align-items:center;justify-content:center}
+.c1-t{font-size:15.5px;line-height:19px;font-weight:700;color:#0B1B33;letter-spacing:-.2px}
+.c1-s{font-size:13px;line-height:16px;color:#3E4A5E}
+.c1-sos{height:70px;margin-top:20px;border-radius:14px;background:#FDEEEE;border:1px solid #F8D9D9;padding:0 14px;display:flex;align-items:center;gap:12px}
+.c1-sos-t{font-size:16.5px;font-weight:700;color:#C42B2B;letter-spacing:-.2px}
+.c1-sos-s{font-size:13px;color:#9E3A2E}
+.c1-acc{height:88px;margin-top:16px;border-radius:14px;background:#FFFFFF;padding:0 14px;display:flex;align-items:center;gap:14px;box-shadow:0 6px 18px rgba(11,27,51,.07)}
+.c1-acc-t{font-size:16.5px;font-weight:700;color:#0B1B33;letter-spacing:-.2px}
+.c1-acc-s{font-size:13px;line-height:17px;color:#3E4A5E}
+
+/* V2 */
+.c2-court{position:absolute;right:-30px;top:92px;opacity:.95}
+.c2-body{padding:0 16px;display:flex;flex-direction:column;gap:0;position:relative}
+.c2-hi{font-size:17px;color:#1B2A44;font-weight:500}
+.c2-name{font-size:27px;line-height:32px;color:#0B1B33;font-weight:700;letter-spacing:-.5px}
+.c2-search{height:58px;margin:26px 0 16px;border-radius:14px;background:#FFFFFF;border:1px solid #E6EBF2;padding:0 16px;display:flex;align-items:center;gap:12px;box-shadow:0 6px 18px rgba(11,27,51,.06)}
+.c2-row{height:70px;border-radius:14px;background:#FFFFFF;border:1px solid #EAEFF5;padding:0 14px 0 16px;display:flex;align-items:center;gap:16px;box-shadow:0 4px 14px rgba(11,27,51,.05)}
+.c2-ic{width:34px;display:flex;justify-content:center}
+.c2-t{font-size:16.5px;font-weight:700;color:#0B1B33;letter-spacing:-.2px}
+.c2-s{font-size:13.5px;color:#4F5B6E}
+.c2-ai{height:76px;margin-top:16px;border-radius:16px;background:linear-gradient(90deg,#E3EEFD 0%,#ECF3FE 100%);border:1px solid #D2E2FA;padding:0 14px;display:flex;align-items:center;gap:14px}
+.c2-go{width:36px;height:36px;border-radius:18px;background:#1670F0;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 10px rgba(22,112,240,.35)}
+
+/* V3 */
+.c3-body{padding:0 16px;display:flex;flex-direction:column;position:relative}
+.c3-hdr{height:72px;display:flex;align-items:center;justify-content:space-between;margin-top:-4px}
+.c3-sq{width:42px;height:42px;border-radius:12px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.18);display:flex;align-items:center;justify-content:center}
+.c3-brand{font-size:14px;font-weight:700;color:#FFFFFF;letter-spacing:-.1px}
+.c3-h1{font-size:28px;line-height:33px;font-weight:700;color:#FFFFFF;letter-spacing:-.6px;margin-top:20px}
+.c3-sub{font-size:15px;line-height:21px;color:rgba(255,255,255,.88);margin-top:12px}
+.c3-search{height:56px;margin-top:22px;border-radius:12px;background:#FFFFFF;padding:0 16px;display:flex;align-items:center;gap:12px;box-shadow:0 10px 24px rgba(4,18,48,.25)}
+.c3-tiles{display:flex;gap:10px;margin-top:24px}
+.c3-tile{width:82px;height:98px;border-radius:14px;background:#FFFFFF;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:9px;box-shadow:0 8px 20px rgba(11,27,51,.14)}
+.c3-tile span{font-size:12.5px;line-height:15px;font-weight:600;color:#0B1B33;text-align:center}
+.c3-banner{height:120px;margin-top:34px;border-radius:16px;background:linear-gradient(110deg,#1B2A45 0%,#27375A 55%,#33456A 100%);padding:0 20px;display:flex;align-items:center;position:relative;overflow:hidden;box-shadow:0 10px 24px rgba(11,27,51,.22)}
+.c3-bt{font-size:22px;font-weight:700;color:#FFFFFF;letter-spacing:-.4px}
+.c3-bs{font-size:14px;color:rgba(255,255,255,.9);display:flex;align-items:center;gap:8px}
+.c3-bs i{width:9px;height:9px;border-radius:5px;background:#22C55E;box-shadow:0 0 0 3px rgba(34,197,94,.25)}
+.c3-gavel{position:absolute;right:2px;top:-2px}
+.c3-sos{height:58px;margin-top:18px;border-radius:14px;background:#FFF5F5;border:1px solid #F7DCDC;padding:0 14px;display:flex;align-items:center;gap:14px}
+.c3-sos-t{font-size:16px;font-weight:700;color:#B42323;letter-spacing:-.2px}
+
+/* V4 */
+.c4-body{padding:0 16px;display:flex;flex-direction:column;position:relative}
+.c4-circ{width:42px;height:42px;border-radius:21px;background:#FFFFFF;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 12px rgba(11,27,51,.08)}
+.c4-ai{height:150px;margin-top:20px;border-radius:20px;background:linear-gradient(110deg,#3550EE 0%,#5267F4 45%,#8E9BFA 100%);padding:20px;display:flex;align-items:center;position:relative;overflow:hidden;box-shadow:0 14px 30px rgba(53,80,238,.30)}
+.c4-ai-t{font-size:22px;font-weight:700;color:#FFFFFF;letter-spacing:-.4px}
+.c4-ai-s{font-size:14px;line-height:19px;color:rgba(255,255,255,.9)}
+.c4-ai-b{width:50px;height:30px;margin-top:6px;border-radius:15px;background:#FFFFFF;display:flex;align-items:center;justify-content:center}
+.c4-cube{position:absolute;right:6px;top:10px}
+.c4-h2{font-size:18px;font-weight:700;color:#0B1B33;letter-spacing:-.3px;margin-top:24px}
+.c4-grid{display:flex;flex-wrap:wrap;gap:12px;margin-top:14px}
+.c4-card{width:173px;height:88px;border-radius:14px;background:#FFFFFF;padding:12px 14px;display:flex;flex-direction:column;justify-content:space-between;box-shadow:0 6px 18px rgba(11,27,51,.07)}
+.c4-ic{width:32px;height:32px;display:flex;align-items:center;justify-content:center}
+.c4-t{font-size:15px;font-weight:700;color:#0B1B33;letter-spacing:-.2px}
+.c4-s{font-size:13px;color:#4F5B6E}
+.c4-sos{height:66px;margin-top:12px;border-radius:14px;background:#FFFFFF;padding:0 14px;display:flex;align-items:center;gap:14px;box-shadow:0 6px 18px rgba(11,27,51,.06)}
+"""
+
+html_v = "".join(f'''<div class="variant">{fn()}<div class="label">{lab}</div><span class="desc">{d}</span><div class="sw">{"".join(f'<i style="background:{c}"></i>' for c in sw)}</div></div>''' for fn, lab, d, sw in VARIANTS)
+
+html = f'''<!doctype html>
+<html lang="uz"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tezkor Himoya Home</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>{CSS}</style></head>
+<body><div class="board">{html_v}</div></body></html>'''
+
+with open(OUT, "w", encoding="utf-8") as f:
+    f.write(html)
+print("wrote", OUT, len(html))

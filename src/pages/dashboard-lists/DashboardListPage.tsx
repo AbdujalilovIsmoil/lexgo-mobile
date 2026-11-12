@@ -20,7 +20,7 @@ export function DashboardListPage() {
   const Body = kind && kind in KINDS ? KINDS[kind as keyof typeof KINDS] : null;
   const works = kind === "works";
   return (
-    <AdminPage secondary={works} ground={works ? (dark ? c.canvas : HOME_BG) : undefined} title={Body ? t(`cl7.kinds.${kind}.title`) : t("cl7.unknown")} subtitle={Body && !works ? t(`cl7.kinds.${kind}.sub`) : undefined}>
+    <AdminPage secondary={works || undefined} ground={works ? (dark ? c.canvas : HOME_BG) : undefined} title={Body ? t(`cl7.kinds.${kind}.title`) : t("cl7.unknown")} subtitle={Body && !works ? t(`cl7.kinds.${kind}.sub`) : undefined}>
       {!authed ? <WorksGuest /> : Body ? <Body /> : <EmptyState icon="help-circle" title={t("cl7.unknown")} text={t("cl7.unknownText")} />}
     </AdminPage>
   );

@@ -11,9 +11,10 @@ import { GuestWelcome } from "@/widgets/guest-welcome";
 import { HeroScroll, IconButton, backIcon } from "@/shared/ui";
 import { useRaPage } from "@/shared/remote-assist";
 import { ClientProfile } from "./ClientProfile";
+import { SellerProfile } from "./SellerProfile";
 
-// /profile, a stack page with no tab bar: signed-in users get their profile; visitors get the welcome / sign-in page. The back button is in
-// the client's title row; the others' pages start with a dark band, so theirs floats over it.
+// /profile, a stack page with no tab bar: signed-in users get their profile; visitors get the welcome / sign-in page. The client and the
+// professional pages carry the back button in their own bar; the others' pages start with a dark band, so theirs floats over it.
 export function ProfilePage() {
   const router = useRouter();
   const c = useColors();
@@ -27,14 +28,15 @@ export function ProfilePage() {
   const floating = <View style={[s.back, { top: insets.top + HEADER_GAP }]}><IconButton icon={backIcon} tone="glass" onPress={back} /></View>;
   if (!session) return <View style={s.fill}><GuestWelcome />{floating}</View>;
   if (client) return <ClientProfile user={session.user} onBack={back} />;
+  if (seller) return <SellerProfile user={session.user} onBack={back} />;
   return (
     <View style={s.fill}>
     <HeroScroll style={{ backgroundColor: c.canvas }} contentContainerStyle={{ paddingBottom: insets.bottom + 32 }}>
       <ProfileHeader user={session.user} />
       <ProfileSummary />
       <View style={{ paddingHorizontal: 16, marginTop: 14 }}><IdentityCard /></View>
-      {seller ? null : <ProfileMenu />}
-      {seller ? null : <ProfileExtrasMenu />}
+      <ProfileMenu />
+      <ProfileExtrasMenu />
       <AppSettings />
     </HeroScroll>
     {floating}
