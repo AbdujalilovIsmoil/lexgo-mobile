@@ -52,5 +52,5 @@ export const aw2: Messages["aw2"] = {
     waiting_payment: "Ожидает оплаты",
     waiting_docs: "Ожидает документы",
   },
-  inbox: { title: "Заявки", action: "Нужно действие", overdue: "Просрочено", total: "Всего", all: "Все", kind: { docs: "Запрос документа", urgent: "Срочная заявка", orders: "Заказ", meetings: "Встреча" }, showDone: "Показать завершённые", hideDone: "Скрыть завершённые", modules: "Полные разделы", empty: "Заявок пока нет", needs: "Ждёт ответа" },
+  inbox: { title: "Заявки", action: "Нужно действие", overdue: "Просрочено", total: "Всего", all: "Все", kind: { docs: "Запрос документа", urgent: "Срочная заявка", orders: "Заказ", meetings: "Встреча" }, showDone: "Показать завершённые", hideDone: "Скрыть завершённые", modules: "Полные разделы", empty: "Заявок пока нет", newOrders: "Новые заказы", newEmpty: "Новых заказов нет", openAll: "Открыть все", needs: "Ждёт ответа" },
 };

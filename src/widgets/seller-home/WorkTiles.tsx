@@ -8,7 +8,7 @@ import { Fade } from "./Fade";
 export type WorkTile = { key: string; icon: IconName; tint: string; title: string; sub: string; to: string; hot?: boolean };
 
 // The four doors of the day as calm white cards in a 2×2 grid: a tinted icon chip on top, the title and a live count under it
-// (urgent work, opportunities, today's calendar, document requests). A card with work waiting gets a small dot on its chip.
+// (urgent work, opportunities or — an advokat — tasks, today's calendar, document requests). A card with work waiting gets a small dot on its chip.
 export function WorkTiles({ items }: { items: WorkTile[] }) {
   const c = useColors();
   const router = useRouter();

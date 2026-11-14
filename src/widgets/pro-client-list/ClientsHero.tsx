@@ -1,7 +1,8 @@
 import { StyleSheet, View } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
-import { brand, gradient, radius, shadows } from "@/shared/theme";
-import { Icon, PressableScale, Text } from "@/shared/ui";
+// Tugmalar qaytarilganda: import { brand, gradient, radius, shadows } / { Icon, PressableScale, Text }
+import { gradient, radius, shadows } from "@/shared/theme";
+import { Text } from "@/shared/ui";
 import { useT } from "@/shared/i18n";
 
 // The top of the client base: a gradient card with the three numbers that matter (all clients, with active cases, with a conflict)
@@ -20,6 +21,7 @@ export function ClientsHero({ total, active, conflicts, onAdd, onCheck }: { tota
           </View>
         ))}
       </View>
+      {/* Hozircha kerak emas: "Yangi mijoz" va "Ziddiyat tekshiruvi" tugmalari vaqtincha o'chirilgan.
       <View style={s.actions}>
         <PressableScale onPress={onAdd} accessibilityRole="button" style={[s.btn, s.primary]}>
           <Icon name="user-plus" size={17} color={brand.b900} /><Text variant="small" weight="bold" style={{ color: brand.b900 }}>{t("aw3.add")}</Text>
@@ -28,6 +30,7 @@ export function ClientsHero({ total, active, conflicts, onAdd, onCheck }: { tota
           <Icon name="shield" size={17} tone="white" /><Text variant="small" weight="bold" tone="white">{t("aw3.check")}</Text>
         </PressableScale>
       </View>
+      */}
     </LinearGradient>
   );
 }

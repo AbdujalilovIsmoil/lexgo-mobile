@@ -49,13 +49,14 @@ function sellerNav(s: Seller): { main: NavItem[]; account: NavItem[]; settings: 
   const web = lawyer
     ? [row("dashboard", "grid", "/(tabs)/workspace"), row("marketplace", "briefcase", "/pro/market"), row("marketplaceOrders", "tag", "/pro/orders"), row("cases", "file-text", "/pro/cases"), row("urgentAssigned", "zap", "/pro/urgent"), row("tasks", "check-square", "/pro/tasks"), row("calendar", "calendar", "/pro/calendar"), row("clients", "users", "/(tabs)/clients"), row("services", "target", "/pro/services"), row("documents", "file", "/pro/templates"), row("documentRequests", "file-text", "/pro/docs"), row("files", "folder-plus", "/pro/files"), row("chat", "message-circle", "/(tabs)/messages"), row("meetings", "video", "/meetings"), row("notifications", "bell", "/notifications", "notifications"), row("ai", "star", "/(tabs)/ai"), row("assistant", "cpu", "/pro/assistant"), row("referrals", "gift", "/pro/referrals"), row("promotion", "zap", "/pro/promotions"), row("subscription", "award", "/subscription"), row("support", "headphones", "/support", "support")]
     : [row("dashboard", "grid", "/(tabs)/workspace"), row("opportunities", "briefcase", "/pro/market"), row("marketplaceOrders", "tag", "/pro/orders"), row("cases", "file-text", "/pro/cases"), row("urgentAssigned", "zap", "/pro/urgent"), row("documentRequests", "file-text", "/pro/docs"), row("calendar", "calendar", "/pro/calendar"), row("clients", "users", "/(tabs)/clients"), row("services", "target", "/pro/services"), row("tasks", "check-square", "/pro/tasks"), row("messages", "message-circle", "/(tabs)/messages"), row("meetings", "video", "/meetings"), row("notifications", "bell", "/notifications", "notifications"), row("files", "folder-plus", "/pro/files"), row("assistant", "cpu", "/pro/assistant"), row("referrals", "gift", "/pro/referrals"), row("promotion", "zap", "/pro/promotions"), row("subscription", "award", "/subscription"), row("support", "headphones", "/support", "support")];
-  const extra = flat(PRO_SECTIONS).filter((i) => ["stats", "availability", "experience", "achievements", "onboarding", "proPackages"].includes(i.key));
+  // Working hours, experience and achievements are rows of the profile page now (pages/profile/SellerProfile), not of the drawer.
+  const extra = flat(PRO_SECTIONS).filter((i) => ["stats", "onboarding", "proPackages"].includes(i.key));
   const office: NavItem = { key: "office", icon: "map-pin", route: "/pro/office", label: "mmap.office.entry" }; // the office on the map (routes for clients)
   // What the profile page used to list for a professional: the account screens (personal data, payments, plan, family, cards, consents,
   // gifts, complaints, warranty). The profile keeps no links; they live here. Like the settings below they are always there (an account
   // under review can still reach its own data).
-  const account = ACCOUNT.map((a) => ({ ...a, label: `py9.menu.${a.key}` }));
-  const settings = flat([COMMON_SECTION]).filter((i) => i.key !== "notifications"); // app settings: always there
+  const account = ACCOUNT.filter((a) => !IN_PROFILE.has(a.key)).map((a) => ({ ...a, label: `py9.menu.${a.key}` }));
+  const settings = flat([COMMON_SECTION]).filter((i) => i.key !== "notifications" && !IN_PROFILE.has(i.key)); // app settings: always there
   return { main: storeRows([...web, ...extra, office], (i) => i.route).filter((i) => !sellerRowHidden(i.key, s)), account: storeRows(account, (i) => i.route), settings };
 }
 
@@ -88,6 +89,11 @@ export function sellerSections(s: Seller = {}): DrawerGroup[] {
   return groups.filter((g) => g.items.length);
 }
 const sellerFlat = (s: Seller): NavItem[] => { const x = sellerNav(s); return [...x.main, ...x.account, ...x.settings]; };
+
+// What a professional's profile page (pages/profile/SellerProfile) lists as its own rows, so the drawer does not repeat it: personal data,
+// payments and receipts, consents, complaints and ratings, the Tezkor Himoya guarantee and every app setting (security, app lock,
+// notification settings, storage). Working hours, experience and achievements left the drawer's tools for the same reason.
+const IN_PROFILE = new Set(["edit", "payments", "consents", "complaints", "warranty", "notifSettings", "security", "lock", "storage"]);
 
 // Account screens of a professional, in the profile's old order (referrals are the "referrals" row of the web sidebar already).
 const ACCOUNT: NavItem[] = [

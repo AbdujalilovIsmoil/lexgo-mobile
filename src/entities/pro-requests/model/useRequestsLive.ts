@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { setBadge } from "@/shared/lib/badgeStore";
+import { useSession } from "@/entities/session";
 import { useResync, useUserEvents } from "@/shared/realtime";
 import { REQ_KINDS } from "../lib/status";
 import { reqKeys, useRequests } from "./queries";
@@ -10,12 +11,15 @@ import type { ReqKind } from "./types";
 // once on an always-visible professional page: it refetches on user-socket events and reconnects.
 export function useRequestCounts(live = false) {
   const qc = useQueryClient();
-  const q = { docs: useRequests("docs"), urgent: useRequests("urgent"), orders: useRequests("orders"), meetings: useRequests("meetings") };
+  // An advokat's So'rovlar is the web's "orders" group (new orders, service orders, Tezkor, document requests): meetings are not in it,
+  // so they are neither fetched nor counted for the badge.
+  const advocate = useSession()?.user.role === "advocate";
+  const q = { docs: useRequests("docs"), urgent: useRequests("urgent"), orders: useRequests("orders"), meetings: useRequests("meetings", !advocate) };
   const refresh = () => void qc.invalidateQueries({ queryKey: reqKeys.all });
   useUserEvents(live ? ["document_request.", "urgent_advokat.", "marketplace.", "order.", "call."] : "__none__", refresh);
   useResync(live ? refresh : () => {});
-  const active = (k: ReqKind) => (q[k].data ?? []).filter((x) => x.active).length;
-  const action = (k: ReqKind) => (q[k].data ?? []).filter((x) => x.active && x.action).length;
+  const active = (k: ReqKind) => (advocate && k === "meetings" ? [] : q[k].data ?? []).filter((x) => x.active).length;
+  const action = (k: ReqKind) => (advocate && k === "meetings" ? [] : q[k].data ?? []).filter((x) => x.active && x.action).length;
   const counts = Object.fromEntries(REQ_KINDS.map((k) => [k, active(k)])) as Record<ReqKind, number>;
   const attention = REQ_KINDS.reduce((sum, k) => sum + action(k), 0);
   useEffect(() => {

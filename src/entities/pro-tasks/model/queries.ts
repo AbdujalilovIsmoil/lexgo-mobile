@@ -12,9 +12,9 @@ import type { ProTask, TaskInput } from "./types";
 
 export const taskKeys = { all: ["pro-tasks"] as const };
 
-export const useTasks = () => {
+export const useTasks = (enabled = true) => {
   const authed = useIsAuthed();
-  return useQuery({ queryKey: taskKeys.all, queryFn: listTasks, enabled: authed });
+  return useQuery({ queryKey: taskKeys.all, queryFn: listTasks, enabled: authed && enabled });
 };
 
 const inv = [taskKeys.all];

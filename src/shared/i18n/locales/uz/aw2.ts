@@ -50,5 +50,5 @@ export const aw2 = {
     waiting_payment: "To'lov kutilmoqda",
     waiting_docs: "Hujjat kutilmoqda",
   },
-  inbox: { title: "So'rovlar", action: "Harakat kerak", overdue: "Muddati o'tgan", total: "Jami", all: "Hammasi", kind: { docs: "Hujjat so'rovi", urgent: "Tezkor so'rov", orders: "Buyurtma", meetings: "Uchrashuv" }, showDone: "Yakunlanganlarni ko'rsatish", hideDone: "Yakunlanganlarni yashirish", modules: "To'liq bo'limlar", empty: "Hozircha so'rov yo'q", needs: "Javob kutilmoqda" },
+  inbox: { title: "So'rovlar", action: "Harakat kerak", overdue: "Muddati o'tgan", total: "Jami", all: "Hammasi", kind: { docs: "Hujjat so'rovi", urgent: "Tezkor so'rov", orders: "Buyurtma", meetings: "Uchrashuv" }, showDone: "Yakunlanganlarni ko'rsatish", hideDone: "Yakunlanganlarni yashirish", modules: "To'liq bo'limlar", empty: "Hozircha so'rov yo'q", newOrders: "Yangi buyurtmalar", newEmpty: "Yangi buyurtmalar yo'q", openAll: "Barchasini ochish", needs: "Javob kutilmoqda" },
 };

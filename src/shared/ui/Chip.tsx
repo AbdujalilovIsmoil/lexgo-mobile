@@ -5,10 +5,10 @@ import { Text } from "./Text";
 import { Icon, type IconName } from "./Icon";
 import { selectHaptic } from "@/shared/lib/haptics";
 
-type Props = { label: string; active?: boolean; onPress?: () => void; icon?: IconName; color?: string };
+type Props = { label: string; active?: boolean; onPress?: () => void; icon?: IconName; color?: string; idleFill?: string };
 
-// Filter chip: soft tint when idle, solid brand blue when active; `color` adds a small dot (a category colour).
-export function Chip({ label, active, onPress, icon, color }: Props) {
+// Filter chip: soft tint when idle (or `idleFill`, e.g. white), solid brand blue when active; `color` adds a small dot (a category colour).
+export function Chip({ label, active, onPress, icon, color, idleFill }: Props) {
   const c = useColors();
   const m3 = Platform.OS === "android"; // Material 3 filter chip: 8dp corners, outlined idle, secondary-container + a check when selected
   return (
@@ -22,7 +22,7 @@ export function Chip({ label, active, onPress, icon, color }: Props) {
         selectHaptic();
         onPress?.();
       }}
-      style={[s.chip, m3 ? { borderRadius: 8, backgroundColor: active ? c.tint2 : "transparent", borderColor: active ? c.tint2 : c.line } : { backgroundColor: active ? brand.b600 : c.surface2, borderColor: active ? brand.b600 : c.line }]}
+      style={[s.chip, m3 ? { borderRadius: 8, backgroundColor: active ? c.tint2 : idleFill ?? "transparent", borderColor: active ? c.tint2 : c.line } : { backgroundColor: active ? brand.b600 : idleFill ?? c.surface2, borderColor: active ? brand.b600 : c.line }]}
     >
       {m3 && active ? <Icon name="check" size={16} color={c.accentStrong} /> : null}
       {color ? <View style={{ width: 9, height: 9, borderRadius: 5, backgroundColor: color, borderWidth: active ? 1.5 : 0, borderColor: "#fff" }} /> : null}

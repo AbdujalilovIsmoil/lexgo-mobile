@@ -8,6 +8,7 @@ import { useClientProfile } from "@/entities/profile-extras";
 import { isCancelled, useEvents } from "@/entities/pro-calendar";
 import { useProfileCompleteness } from "@/entities/pro-profile";
 import { useRequestCounts, useRequests } from "@/entities/pro-requests";
+import { isDone, isOverdue, useTasks } from "@/entities/pro-tasks";
 import { groupTasks, useCabinet } from "@/entities/pro-workspace";
 import { secKeys } from "@/entities/security";
 import { displayName, useSession } from "@/entities/session";
@@ -43,7 +44,7 @@ const KEYS = ["pro-workspace", "lawyer-cabinet", "pro-profile", "seller-rating",
 
 // The professional's home (Ish maydoni), the same for an advokat and a yurist. The most important things first:
 // the compact navy header → the order or urgent request waiting for an answer → who I am today (plan, the four numbers that matter)
-// → the four doors (urgent work, opportunities, calendar, document requests) → today's schedule → where my profile and rating stand
+// → the four doors (urgent work, opportunities — an advokat: my tasks, as on the web, calendar, document requests) → today's schedule → where my profile and rating stand
 // → the next steps (profile, security). Below them everything the home already had: new orders to accept, my tasks, quick actions,
 // recent activity, LexGo AI, referrals, metrics, the rating breakdown, payouts and the advocate's promotion (a yurist: security cards).
 // Everything comes from the backend. A seller still being verified sees the verification state and the completeness card.
@@ -59,13 +60,16 @@ export function SellerHome({ bottomPad }: { bottomPad: number }) {
   const c = cabinet.data;
   const counts = useRequestCounts().counts;
   const urgent = useRequests("urgent").data ?? [];
-  const jobs = useJobs().data;
+  // An advokat's home has no opportunities feed (the tasks door stands there) and is not a client: neither the feed nor the client's own
+  // record (/clients/me) is asked for here.
+  const jobs = useJobs(!advocate).data;
+  const tasks = useTasks(advocate).data;
   const events = useEvents().data ?? [];
   const rating = useMyRating(true).data;
   const { account } = useProfileCompleteness();
   const features = useMyFeatures().data;
   const plans = usePlans().data;
-  const me = useClientProfile().data; // the same plan the profile page shows
+  const me = useClientProfile(!advocate).data; // the same plan the profile page shows (a yurist; an advokat's plan comes from the features)
   const [today] = useState(() => isoDay());
   const name = displayName(session?.user) || c?.name || "";
   const pad = Math.max(bottomPad, insets.bottom + 24);
@@ -111,9 +115,12 @@ export function SellerHome({ bottomPad }: { bottomPad: number }) {
     { key: "rating", value: rating?.rated ? fmtRating(rating.rating, locale) : t("shm.ws.ratingNew"), label: t("shm.ws.statRating"), to: "/pro/stats" },
   ];
   const n = (v: number, key: string) => (v ? t(key, { n: v }) : t("shm.ws.none"));
-  const market: WorkTile = c.actions.acceptOrders
-    ? { key: "market", icon: "target", tint: "#1668F0", title: t(advocate ? "lsb.opportunities" : "lsb.marketplace"), sub: jobs ? n(jobs.length, "shm.ws.fresh") : "—", to: "/pro/market", hot: !!jobs?.length }
-    : { key: "clients", icon: "users", tint: "#1668F0", title: t("shm.dash.statClients"), sub: n(c.clients, "shm.ws.clientsN"), to: "/(tabs)/clients" };
+  const open = tasks?.filter((x) => !isDone(x)) ?? [];
+  const market: WorkTile = advocate
+    ? { key: "tasks", icon: "check-square", tint: "#1668F0", title: t("lsb.tasks"), sub: tasks ? n(open.length, "shm.ws.count") : "—", to: "/pro/tasks", hot: open.some(isOverdue) }
+    : c.actions.acceptOrders
+      ? { key: "market", icon: "target", tint: "#1668F0", title: t("lsb.marketplace"), sub: jobs ? n(jobs.length, "shm.ws.fresh") : "—", to: "/pro/market", hot: !!jobs?.length }
+      : { key: "clients", icon: "users", tint: "#1668F0", title: t("shm.dash.statClients"), sub: n(c.clients, "shm.ws.clientsN"), to: "/(tabs)/clients" };
   const tiles: WorkTile[] = [
     { key: "urgent", icon: "zap", tint: "#E8662E", title: t("lsb.urgentAssigned"), sub: n(counts.urgent, "shm.ws.waiting"), to: "/pro/urgent", hot: counts.urgent > 0 },
     market,

@@ -16,7 +16,7 @@ describe("drawer rows per role", () => {
   });
   it("a professional starts with their workspace and has the pro tools", () => {
     expect(keys("seller").slice(0, 2)).toEqual(["dashboard", "marketplace"]);
-    expect(keys("seller")).toEqual(expect.arrayContaining(["cases", "notifications", "security", "stats"]));
+    expect(keys("seller")).toEqual(expect.arrayContaining(["cases", "notifications", "stats"]));
   });
   it("no row leads into an area of the roles the app does not serve", () => {
     for (const kind of ["lawyer", "advocate"]) {
@@ -63,15 +63,14 @@ describe("no profile row in any drawer (the header has the profile button)", () 
 });
 
 describe("seller rows follow the web's permission rules (both kinds)", () => {
-  const SETTINGS_SAMPLE = "security";
-  it("an account under review keeps only the allowed rows, the onboarding steps and the settings", () => {
+  it("an account under review keeps only the allowed rows and the onboarding steps", () => {
     const yurist = navFor("seller", { kind: "lawyer", limited: true }).map((i) => i.key);
-    expect(yurist).toEqual(expect.arrayContaining(["dashboard", "services", "subscription", "notifications", "support", "onboarding", SETTINGS_SAMPLE]));
+    expect(yurist).toEqual(expect.arrayContaining(["dashboard", "services", "subscription", "notifications", "support", "onboarding"]));
     expect(yurist).not.toEqual(expect.arrayContaining(["marketplace"]));
     expect(yurist).not.toContain("cases");
     expect(yurist).not.toContain("stats");
     const advokat = navFor("seller", { kind: "advocate", limited: true }).map((i) => i.key);
-    expect(advokat).toEqual(expect.arrayContaining(["dashboard", "subscription", "notifications", "support", "onboarding", SETTINGS_SAMPLE]));
+    expect(advokat).toEqual(expect.arrayContaining(["dashboard", "subscription", "notifications", "support", "onboarding"]));
     expect(advokat).not.toContain("services"); // the web gives an advokat under review no services row
     expect(advokat).not.toContain("opportunities");
   });
@@ -89,14 +88,16 @@ describe("seller rows follow the web's permission rules (both kinds)", () => {
   });
 });
 
-describe("a professional's profile links live in the sidebar", () => {
-  const ACCOUNT = ["edit", "payments", "plan", "family", "methods", "consents", "gifts", "complaints", "warranty"];
-  it("both kinds list the account screens, after the tools and before the settings", () => {
+describe("a professional's account links", () => {
+  const ACCOUNT = ["plan", "family", "methods", "gifts"];
+  // The profile page lists these itself (pages/profile/SellerProfile), so the sidebar does not.
+  const IN_PROFILE = ["edit", "payments", "consents", "complaints", "warranty", "availability", "experience", "achievements", "notifSettings", "security", "lock", "storage"];
+  it("both kinds keep the other account screens after the tools, and leave the profile's rows to the profile", () => {
     for (const kind of ["lawyer", "advocate"]) {
       const keys = navFor("seller", { kind }).map((i) => i.key);
       expect(keys).toEqual(expect.arrayContaining(ACCOUNT));
-      expect(keys.indexOf("edit")).toBeGreaterThan(keys.indexOf("stats"));
-      expect(keys.indexOf("edit")).toBeLessThan(keys.indexOf("security"));
+      expect(keys.indexOf("plan")).toBeGreaterThan(keys.indexOf("stats"));
+      for (const k of IN_PROFILE) expect(keys).not.toContain(k);
     }
   });
   it("an account under review can still reach its own data", () => {

@@ -8,10 +8,11 @@ export const marketKeys = { feed: ["market-feed"] as const };
 
 // The live feed: refreshed every half minute while its screen is the one on view (new orders arrive and others get taken) — not under a
 // job pushed over it, nor on a tab left mounted in the background.
-export const useJobs = () => {
+// `enabled` lets a screen that does not show the feed (the advocate's home) skip it.
+export const useJobs = (enabled = true) => {
   const authed = useIsAuthed();
   const focused = useIsFocused();
-  return useQuery({ queryKey: marketKeys.feed, queryFn: listJobs, enabled: authed, staleTime: 15_000, refetchInterval: focused ? 30_000 : false });
+  return useQuery({ queryKey: marketKeys.feed, queryFn: listJobs, enabled: authed && enabled, staleTime: 15_000, refetchInterval: focused && enabled ? 30_000 : false });
 };
 
 // Take a job: the feed, the seller's own orders and the home numbers refresh afterwards.
