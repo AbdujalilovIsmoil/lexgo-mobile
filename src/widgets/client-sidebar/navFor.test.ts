@@ -28,12 +28,14 @@ describe("drawer rows per role", () => {
 });
 
 describe("seller drawer follows the web sidebar", () => {
-  const WEB_LAWYER = ["dashboard", "marketplace", "marketplaceOrders", "cases", "urgentAssigned", "tasks", "calendar", "clients", "services", "documents", "documentRequests", "files", "chat", "meetings", "notifications", "ai", "assistant", "referrals", "promotion", "subscription", "support"];
-  const WEB_ADVOCATE = ["dashboard", "opportunities", "marketplaceOrders", "cases", "urgentAssigned", "documentRequests", "calendar", "clients", "services", "tasks", "messages", "meetings", "notifications", "files", "assistant", "referrals", "promotion", "subscription", "support"];
+  const WEB_LAWYER = ["dashboard", "marketplace", "marketplaceOrders", "cases", "urgentAssigned", "tasks", "calendar", "clients", "services", "documents", "documentRequests", "files", "chat", "meetings", "notifications", "ai", "assistant", "referrals", "promotion", "subscription"]; // the help centre is a row of the profile
+  // Opportunities, Tezkor and document requests are commented out of the advokat's menu for now.
+  const WEB_ADVOCATE = ["dashboard", "marketplaceOrders", "cases", "calendar", "clients", "services", "tasks", "messages", "meetings", "notifications", "files", "assistant", "referrals", "promotion", "subscription"]; // the help centre is a row of the profile
   it("a yurist sees LAWYER_NAV in its order", () => expect(navFor("seller", { kind: "lawyer" }).map((i) => i.key).slice(0, WEB_LAWYER.length)).toEqual(WEB_LAWYER));
   it("an advokat sees ADVOCATE_NAV without the organisation's row (an organisation account uses the web panel)", () => {
     expect(navFor("seller", { kind: "advocate" }).map((i) => i.key).slice(0, WEB_ADVOCATE.length)).toEqual(WEB_ADVOCATE);
     expect(navFor("seller", { kind: "advocate" }).map((i) => i.key)).not.toContain("organization");
+    for (const k of ["opportunities", "urgentAssigned", "documentRequests"]) expect(navFor("seller", { kind: "advocate" }).map((i) => i.key)).not.toContain(k);
   });
   it("every row has a title in the web's words and a route inside the app", () => {
     for (const i of navFor("seller", { kind: "lawyer" })) {
@@ -65,12 +67,12 @@ describe("no profile row in any drawer (the header has the profile button)", () 
 describe("seller rows follow the web's permission rules (both kinds)", () => {
   it("an account under review keeps only the allowed rows and the onboarding steps", () => {
     const yurist = navFor("seller", { kind: "lawyer", limited: true }).map((i) => i.key);
-    expect(yurist).toEqual(expect.arrayContaining(["dashboard", "services", "subscription", "notifications", "support", "onboarding"]));
+    expect(yurist).toEqual(expect.arrayContaining(["dashboard", "services", "subscription", "notifications", "onboarding"]));
     expect(yurist).not.toEqual(expect.arrayContaining(["marketplace"]));
     expect(yurist).not.toContain("cases");
     expect(yurist).not.toContain("stats");
     const advokat = navFor("seller", { kind: "advocate", limited: true }).map((i) => i.key);
-    expect(advokat).toEqual(expect.arrayContaining(["dashboard", "subscription", "notifications", "support", "onboarding"]));
+    expect(advokat).toEqual(expect.arrayContaining(["dashboard", "subscription", "notifications", "onboarding"]));
     expect(advokat).not.toContain("services"); // the web gives an advokat under review no services row
     expect(advokat).not.toContain("opportunities");
   });
@@ -81,17 +83,18 @@ describe("seller rows follow the web's permission rules (both kinds)", () => {
     expect(navFor("seller", { kind: "advocate", actions: none }).map((i) => i.key)).not.toContain("opportunities");
     expect(navFor("seller", { kind: "advocate", actions: none }).map((i) => i.key)).not.toContain("messages");
     const all = { acceptOrders: true, secureChat: true };
-    expect(navFor("seller", { kind: "advocate", actions: all }).map((i) => i.key)).toEqual(expect.arrayContaining(["opportunities", "messages"]));
+    expect(navFor("seller", { kind: "lawyer", actions: all }).map((i) => i.key)).toEqual(expect.arrayContaining(["marketplace", "chat"]));
+    expect(navFor("seller", { kind: "advocate", actions: all }).map((i) => i.key)).toEqual(expect.arrayContaining(["messages"]));
   });
   it("hides nothing while the cabinet is unknown", () => {
-    expect(navFor("seller", { kind: "advocate" }).map((i) => i.key)).toEqual(expect.arrayContaining(["opportunities", "messages", "cases", "stats"]));
+    expect(navFor("seller", { kind: "advocate" }).map((i) => i.key)).toEqual(expect.arrayContaining(["marketplaceOrders", "messages", "cases", "stats"]));
   });
 });
 
 describe("a professional's account links", () => {
-  const ACCOUNT = ["plan", "family", "methods", "gifts"];
+  const ACCOUNT = ["plan", "methods", "gifts"];
   // The profile page lists these itself (pages/profile/SellerProfile), so the sidebar does not.
-  const IN_PROFILE = ["edit", "payments", "consents", "complaints", "warranty", "availability", "experience", "achievements", "notifSettings", "security", "lock", "storage"];
+  const IN_PROFILE = ["edit", "family", "support", "payments", "consents", "complaints", "warranty", "availability", "experience", "achievements", "notifSettings", "security", "lock", "storage"];
   it("both kinds keep the other account screens after the tools, and leave the profile's rows to the profile", () => {
     for (const kind of ["lawyer", "advocate"]) {
       const keys = navFor("seller", { kind }).map((i) => i.key);
@@ -123,7 +126,7 @@ describe("a professional's phone drawer", () => {
     for (const kind of ["lawyer", "advocate"]) {
       const groups = sellerSections({ kind });
       expect(groups[0].key).toBe("main");
-      expect(groups[0].items[0].key).toBe("urgentAssigned");
+      expect(groups[0].items[0].key).toBe(kind === "advocate" ? "marketplaceOrders" : "urgentAssigned");
       expect(all(kind)).not.toEqual(expect.arrayContaining(["dashboard"]));
       for (const k of ["dashboard", "clients", "chat", "messages", "notifications"]) expect(all(kind)).not.toContain(k);
     }

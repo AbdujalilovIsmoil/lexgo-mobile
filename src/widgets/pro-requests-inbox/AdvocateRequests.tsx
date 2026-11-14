@@ -11,39 +11,36 @@ import { radius, useColors } from "@/shared/theme";
 import { Button, EmptyState, ErrorView, Icon, Pill, PressableScale, Skeleton, Text, type PillTone } from "@/shared/ui";
 import { ChipBar } from "@/shared/ui/admin";
 
-type Tab = "new" | "orders" | "urgent" | "docs";
+type Tab = "new" | "orders";
+// Tezkor ishlar and Hujjat so'rovlari are not an advokat's requests here (the manager's call); they keep their own pages.
 const TABS: { key: Tab; label: string; empty: string; route: string }[] = [
   { key: "new", label: "aw2.inbox.newOrders", empty: "aw2.inbox.newEmpty", route: "/pro/market" },
   { key: "orders", label: "lsb.marketplaceOrders", empty: "aw2.empty.orders", route: "/pro/orders" },
-  { key: "urgent", label: "lsb.urgentAssigned", empty: "aw2.empty.urgent", route: "/pro/urgent" },
-  { key: "docs", label: "lsb.documentRequests", empty: "aw2.empty.docs", route: "/pro/docs" },
 ];
 const OVER = new Set(["expired", "overdue"]);
 const STEP = 25;
 type Row = { key: string; ref: string; title: string; sub: string; pill: { label: string; tone: PillTone }; route: string };
 
-// The advokat's So'rovlar, as the web portal's "orders" group: new orders (open orders to accept), service orders, Tezkor work and
-// document requests — one tab each with its count, the chosen one's open items below (what waits for an answer first), and the way
-// into that section's full page (history, filters, accept / decline). Nothing else: no meetings, no summary tiles.
+// The advokat's So'rovlar: new orders (open orders to accept) and service orders — one tab each with its count, the chosen one's open
+// items below (what waits for an answer first). Nothing else: no Tezkor work, document requests or meetings, no summary tiles.
 export function AdvocateRequests({ bottomPad }: { bottomPad: number }) {
   const { t } = useT();
   const c = useColors();
   const router = useRouter();
   const jobs = useJobs();
-  const q = { orders: useRequests("orders"), urgent: useRequests("urgent"), docs: useRequests("docs") };
+  const orders = useRequests("orders");
   const [tab, setTab] = useState<Tab>("new");
   const [limit, setLimit] = useState(STEP);
   const [now] = useState(Date.now);
-  const pull = usePullRefresh(() => Promise.all([jobs.refetch(), ...Object.values(q).map((x) => x.refetch())]));
+  const pull = usePullRefresh(() => Promise.all([jobs.refetch(), orders.refetch()]));
 
   const overdue = (x: ReqItem) => OVER.has(x.status) || (x.active && !!x.due && Date.parse(x.due) < now);
   const rank = (x: ReqItem) => (x.action && !overdue(x) ? 0 : overdue(x) ? 1 : 2);
-  const open = (k: Exclude<Tab, "new">) => (q[k].data ?? []).filter((x) => x.active || overdue(x)).sort((a, b) => rank(a) - rank(b) || b.at.localeCompare(a.at));
-  const lists = useMemo(
-    () => ({ orders: open("orders"), urgent: open("urgent"), docs: open("docs") }),
-    [q.orders.data, q.urgent.data, q.docs.data], // eslint-disable-line react-hooks/exhaustive-deps
+  const openOrders = useMemo(
+    () => (orders.data ?? []).filter((x) => x.active || overdue(x)).sort((a, b) => rank(a) - rank(b) || b.at.localeCompare(a.at)),
+    [orders.data], // eslint-disable-line react-hooks/exhaustive-deps
   );
-  const count = (k: Tab) => (k === "new" ? jobs.data?.length ?? 0 : lists[k].length);
+  const count = (k: Tab) => (k === "new" ? jobs.data?.length ?? 0 : openOrders.length);
 
   const rows: Row[] =
     tab === "new"
@@ -55,7 +52,7 @@ export function AdvocateRequests({ bottomPad }: { bottomPad: number }) {
           pill: { label: t("aw2.inbox.needs"), tone: "warn" },
           route: `/pro/orders/${encodeURIComponent(j.id)}`,
         }))
-      : lists[tab].map((x) => ({
+      : openOrders.map((x) => ({
           key: `${x.kind}-${x.id}`,
           ref: x.ref,
           title: x.title || t(`aw2.untitled.${x.kind}`),
@@ -68,7 +65,7 @@ export function AdvocateRequests({ bottomPad }: { bottomPad: number }) {
           route: x.route,
         }));
 
-  const src = tab === "new" ? jobs : q[tab];
+  const src = tab === "new" ? jobs : orders;
   const current = TABS.find((x) => x.key === tab)!;
   let body: ReactElement;
   if (src.isLoading && !rows.length) body = <View style={s.gap}>{[0, 1, 2].map((i) => <Skeleton key={i} height={84} round={18} />)}</View>;

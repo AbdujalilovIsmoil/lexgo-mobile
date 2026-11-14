@@ -4,6 +4,7 @@ import {
   Award,
   Bell,
   BriefcaseBusiness,
+  CircleHelp,
   Clock,
   CreditCard,
   Database,
@@ -16,6 +17,7 @@ import {
   ShieldCheck,
   SquareCheck,
   User as UserIcon,
+  Users,
   type LucideIcon,
 } from "lucide-react-native";
 import { useIdentity } from "@/entities/identity";
@@ -32,9 +34,9 @@ type Row = { key: string; icon: LucideIcon; title: string; sub?: string; badge?:
 
 // /profile of an advokat or a yurist, in the client profile's look: the blue band carries who I am — photo, name, phone · LexGo ID, the
 // role (and "verified") chips and, in small type under them, e-mail, bank card and address. Below it nothing but rows of white cards with
-// Lucide icons, each opening its own page: the work profile (personal data with identity verification, working hours, experience,
-// achievements), payments and documents (receipts, consents, complaints and ratings, the Tezkor Himoya guarantee) and the settings
-// (security, app lock, notifications, storage). Theme, language, sign out and the version follow. The drawer no longer lists these.
+// Lucide icons, each opening its own page: the work profile (personal data with identity verification, family members, working hours,
+// experience, achievements), payments and documents (receipts, consents, complaints and ratings, the Tezkor Himoya guarantee) and the
+// settings (security, app lock, notifications, storage, the help centre). Theme, language, sign out and the version follow. The drawer no longer lists these.
 export function SellerProfile({ user, onBack }: { user: User; onBack: () => void }) {
   const { t } = useT();
   const router = useRouter();
@@ -56,6 +58,7 @@ export function SellerProfile({ user, onBack }: { user: User; onBack: () => void
 
   const work: Row[] = [
     { key: "personal", icon: UserIcon, title: t("py9.menu.edit"), sub: t("profile.pp.seller.personalSub"), href: "/profile/section/personal" },
+    { key: "family", icon: Users, title: t("py9.menu.family"), sub: t("py9.menu.familySub"), href: "/profile/family" },
     { key: "availability", icon: Clock, title: t("nav1.menu.availability"), sub: t("profile.pp.seller.availabilitySub"), href: "/pro/availability" },
     { key: "experience", icon: BriefcaseBusiness, title: t("mf.exp.menu"), sub: t("profile.pp.seller.experienceSub"), href: "/pro/experience" },
     { key: "achievements", icon: Award, title: t("ach.menu"), sub: t("profile.pp.seller.achievementsSub"), href: "/pro/achievements" },
@@ -74,6 +77,7 @@ export function SellerProfile({ user, onBack }: { user: User; onBack: () => void
     { key: "lock", icon: ScanFace, title: t("nav1.menu.lock"), sub: t("profile.pp.seller.lockSub"), href: "/settings/security-lock" },
     { key: "notif", icon: Bell, title: t("nav1.menu.notifSettings"), sub: t("profile.pp.seller.notifSub"), href: "/settings/notifications" },
     { key: "storage", icon: Database, title: t("nav1.menu.storage"), sub: t("profile.pp.seller.storageSub"), href: "/settings/storage" },
+    { key: "help", icon: CircleHelp, title: t("profile.pp.help"), sub: t("profile.pp.seller.helpSub"), href: "/support" },
   ];
   const rows = (list: Row[]): ProfileRow[] => list.map(({ href, ...r }) => ({ ...r, onPress: () => go(href) }));
 

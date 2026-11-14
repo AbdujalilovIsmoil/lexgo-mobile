@@ -21,7 +21,8 @@ export function useRequestCounts(live = false) {
   const active = (k: ReqKind) => (advocate && k === "meetings" ? [] : q[k].data ?? []).filter((x) => x.active).length;
   const action = (k: ReqKind) => (advocate && k === "meetings" ? [] : q[k].data ?? []).filter((x) => x.active && x.action).length;
   const counts = Object.fromEntries(REQ_KINDS.map((k) => [k, active(k)])) as Record<ReqKind, number>;
-  const attention = REQ_KINDS.reduce((sum, k) => sum + action(k), 0);
+  // The badge counts what the So'rovlar page shows: an advokat's page lists service orders only (no Tezkor work, document requests or meetings).
+  const attention = (advocate ? (["orders"] as ReqKind[]) : REQ_KINDS).reduce((sum, k) => sum + action(k), 0);
   useEffect(() => {
     if (live) setBadge("requests", attention);
   }, [live, attention]);

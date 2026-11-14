@@ -48,7 +48,15 @@ function sellerNav(s: Seller): { main: NavItem[]; account: NavItem[]; settings: 
   const lawyer = s.kind !== "advocate";
   const web = lawyer
     ? [row("dashboard", "grid", "/(tabs)/workspace"), row("marketplace", "briefcase", "/pro/market"), row("marketplaceOrders", "tag", "/pro/orders"), row("cases", "file-text", "/pro/cases"), row("urgentAssigned", "zap", "/pro/urgent"), row("tasks", "check-square", "/pro/tasks"), row("calendar", "calendar", "/pro/calendar"), row("clients", "users", "/(tabs)/clients"), row("services", "target", "/pro/services"), row("documents", "file", "/pro/templates"), row("documentRequests", "file-text", "/pro/docs"), row("files", "folder-plus", "/pro/files"), row("chat", "message-circle", "/(tabs)/messages"), row("meetings", "video", "/meetings"), row("notifications", "bell", "/notifications", "notifications"), row("ai", "star", "/(tabs)/ai"), row("assistant", "cpu", "/pro/assistant"), row("referrals", "gift", "/pro/referrals"), row("promotion", "zap", "/pro/promotions"), row("subscription", "award", "/subscription"), row("support", "headphones", "/support", "support")]
-    : [row("dashboard", "grid", "/(tabs)/workspace"), row("opportunities", "briefcase", "/pro/market"), row("marketplaceOrders", "tag", "/pro/orders"), row("cases", "file-text", "/pro/cases"), row("urgentAssigned", "zap", "/pro/urgent"), row("documentRequests", "file-text", "/pro/docs"), row("calendar", "calendar", "/pro/calendar"), row("clients", "users", "/(tabs)/clients"), row("services", "target", "/pro/services"), row("tasks", "check-square", "/pro/tasks"), row("messages", "message-circle", "/(tabs)/messages"), row("meetings", "video", "/meetings"), row("notifications", "bell", "/notifications", "notifications"), row("files", "folder-plus", "/pro/files"), row("assistant", "cpu", "/pro/assistant"), row("referrals", "gift", "/pro/referrals"), row("promotion", "zap", "/pro/promotions"), row("subscription", "award", "/subscription"), row("support", "headphones", "/support", "support")];
+    : [
+        row("dashboard", "grid", "/(tabs)/workspace"),
+        // Hozircha kerak emas (advokat menyusida): Imkoniyatlar, Tezkor ishlar, Hujjat so'rovlari.
+        // row("opportunities", "briefcase", "/pro/market"),
+        row("marketplaceOrders", "tag", "/pro/orders"),
+        row("cases", "file-text", "/pro/cases"),
+        // row("urgentAssigned", "zap", "/pro/urgent"),
+        // row("documentRequests", "file-text", "/pro/docs"),
+        row("calendar", "calendar", "/pro/calendar"), row("clients", "users", "/(tabs)/clients"), row("services", "target", "/pro/services"), row("tasks", "check-square", "/pro/tasks"), row("messages", "message-circle", "/(tabs)/messages"), row("meetings", "video", "/meetings"), row("notifications", "bell", "/notifications", "notifications"), row("files", "folder-plus", "/pro/files"), row("assistant", "cpu", "/pro/assistant"), row("referrals", "gift", "/pro/referrals"), row("promotion", "zap", "/pro/promotions"), row("subscription", "award", "/subscription"), row("support", "headphones", "/support", "support")];
   // Working hours, experience and achievements are rows of the profile page now (pages/profile/SellerProfile), not of the drawer.
   const extra = flat(PRO_SECTIONS).filter((i) => ["stats", "onboarding", "proPackages"].includes(i.key));
   const office: NavItem = { key: "office", icon: "map-pin", route: "/pro/office", label: "mmap.office.entry" }; // the office on the map (routes for clients)
@@ -57,7 +65,7 @@ function sellerNav(s: Seller): { main: NavItem[]; account: NavItem[]; settings: 
   // under review can still reach its own data).
   const account = ACCOUNT.filter((a) => !IN_PROFILE.has(a.key)).map((a) => ({ ...a, label: `py9.menu.${a.key}` }));
   const settings = flat([COMMON_SECTION]).filter((i) => i.key !== "notifications" && !IN_PROFILE.has(i.key)); // app settings: always there
-  return { main: storeRows([...web, ...extra, office], (i) => i.route).filter((i) => !sellerRowHidden(i.key, s)), account: storeRows(account, (i) => i.route), settings };
+  return { main: storeRows([...web, ...extra, office], (i) => i.route).filter((i) => !sellerRowHidden(i.key, s) && !IN_PROFILE.has(i.key)), account: storeRows(account, (i) => i.route), settings };
 }
 
 // The phone drawer of a professional, built like the client's: no row repeats what the tab bar or the header already opens (the
@@ -91,9 +99,9 @@ export function sellerSections(s: Seller = {}): DrawerGroup[] {
 const sellerFlat = (s: Seller): NavItem[] => { const x = sellerNav(s); return [...x.main, ...x.account, ...x.settings]; };
 
 // What a professional's profile page (pages/profile/SellerProfile) lists as its own rows, so the drawer does not repeat it: personal data,
-// payments and receipts, consents, complaints and ratings, the Tezkor Himoya guarantee and every app setting (security, app lock,
-// notification settings, storage). Working hours, experience and achievements left the drawer's tools for the same reason.
-const IN_PROFILE = new Set(["edit", "payments", "consents", "complaints", "warranty", "notifSettings", "security", "lock", "storage"]);
+// family members, payments and receipts, consents, complaints and ratings, the Tezkor Himoya guarantee, every app setting (security, app
+// lock, notification settings, storage) and the help centre (the header's headset opens it too). Working hours, experience and achievements left the drawer's tools for the same reason.
+const IN_PROFILE = new Set(["edit", "family", "payments", "consents", "complaints", "warranty", "notifSettings", "security", "lock", "storage", "support"]);
 
 // Account screens of a professional, in the profile's old order (referrals are the "referrals" row of the web sidebar already).
 const ACCOUNT: NavItem[] = [
