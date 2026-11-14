@@ -8,6 +8,9 @@ import { TabList } from "@/shared/ui/pro/TabList";
 import { ChipBar, SearchBox } from "@/shared/ui/admin";
 import { ClientsHero } from "./ClientsHero";
 
+// eslint-disable-next-line @typescript-eslint/no-require-imports -- bundled asset (metro assetExts: lottie)
+const NOT_FOUND = require("../../../assets/lottie/NotFound.lottie") as string;
+
 type Props = { onOpen: (c: ProClient) => void; onAdd: () => void; onCheck: () => void; bottomPad: number };
 type Scope = "all" | "active" | "manual" | "conflict";
 const IN: Record<Scope, (c: ProClient) => boolean> = { all: () => true, active: (c) => c.activeCaseIds.length > 0, manual: (c) => !c.ordersCount, conflict: (c) => c.hasConflict };
@@ -41,7 +44,7 @@ export function ClientList({ onOpen, onAdd, onCheck, bottomPad }: Props) {
           </View>
         </View>
       }
-      empty={{ icon: "users", title: all.length ? t("aw3.empty") : t("cln.empty"), text: t("aw3.emptyText") }}
+      empty={{ icon: "users", lottie: all.length ? undefined : NOT_FOUND, title: all.length ? t("aw3.empty") : t("cln.empty"), text: t("aw3.emptyText") }}
       skeletonHeight={128}
     />
   );

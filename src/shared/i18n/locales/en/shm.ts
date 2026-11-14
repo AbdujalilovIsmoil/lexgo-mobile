@@ -1,4 +1,5 @@
 export const shm = {
+  "home2": { "profileRating": "Profile and rating", "chances": "My opportunities", "tasksTodo": "{n} to do", "tasksNone": "All done", "rated": "{score} · {n} reviews" },
   "dash": {
     "kicker": "Project dashboard",
     "hi": "Welcome, {name}",

@@ -1,4 +1,5 @@
 export const shm = {
+  "home2": { "profileRating": "Профиль и рейтинг", "chances": "Мои возможности", "tasksTodo": "Нужно выполнить: {n}", "tasksNone": "Всё выполнено", "rated": "{score} · {n} оценок" },
   "dash": {
     "kicker": "Панель управления проектами",
     "hi": "Добро пожаловать, {name}",

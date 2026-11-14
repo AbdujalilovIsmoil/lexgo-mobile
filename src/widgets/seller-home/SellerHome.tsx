@@ -8,7 +8,7 @@ import { useClientProfile } from "@/entities/profile-extras";
 import { isCancelled, useEvents } from "@/entities/pro-calendar";
 import { useProfileCompleteness } from "@/entities/pro-profile";
 import { useRequestCounts, useRequests } from "@/entities/pro-requests";
-import { isDone, isOverdue, useTasks } from "@/entities/pro-tasks";
+import { isDone, useTasks } from "@/entities/pro-tasks";
 import { groupTasks, useCabinet } from "@/entities/pro-workspace";
 import { secKeys } from "@/entities/security";
 import { displayName, useSession } from "@/entities/session";
@@ -20,34 +20,25 @@ import { fmtRating, isoDay } from "@/shared/lib/format";
 import { todayKey } from "@/shared/lib/pro/dates";
 import { InfoCards, StatusBanner } from "@/widgets/pro-dashboard";
 import { useT } from "@/shared/i18n";
-import { ActivityPanel } from "./ActivityPanel";
+import { Briefcase, CalendarClock, MessageSquareText, SquareCheckBig, Star, Target, Users, Zap } from "lucide-react-native";
 import { AiCard } from "./AiCard";
 import { AssignedAlert } from "./AssignedAlert";
-import { BoostCard } from "./BoostCard";
-import { HomeQuick } from "./HomeQuick";
-import { MetricsPanel } from "./MetricsPanel";
-import { NewCases } from "./NewCases";
-import { PayoutsPanel } from "./PayoutsPanel";
-import { ProfileCard, type CardStat } from "./ProfileCard";
+import { Chances } from "./Chances";
+import { HeroCard, type HeroStat } from "./HeroCard";
 import { ProfileStrengthCard } from "./ProfileStrengthCard";
-import { RatingPanel } from "./RatingPanel";
-import { ReferralProgress } from "./ReferralProgress";
-import { SecurityFold } from "./SecurityFold";
-import { NextSteps, StandingCard } from "./StandingCard";
-import { TasksPanel } from "./TasksPanel";
-import { TodayPanel } from "./TodayPanel";
-import { WorkTiles, type WorkTile } from "./WorkTiles";
+import { QuickTiles } from "./QuickTiles";
+import { StandingRing } from "./StandingRing";
+import { TodayList } from "./TodayList";
+import { WorkCards, type WorkCard } from "./WorkCards";
 import { NavyBar } from "@/widgets/tab-page/NavyBar";
-import { DIGITAL_SALES } from "@/shared/store-rules";
 
 const KEYS = ["pro-workspace", "lawyer-cabinet", "pro-profile", "seller-rating", "pro-requests", "pro-calendar", "pro-tasks", "pro-cases", "pro-clients", "pro-referral", "pay-referral", "market-feed", [...secKeys.profile]];
 
-// The professional's home (Ish maydoni), the same for an advokat and a yurist. The most important things first:
-// the compact navy header → the order or urgent request waiting for an answer → who I am today (plan, the four numbers that matter)
-// → the four doors (urgent work, opportunities — an advokat: my tasks, as on the web, calendar, document requests) → today's schedule → where my profile and rating stand
-// → the next steps (profile, security). Below them everything the home already had: new orders to accept, my tasks, quick actions,
-// recent activity, LexGo AI, referrals, metrics, the rating breakdown, payouts and the advocate's promotion (a yurist: security cards).
-// Everything comes from the backend. A seller still being verified sees the verification state and the completeness card.
+// The professional's home (Ish maydoni), the same for an advokat and a yurist, in the approved mock's order: the compact navy header →
+// the order or urgent request waiting for an answer → the hero card (who I am today: role · plan, the four numbers that matter) →
+// "Tezkor amallar" (new client, new case, upload, meeting) → two big doors (Tezkor ishlar; an advokat's tasks, a yurist's order feed) →
+// "Bugun" (today's schedule) → "Profil va reyting" (completeness ring, rating) → "Mening imkoniyatlarim" (profile, security, payout) →
+// LexGo AI. Everything comes from the backend. A seller still being verified sees the verification state and the completeness card.
 export function SellerHome({ bottomPad }: { bottomPad: number }) {
   const { t, locale } = useT();
   const qc = useQueryClient();
@@ -108,26 +99,23 @@ export function SellerHome({ bottomPad }: { bottomPad: number }) {
   const requests = counts.docs + counts.urgent + counts.orders + counts.meetings;
   const paid = !!features?.active;
   const plan = me?.planName || (paid ? plans?.find((p) => p.id === features?.planId)?.name ?? t("cdash.side.myPlan") : t("shm.ws.freePlan"));
-  const stats: CardStat[] = [
-    { key: "cases", value: String(groups.today.length + groups.upcoming.length), label: t("shm.dash.statCases"), to: "/pro/cases" },
-    { key: "requests", value: String(requests), label: t("shm.ws.statRequests"), to: "/(tabs)/requests" },
-    { key: "due", value: String(dueToday), label: t("shm.ws.statDue"), to: "/pro/calendar" },
-    { key: "rating", value: rating?.rated ? fmtRating(rating.rating, locale) : t("shm.ws.ratingNew"), label: t("shm.ws.statRating"), to: "/pro/stats" },
+  const stats: HeroStat[] = [
+    { key: "cases", icon: Briefcase, value: String(groups.today.length + groups.upcoming.length), label: t("shm.dash.statCases"), to: "/pro/cases" },
+    { key: "requests", icon: MessageSquareText, value: String(requests), label: t("shm.ws.statRequests"), to: "/(tabs)/requests" },
+    { key: "due", icon: CalendarClock, value: String(dueToday), label: t("shm.ws.statDue"), to: "/pro/calendar" },
+    { key: "rating", icon: Star, value: rating?.rated ? fmtRating(rating.rating, locale) : t("shm.ws.ratingNew"), label: t("shm.ws.statRating"), to: "/pro/stats" },
   ];
   const n = (v: number, key: string) => (v ? t(key, { n: v }) : t("shm.ws.none"));
   const open = tasks?.filter((x) => !isDone(x)) ?? [];
-  const market: WorkTile = advocate
-    ? { key: "tasks", icon: "check-square", tint: "#1668F0", title: t("lsb.tasks"), sub: tasks ? n(open.length, "shm.ws.count") : "—", to: "/pro/tasks", hot: open.some(isOverdue) }
+  const second: WorkCard = advocate
+    ? { key: "tasks", icon: SquareCheckBig, tint: "#1668F0", title: t("lsb.tasks"), sub: tasks ? (open.length ? t("shm.home2.tasksTodo", { n: open.length }) : t("shm.home2.tasksNone")) : "—", to: "/pro/tasks", badge: open.length || undefined }
     : c.actions.acceptOrders
-      ? { key: "market", icon: "target", tint: "#1668F0", title: t("lsb.marketplace"), sub: jobs ? n(jobs.length, "shm.ws.fresh") : "—", to: "/pro/market", hot: !!jobs?.length }
-      : { key: "clients", icon: "users", tint: "#1668F0", title: t("shm.dash.statClients"), sub: n(c.clients, "shm.ws.clientsN"), to: "/(tabs)/clients" };
-  const tiles: WorkTile[] = [
-    { key: "urgent", icon: "zap", tint: "#E8662E", title: t("lsb.urgentAssigned"), sub: n(counts.urgent, "shm.ws.waiting"), to: "/pro/urgent", hot: counts.urgent > 0 },
-    market,
-    { key: "calendar", icon: "calendar", tint: "#00A870", title: t("shm.ws.calendar"), sub: n(todays.length, "shm.ws.todayN"), to: "/pro/calendar" },
-    { key: "docs", icon: "file-text", tint: "#7A5CFF", title: t("lsb.documentRequests"), sub: n(counts.docs, "shm.ws.count"), to: "/pro/docs", hot: counts.docs > 0 },
+      ? { key: "market", icon: Target, tint: "#1668F0", title: t("lsb.marketplace"), sub: jobs ? n(jobs.length, "shm.ws.fresh") : "—", to: "/pro/market", badge: jobs?.length || undefined }
+      : { key: "clients", icon: Users, tint: "#1668F0", title: t("shm.dash.statClients"), sub: n(c.clients, "shm.ws.clientsN"), to: "/(tabs)/clients" };
+  const cards: WorkCard[] = [
+    { key: "urgent", icon: Zap, tint: "#F97316", title: t("lsb.urgentAssigned"), sub: n(counts.urgent, "shm.ws.waiting"), to: "/pro/urgent", badge: counts.urgent || undefined },
+    second,
   ];
-  let k = 0;
   return (
     <View style={{ flex: 1 }}>
       <NavyBar title={t("tabs.workspace")} />
@@ -135,23 +123,17 @@ export function SellerHome({ bottomPad }: { bottomPad: number }) {
         <HeaderExtra />
         <View style={body}>
           <AssignedAlert orders={c.orders} urgent={urgent} />
-          <ProfileCard name={name} avatar={account.data?.avatarUrl} kicker={`${role} · ${plan}`} stats={stats} />
-          <WorkTiles items={tiles} />
-          <View style={{ marginTop: 6 }}><TodayPanel events={events} due={groups.today} i={k++} /></View>
-          <StandingCard i={k++} />
-          <NextSteps i={k++} />
-          {c.orders.length ? <NewCases orders={c.orders} i={k++} /> : null}
-          <TasksPanel cases={c.cases} i={k++} />
-          <HomeQuick />
-          <ActivityPanel notes={c.notes} i={k++} />
-          <AiCard i={k++} advocate={advocate} />
-          <ReferralProgress i={k++} />
-          <MetricsPanel cabinet={c} i={k++} />
-          <RatingPanel i={k++} />
-          <PayoutsPanel i={k++} />
-          {advocate && DIGITAL_SALES ? <BoostCard i={k++} /> : <SecurityFold i={k++} />}
+          <HeroCard name={name} avatar={account.data?.avatarUrl} kicker={`${role} · ${plan}`} stats={stats} />
+          <View style={s.gap}><QuickTiles /></View>
+          <WorkCards items={cards} />
+          <View style={s.gap}><TodayList events={events} due={groups.today} /></View>
+          <View style={s.gap}><StandingRing /></View>
+          <View style={s.gap}><Chances /></View>
+          <View style={s.gap}><AiCard i={0} advocate={advocate} /></View>
         </View>
       </ScrollView>
     </View>
   );
 }
+
+const s = { gap: { marginTop: 8 } } as const;

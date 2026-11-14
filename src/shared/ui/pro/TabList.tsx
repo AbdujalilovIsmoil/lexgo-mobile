@@ -1,4 +1,4 @@
-import type { ReactElement } from "react";
+import type { ComponentProps, ReactElement } from "react";
 import { FlatList, View } from "react-native";
 import { useT } from "@/shared/i18n";
 import { Button } from "../Button";
@@ -9,13 +9,14 @@ import type { IconName } from "../Icon";
 import { usePullRefresh } from "@/shared/lib/usePullRefresh";
 
 type Q = { isLoading: boolean; isError: boolean; error: unknown; refetch: () => unknown; isRefetching: boolean; hasNextPage?: boolean; fetchNextPage?: () => unknown; isFetchingNextPage?: boolean };
+type EmptyLottie = ComponentProps<typeof EmptyState>["lottie"];
 type Props<T> = {
   data: T[];
   query: Q;
   renderItem: (item: T, index: number) => ReactElement;
   keyExtractor: (item: T) => string;
   header?: ReactElement | null;
-  empty?: { icon?: IconName; title: string; text?: string };
+  empty?: { icon?: IconName; lottie?: EmptyLottie; title: string; text?: string };
   bottomPad: number; // useTabPad() — keeps the last row clear of the floating tab bar
   skeletonHeight?: number;
 };
@@ -32,7 +33,7 @@ export function TabList<T>({ data, query, renderItem, keyExtractor, header, empt
       keyExtractor={keyExtractor}
       renderItem={({ item, index }) => renderItem(item, index)}
       ListHeaderComponent={header}
-      ListEmptyComponent={pending ?? (query.isError ? <ErrorView error={query.error} onRetry={() => void query.refetch()} /> : <EmptyState icon={empty?.icon ?? "inbox"} title={empty?.title ?? t("adm.noData")} text={empty?.text} />)}
+      ListEmptyComponent={pending ?? (query.isError ? <ErrorView error={query.error} onRetry={() => void query.refetch()} /> : <EmptyState icon={empty?.icon ?? "inbox"} lottie={empty?.lottie} title={empty?.title ?? t("adm.noData")} text={empty?.text} />)}
       ListFooterComponent={query.hasNextPage ? <Button title={t("adm.loadMore")} variant="soft" full loading={query.isFetchingNextPage} onPress={() => void query.fetchNextPage?.()} style={{ marginTop: 12 }} /> : null}
       ItemSeparatorComponent={() => <View style={{ height: 10 }} />}
       contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: bottomPad, flexGrow: 1 }}

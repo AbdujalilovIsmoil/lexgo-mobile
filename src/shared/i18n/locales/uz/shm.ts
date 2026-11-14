@@ -1,4 +1,5 @@
 export const shm = {
+  "home2": { "profileRating": "Profil va reyting", "chances": "Mening imkoniyatlarim", "tasksTodo": "{n} ta bajarilishi kerak", "tasksNone": "Hammasi bajarilgan", "rated": "{score} · {n} baho" },
   "dash": {
     "kicker": "Loyiha boshqaruv paneli",
     "hi": "Xush kelibsiz, {name}",

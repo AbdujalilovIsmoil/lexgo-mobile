@@ -13,6 +13,9 @@ import { filterRooms, kindOptions, type InboxKind } from "./inbox";
 
 type Props = { query: UseQueryResult<Room[]>; rooms: Room[]; myId: string; bottom: number; onOpen: (r: Room) => void; header?: ReactElement | null; action?: { label: string; onPress: () => void }; tagOf?: (r: Room) => string; showRole?: boolean };
 
+// eslint-disable-next-line @typescript-eslint/no-require-imports -- bundled asset (metro assetExts: lottie)
+const NO_MESS = require("../../../assets/lottie/noMess.lottie") as string;
+
 // The inbox: search, kind chips, newest conversation first as the rows of one white card, pull to refresh, skeleton / error / empty states.
 export function RoomsList({ query, rooms, myId, bottom, onOpen, header, action, tagOf, showRole = true }: Props) {
   const top = useTabHeader(16);
@@ -28,7 +31,7 @@ export function RoomsList({ query, rooms, myId, bottom, onOpen, header, action, 
   const empty = query.isLoading ? <View style={{ gap: 18, paddingTop: 8 }}>{[0, 1, 2, 3, 4, 5].map((i) => <View key={i} style={{ flexDirection: "row", gap: 14, alignItems: "center" }}><Skeleton width={ROOM_AVATAR} height={ROOM_AVATAR} round={ROOM_AVATAR / 2} /><View style={{ flex: 1, gap: 8 }}><Skeleton width="55%" height={14} /><Skeleton width="85%" height={12} /></View></View>)}</View>
     : query.isError && !rooms.length ? <ErrorView error={query.error} onRetry={() => void query.refetch()} />
     : rooms.length ? <EmptyState icon="search" title={t("ms1.noMatch")} text={t("ms1.noMatchText")} />
-    : <EmptyState icon="message-circle" title={t("admChat.empty")} text={t("admChat.emptyText")} actionLabel={action?.label} onAction={action?.onPress} />;
+    : <EmptyState lottie={NO_MESS} title={t("admChat.empty")} text={t("admChat.emptyText")} actionLabel={action?.label} onAction={action?.onPress} />;
   return (
     <>
     <FlashList // hundreds of rooms for a lawyer: rows are recycled
