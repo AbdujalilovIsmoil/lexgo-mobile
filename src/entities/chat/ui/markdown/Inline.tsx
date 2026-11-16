@@ -8,7 +8,7 @@ const SAFE = /^(https?:\/\/|mailto:|tel:)/i;
 type Props = { text: string; linkColor: string; codeBg: string };
 
 function styled(part: string, codeBg: string): { body: string; style?: TextStyle } {
-  if (/^(\*\*|__)[^]+\1$/.test(part)) return { body: part.slice(2, -2), style: { fontFamily: "Inter_700Bold" } };
+  if (/^(\*\*|__)[^]+\1$/.test(part)) return { body: part.slice(2, -2), style: { fontFamily: "Manrope_700Bold" } };
   if (/^`[^`]+`$/.test(part)) return { body: part.slice(1, -1), style: { backgroundColor: codeBg } };
   if (/^([_*])[^]+\1$/.test(part)) return { body: part.slice(1, -1), style: { fontStyle: "italic" } };
   return { body: part };

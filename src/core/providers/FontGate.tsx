@@ -3,6 +3,7 @@ import * as SplashScreen from "expo-splash-screen";
 import * as Notifications from "expo-notifications";
 import { useFonts, Inter_400Regular, Inter_400Regular_Italic, Inter_500Medium, Inter_600SemiBold, Inter_700Bold } from "@expo-google-fonts/inter";
 import { Onest_700Bold, Onest_800ExtraBold } from "@expo-google-fonts/onest";
+import { Manrope_400Regular, Manrope_500Medium, Manrope_600SemiBold, Manrope_700Bold, Manrope_800ExtraBold } from "@expo-google-fonts/manrope";
 import { useSessionStore, bindSessionToHttp } from "@/entities/session";
 import { AnimatedSplash } from "@/widgets/splash";
 import { useSplash } from "@/shared/lib/splash";
@@ -15,7 +16,7 @@ bindSessionToHttp();
 // stays until fonts and the stored session are ready — the full intro on a plain
 // start, only until ready when the app was opened by a link or a notification.
 export function FontGate({ children }: { children: ReactNode }) {
-  const [fontsReady, fontError] = useFonts({ Inter_400Regular, Inter_400Regular_Italic, Inter_500Medium, Inter_600SemiBold, Inter_700Bold, Onest_700Bold, Onest_800ExtraBold });
+  const [fontsReady, fontError] = useFonts({ Inter_400Regular, Inter_400Regular_Italic, Inter_500Medium, Inter_600SemiBold, Inter_700Bold, Onest_700Bold, Onest_800ExtraBold, Manrope_400Regular, Manrope_500Medium, Manrope_600SemiBold, Manrope_700Bold, Manrope_800ExtraBold });
   const sessionReady = useSessionStore((s) => s.ready);
   const hydrate = useSessionStore((s) => s.hydrate);
   const [intro, setIntro] = useState(true);

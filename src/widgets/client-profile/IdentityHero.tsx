@@ -15,7 +15,7 @@ export function IdentityHero({ name, uri, lexgoId, verified, onEdit }: Props) {
         <PressableScale onPress={onEdit} accessibilityLabel={t("py9.edit")}>
           <View style={{ borderRadius: 32, borderWidth: 2, borderColor: "rgba(255,255,255,0.7)" }}><Avatar name={name} uri={uri} size={60} /></View>
           <View style={{ position: "absolute", right: -2, bottom: -2, width: 24, height: 24, borderRadius: 12, backgroundColor: "#FFFFFF", alignItems: "center", justifyContent: "center" }}>
-            <Icon name="edit-2" size={12} color="#1668F0" />
+            <Icon name="edit-2" size={12} color="#1D4ED8" />
           </View>
         </PressableScale>
         <View style={{ flex: 1, gap: 6 }}>

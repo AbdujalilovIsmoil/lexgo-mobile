@@ -6,7 +6,6 @@ import { useJobs } from "@/entities/market-feed";
 import { useMyFeatures, usePlans } from "@/entities/plan";
 import { useClientProfile } from "@/entities/profile-extras";
 import { isCancelled, useEvents } from "@/entities/pro-calendar";
-import { useProfileCompleteness } from "@/entities/pro-profile";
 import { useRequestCounts, useRequests } from "@/entities/pro-requests";
 import { isDone, useTasks } from "@/entities/pro-tasks";
 import { groupTasks, useCabinet } from "@/entities/pro-workspace";
@@ -24,13 +23,14 @@ import { Briefcase, CalendarClock, MessageSquareText, SquareCheckBig, Star, Targ
 import { AiCard } from "./AiCard";
 import { AssignedAlert } from "./AssignedAlert";
 import { Chances } from "./Chances";
-import { HeroCard, type HeroStat } from "./HeroCard";
+import { HeaderChips, type HeroStat } from "./HeaderChips";
 import { ProfileStrengthCard } from "./ProfileStrengthCard";
 import { QuickTiles } from "./QuickTiles";
 import { StandingRing } from "./StandingRing";
 import { TodayList } from "./TodayList";
 import { WorkCards, type WorkCard } from "./WorkCards";
 import { NavyBar } from "@/widgets/tab-page/NavyBar";
+import { useRouter } from "expo-router";
 
 const KEYS = ["pro-workspace", "lawyer-cabinet", "pro-profile", "seller-rating", "pro-requests", "pro-calendar", "pro-tasks", "pro-cases", "pro-clients", "pro-referral", "pay-referral", "market-feed", [...secKeys.profile]];
 
@@ -42,6 +42,7 @@ const KEYS = ["pro-workspace", "lawyer-cabinet", "pro-profile", "seller-rating",
 export function SellerHome({ bottomPad }: { bottomPad: number }) {
   const { t, locale } = useT();
   const qc = useQueryClient();
+  const router = useRouter();
   const insets = useInsets();
   const session = useSession();
   const advocate = session?.user.role === "advocate";
@@ -57,7 +58,6 @@ export function SellerHome({ bottomPad }: { bottomPad: number }) {
   const tasks = useTasks(advocate).data;
   const events = useEvents().data ?? [];
   const rating = useMyRating(true).data;
-  const { account } = useProfileCompleteness();
   const features = useMyFeatures().data;
   const plans = usePlans().data;
   const me = useClientProfile(!advocate).data; // the same plan the profile page shows (a yurist; an advokat's plan comes from the features)
@@ -108,23 +108,24 @@ export function SellerHome({ bottomPad }: { bottomPad: number }) {
   const n = (v: number, key: string) => (v ? t(key, { n: v }) : t("shm.ws.none"));
   const open = tasks?.filter((x) => !isDone(x)) ?? [];
   const second: WorkCard = advocate
-    ? { key: "tasks", icon: SquareCheckBig, tint: "#1668F0", title: t("lsb.tasks"), sub: tasks ? (open.length ? t("shm.home2.tasksTodo", { n: open.length }) : t("shm.home2.tasksNone")) : "—", to: "/pro/tasks", badge: open.length || undefined }
+    ? { key: "tasks", icon: SquareCheckBig, tint: "#1D4ED8", title: t("lsb.tasks"), sub: tasks ? (open.length ? t("shm.home2.tasksTodo", { n: open.length }) : t("shm.home2.tasksNone")) : "—", to: "/pro/tasks", badge: open.length || undefined }
     : c.actions.acceptOrders
-      ? { key: "market", icon: Target, tint: "#1668F0", title: t("lsb.marketplace"), sub: jobs ? n(jobs.length, "shm.ws.fresh") : "—", to: "/pro/market", badge: jobs?.length || undefined }
-      : { key: "clients", icon: Users, tint: "#1668F0", title: t("shm.dash.statClients"), sub: n(c.clients, "shm.ws.clientsN"), to: "/(tabs)/clients" };
+      ? { key: "market", icon: Target, tint: "#1D4ED8", title: t("lsb.marketplace"), sub: jobs ? n(jobs.length, "shm.ws.fresh") : "—", to: "/pro/market", badge: jobs?.length || undefined }
+      : { key: "clients", icon: Users, tint: "#1D4ED8", title: t("shm.dash.statClients"), sub: n(c.clients, "shm.ws.clientsN"), to: "/(tabs)/clients" };
   const cards: WorkCard[] = [
     { key: "urgent", icon: Zap, tint: "#F97316", title: t("lsb.urgentAssigned"), sub: n(counts.urgent, "shm.ws.waiting"), to: "/pro/urgent", badge: counts.urgent || undefined },
     second,
   ];
   return (
     <View style={{ flex: 1 }}>
-      <NavyBar title={t("tabs.workspace")} />
+      <NavyBar title={name || t("tabs.workspace")} sub={`${role} · ${plan}`} onTitlePress={() => router.push("/pro/profile" as never)}>
+        <HeaderChips stats={stats} />
+      </NavyBar>
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: pad }}>
         <HeaderExtra />
         <View style={body}>
           <AssignedAlert orders={c.orders} urgent={urgent} />
-          <HeroCard name={name} avatar={account.data?.avatarUrl} kicker={`${role} · ${plan}`} stats={stats} />
-          <View style={s.gap}><QuickTiles /></View>
+          <QuickTiles />
           <WorkCards items={cards} />
           <View style={s.gap}><TodayList events={events} due={groups.today} /></View>
           <View style={s.gap}><StandingRing /></View>

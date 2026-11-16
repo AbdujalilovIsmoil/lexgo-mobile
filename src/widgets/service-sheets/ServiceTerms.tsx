@@ -1,5 +1,5 @@
 import { useState, type ReactNode } from "react";
-import { StyleSheet, View } from "react-native";
+import { Platform, StyleSheet, View } from "react-native";
 import { ApiError } from "@/shared/api";
 import { GuaranteeRows, durationText, useServiceRuntime, type CheckPreview, type ClientRule, type RuntimeReview } from "@/entities/service-runtime";
 import { radius, useColors } from "@/shared/theme";
@@ -11,8 +11,8 @@ function Box({ i, icon, title, bg, ink, children }: { i: number; icon: IconName;
   const c = useColors();
   return (
     <Reveal i={i}>
-      <View style={[s.box, { backgroundColor: bg ?? c.glassFill, borderColor: c.glassLine }]}>
-        <View style={s.head}><Icon name={icon} size={16} color={ink ?? c.accent} /><Text variant="small" weight="bold" style={s.flex}>{title}</Text></View>
+      <View style={[s.box, { backgroundColor: bg ?? c.glassFill, borderColor: c.glassLine }, !bg && s.shadow]}>
+        <View style={s.head}><Icon name={icon} size={17} color={ink ?? c.accent} /><Text variant="h4" style={[s.flex, s.boxTitle]}>{title}</Text></View>
         {children}
       </View>
     </Reveal>
@@ -120,7 +120,9 @@ export function ServiceTerms({ serviceId }: { serviceId: string }) {
 }
 
 const s = StyleSheet.create({
-  box: { gap: 10, padding: 14, borderRadius: 18, borderWidth: 1 },
+  box: { gap: 10, padding: 16, borderRadius: 18, borderWidth: 1 },
+  boxTitle: { fontSize: 15.5, lineHeight: 20 },
+  shadow: Platform.select({ ios: { shadowColor: "#0B1A33", shadowOpacity: 0.06, shadowRadius: 12, shadowOffset: { width: 0, height: 6 } }, default: { elevation: 1 } })!,
   head: { flexDirection: "row", alignItems: "center", gap: 8 },
   row: { flexDirection: "row", alignItems: "flex-start", gap: 10 },
   num: { width: 22, height: 22, borderRadius: 11, alignItems: "center", justifyContent: "center" },

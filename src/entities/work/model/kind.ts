@@ -26,7 +26,7 @@ export const KIND_ICON: Record<WorkKind, IconName> = {
 };
 
 export const KIND_TINT: Record<WorkKind, string> = {
-  document: "#1668F0",
+  document: "#1D4ED8",
   urgent: "#E0457F",
   order: "#00A870",
   case: "#7A5CFF",

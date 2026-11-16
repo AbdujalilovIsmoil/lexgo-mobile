@@ -31,13 +31,13 @@ export function MarkdownText({ text, color, linkColor, mutedColor }: Props) {
               }
               if (part.startsWith("**") && part.endsWith("**")) {
                 return (
-                  <RNText key={j} style={{ fontFamily: "Inter_700Bold" }}>
+                  <RNText key={j} style={{ fontFamily: "Manrope_700Bold" }}>
                     {part.slice(2, -2)}
                   </RNText>
                 );
               }
               return (
-                <RNText key={j} style={[quote && { color: mutedColor }, head && { fontFamily: "Inter_700Bold" }]}>
+                <RNText key={j} style={[quote && { color: mutedColor }, head && { fontFamily: "Manrope_700Bold" }]}>
                   {part}
                 </RNText>
               );

@@ -13,7 +13,7 @@ export const kindIcon = (kind: string): IconName => ICON[kind] ?? "briefcase";
 
 // One colour per service, so a box is recognised before it is read.
 const KIND_TINT: Record<string, string> = {
-  video_consultation: "#1668F0", express_video_consultation: "#E0457F", traffic_accident_consultation: "#F59E0B",
+  video_consultation: "#1D4ED8", express_video_consultation: "#E0457F", traffic_accident_consultation: "#F59E0B",
   chat_consultation: "#00A870", second_opinion_single: "#7A5CFF", second_opinion_group: "#7A5CFF",
 };
 export const kindTint = (kind: string): string => KIND_TINT[kind] ?? "#5C6E85";

@@ -1,24 +1,27 @@
 // Brand palette ported from law-main/app/globals.css (:root tokens).
+// Adliya (Variant 06): the Mezon navy + blue scale. The names are the old ones, so every screen picks the new colours up.
 export const brand = {
-  b950: "#03102B",
-  b900: "#0B1F45",
-  b850: "#102A5C",
-  b800: "#143676",
-  b700: "#154CB0",
-  b600: "#1668F0",
-  b500: "#2E8BFF",
-  b400: "#5CA8FF",
-  b300: "#93C6FF",
-  b200: "#C4DEFF",
-  b100: "#E6F0FF",
-  b50: "#F5F9FF",
+  b950: "#06132B",
+  b900: "#0A1F44",
+  b850: "#0F2A5E",
+  b800: "#13357A",
+  b700: "#1A43B8",
+  b600: "#1D4ED8",
+  b500: "#3B6CF0",
+  b400: "#7FA2F5",
+  b300: "#A9C1F7",
+  b200: "#C9D6F0",
+  b100: "#E7EEFC",
+  b50: "#F2F6FE",
   cy: "#00CFE8",
   cy2: "#00A6E6",
   white: "#FFFFFF",
 } as const;
 
-// The app's main colour: the deep blue at the very top of Home. The same in every theme.
-export const mainColor = "#0B347F";
+// The app's main colour: the Adliya navy of the header bands. The same in every theme.
+export const mainColor = "#0A1F44";
+// Adliya's amber, for the "waiting for payment" kind of notes.
+export const amber = { bg: "#FFF8EA", line: "#F4D9A8", tile: "#FFE9C2", ink: "#9A5B00", sub: "#7A5A2A" } as const;
 
 // General colour scale: fixed values, the same in every theme. For colours that must follow light/dark/glass, use useColors().
 export const palette = {
@@ -64,16 +67,16 @@ export const palette = {
 } as const;
 
 export const gradient = {
-  // --grad: linear-gradient(135deg,#1668F0 0%,#00A6E6 62%,#00CFE8 100%)
-  primary: ["#1668F0", "#00A6E6", "#00CFE8"] as const,
-  primaryStops: [0, 0.62, 1] as const,
-  // --grad-dark: linear-gradient(160deg,#0B1F45 0%,#123A86 55%,#0E5FC4 100%)
-  dark: ["#0B1F45", "#123A86", "#0E5FC4"] as const,
-  darkStops: [0, 0.55, 1] as const,
+  // Adliya primary: the solid blue CTA with a little depth.
+  primary: ["#3B6CF0", "#1D4ED8", "#1A43B8"] as const,
+  primaryStops: [0, 0.55, 1] as const,
+  // Adliya header band: linear-gradient(150deg,#13357A,#0A1F44 65%)
+  dark: ["#13357A", "#0A1F44", "#081631"] as const,
+  darkStops: [0, 0.65, 1] as const,
   // .hero h1 span text gradient
-  heroText: ["#8FD8FF", "#00CFE8", "#B9F1FF"] as const,
+  heroText: ["#C9D6F0", "#7FA2F5", "#E7EEFC"] as const,
 } as const;
 
-export const radius = { r: 14, rl: 20, rx: 28, pill: 999, sm: 10 } as const;
+export const radius = { r: 14, rl: 18, rx: 24, pill: 999, sm: 10 } as const;
 
 export const space = { xs: 4, sm: 8, md: 12, lg: 16, xl: 20, xxl: 28, gutter: 16 } as const;

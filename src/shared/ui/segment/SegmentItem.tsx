@@ -27,6 +27,6 @@ export function SegmentItem({ selected, index, label, icon, on, off, iconOn, onP
 const s = StyleSheet.create({
   seg: { flex: 1, flexDirection: "row", alignItems: "center", justifyContent: "center", gap: 6, paddingVertical: 10 },
   icon: { width: 15, height: 15 },
-  base: { fontFamily: "Inter_700Bold", fontSize: 13 },
-  small: { fontFamily: "Inter_700Bold", fontSize: 12 },
+  base: { fontFamily: "Manrope_700Bold", fontSize: 13 },
+  small: { fontFamily: "Manrope_700Bold", fontSize: 12 },
 });

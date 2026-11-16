@@ -1,6 +1,6 @@
 // Per-section accent gradients of the profile (brand blue + a family of web-friendly hues).
 export const ACCENTS = {
-  blue: ["#1668F0", "#00A6E6"],
+  blue: ["#1D4ED8", "#00A6E6"],
   green: ["#00A870", "#34D399"],
   violet: ["#7C3AED", "#A78BFA"],
   sky: ["#0284C7", "#38BDF8"],

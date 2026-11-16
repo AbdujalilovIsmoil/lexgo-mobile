@@ -21,6 +21,7 @@ export const mk4: Messages["mk4"] = {
   emptyFilter: "No orders match these filters",
   browse: "Choose a specialist",
   seller: "Specialist",
+  factsTitle: "Order details",
   yourNote: "Your note",
   history: "Status history",
   pendingTitle: "Waiting for payment confirmation",

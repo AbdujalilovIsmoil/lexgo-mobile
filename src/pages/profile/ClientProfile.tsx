@@ -1,3 +1,4 @@
+import type { ReactNode } from "react";
 import { StyleSheet, View } from "react-native";
 import { useRouter } from "expo-router";
 import {
@@ -36,7 +37,7 @@ type Row = { key: string; icon: LucideIcon; title: string; sub?: string; badge?:
 // The client's profile (ProfileBandPage): the band (photo, name, phone · LexGo ID, plan and invites chips, the pencil to edit), three shortcuts
 // (works, documents, payments), then the sections as rows of two cards — every panel the profile's old tabs held opens on its own page
 // (/profile/section/…), the account screens and the settings on theirs. Theme, language, update, sign out and the version follow below.
-export function ClientProfile({ user, onBack }: { user: User; onBack: () => void }) {
+export function ClientProfile({ user, onBack, leading, bottomPad }: { user: User; onBack?: () => void; leading?: ReactNode; bottomPad?: number }) {
   const { t } = useT();
   const { colors: c } = useTheme();
   const router = useRouter();
@@ -85,6 +86,8 @@ export function ClientProfile({ user, onBack }: { user: User; onBack: () => void
       line={user.lexgoId ? `${t("profile.lexgoId")}: ${user.lexgoId}` : undefined}
       chips={chips}
       onBack={onBack}
+      leading={leading}
+      bottomPad={bottomPad}
       onEdit={() => go("/profile/section/personal")}
       editLabel={t("profile.pp.edit")}
     >

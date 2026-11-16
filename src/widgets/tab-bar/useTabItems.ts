@@ -2,7 +2,6 @@ import type { BottomTabBarProps } from "expo-router/build/layouts/Tabs";
 import { useRouter } from "expo-router";
 import { useCabinet } from "@/entities/pro-workspace";
 import { useIsAuthed, useSession } from "@/entities/session";
-import { selectHaptic } from "@/shared/lib/haptics";
 import { freshAiChat } from "@/features/ai-chat";
 import { sellerTabHidden, TABS, type TabDef } from "./tabConfig";
 import { useTabRole } from "./useTabRole";
@@ -25,11 +24,15 @@ export function useTabItems({ state, navigation }: Pick<BottomTabBarProps, "stat
   const defs = useVisibleTabs();
   const current = state.routes[state.index]?.name;
   const items: TabItemData[] = defs.flatMap((def) => {
+    // A slot that opens a stack page (Tezkor → /urgent): never the focused tab.
+    if (def.href) {
+      const href = def.href;
+      return [{ def, focused: false, onPress: () => { router.push((def.auth && !authed ? "/auth/login" : href) as never); } }];
+    }
     const route = state.routes.find((r) => r.name === def.route);
     if (!route) return [];
     const focused = current === def.route;
     const onPress = () => {
-      selectHaptic();
       if (def.auth && !authed) return router.push("/auth/login"); // personal data: a visitor signs in first
       if (def.center && !focused) freshAiChat(); // the AI button always opens a new conversation
       const ev = navigation.emit({ type: "tabPress", target: route.key, canPreventDefault: true });

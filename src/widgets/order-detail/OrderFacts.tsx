@@ -12,6 +12,8 @@ export function OrderFacts({ order: o }: { order: MarketOrder }) {
   const channel = o.preferredChannel && t(`mk3.channels.${o.preferredChannel}`) !== `mk3.channels.${o.preferredChannel}` ? t(`mk3.channels.${o.preferredChannel}`) : o.preferredChannel;
   return (
     <View style={s.col}>
+      <Card style={s.card}>
+      <Text variant="h4" style={s.head}>{t("mk4.factsTitle")}</Text>
       <FactRows rows={[
         { label: t("ord.payStatus"), value: <Pill label={paid ? t("ord.paid") : o.paymentStatus === "cancelled" ? t("mk4.payCancelled") : t("mk4.payWaiting")} tone={paid ? "ok" : o.paymentStatus === "cancelled" ? "err" : "warn"} small /> },
         { label: t("mk3.channelShort"), value: channel },
@@ -21,6 +23,7 @@ export function OrderFacts({ order: o }: { order: MarketOrder }) {
         { label: t("mf.due.due"), value: o.flow.expectedCompletedAt ? fmtDateTime(o.flow.expectedCompletedAt, locale) : undefined },
         { label: t("mf.due.completed"), value: o.flow.completedAt ? fmtDateTime(o.flow.completedAt, locale) : undefined },
       ]} />
+      </Card>
       {o.note ? <Card tinted style={s.note}><Text variant="caption" tone="gray" weight="bold">{t("mk4.yourNote")}</Text><Text variant="small">{o.note}</Text></Card> : null}
     </View>
   );
@@ -28,5 +31,7 @@ export function OrderFacts({ order: o }: { order: MarketOrder }) {
 
 const s = StyleSheet.create({
   col: { gap: 10 },
+  card: { gap: 10, padding: 16 },
+  head: { fontSize: 15.5, lineHeight: 20 },
   note: { gap: 3, padding: 14 },
 });

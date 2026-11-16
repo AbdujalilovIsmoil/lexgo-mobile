@@ -1,93 +1,66 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Platform, StyleSheet, TextInput, View } from "react-native";
 import { useRouter } from "expo-router";
-import { LinearGradient } from "expo-linear-gradient";
-import { ArrowUp, Paperclip, Sparkles } from "lucide-react-native";
-import Animated, { Easing, cancelAnimation, useAnimatedStyle, useSharedValue, withRepeat, withTiming } from "react-native-reanimated";
-import { PressableScale, Text } from "@/shared/ui";
-import { useMotionOn } from "@/shared/lib/useMotionOn";
+import { ArrowUp, Paperclip, Search } from "lucide-react-native";
+import { PressableScale } from "@/shared/ui";
 import { fonts, GLASS_SOLID, useTheme } from "@/shared/theme";
 import { useT } from "@/shared/i18n";
 import { freshAiChat } from "@/features/ai-chat";
 import { usePickForAnalysis } from "@/features/doc-analysis";
-import { HERO_OVERLAP } from "./DashHero";
 
-const EDGE = 2; // the border's width: the light runs in this rim
-const RADIUS = 20;
-const TURN_MS = 3600;
+const RADIUS = 14;
 
-// The problem field on the hero's bottom edge. A question (the send button that replaces the clip once something is typed, or the keyboard's
-// send) opens a new AI chat and asks it there (`?q=`); the paper clip picks a document and opens the AI document analysis with it (the AI
-// chat takes text only).
-// Its border is a light that runs round the field: a gradient streak turning behind the field, seen only through the 2 pt rim. It turns
-// only while Home is on view and the app in front (useMotionOn); otherwise the rim rests on its plain blue.
+// The problem field under the navy band (Adliya .j-ask): a white field with a hairline and a soft shadow. A question (the send button that
+// replaces the clip once something is typed, or the keyboard's send) opens a new AI chat and asks it there (`?q=`); the paper clip picks a
+// document and opens the AI document analysis with it (the AI chat takes text only).
 export function DashAsk() {
   const { t } = useT();
   const { colors: c, dark, glass } = useTheme();
   const router = useRouter();
   const [q, setQ] = useState("");
-  const [w, setW] = useState(0);
-  const on = useMotionOn();
-  const turn = useSharedValue(0);
-  useEffect(() => {
-    if (!on) return;
-    turn.set(withRepeat(withTiming(turn.get() + 1, { duration: TURN_MS, easing: Easing.linear }), -1, false));
-    return () => cancelAnimation(turn);
-  }, [on, turn]);
-  const spin = useAnimatedStyle(() => ({ transform: [{ rotate: `${turn.get() * 360}deg` }] }));
   const attach = usePickForAnalysis();
   const go = () => {
     freshAiChat(); // a question from Home starts its own conversation
     router.navigate({ pathname: "/(tabs)/ai", params: q.trim() ? { q: q.trim() } : {} });
     setQ(""); // asked: the field is empty again when Home comes back
   };
-  const rest = dark ? c.line : "#BFE0FF";
+  const ground = glass ? GLASS_SOLID : dark ? c.surface : "#FFFFFF";
   return (
-    <View style={[s.shadow, { backgroundColor: rest }]}>
-      <View onLayout={(e) => setW(e.nativeEvent.layout.width)} style={[s.rim, { backgroundColor: rest }]}>
-        {w ? (
-          <Animated.View pointerEvents="none" style={[s.spinner, { width: w * 1.2, height: w * 1.2, left: -w * 0.1, top: -w * 0.6 + 30 }, spin]}>
-            <LinearGradient colors={[rest, rest, "#2F6BFF", "#00CFE8", "#8B6CF2", rest, rest]} locations={[0, 0.36, 0.45, 0.5, 0.56, 0.64, 1]} start={{ x: 0, y: 0.5 }} end={{ x: 1, y: 0.5 }} style={StyleSheet.absoluteFill} />
-          </Animated.View>
-        ) : null}
-        <View style={[s.box, { backgroundColor: glass ? GLASS_SOLID : dark ? c.surface : "#FFFFFF" }]}>
-          <Sparkles size={18} color="#2F6BFF" fill="#2F6BFF" />
-          {/* The hint is drawn here, not as the field's placeholder: a placeholder takes one style, and the example is in italics. While it shows it also gives the field its height. */}
-          <View style={s.field}>
-            {q ? null : (
-              <Text numberOfLines={2} pointerEvents="none" style={[s.hint, { color: c.gray2 }]}>
-                {t("cdash.home.askPhLead")} <Text style={[s.example, { color: c.gray2 }]}>{t("cdash.home.askPhExample")}</Text>
-              </Text>
-            )}
-            <TextInput value={q} onChangeText={setQ} onSubmitEditing={go} submitBehavior="submit" returnKeyType="send" multiline numberOfLines={2} style={[s.input, { color: c.ink }, q ? null : StyleSheet.absoluteFill]} accessibilityLabel={`${t("cdash.home.askPhLead")} ${t("cdash.home.askPhExample")}`} />
-          </View>
-          {q.trim() ? (
-            <PressableScale onPress={go} hitSlop={8} style={[s.clip, s.send]} accessibilityRole="button" accessibilityLabel={t("cdash.home.send")}>
-              <ArrowUp size={20} color="#FFFFFF" />
-            </PressableScale>
-          ) : (
-            <PressableScale onPress={() => void attach()} hitSlop={8} style={s.clip} accessibilityRole="button" accessibilityLabel={t("cdash.home.attach")}>
-              <Paperclip size={20} color={c.gray} />
-            </PressableScale>
-          )}
-        </View>
-      </View>
+    <View style={[s.box, { backgroundColor: ground, borderColor: dark || glass ? c.line : "#E6EBF3" }]}>
+      <Search size={18} color={c.gray} />
+      <TextInput
+        value={q}
+        onChangeText={setQ}
+        onSubmitEditing={go}
+        submitBehavior="submit"
+        returnKeyType="send"
+        multiline
+        numberOfLines={2}
+        placeholder={t("cdash.home.title")}
+        placeholderTextColor={c.gray}
+        style={[s.input, { color: c.ink }]}
+        accessibilityLabel={`${t("cdash.home.askPhLead")} ${t("cdash.home.askPhExample")}`}
+      />
+      {q.trim() ? (
+        <PressableScale onPress={go} hitSlop={8} style={[s.btn, s.send, { backgroundColor: c.accent }]} accessibilityRole="button" accessibilityLabel={t("cdash.home.send")}>
+          <ArrowUp size={18} color="#FFFFFF" />
+        </PressableScale>
+      ) : (
+        <PressableScale onPress={() => void attach()} hitSlop={8} style={s.btn} accessibilityRole="button" accessibilityLabel={t("cdash.home.attach")}>
+          <Paperclip size={18} color={c.gray} />
+        </PressableScale>
+      )}
     </View>
   );
 }
 
 const s = StyleSheet.create({
-  shadow: {
-    marginHorizontal: 16, marginTop: -HERO_OVERLAP, zIndex: 2, borderRadius: RADIUS,
-    ...Platform.select({ ios: { shadowColor: "#2F6BFF", shadowOpacity: 0.22, shadowRadius: 18, shadowOffset: { width: 0, height: 8 } }, default: { elevation: 6 } }),
+  box: {
+    flexDirection: "row", alignItems: "center", gap: 10, marginHorizontal: 16, marginTop: 14, minHeight: 50, paddingLeft: 14, paddingRight: 6,
+    borderRadius: RADIUS, borderWidth: 1, zIndex: 2,
+    ...Platform.select({ ios: { shadowColor: "#0B1A33", shadowOpacity: 0.08, shadowRadius: 12, shadowOffset: { width: 0, height: 6 } }, default: { elevation: 2 } }),
   },
-  rim: { borderRadius: RADIUS, padding: EDGE, overflow: "hidden" },
-  spinner: { position: "absolute" },
-  box: { flexDirection: "row", alignItems: "center", gap: 10, borderRadius: RADIUS - EDGE, paddingLeft: 16, paddingRight: 6, minHeight: 56 - EDGE * 2 },
-  clip: { width: 40, height: 40, alignItems: "center", justifyContent: "center" },
-  send: { borderRadius: 20, backgroundColor: "#1668F0" },
-  field: { flex: 1, minWidth: 0 },
-  hint: { fontSize: 15, lineHeight: 20, paddingVertical: 12 },
-  example: { fontFamily: fonts.italic, fontSize: 15, lineHeight: 20 },
-  input: { fontSize: 15, lineHeight: 20, maxHeight: 64, paddingTop: 12, paddingBottom: 12, textAlignVertical: "center" }, // two lines: the example question in the placeholder fits whole
+  btn: { width: 38, height: 38, alignItems: "center", justifyContent: "center" },
+  send: { borderRadius: 12 },
+  input: { flex: 1, minWidth: 0, fontFamily: fonts.medium, fontSize: 15, lineHeight: 20, maxHeight: 64, paddingTop: 13, paddingBottom: 13, textAlignVertical: "center" },
 });

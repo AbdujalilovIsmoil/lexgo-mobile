@@ -59,14 +59,14 @@ export function AiRaisedButton({ labelKey, hidden = false, shift = 0 }: Props) {
         {glass ? <LiquidGlass width={size} height={size} shape="circle" interactive /> : null}
         <View pointerEvents="none" style={[s.rim, { width: disc + LIGHT * 2, height: disc + LIGHT * 2, borderRadius: disc / 2 + LIGHT }]}>
           <Animated.View style={[{ width: disc + LIGHT * 2, height: disc + LIGHT * 2 }, pulse.spin]}>
-            <LinearGradient colors={["rgba(47,107,255,0)", "rgba(47,107,255,0)", "#2F6BFF", "#00CFE8", "#B9F1FF"]} locations={[0, 0.45, 0.7, 0.88, 1]} start={{ x: 0, y: 1 }} end={{ x: 1, y: 0 }} style={StyleSheet.absoluteFill} />
+            <LinearGradient colors={["rgba(47,107,255,0)", "rgba(47,107,255,0)", "#3B6CF0", "#7FA2F5", "#C9D6F0"]} locations={[0, 0.45, 0.7, 0.88, 1]} start={{ x: 0, y: 1 }} end={{ x: 1, y: 0 }} style={StyleSheet.absoluteFill} />
           </Animated.View>
         </View>
         <View style={[s.disc, { width: disc, height: disc, borderRadius: disc / 2 }]}>
           {glass ? (
-            <LiquidGlass width={disc} height={disc} shape="circle" interactive scheme="dark" tint="rgba(16,36,92,0.92)" />
+            <LiquidGlass width={disc} height={disc} shape="circle" interactive scheme="dark" tint="rgba(10,31,68,0.94)" />
           ) : (
-            <LinearGradient colors={["#2A4C9C", "#13275E", "#0A1638"]} start={{ x: 0.2, y: 0 }} end={{ x: 0.8, y: 1 }} style={StyleSheet.absoluteFill} />
+            <LinearGradient colors={["#13357A", "#0A1F44", "#081631"]} start={{ x: 0.2, y: 0 }} end={{ x: 0.8, y: 1 }} style={StyleSheet.absoluteFill} />
           )}
           <Animated.View style={pulse.icon}><Ionicons name="sparkles" size={Math.round(disc * 0.4)} color="#FFFFFF" /></Animated.View>
         </View>
@@ -78,7 +78,7 @@ export function AiRaisedButton({ labelKey, hidden = false, shift = 0 }: Props) {
 const s = StyleSheet.create({
   away: { opacity: 0 },
   btn: { position: "absolute", alignItems: "center", justifyContent: "center", shadowColor: "#0B1F45", shadowOpacity: 0.2, shadowRadius: 14, shadowOffset: { width: 0, height: 6 } },
-  halo: { position: "absolute", backgroundColor: "#2F6BFF" },
+  halo: { position: "absolute", backgroundColor: "#3B6CF0" },
   rim: { position: "absolute", overflow: "hidden" },
   disc: { alignItems: "center", justifyContent: "center", overflow: "hidden" },
 });

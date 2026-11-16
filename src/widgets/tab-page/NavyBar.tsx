@@ -1,27 +1,54 @@
+import type { ReactNode } from "react";
 import { StyleSheet, View } from "react-native";
 import { HEADER_GAP, useInsets } from "@/shared/lib/insets";
-import { FocusStatusBar, GradientBox, Text } from "@/shared/ui";
+import { FocusStatusBar, GradientBox, PressableScale, Text } from "@/shared/ui";
 import { MenuButton } from "@/widgets/client-sidebar/MenuButton";
 import { HeaderActions } from "./HeaderActions";
 
-// A professional's tab header: a compact navy bar — the menu, an optional title (Ish maydoni) and the same round tools (support, bell,
-// avatar) as every other header — so the page below starts straight with its content.
-export function NavyBar({ title }: { title?: string }) {
+type Props = {
+  title?: string;
+  sub?: string; // a small light line under the title (Adliya: "Advokat · Pro tarif")
+  onTitlePress?: () => void;
+  children?: ReactNode; // under the row, inside the band (Adliya: the quick chips)
+};
+
+// A professional's tab header in the Adliya look: the navy band with rounded bottom corners and a faint ring in the corner — the menu, an
+// optional title (Ish maydoni, or the professional's name with a line under it) and the same round tools (support, bell, avatar) as every
+// other header — so the page below starts straight with its content.
+export function NavyBar({ title, sub, onTitlePress, children }: Props) {
   const insets = useInsets();
+  const head = title ? (
+    <View style={s.who}>
+      <Text variant={sub ? "h4" : "h3"} tone="white" numberOfLines={1} style={sub ? s.name : s.title}>{title}</Text>
+      {sub ? <Text variant="caption" numberOfLines={1} style={s.sub}>{sub}</Text> : null}
+    </View>
+  ) : null;
   return (
-    <GradientBox variant="dark" round={0} style={[s.bar, { paddingTop: insets.top + HEADER_GAP }]}>
+    <GradientBox variant="dark" round={0} style={[s.band, { paddingTop: insets.top + HEADER_GAP }]}>
       <FocusStatusBar style="light" />
-      <View style={s.left}>
-        <MenuButton glass />
-        {title ? <Text variant="h3" tone="white" numberOfLines={1} style={s.title}>{title}</Text> : null}
+      <View pointerEvents="none" style={s.ring} />
+      <View style={s.bar}>
+        <View style={s.left}>
+          <MenuButton glass />
+          {head && onTitlePress ? (
+            <PressableScale onPress={onTitlePress} scale={0.98} accessibilityRole="button" accessibilityLabel={sub ? `${title}, ${sub}` : title} style={s.press}>{head}</PressableScale>
+          ) : head}
+        </View>
+        <HeaderActions glass />
       </View>
-      <HeaderActions glass />
+      {children}
     </GradientBox>
   );
 }
 
 const s = StyleSheet.create({
-  bar: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", gap: 8, paddingHorizontal: 16, paddingBottom: 14 },
+  band: { paddingBottom: 14, borderBottomLeftRadius: 24, borderBottomRightRadius: 24 },
+  ring: { position: "absolute", right: -50, top: -30, width: 180, height: 180, borderRadius: 90, borderWidth: 1, borderColor: "rgba(255,255,255,0.08)" },
+  bar: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", gap: 8, paddingHorizontal: 16 },
   left: { flexDirection: "row", alignItems: "center", gap: 12, flex: 1, minWidth: 0 },
+  press: { flex: 1, minWidth: 0 },
+  who: { flexShrink: 1, minWidth: 0 },
   title: { flexShrink: 1 },
+  name: { fontSize: 15.5, lineHeight: 20 },
+  sub: { color: "#AFC0E0", fontSize: 11.5, lineHeight: 15 },
 });

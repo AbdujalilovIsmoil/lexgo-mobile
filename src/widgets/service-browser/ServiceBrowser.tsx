@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { FlatList, StyleSheet, TextInput, View } from "react-native";
+import { FlatList, Platform, StyleSheet, TextInput, View } from "react-native";
 import { useRouter } from "expo-router";
 import { HOME_BG } from "@/widgets/client-dash";
 import { useTabClearance, useTabHeader } from "@/widgets/tab-page";
@@ -26,7 +26,7 @@ type Props = { footer?: ReactNode; onPick: (service: ServicePick, authed: boolea
 export function ServiceBrowser({ footer, onPick }: Props) {
   const { t } = useT();
   const router = useRouter();
-  const { colors: c, dark } = useTheme();
+  const { colors: c, dark, glass } = useTheme();
   const header = useTabHeader(16);
   const clearance = useTabClearance();
   const b = useServiceBrowser();
@@ -51,13 +51,13 @@ export function ServiceBrowser({ footer, onPick }: Props) {
   ) : null;
   const search = (
     <View style={s.search}>
-      <View style={[s.field, { backgroundColor: c.surface, borderColor: c.line }]}>
-        <Icon name="search" size={20} tone="gray" />
+      <View style={[s.field, { backgroundColor: c.surface, borderColor: dark || glass ? c.line : "#E6EBF3" }, !glass && s.shadow]}>
+        <Icon name="search" size={19} tone="gray" />
         <TextInput
           value={b.q}
           onChangeText={b.setQ}
           placeholder={t("tabs.svb.search")}
-          placeholderTextColor={c.gray2}
+          placeholderTextColor={c.gray}
           accessibilityLabel={t("tabs.svb.search")}
           autoCapitalize="none"
           autoCorrect={false}
@@ -111,7 +111,8 @@ const s = StyleSheet.create({
   foot: { flexGrow: 1, justifyContent: "flex-end" },
   tabs: { paddingTop: 2, paddingBottom: 8, marginHorizontal: -16, paddingHorizontal: 16 },
   search: { paddingTop: 2, paddingBottom: 12 },
-  field: { flexDirection: "row", alignItems: "center", gap: 10, minHeight: 48, paddingHorizontal: 14, borderRadius: radius.r, borderWidth: 1 },
+  field: { flexDirection: "row", alignItems: "center", gap: 10, minHeight: 50, paddingHorizontal: 14, borderRadius: radius.r, borderWidth: 1 },
+  shadow: Platform.select({ ios: { shadowColor: "#0B1A33", shadowOpacity: 0.06, shadowRadius: 12, shadowOffset: { width: 0, height: 6 } }, default: { elevation: 1 } })!,
   input: { flex: 1, minWidth: 0, fontSize: 15, paddingVertical: 10 },
   row: { paddingBottom: 12 },
   gap: { gap: 12 },

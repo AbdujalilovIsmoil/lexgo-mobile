@@ -6,7 +6,7 @@ import { Carousel, Icon, Text, type IconName } from "@/shared/ui";
 import { useT } from "@/shared/i18n";
 
 const STYLE: { icon: IconName; colors: [string, string] }[] = [
-  { icon: "zap", colors: ["#1668F0", "#00CFE8"] },
+  { icon: "zap", colors: ["#1D4ED8", "#00CFE8"] },
   { icon: "users", colors: ["#6A4DFF", "#A98BFF"] },
   { icon: "shopping-bag", colors: ["#00A870", "#3DDC97"] },
 ];

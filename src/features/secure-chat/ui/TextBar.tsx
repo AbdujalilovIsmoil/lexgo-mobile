@@ -28,6 +28,6 @@ export function TextBar({ text, onChange, onSend, onAttach, onEmoji, onMic }: Pr
 const s = StyleSheet.create({
   row: { flexDirection: "row", alignItems: "flex-end", gap: 8 },
   field: { flex: 1, flexDirection: "row", alignItems: "center", gap: 8, borderRadius: 22, paddingHorizontal: 14, minHeight: 44 },
-  input: { flex: 1, fontFamily: "Inter_500Medium", fontSize: 16, maxHeight: 120, paddingVertical: 10 },
+  input: { flex: 1, fontFamily: "Manrope_500Medium", fontSize: 16, maxHeight: 120, paddingVertical: 10 },
   btn: { width: 44, height: 44, borderRadius: 22, alignItems: "center", justifyContent: "center" },
 });

@@ -21,6 +21,7 @@ export const mk4: Messages["mk4"] = {
   emptyFilter: "Нет заказов по этим фильтрам",
   browse: "Выбрать специалиста",
   seller: "Специалист",
+  factsTitle: "Данные заказа",
   yourNote: "Ваш комментарий",
   history: "История статусов",
   pendingTitle: "Ожидается подтверждение оплаты",

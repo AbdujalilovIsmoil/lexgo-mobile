@@ -12,7 +12,7 @@ export function WorksSummary({ works, group, onGroup }: { works: Work[]; group: 
   const { colors: c, dark } = useTheme();
   const { t } = useT();
   const cells: { g: GroupFilter; label: string; icon: IconName; tint: string }[] = [
-    { g: "running", label: t("cl1.list.running"), icon: "activity", tint: "#1668F0" },
+    { g: "running", label: t("cl1.list.running"), icon: "activity", tint: "#1D4ED8" },
     { g: "queue", label: t("cl1.list.waiting"), icon: "clock", tint: "#E0791C" },
     { g: "done", label: t("cl1.list.finished"), icon: "check-circle", tint: "#1F9D55" },
   ];

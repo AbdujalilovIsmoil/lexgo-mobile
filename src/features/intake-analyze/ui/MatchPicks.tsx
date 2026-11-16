@@ -32,7 +32,7 @@ const s = StyleSheet.create({
   col: { gap: 12 },
   more: { flexDirection: "row", alignItems: "center", gap: 10, paddingTop: 2 },
   stack: { flexDirection: "row" },
-  mono: { borderRadius: 16, borderWidth: 2, borderColor: "#1668F0" },
+  mono: { borderRadius: 16, borderWidth: 2, borderColor: "#1D4ED8" },
   overlap: { marginLeft: -10 },
   flex: { flex: 1 },
 });

@@ -43,6 +43,6 @@ const s = StyleSheet.create({
   bar: { paddingHorizontal: 12, paddingTop: 10, borderTopWidth: 1, gap: 6 },
   row: { flexDirection: "row", alignItems: "flex-end", gap: 10 },
   note: { marginLeft: 6 },
-  input: { flex: 1, minHeight: 46, maxHeight: 140, borderRadius: 23, borderWidth: 1.5, paddingHorizontal: 16, paddingTop: 12, paddingBottom: 12, fontFamily: "Inter_400Regular", fontSize: 15, lineHeight: 20 },
+  input: { flex: 1, minHeight: 46, maxHeight: 140, borderRadius: 23, borderWidth: 1.5, paddingHorizontal: 16, paddingTop: 12, paddingBottom: 12, fontFamily: "Manrope_400Regular", fontSize: 15, lineHeight: 20 },
   send: { width: 46, height: 46, borderRadius: 23, alignItems: "center", justifyContent: "center" },
 });

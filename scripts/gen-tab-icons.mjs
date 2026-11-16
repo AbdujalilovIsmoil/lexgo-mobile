@@ -5,7 +5,7 @@ import { mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 
-const ICONS = ["house", "layout-grid", "shopping-bag", "message-circle", "inbox", "users"]; // keep in step with src/widgets/tab-bar/tabIcons.tsx
+const ICONS = ["house", "layout-grid", "shopping-bag", "message-circle", "inbox", "users", "user"]; // keep in step with src/widgets/tab-bar/tabIcons.tsx
 const POINTS = 25;
 const SCALES = [1, 2, 3];
 

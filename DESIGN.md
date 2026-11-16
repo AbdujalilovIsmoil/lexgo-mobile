@@ -1,7 +1,8 @@
 # LexGo mobile — design system
 
-Expo / React Native app (iOS + Android), light and dark themes. Brand is shared with the web portal (`law-main`):
-blue → cyan, Onest for display, Inter for UI text. Surfaces are app UI (Operate mode): precision and restraint,
+Expo / React Native app (iOS + Android), light and dark themes. Look: **Adliya** (Variant 06 of `design/lexgo-variants.html`) —
+Mezon navy `#0A1F44` / `#13357A`, blue `#1D4ED8`, the cool `#F2F5FA` ground, white cards with a `#E6EBF3` hairline, Manrope for display
+and UI text (Inter only for the italic). Surfaces are app UI (Operate mode): precision and restraint,
 familiar platform patterns, brand shows in details.
 
 ## Tokens (`@/shared/theme`)
@@ -13,10 +14,11 @@ familiar platform patterns, brand shows in details.
   `line` (borders, dividers), `ink` / `gray` / `gray2` (text tiers), `tint` / `tint2` (soft brand fills),
   `accent` / `accentStrong` (interactive + selected), status pairs `ok/okBg`, `err/errBg`, `warn/warnBg`, `cyBg/cyText`.
 - **Brand** — `brand.*`, `gradient.primary` / `gradient.dark` for hero bands and primary CTAs only.
-- **Main colour** — `mainColor` (`#0B347F`, the top of Home): header bands such as Home and the client profile.
+- **Main colour** — `mainColor` (`#0A1F44`, Adliya navy): header bands (Home, the workspace NavyBar, profiles) — a 150° gradient
+  `#13357A → #0A1F44` with 24 pt rounded bottom corners, a faint ring in the top right corner, quick chips inside (white 10% fill, 15% hairline).
   White text / `rgba(255,255,255,x)` is correct *on* those gradients.
-- **Radius** — `radius.sm` 10 (small chips, icon tiles), `radius.r` 14 (fields, inner tiles), `radius.rl` 20 (cards),
-  `radius.rx` 28 (sheets, hero bands), `radius.pill`.
+- **Radius** — `radius.sm` 10 (small chips, icon tiles), `radius.r` 14 (fields, inner tiles), `radius.rl` 18 (cards),
+  `radius.rx` 24 (sheets, hero bands), `radius.pill`.
 - **Spacing** — 4pt grid (`space.*`). Tight inside a group (6–10), generous between groups (20–28).
   Screen gutter 16.
 - **Shadows** — `shadows.s1` (resting cards), `shadows.s2` (floating: sheets, toasts, raised cards),

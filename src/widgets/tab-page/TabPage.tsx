@@ -1,5 +1,5 @@
 import { useMemo, useState, type ReactNode } from "react";
-import { Platform, StyleSheet, View } from "react-native";
+import { StyleSheet, View } from "react-native";
 import { useInsets } from "@/shared/lib/insets";
 import { useTabBarHidden } from "@/shared/lib/tabBarHidden";
 import { useColors } from "@/shared/theme";
@@ -50,12 +50,11 @@ export function TabPage({ title, subtitle, right, noActions, navy, secondary, on
   );
 }
 
-// Bottom padding that ends a list a little above the floating tab bar. The iOS system bar is part of the safe area (`insets.bottom` already reaches its
-// top); the Android bar floats over the page.
+// Bottom padding that ends a list a little above the floating tab bar (the same React Native bar on both platforms, over the page).
 export function useTabClearance(gap = 16): number {
   const b = useInsets().bottom;
   const hidden = useTabBarHidden((s) => s.hidden); // no bar (the Hujjatlar catalogue): no room reserved for it
-  return Platform.OS === "ios" || hidden ? b + gap : b + 76 + gap;
+  return hidden ? b + gap : b + 76 + gap;
 }
 
 // Bottom padding that keeps list content clear of the floating tab bar (the older, roomier rule).

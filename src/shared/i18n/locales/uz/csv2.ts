@@ -25,6 +25,7 @@ export const csv2 = {
   sizeSmall: "Kichik: 1–4 xizmat",
   sendToLawyer: "Advokatga yo'llash",
   fillDoc: "Hujjatni to'ldirish",
+  waySub: { fill: "Savollarga javob bering — hujjat shablon asosida tayyorlanadi", view: "Bo'sh shablonni ko'rish", download: "Bo'sh shablonni DOCX faylda olish", lawyer: "Hujjatni advokat tayyorlaydi" },
   viewDoc: "Hujjatni ko'rish",
   download: "Yuklab olish",
   downloading: "Yuklanmoqda…",

@@ -27,6 +27,7 @@ export const csv2: typeof Shape = {
   sizeSmall: "Small: 1–4 services",
   sendToLawyer: "Send to a lawyer",
   fillDoc: "Fill in the document",
+  waySub: { fill: "Answer the questions — the document is built from the template", view: "See the blank template", download: "The blank template as a DOCX file", lawyer: "A lawyer prepares the document" },
   viewDoc: "View document",
   download: "Download",
   downloading: "Downloading…",

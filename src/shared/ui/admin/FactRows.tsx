@@ -14,8 +14,8 @@ export function FactRows({ rows }: { rows: Fact[] }) {
     <View style={[s.box, { borderColor: c.line }]}>
       {shown.map((r, i) => (
         <View key={`${r.label}-${i}`} style={[s.row, i > 0 && { borderTopWidth: 1, borderTopColor: c.line }]}>
-          <Text variant="caption" tone="gray" style={s.label}>{r.label}</Text>
-          {typeof r.value === "string" || typeof r.value === "number" ? <Text variant="small" weight="semibold" style={s.value} selectable>{r.value}</Text> : r.value}
+          <Text variant="small" tone="gray" style={s.label}>{r.label}</Text>
+          {typeof r.value === "string" || typeof r.value === "number" ? <Text variant="small" weight="bold" style={s.value} selectable>{r.value}</Text> : r.value}
         </View>
       ))}
     </View>
@@ -24,7 +24,7 @@ export function FactRows({ rows }: { rows: Fact[] }) {
 
 const s = StyleSheet.create({
   box: { borderWidth: 1, borderRadius: 16, overflow: "hidden" },
-  row: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", gap: 12, padding: 13 },
+  row: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", gap: 12, paddingVertical: 13, paddingHorizontal: 14 },
   label: { flexShrink: 0, maxWidth: "42%" },
   value: { flexShrink: 1, textAlign: "right" },
 });

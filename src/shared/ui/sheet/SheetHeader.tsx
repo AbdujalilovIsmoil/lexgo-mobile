@@ -16,7 +16,7 @@ export function SheetHeader({ title, subtitle, onClose }: Props) {
       {title ? (
         <View style={s.row}>
           <View style={s.col}>
-            <Text variant="h3" numberOfLines={1}>{title}</Text>
+            <Text variant="h3" numberOfLines={1} style={s.title}>{title}</Text>
             {subtitle ? <Text variant="small" tone="gray" numberOfLines={1}>{subtitle}</Text> : null}
           </View>
           <IconButton icon="x" size={36} onPress={onClose} label={t("a11y.close")} />
@@ -29,7 +29,8 @@ export function SheetHeader({ title, subtitle, onClose }: Props) {
 const s = StyleSheet.create({
   wrap: { paddingTop: 10, paddingBottom: 8 },
   bare: { paddingBottom: 16 }, // no title: the content still starts a little below the handle
-  handle: { alignSelf: "center", width: 42, height: 5, borderRadius: 3, marginBottom: 10 },
+  handle: { alignSelf: "center", width: 40, height: 5, borderRadius: 3, marginBottom: 12 },
   row: { flexDirection: "row", alignItems: "center", gap: 12, paddingHorizontal: 18 },
   col: { flex: 1, gap: 2 },
+  title: { fontSize: 18, lineHeight: 24 },
 });

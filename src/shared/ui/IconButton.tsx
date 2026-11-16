@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
-import { StyleSheet, View } from "react-native";
+import { Platform, StyleSheet, View } from "react-native";
 import { useT } from "@/shared/i18n";
-import { useColors } from "@/shared/theme";
+import { useTheme } from "@/shared/theme";
 import { PressableScale } from "./PressableScale";
 import { GlassBackdrop, useGlass } from "./GlassBackdrop";
 import { Icon, type IconName } from "./Icon";
@@ -16,10 +16,10 @@ type Props = {
   glyph?: (color: string, size: number) => ReactNode; // a drawn glyph in place of the icon (same colour and size)
 };
 
-// Round icon button (radius = size / 2). One shape on iOS and Android, so
-// header icons never differ between platforms.
+// Icon button. `tint` (on a light page): Adliya's header button — a white rounded square (radius 30% of the size) with a hairline and a soft
+// shadow, the icon in ink. `glass` (on a navy band): the round translucent disc. One shape on iOS and Android.
 export function IconButton({ icon, onPress, size = 44, tone = "tint", badge, label, glyph }: Props) {
-  const c = useColors();
+  const { colors: c, dark, glass: glassTheme } = useTheme();
   const { t } = useT();
   const named = t(`a11y.icon.${icon}`);
   const glass = tone === "glass";
@@ -30,10 +30,15 @@ export function IconButton({ icon, onPress, size = 44, tone = "tint", badge, lab
       accessibilityRole="button"
       accessibilityLabel={label ?? (named === `a11y.icon.${icon}` ? icon : named)}
       hitSlop={6}
-      style={[s.btn, { width: size, height: size, borderRadius: size / 2, backgroundColor: lens ? "transparent" : glass ? "rgba(255,255,255,0.14)" : c.tint2 }]}
+      style={[
+        s.btn,
+        glass
+          ? { width: size, height: size, borderRadius: size / 2, backgroundColor: lens ? "transparent" : "rgba(255,255,255,0.14)" }
+          : [{ width: size, height: size, borderRadius: Math.round(size * 0.3), backgroundColor: dark || glassTheme ? c.surface2 : "#FFFFFF", borderWidth: 1, borderColor: dark || glassTheme ? c.line : "#E6EBF3" }, !(dark || glassTheme) && s.lift],
+      ]}
     >
       {lens ? <GlassBackdrop radius={size / 2} tint="rgba(255,255,255,0.20)" interactive scheme="dark" /> : null}
-      {glyph ? glyph(glass ? "#FFFFFF" : c.accent, Math.round(size * 0.46)) : <Icon name={icon} size={Math.round(size * 0.46)} color={glass ? "#FFFFFF" : c.accent} />}
+      {glyph ? glyph(glass ? "#FFFFFF" : c.ink, Math.round(size * 0.46)) : <Icon name={icon} size={Math.round(size * 0.46)} color={glass ? "#FFFFFF" : c.ink} />}
       {badge ? <View style={[s.dot, { right: size * 0.24, top: size * 0.22 }]} /> : null}
     </PressableScale>
   );
@@ -41,5 +46,6 @@ export function IconButton({ icon, onPress, size = 44, tone = "tint", badge, lab
 
 const s = StyleSheet.create({
   btn: { alignItems: "center", justifyContent: "center" },
-  dot: { position: "absolute", width: 8, height: 8, borderRadius: 4, backgroundColor: "#00CFE8" },
+  dot: { position: "absolute", width: 8, height: 8, borderRadius: 4, backgroundColor: "#E5484D" },
+  lift: Platform.select({ ios: { shadowColor: "#0B1A33", shadowOpacity: 0.06, shadowRadius: 10, shadowOffset: { width: 0, height: 4 } }, default: { elevation: 1 } })!,
 });

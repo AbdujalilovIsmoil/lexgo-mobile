@@ -11,7 +11,7 @@ export function ServiceCard({ service, onPress }: { service: Service; onPress: (
   const price = usePriceLabel();
   return (
     <Card onPress={onPress} style={s.card}>
-      <LinearGradient colors={["#1668F0", "#00A6E6"]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={s.icon}>
+      <LinearGradient colors={["#1D4ED8", "#00A6E6"]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={s.icon}>
         <Icon name={service.documentTemplateId ? "file-text" : "briefcase"} size={18} tone="white" />
       </LinearGradient>
       <View style={s.col}>

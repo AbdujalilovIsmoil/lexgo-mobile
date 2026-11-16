@@ -33,6 +33,6 @@ export function InstructorComposer({ busy }: { busy: boolean }) {
 const s = StyleSheet.create({
   bar: { flexDirection: "row", alignItems: "flex-end", gap: 10, paddingHorizontal: 14, paddingTop: 10, borderTopWidth: 1 },
   field: { flex: 1, minHeight: 44, maxHeight: 120, borderRadius: 22, borderWidth: 1, paddingHorizontal: 16, justifyContent: "center" },
-  input: { fontFamily: "Inter_400Regular", fontSize: 15, paddingVertical: 10 },
+  input: { fontFamily: "Manrope_400Regular", fontSize: 15, paddingVertical: 10 },
   send: { width: 44, height: 44, borderRadius: 22, alignItems: "center", justifyContent: "center" },
 });

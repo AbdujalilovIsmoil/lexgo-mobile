@@ -1,26 +1,63 @@
-import { StyleSheet, View } from "react-native";
-import { Text, FocusStatusBar } from "@/shared/ui";
+import { ScrollView, StyleSheet, View, type LayoutChangeEvent } from "react-native";
+import { useRouter, type Href } from "expo-router";
+import { useIsAuthed } from "@/entities/session";
+import { FocusStatusBar, PressableScale, Text } from "@/shared/ui";
 import { useT } from "@/shared/i18n";
+import { useActiveWorks } from "./useActiveWorks";
 
-// The top of Home under the fixed bar (DashTopBar, whose height is `top`): the one question. Its bottom edge runs under the middle of the ask field (DashAsk, placed
-// right after it with a negative margin), so the field sits half on the hero, half on the page.
-// The hero itself is see-through in both themes — the blue is DashBackdrop, which fades into the page with no edge and no rounded corners.
-export function DashHero({ top }: { top: number }) {
-  const { t } = useT();
-  const content = (
-    <>
+type Chip = { key: string; label: string; href: Href };
+
+// The top of Home under the fixed bar (DashTopBar, whose height is `top`): Adliya's quick chips inside the navy band — the client's active
+// requests, meetings and payments (signed in), the urgent advocate and the document catalogue. The band itself is DashBackdrop; `onLayout`
+// tells Home where the hero ends, so the band ends there too.
+export function DashHero({ top, onLayout }: { top: number; onLayout?: (e: LayoutChangeEvent) => void }) {
+  const authed = useIsAuthed();
+  return (
+    <View onLayout={onLayout} style={[s.hero, { paddingTop: top + TITLE_GAP }]}>
       <FocusStatusBar style="light" />
-      <Text variant="h2" tone="white" style={s.title}>{t("cdash.home.title")}</Text>
-    </>
+      {authed ? <AuthedChips /> : <Chips items={[]} />}
+    </View>
   );
-  const pad = { paddingTop: top + TITLE_GAP };
-  return <View style={[s.hero, pad]}>{content}</View>;
 }
 
-export const HERO_OVERLAP = 28;
-const TITLE_GAP = 8; // with the bar's own 8 below its row: the 16 the title always had under the row
+// A signed-in client's chips start with the count of their active works (the same list the "Faol ishlar" row shows).
+function AuthedChips() {
+  const { t } = useT();
+  const w = useActiveWorks();
+  const n = w.active.length;
+  const items: Chip[] = [
+    { key: "active", label: w.loading ? t("cdash.home.works.title") : n ? t("cdash.home.chipActive", { n }) : t("cdash.home.chipActive0"), href: "/(tabs)/orders" as Href },
+    { key: "meet", label: t("cdash.home.chipMeet"), href: "/meetings" as Href },
+    { key: "pay", label: t("cdash.home.chipPay"), href: "/payments" as Href },
+  ];
+  return <Chips items={items} />;
+}
+
+function Chips({ items }: { items: Chip[] }) {
+  const { t } = useT();
+  const router = useRouter();
+  const all: Chip[] = [
+    ...items,
+    { key: "urgent", label: t("cdash.home.chipUrgent"), href: "/urgent" as Href },
+    { key: "docs", label: t("cdash.home.chipDocs"), href: "/(tabs)/services?docs=1" as Href },
+  ];
+  return (
+    <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={s.chips} style={s.scroller}>
+      {all.map((x) => (
+        <PressableScale key={x.key} onPress={() => router.push(x.href)} scale={0.95} style={s.chip} accessibilityRole="button" accessibilityLabel={x.label}>
+          <Text variant="caption" weight="bold" numberOfLines={1} maxFontSizeMultiplier={1.15} style={s.chipTx}>{x.label}</Text>
+        </PressableScale>
+      ))}
+    </ScrollView>
+  );
+}
+
+const TITLE_GAP = 4; // with the bar's own 8 below its row: the chips' 12 under the row in the mock
 
 const s = StyleSheet.create({
-  hero: { paddingHorizontal: 16, paddingBottom: HERO_OVERLAP + 16 },
-  title: { fontSize: 27, lineHeight: 32 },
+  hero: { paddingBottom: 14 },
+  scroller: { flexGrow: 0 },
+  chips: { paddingHorizontal: 16, gap: 6 },
+  chip: { height: 30, paddingHorizontal: 11, borderRadius: 999, justifyContent: "center", backgroundColor: "rgba(255,255,255,0.10)", borderWidth: 1, borderColor: "rgba(255,255,255,0.15)" },
+  chipTx: { color: "#E3EBFB", fontSize: 12, lineHeight: 15 },
 });

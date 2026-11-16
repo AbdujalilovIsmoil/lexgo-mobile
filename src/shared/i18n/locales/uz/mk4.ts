@@ -19,6 +19,7 @@ export const mk4 = {
   emptyFilter: "Filtrga mos buyurtma topilmadi",
   browse: "Mutaxassis tanlash",
   seller: "Mutaxassis",
+  factsTitle: "Buyurtma ma'lumotlari",
   yourNote: "Sizning izohingiz",
   history: "Holat tarixi",
   pendingTitle: "To'lov tasdiqlanishi kutilmoqda",

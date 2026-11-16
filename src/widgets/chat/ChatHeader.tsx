@@ -26,7 +26,7 @@ export function ChatHeader({ onClose, onNew, onHistory, remaining }: Props) {
     <View style={[s.bar, { paddingTop: insets.top + 8, borderBottomColor: aiTheme.border }]}>
       {round("x", t("ai.close"), onClose)}
       <View style={s.mid}>
-        <LinearGradient colors={["#2F6BFF", "#3FA9E8"]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={s.badge}>
+        <LinearGradient colors={["#3B6CF0", "#3FA9E8"]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={s.badge}>
           <Ionicons name="sparkles" size={18} color="#FFFFFF" />
         </LinearGradient>
         <View style={s.col}>

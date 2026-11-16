@@ -158,7 +158,7 @@ const s = StyleSheet.create({
   sep: { width: 1, alignSelf: "stretch" },
   searchRow: { flexDirection: "row", alignItems: "center", gap: 10, marginTop: 4 },
   search: { flex: 1, flexDirection: "row", alignItems: "center", gap: 10, height: 50, borderRadius: 999, borderWidth: 1, paddingHorizontal: 16 },
-  input: { flex: 1, fontSize: 14, fontFamily: "Inter_400Regular", paddingVertical: 0 },
+  input: { flex: 1, fontSize: 14, fontFamily: "Manrope_400Regular", paddingVertical: 0 },
   square: { width: 50, height: 50, borderRadius: 16, borderWidth: 1, alignItems: "center", justifyContent: "center" },
   badge: { position: "absolute", top: 10, right: 10, width: 8, height: 8, borderRadius: 4 },
   chipScroll: { marginHorizontal: -16 },

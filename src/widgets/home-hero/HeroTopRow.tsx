@@ -31,5 +31,5 @@ const s = StyleSheet.create({
   row: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", gap: 8, minHeight: 44 },
   brand: { flexDirection: "row", alignItems: "center", gap: 10, flex: 1, minWidth: 0 },
   who: { flex: 1, minWidth: 0 },
-  hi: { color: "#93C6FF" },
+  hi: { color: "#AFC0E0" },
 });

@@ -40,6 +40,6 @@ const s = StyleSheet.create({
   rec: { color: "#FF6B6B" },
   dot: { width: 8, height: 8, borderRadius: 4 },
   sub: { color: "#A5B4C8" },
-  badge: { position: "absolute", top: -3, right: -3, minWidth: 18, height: 18, borderRadius: 9, backgroundColor: "#1668F0", alignItems: "center", justifyContent: "center", paddingHorizontal: 4 },
+  badge: { position: "absolute", top: -3, right: -3, minWidth: 18, height: 18, borderRadius: 9, backgroundColor: "#1D4ED8", alignItems: "center", justifyContent: "center", paddingHorizontal: 4 },
   n: { fontSize: 11, lineHeight: 14 },
 });

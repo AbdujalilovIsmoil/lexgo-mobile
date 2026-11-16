@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { StyleSheet, View } from "react-native";
+import { Platform, StyleSheet, View } from "react-native";
 import { useRouter } from "expo-router";
 import { ChevronLeft } from "lucide-react-native";
 import { useInsets } from "@/shared/lib/insets";
@@ -21,10 +21,8 @@ type Props = {
   hideLine?: boolean;
 };
 
-// Light theme back button: the page's grey ground (HOME_BG), the same on iOS and Android (Android's surface2 is a blue tone).
-const BACK_LIGHT = "#F2F4F7";
-
-// A plain page header, pinned above the page: the back button, the title with an optional line under it, and the support button at the right end.
+// A plain page header in the Adliya look (.hdr), pinned above the page on the page's own ground: the back button as a white rounded square
+// with a hairline and a soft shadow, the title (display, 20) with an optional line under it, and the support button at the right end.
 export function SecondaryHeader({ title, description, right, onBack, hideButton = false, hideLine }: Props) {
   const { colors: c, dark } = useTheme();
   const { t } = useT();
@@ -32,11 +30,10 @@ export function SecondaryHeader({ title, description, right, onBack, hideButton 
   const router = useRouter();
   const back = onBack ?? (() => (router.canGoBack() ? router.back() : router.replace("/")));
   return (
-    <View style={[s.bar, { paddingTop: insets.top, backgroundColor: c.surface, borderBottomColor: c.line }, hideLine ? s.noLine : null]}>
+    <View style={[s.bar, { paddingTop: insets.top, backgroundColor: c.bg, borderBottomColor: c.line }, s.noLine, hideLine ? s.noLine : null]}>
       {hideButton ? null : (
-        <PressableScale onPress={back} scale={0.94} hitSlop={8} accessibilityRole="button" accessibilityLabel={t("svc.detail.back")} style={[s.back, { backgroundColor: dark ? c.tint2 : BACK_LIGHT }]}>
-          {/* Dark theme: the same blue tint and icon colour as the support button at the right end. */}
-          <ChevronLeft size={22} color={dark ? c.accent : c.ink} />
+        <PressableScale onPress={back} scale={0.94} hitSlop={8} accessibilityRole="button" accessibilityLabel={t("svc.detail.back")} style={[s.back, dark ? { backgroundColor: c.surface2, borderColor: c.line } : [{ backgroundColor: "#FFFFFF", borderColor: "#E6EBF3" }, s.lift]]}>
+          <ChevronLeft size={22} color={c.ink} />
         </PressableScale>
       )}
       <View style={s.titles}>
@@ -51,7 +48,8 @@ export function SecondaryHeader({ title, description, right, onBack, hideButton 
 const s = StyleSheet.create({
   bar: { flexDirection: "row", alignItems: "center", gap: 12, paddingHorizontal: 16, paddingBottom: 12, borderBottomWidth: 1 },
   noLine: { borderBottomWidth: 0 },
-  back: { width: 40, height: 40, borderRadius: 20, alignItems: "center", justifyContent: "center" },
+  back: { width: 42, height: 42, borderRadius: 13, borderWidth: 1, alignItems: "center", justifyContent: "center" },
+  lift: Platform.select({ ios: { shadowColor: "#0B1A33", shadowOpacity: 0.06, shadowRadius: 10, shadowOffset: { width: 0, height: 4 } }, default: { elevation: 1 } })!,
   titles: { flex: 1, minWidth: 0, minHeight: 56, justifyContent: "center" },
-  title: { fontFamily: fonts.display, fontSize: 17, lineHeight: 22 },
+  title: { fontFamily: fonts.display, fontSize: 20, lineHeight: 26, letterSpacing: -0.2 },
 });

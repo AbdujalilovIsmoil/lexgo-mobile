@@ -1,6 +1,6 @@
 import { ActivityIndicator, StyleSheet, View, type StyleProp, type ViewStyle } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
-import { brand, gradient, radius, shadows, useColors } from "@/shared/theme";
+import { brand, gradient, radius, useColors } from "@/shared/theme";
 import { PressableScale } from "./PressableScale";
 import { Text } from "./Text";
 import { Icon, type IconName } from "./Icon";
@@ -19,14 +19,14 @@ type Props = {
   style?: StyleProp<ViewStyle>;
 };
 
-// .btn + modifiers from globals.css (pill shape, 14/24 padding, 600 weight).
+// Adliya .btn: a 14-radius rounded rectangle (48 tall at md), 700 weight, solid blue without a coloured shadow.
 export function Button({ title, onPress, variant = "primary", size = "md", icon, iconRight, loading, disabled, full, style }: Props) {
   const c = useColors();
-  const pad = size === "sm" ? [10, 17] : size === "lg" ? [17, 32] : [14, 24];
+  const pad = size === "sm" ? [9, 14] : size === "lg" ? [16, 28] : [13, 20];
   const fs = size === "sm" ? 14 : size === "lg" ? 16 : 15;
   const bg: Record<ButtonVariant, ViewStyle> = {
-    primary: { backgroundColor: brand.b600, ...shadows.blue },
-    gradient: { backgroundColor: "transparent", ...shadows.blue },
+    primary: { backgroundColor: brand.b600 },
+    gradient: { backgroundColor: "transparent" },
     soft: { backgroundColor: c.tint2 },
     line: { backgroundColor: c.surface },
     glass: { backgroundColor: "rgba(255,255,255,0.14)" },
@@ -39,7 +39,7 @@ export function Button({ title, onPress, variant = "primary", size = "md", icon,
   const content = (
     <View style={[s.row, { paddingVertical: pad[0], paddingHorizontal: pad[1] }]}>
       {loading ? <ActivityIndicator color={fg} /> : icon && !iconRight ? <Icon name={icon} size={18} color={fg} /> : null}
-      <Text style={{ color: fg, fontSize: fs, fontFamily: "Inter_600SemiBold" }}>{title}</Text>
+      <Text style={{ color: fg, fontSize: fs, fontFamily: "Manrope_700Bold" }}>{title}</Text>
       {!loading && icon && iconRight ? <Icon name={icon} size={18} color={fg} /> : null}
     </View>
   );
@@ -52,14 +52,15 @@ export function Button({ title, onPress, variant = "primary", size = "md", icon,
       ) : (
         content
       )}
-      {edge ? <View pointerEvents="none" style={[StyleSheet.absoluteFill, { borderRadius: radius.pill, borderWidth: edge.w, borderColor: edge.color }]} /> : null}
+      {edge ? <View pointerEvents="none" style={[StyleSheet.absoluteFill, { borderRadius: R, borderWidth: edge.w, borderColor: edge.color }]} /> : null}
     </PressableScale>
   );
 }
 
+const R = radius.r;
 const s = StyleSheet.create({
-  base: { borderRadius: radius.pill, overflow: "hidden", alignSelf: "flex-start" },
-  grad: { borderRadius: radius.pill },
+  base: { borderRadius: R, overflow: "hidden", alignSelf: "flex-start" },
+  grad: { borderRadius: R },
   row: { flexDirection: "row", alignItems: "center", justifyContent: "center", gap: 9 },
   full: { alignSelf: "stretch" },
   disabled: { opacity: 0.55 },

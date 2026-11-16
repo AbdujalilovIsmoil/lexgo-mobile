@@ -9,7 +9,7 @@ type Field = { x: number; y: number; r: number; color: string; alpha: number }; 
 // Three large soft colour fields behind every screen (static, drawn once). The role tints one of them: an advocate gets gold, a
 // yurist a magenta-violet, everyone else (client, staff) the brand violet.
 const LIGHT_BASE: Field[] = [{ x: 0, y: 0.04, r: 0.95, color: "#3FCBF0", alpha: 0.62 }, { x: 1, y: 0.42, r: 1.05, color: "#5E92FF", alpha: 0.66 }, { x: 0.05, y: 0.82, r: 1.0, color: "#A58CFF", alpha: 0.64 }];
-const DARK_BASE: Field[] = [{ x: 0, y: 0, r: 1.05, color: "#1668F0", alpha: 0.62 }, { x: 1, y: 0.42, r: 0.85, color: "#7A5CFF", alpha: 0.42 }, { x: 0.1, y: 0.97, r: 0.85, color: "#00CFE8", alpha: 0.3 }];
+const DARK_BASE: Field[] = [{ x: 0, y: 0, r: 1.05, color: "#1D4ED8", alpha: 0.62 }, { x: 1, y: 0.42, r: 0.85, color: "#7A5CFF", alpha: 0.42 }, { x: 0.1, y: 0.97, r: 0.85, color: "#00CFE8", alpha: 0.3 }];
 // The role adds one glow on the right edge, level with the content (not under the tab bar) and clear of the teal field below, so it
 // stays gold / magenta instead of mixing into olive.
 const LIGHT: Record<"advocate" | "lawyer" | "base", Field[]> = {

@@ -48,7 +48,7 @@ export async function startBackground(r: Omit<BgRecord, "background" | "enabled"
     distanceInterval: 0,
     pausesUpdatesAutomatically: false,
     showsBackgroundLocationIndicator: true,
-    foregroundService: { notificationTitle: notice.title, notificationBody: notice.body, notificationColor: "#1668F0", killServiceOnDestroy: false },
+    foregroundService: { notificationTitle: notice.title, notificationBody: notice.body, notificationColor: "#1D4ED8", killServiceOnDestroy: false },
   });
   return true;
 }

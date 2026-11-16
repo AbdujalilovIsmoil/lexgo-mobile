@@ -3,7 +3,7 @@ import { buildTimeline, orderPhase, useStatusHistory, type MarketOrder, type Tim
 import { phaseClosed, useFlowTimeline } from "@/entities/market-flow";
 import { eventFailed, eventText } from "@/widgets/market-order";
 import { useColors } from "@/shared/theme";
-import { Icon, SectionHeader, Text } from "@/shared/ui";
+import { Card, Text } from "@/shared/ui";
 import { useT } from "@/shared/i18n";
 import { fmtDateTime, humanizeSlug } from "@/shared/lib/format";
 
@@ -27,33 +27,36 @@ export function OrderTimeline({ order }: { order: MarketOrder }) {
   const moved = unified.some((e) => e.type === "reassignment") ? [] : order.reassignments.map((r, i): TimelineItem => ({ key: `re-${i}`, label: t("mf.tl.reassignment"), at: r.at, note: r.reason ? t("mf.tl.reason", { reason: r.reason }) : undefined, state: "done" }));
   const items = moved.length ? [...own, ...moved].sort((a, b) => (!a.at ? 1 : !b.at ? -1 : a.at < b.at ? -1 : 1)) : own;
   return (
-    <View style={s.col}>
-      <SectionHeader title={t("mk4.history")} />
+    <Card style={s.col}>
+      <Text variant="h4" style={s.head}>{t("mk4.history")}</Text>
       {items.map((it, i) => {
         const tone = it.state === "fail" ? c.err : it.state === "now" ? c.accent : c.ok;
         return (
           <View key={it.key} style={s.row}>
             <View style={s.rail}>
-              <View style={[s.dot, { backgroundColor: tone }]}><Icon name={it.state === "fail" ? "x" : it.state === "now" ? "clock" : "check"} size={12} color="#fff" /></View>
+              <View style={[s.halo, { backgroundColor: it.state === "fail" ? c.errBg : c.tint2 }]}><View style={[s.dot, { backgroundColor: tone }]} /></View>
               {i < items.length - 1 ? <View style={[s.line, { backgroundColor: c.line }]} /> : null}
             </View>
             <View style={s.txt}>
-              <Text variant="small" weight="bold">{it.label}</Text>
-              {it.at ? <Text variant="caption" tone="gray2">{fmtDateTime(it.at, locale)}</Text> : null}
+              <Text variant="body" weight="bold" style={s.label}>{it.label}</Text>
+              {it.at ? <Text variant="caption" tone="gray">{fmtDateTime(it.at, locale)}</Text> : null}
               {it.note ? <Text variant="caption" tone="gray">{it.note}</Text> : null}
             </View>
           </View>
         );
       })}
-    </View>
+    </Card>
   );
 }
 
 const s = StyleSheet.create({
-  col: { gap: 6 },
+  col: { gap: 6, padding: 16 },
+  head: { fontSize: 15.5, lineHeight: 20, marginBottom: 6 },
   row: { flexDirection: "row", gap: 12 },
   rail: { alignItems: "center", width: 22 },
-  dot: { width: 22, height: 22, borderRadius: 11, alignItems: "center", justifyContent: "center" },
-  line: { flex: 1, width: 2, marginVertical: 3 },
+  halo: { width: 22, height: 22, borderRadius: 11, alignItems: "center", justifyContent: "center", marginTop: 1 },
+  dot: { width: 12, height: 12, borderRadius: 6 },
+  line: { flex: 1, width: 2, marginVertical: 2 },
+  label: { fontSize: 15, lineHeight: 20 },
   txt: { flex: 1, gap: 1, paddingBottom: 14 },
 });

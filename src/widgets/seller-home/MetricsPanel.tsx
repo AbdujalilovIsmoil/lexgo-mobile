@@ -33,7 +33,7 @@ export function MetricsPanel({ cabinet, i }: { cabinet: Cabinet; i: number }) {
         {grid.ready ? (
           <>
             <View style={[tilesStyle.half, grid.tile]}><Tile icon="trending-up" tone="#00A870" bar={pct(response)} value={`${pct(response)}%`} label={t("shm.sd.metrics.responseRate")} /></View>
-            <View style={[tilesStyle.half, grid.tile]}><Tile icon="check-circle" tone="#1668F0" bar={acceptance == null ? undefined : pct(acceptance)} value={acceptance == null ? "—" : `${pct(acceptance)}%`} label={t("shm.sd.metrics.acceptanceRate")} /></View>
+            <View style={[tilesStyle.half, grid.tile]}><Tile icon="check-circle" tone="#1D4ED8" bar={acceptance == null ? undefined : pct(acceptance)} value={acceptance == null ? "—" : `${pct(acceptance)}%`} label={t("shm.sd.metrics.acceptanceRate")} /></View>
             <View style={[tilesStyle.half, grid.tile]}><Tile icon="clock" tone="#7A5CFF" value={avg ? t("shm.sd.metrics.minutes", { n: avg }) : "—"} label={t("shm.sd.metrics.avgResponse")} /></View>
             <View style={[tilesStyle.half, grid.tile]}><Tile icon="star" tone="#F5B301" value={isNew ? t("shm.sd.metrics.newBadge") : rating ? fmtRating(rating, locale) : "—"} label={t("shm.sd.metrics.rating")} /></View>
           </>

@@ -26,7 +26,7 @@ export function ProfileStrengthCard({ i }: { i: number }) {
   const open = (section?: SectionKey) => router.push((section ? { pathname: "/pro/profile", params: { section } } : "/pro/profile") as never);
   return (
     <Fade i={i}>
-      <LinearGradient colors={["#0B1F45", "#123A86"]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={s.card}>
+      <LinearGradient colors={["#13357A", "#0A1F44"]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={s.card}>
         <View style={s.glow} pointerEvents="none" />
         <View style={s.row}>
           <ProgressRing value={percent / 100} color={color} size={88} stroke={8} halo={!done} label={`${t("shm.dash.completeness")}: ${percent}%`}>

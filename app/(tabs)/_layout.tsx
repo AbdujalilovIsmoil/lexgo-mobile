@@ -1,12 +1,9 @@
 import { useEffect } from "react";
-import { Platform } from "react-native";
 import { Tabs, useRouter, useSegments } from "expo-router";
 import { TabBar } from "@/widgets/tab-bar";
-import { NativeTabsBar } from "@/widgets/tab-bar/NativeTabsBar";
 import { allowedRoutes, homeRoute } from "@/widgets/tab-bar/tabConfig";
 import { useTabRole } from "@/widgets/tab-bar/useTabRole";
 import { registerOverlayPage } from "@/widgets/tab-bar/tabOverlay";
-import { useTabBarHidden } from "@/shared/lib/tabBarHidden";
 import { LawyersPage } from "@/pages/lawyers/LawyersPage";
 import { OrdersPage } from "@/pages/orders/OrdersPage";
 
@@ -16,7 +13,7 @@ import { OrdersPage } from "@/pages/orders/OrdersPage";
 registerOverlayPage("lawyers", LawyersPage);
 registerOverlayPage("orders", OrdersPage);
 
-const ROUTES = ["index", "services", "works", "messages", "workspace", "requests", "clients", "lawyers", "orders"];
+const ROUTES = ["index", "services", "works", "messages", "workspace", "requests", "clients", "lawyers", "orders", "me"];
 
 export default function TabsLayout() {
   const role = useTabRole();
@@ -24,7 +21,6 @@ export default function TabsLayout() {
   const segments = useSegments();
   const current = segments[0] === "(tabs)" ? (segments[1] ?? "index") : null;
   const first = homeRoute(role);
-  const barHidden = useTabBarHidden((s) => s.hidden);
 
   // A route that does not belong to the role (after sign-out or a role switch) → the role's first tab.
   useEffect(() => {
@@ -34,8 +30,8 @@ export default function TabsLayout() {
     if (outside || clientHome) router.replace(first === "index" ? "/" : (`/(tabs)/${first}` as never));
   }, [role, current, first, router]);
 
-  // iOS: the system tab bar (Liquid Glass on iOS 26). Android keeps the flat bar below.
-  if (Platform.OS === "ios") return <NativeTabsBar bar={current !== "ai" && !barHidden} />;
+  // Both platforms: the Adliya bar (FlatBar) drawn in React Native — the iOS system bar (NativeTabsBar) is no longer used, so links to any
+  // tab page simply switch to it, as on Android.
   return (
     <Tabs tabBar={(props) => <TabBar {...props} />} screenOptions={{ headerShown: false, lazy: true, freezeOnBlur: true }}>
       {ROUTES.slice(0, 1).map((n) => <Tabs.Screen key={n} name={n} />)}

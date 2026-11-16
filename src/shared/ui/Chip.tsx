@@ -1,5 +1,5 @@
-import { Platform, StyleSheet, View } from "react-native";
-import { brand, radius, useColors } from "@/shared/theme";
+import { StyleSheet, View } from "react-native";
+import { radius, useTheme } from "@/shared/theme";
 import { PressableScale } from "./PressableScale";
 import { Text } from "./Text";
 import { Icon, type IconName } from "./Icon";
@@ -7,10 +7,11 @@ import { selectHaptic } from "@/shared/lib/haptics";
 
 type Props = { label: string; active?: boolean; onPress?: () => void; icon?: IconName; color?: string; idleFill?: string };
 
-// Filter chip: soft tint when idle (or `idleFill`, e.g. white), solid brand blue when active; `color` adds a small dot (a category colour).
+// Filter chip (Adliya .chip): white with a hairline when idle (or `idleFill`), solid navy ink when active; `color` adds a small dot (a category colour).
 export function Chip({ label, active, onPress, icon, color, idleFill }: Props) {
-  const c = useColors();
-  const m3 = Platform.OS === "android"; // Material 3 filter chip: 8dp corners, outlined idle, secondary-container + a check when selected
+  const { colors: c, dark, glass } = useTheme();
+  const on = dark || glass ? c.accent : c.ink; // the active fill
+  const onInk = dark || glass ? "#0A1F44" : "#FFFFFF";
   return (
     <PressableScale
       haptic={false}
@@ -22,12 +23,11 @@ export function Chip({ label, active, onPress, icon, color, idleFill }: Props) {
         selectHaptic();
         onPress?.();
       }}
-      style={[s.chip, m3 ? { borderRadius: 8, backgroundColor: active ? c.tint2 : idleFill ?? "transparent", borderColor: active ? c.tint2 : c.line } : { backgroundColor: active ? brand.b600 : idleFill ?? c.surface2, borderColor: active ? brand.b600 : c.line }]}
+      style={[s.chip, { backgroundColor: active ? on : idleFill ?? (dark || glass ? c.surface2 : "#FFFFFF"), borderColor: active ? on : c.line }]}
     >
-      {m3 && active ? <Icon name="check" size={16} color={c.accentStrong} /> : null}
       {color ? <View style={{ width: 9, height: 9, borderRadius: 5, backgroundColor: color, borderWidth: active ? 1.5 : 0, borderColor: "#fff" }} /> : null}
-      {icon ? <Icon name={icon} size={14} color={m3 ? (active ? c.accentStrong : c.gray) : active ? "#fff" : c.gray} /> : null}
-      <Text variant="small" weight="semibold" style={{ color: m3 ? (active ? c.accentStrong : c.ink) : active ? "#fff" : c.ink }}>
+      {icon ? <Icon name={icon} size={14} color={active ? onInk : c.gray} /> : null}
+      <Text variant="small" weight="semibold" style={{ color: active ? onInk : c.ink, fontSize: 13 }}>
         {label}
       </Text>
     </PressableScale>
@@ -35,5 +35,5 @@ export function Chip({ label, active, onPress, icon, color, idleFill }: Props) {
 }
 
 const s = StyleSheet.create({
-  chip: { flexDirection: "row", alignItems: "center", gap: 6, paddingVertical: 9, paddingHorizontal: 14, borderRadius: radius.pill, borderWidth: 1 },
+  chip: { flexDirection: "row", alignItems: "center", gap: 6, minHeight: 34, paddingVertical: 7, paddingHorizontal: 14, borderRadius: radius.pill, borderWidth: 1.5 },
 });

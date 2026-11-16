@@ -48,6 +48,6 @@ export function TemplateSearch({ value, onChange, found, total }: Props) {
 const s = StyleSheet.create({
   wrap: { gap: 6 },
   field: { flexDirection: "row", alignItems: "center", gap: 10, minHeight: 52, paddingHorizontal: 16, borderRadius: radius.pill, borderWidth: 1.5 },
-  input: { flex: 1, fontFamily: "Inter_500Medium", fontSize: 16, paddingVertical: 12 },
+  input: { flex: 1, fontFamily: "Manrope_500Medium", fontSize: 16, paddingVertical: 12 },
   clear: { width: 28, height: 28, borderRadius: 14, alignItems: "center", justifyContent: "center", backgroundColor: "rgba(138,153,172,0.2)" },
 });

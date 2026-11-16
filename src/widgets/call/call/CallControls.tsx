@@ -4,7 +4,7 @@ import { useInsets } from "@/shared/lib/insets";
 
 type BtnProps = { icon: IconName; label: string; onPress: () => void; off?: boolean; on?: boolean; danger?: boolean; disabled?: boolean; badge?: number };
 function Btn({ icon, label, onPress, off, on, danger, disabled, badge }: BtnProps) {
-  const bg = danger ? "#E5484D" : off ? "#FFFFFF" : on ? "#1668F0" : "rgba(255,255,255,0.16)";
+  const bg = danger ? "#E5484D" : off ? "#FFFFFF" : on ? "#1D4ED8" : "rgba(255,255,255,0.16)";
   return (
     <PressableScale onPress={disabled ? undefined : onPress} style={[s.item, disabled && { opacity: 0.45 }]} accessibilityLabel={label}>
       <View style={[s.btn, { backgroundColor: bg }]}>

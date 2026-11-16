@@ -9,7 +9,7 @@ import { circled, isSignatureCell, layoutDoc, signatureCaption, slotCount, type 
 const PAPER = "#FFFFFF";
 const INK = "#1B2433";
 const SOFT = "#6B7A90";
-const BRAND = "#1668F0";
+const BRAND = "#1D4ED8";
 const FIELD_BG = "#EEF4FF";
 const FIELD_INK = "#0B3D91";
 const RULE = "#D5DCE7";

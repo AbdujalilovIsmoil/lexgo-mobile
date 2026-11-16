@@ -19,7 +19,7 @@ export function HomeQuick() {
   const c = useColors();
   const [open, setOpen] = useState<Sheet>(null);
   const items: { key: string; icon: IconName; tint: string; on: () => void }[] = [
-    { key: "quickClient", icon: "user-plus", tint: "#1668F0", on: () => router.push("/pro/clients/new" as never) },
+    { key: "quickClient", icon: "user-plus", tint: "#1D4ED8", on: () => router.push("/pro/clients/new" as never) },
     { key: "quickCase", icon: "folder-plus", tint: "#7A5CFF", on: () => setOpen("case") },
     { key: "quickDoc", icon: "upload", tint: "#00A870", on: () => router.push("/pro/files" as never) },
     { key: "quickMeeting", icon: "calendar", tint: "#E8662E", on: () => setOpen("event") },

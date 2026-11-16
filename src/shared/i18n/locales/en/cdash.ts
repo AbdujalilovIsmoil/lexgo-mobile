@@ -21,7 +21,16 @@ export const cdash = {
     "ugSearching": "Looking for an advocate",
     "ugComing": "An advocate will contact you soon",
     "ugScheduled": "Meeting scheduled",
-    "ugLive": "Meeting in progress"
+    "ugLive": "Meeting in progress",
+    "chipActive": "{n} active", "chipActive0": "No active cases",
+    "chipMeet": "Meetings", "chipPay": "Payments",
+    "chipUrgent": "Urgent lawyer · 24/7", "chipDocs": "Documents",
+    "analysisLong": "Upload a contract, claim or decision — we show the risks and gaps",
+    "svcOnline": "Online services",
+    "crashT": "Car accident", "crashSub": "Accident advice",
+    "urgentSub": "On duty 24/7",
+    "sosT": "SOS", "sosSub": "Emergency",
+    "works": { "title": "Active cases", "step": "{n}/4", "waiting": "Assigning a specialist", "empty": "No cases in progress yet", "emptyText": "Order a service or find a specialist — your cases will show up here.", "emptyCta": "Find a specialist", "error": "Could not load your cases", "retry": "Try again" }
   },
   "ref": {
     "title": "Invite friends",

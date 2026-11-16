@@ -7,7 +7,7 @@ import { useT } from "@/shared/i18n";
 export type StatKey = "" | "you" | "review" | "ready";
 const SCOPES: { key: Exclude<StatKey, "">; icon: IconName; tint: string }[] = [
   { key: "you", icon: "edit-3", tint: "#E0791C" },
-  { key: "review", icon: "briefcase", tint: "#1668F0" },
+  { key: "review", icon: "briefcase", tint: "#1D4ED8" },
   { key: "ready", icon: "check-circle", tint: "#1F9D55" },
 ];
 

@@ -13,7 +13,7 @@ export function Avatar({ name, uri, size = 48, square, colors = gradient.primary
   return (
     <LinearGradient accessible accessibilityRole="image" accessibilityLabel={name} colors={[...colors]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={[s.box, { width: size, height: size, borderRadius: r }]}>
       <View>
-        <Text tone="white" style={{ fontFamily: "Onest_800ExtraBold", fontSize: size * 0.36, lineHeight: size * 0.44 }}>
+        <Text tone="white" style={{ fontFamily: "Manrope_800ExtraBold", fontSize: size * 0.36, lineHeight: size * 0.44 }}>
           {initials(name) || "?"}
         </Text>
       </View>

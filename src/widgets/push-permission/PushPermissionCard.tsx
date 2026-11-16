@@ -7,7 +7,7 @@ import { Icon, PressableScale, Text } from "@/shared/ui";
 import { RingingBell } from "./RingingBell";
 
 const SNOOZE_MS = 3 * 86_400_000;
-const SKY = ["#0B1F45", "#123A86", "#0E7FD0"] as const;
+const SKY = ["#0A1F44", "#13357A", "#1D4ED8"] as const;
 const AMBER = ["#3A2A0E", "#6B4A12", "#B7791F"] as const;
 
 // Notification permission, asked in context: a gradient card with a swinging bell, one big "Enable" button and a

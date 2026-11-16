@@ -24,7 +24,7 @@ export function AiOrb({ size = 52, icon = "zap", live = true }: { size?: number;
     <View style={[s.box, { width: size, height: size }]}>
       <Animated.View style={[s.ring, { width: size, height: size, borderRadius: size / 2 }, a]} />
       <Animated.View style={[s.ring, { width: size, height: size, borderRadius: size / 2 }, b]} />
-      <LinearGradient colors={["#00CFE8", "#1668F0", "#7A5CFF"]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={[s.core, { width: size - 4, height: size - 4, borderRadius: (size - 4) / 2 }]}><Icon name={icon} size={Math.round(size * 0.44)} tone="white" /></LinearGradient>
+      <LinearGradient colors={["#00CFE8", "#1D4ED8", "#7A5CFF"]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={[s.core, { width: size - 4, height: size - 4, borderRadius: (size - 4) / 2 }]}><Icon name={icon} size={Math.round(size * 0.44)} tone="white" /></LinearGradient>
     </View>
   );
 }

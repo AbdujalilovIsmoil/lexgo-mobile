@@ -19,7 +19,7 @@ export function AiWelcome({ onPick }: { onPick: (text: string) => void }) {
   return (
     <View style={s.wrap}>
       <Animated.View entering={FadeInUp.duration(420)} style={s.copy}>
-        <LinearGradient colors={["#2F6BFF", "#3FA9E8"]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={s.mark}>
+        <LinearGradient colors={["#3B6CF0", "#3FA9E8"]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={s.mark}>
           <Ionicons name="sparkles" size={26} color="#FFFFFF" />
         </LinearGradient>
         {name ? <Text variant="body" weight="semibold" center style={{ color: aiTheme.accent, marginTop: 10 }}>{t("cxAi.hi", { name })}</Text> : null}
@@ -36,7 +36,7 @@ const s = StyleSheet.create({
   copy: { gap: 8, alignItems: "center", paddingHorizontal: 8 },
   mark: {
     width: 56, height: 56, borderRadius: 16, alignItems: "center", justifyContent: "center",
-    ...Platform.select({ ios: { shadowColor: "#2F6BFF", shadowOpacity: 0.55, shadowRadius: 18, shadowOffset: { width: 0, height: 6 } }, default: { elevation: 10 } }),
+    ...Platform.select({ ios: { shadowColor: "#3B6CF0", shadowOpacity: 0.55, shadowRadius: 18, shadowOffset: { width: 0, height: 6 } }, default: { elevation: 10 } }),
   },
   title: { fontSize: 32, lineHeight: 37 },
 });

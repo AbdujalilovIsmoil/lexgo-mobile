@@ -67,7 +67,7 @@ export function Composer({ onSend, onStop, disabled, sending }: Props) {
 const s = StyleSheet.create({
   bar: { paddingHorizontal: 14, paddingTop: 12, borderTopWidth: StyleSheet.hairlineWidth },
   field: { flexDirection: "row", alignItems: "flex-end", gap: 8, minHeight: 55, maxHeight: 147, borderRadius: 27.5, paddingLeft: 18, paddingRight: 5, paddingVertical: 5 },
-  stop: { width: 46, height: 46, borderRadius: 23, backgroundColor: "#1668F0", alignItems: "center", justifyContent: "center" },
+  stop: { width: 46, height: 46, borderRadius: 23, backgroundColor: "#1D4ED8", alignItems: "center", justifyContent: "center" },
   square: { width: 15, height: 15, borderRadius: 3.5, backgroundColor: "#FFFFFF" },
-  input: { flex: 1, fontFamily: "Inter_400Regular", fontSize: 16, lineHeight: 21, paddingVertical: 11, alignSelf: "center" },
+  input: { flex: 1, fontFamily: "Manrope_400Regular", fontSize: 16, lineHeight: 21, paddingVertical: 11, alignSelf: "center" },
 });

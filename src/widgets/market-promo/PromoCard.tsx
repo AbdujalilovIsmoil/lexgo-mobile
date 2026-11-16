@@ -42,7 +42,7 @@ export function PromoCard({ item, onPress }: { item: PromoSurface; onPress: () =
           {cta ? <Cta label={cta} /> : null}
         </View>
       ) : (
-        <LinearGradient colors={["#0B1F45", "#123A86", "#0E5FC4"]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={s.card}>
+        <LinearGradient colors={["#0A1F44", "#13357A", "#1D4ED8"]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={s.card}>
           <View style={s.glow} pointerEvents="none" />
           <Top endsAt={item.endsAt} />
           <View style={s.row}>

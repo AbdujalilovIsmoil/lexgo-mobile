@@ -11,7 +11,7 @@ export const NUDGES: NudgeVariant[] = storeRows<NudgeVariant>([
   { key: "gift", glyph: "gift", colors: ["#FB923C", "#F43F5E"], href: "/profile/gifts" },
   { key: "pro", glyph: "crown", colors: ["#FFE9B8", "#F5A623"], href: "/subscription", hideForPlan: ["lexgo-ai-pro"] },
   { key: "lite", glyph: "diamond-stone", colors: ["#5EEAD4", "#0D9488"], href: "/subscription", hideForPlan: ["lexgo-ai-lite", "lexgo-ai-pro"] },
-  { key: "lawyers", glyph: "account-group", colors: ["#5CA8FF", "#1668F0"], href: "/lawyers" },
+  { key: "lawyers", glyph: "account-group", colors: ["#5CA8FF", "#1D4ED8"], href: "/lawyers" },
 ], (n) => n.href); // iOS: no gift / plan offers (store-rules)
 
 export const AI_SLUG = /^lexgo-ai-(free|lite|pro)$/;

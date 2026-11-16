@@ -20,6 +20,7 @@ export function ServiceDocActions({ service: sv, navigate }: Props) {
         downloading={dl.busy === sv.id}
         error={dl.error?.id === sv.id ? dl.error.msg : undefined}
         ways={{ fill: ds.gate("manual").state, lawyer: ds.gate("lawyer").state }}
+        variant="list"
         onView={() => open.view(sv.id)}
         onDownload={() => open.guard(() => void dl.download(sv))}
         onLawyer={() => open.lawyer(sv.id)}

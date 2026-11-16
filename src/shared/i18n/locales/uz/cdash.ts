@@ -21,7 +21,16 @@ export const cdash = {
     "ugSearching": "Advokat qidirilmoqda",
     "ugComing": "Advokat tez orada bog'lanadi",
     "ugScheduled": "Uchrashuv belgilandi",
-    "ugLive": "Uchrashuv ketyapti"
+    "ugLive": "Uchrashuv ketyapti",
+    "chipActive": "{n} ta faol ish", "chipActive0": "Faol ish yo'q",
+    "chipMeet": "Uchrashuvlar", "chipPay": "To'lovlar",
+    "chipUrgent": "Tezkor advokat · 24/7", "chipDocs": "Hujjatlar",
+    "analysisLong": "Shartnoma, ariza yoki qarorni yuklang — xavf va kamchiliklarni ko'rsatamiz",
+    "svcOnline": "Onlayn xizmatlar",
+    "crashT": "Avtohalokat", "crashSub": "YTH bo'yicha maslahat",
+    "urgentSub": "24/7 navbatchi",
+    "sosT": "SOS", "sosSub": "Favqulodda holat",
+    "works": { "title": "Faol ishlar", "step": "{n}/4", "waiting": "Mutaxassis tayinlanmoqda", "empty": "Hozircha jarayondagi ish yo'q", "emptyText": "Xizmat buyurtma qiling yoki mutaxassis toping — ishlaringiz shu yerda ko'rinadi.", "emptyCta": "Mutaxassis topish", "error": "Ishlarni yuklab bo'lmadi", "retry": "Qayta urinish" }
   },
   "ref": {
     "title": "Do'stlarni taklif qiling",

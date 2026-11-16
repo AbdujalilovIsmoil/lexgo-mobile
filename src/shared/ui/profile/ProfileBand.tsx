@@ -1,5 +1,5 @@
 import { Fragment, useState, type ReactNode } from "react";
-import { Image, RefreshControl, StyleSheet, useWindowDimensions, View } from "react-native";
+import { RefreshControl, StyleSheet, useWindowDimensions, View } from "react-native";
 import Animated, { interpolate, useAnimatedReaction, useAnimatedScrollHandler, useAnimatedStyle, useSharedValue, withTiming } from "react-native-reanimated";
 import { LinearGradient } from "expo-linear-gradient";
 import { Camera, ChevronRight, Pencil, Phone, type LucideIcon } from "lucide-react-native";
@@ -17,11 +17,10 @@ import { Text } from "../Text";
 // The client's profile look, shared with a professional's profile pages: the blue band with the photo and name under a fixed bar, then
 // white cards on the light ground — icon tiles in turn-taking soft colours, rows of one card under a small grey heading.
 
-export const PROFILE_HOME_BG = "#F2F4F7"; // the light Home ground (widgets/client-dash HOME_BG)
+export const PROFILE_HOME_BG = "#F2F5FA"; // the light Home ground (widgets/client-dash HOME_BG)
 
-const HEADER_COLORS = [mainColor, "#10499F"] as const;
-const SHADOW_RIGHT = require("../../../../assets/shadow1.png");
-const SHADOW_LEFT = require("../../../../assets/shadow2.png");
+const HEADER_COLORS = ["#13357A", mainColor, mainColor] as const; // Adliya: linear-gradient(150deg,#13357A,#0A1F44 65%)
+const HEADER_STOPS = [0, 0.65, 1] as const;
 // The icon tiles' colours, handed out in order down the page. `fg: null` is the main colour, which the dark theme swaps for its lighter accent.
 const TONES = [
   { bg: "#E6F0FF", fg: null },
@@ -44,9 +43,9 @@ const BAR_NAME_DROP = 22; // how far below its place the bar's name starts
 function BandArt({ height }: { height?: number }) {
   return (
     <View pointerEvents="none" style={[s.art, height ? { height } : s.artFill]}>
-      <LinearGradient colors={[...HEADER_COLORS]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={StyleSheet.absoluteFill} />
-      <Image source={SHADOW_RIGHT} style={s.shadowRight} />
-      <Image source={SHADOW_LEFT} style={s.shadowLeft} />
+      <LinearGradient colors={[...HEADER_COLORS]} locations={[...HEADER_STOPS]} start={{ x: 0.1, y: 0 }} end={{ x: 0.9, y: 1 }} style={StyleSheet.absoluteFill} />
+      <View style={s.ringOuter} />
+      <View style={s.ring} />
     </View>
   );
 }
@@ -115,7 +114,11 @@ type Props = {
   /** The grey line under the phone (LexGo ID, public ID). */
   line?: string;
   chips?: string[];
-  onBack: () => void;
+  /** The back button; without it `leading` (the menu button on the Profil tab) takes its place. */
+  onBack?: () => void;
+  leading?: ReactNode;
+  /** Bottom padding of the page; the default suits a stack page with no tab bar. */
+  bottomPad?: number;
   onEdit?: () => void;
   editLabel?: string;
   /** Tapping the photo (a camera mark on it) — changing the photo. */
@@ -131,7 +134,7 @@ type Props = {
 // The profile page: a fixed bar with the back button, under it the page that scrolls whole: the band (photo, name, phone · ID, chips, the pencil
 // to edit), then the body. Once the name has gone half under the bar, the bar's own copy moves from the name's place to the middle; it goes back past
 // a lower point. It runs on a timer, not with the scroll, so a finger's small moves do not shake it.
-export function ProfileBandPage({ name, photo, phone, line, chips, onBack, onEdit, editLabel, onPhoto, photoLabel, bandExtra, refreshing, onRefresh, children }: Props) {
+export function ProfileBandPage({ name, photo, phone, line, chips, onBack, leading, bottomPad, onEdit, editLabel, onPhoto, photoLabel, bandExtra, refreshing, onRefresh, children }: Props) {
   const { width } = useWindowDimensions();
   const [bandH, setBandH] = useState<number>();
   const [whoY, setWhoY] = useState(0);
@@ -178,7 +181,7 @@ export function ProfileBandPage({ name, photo, phone, line, chips, onBack, onEdi
         capColor={mainColor}
         onScroll={onScroll}
         scrollEventThrottle={16}
-        contentContainerStyle={{ paddingBottom: insets.bottom + 32 }}
+        contentContainerStyle={{ paddingBottom: bottomPad ?? insets.bottom + 32 }}
         refreshControl={onRefresh ? <RefreshControl refreshing={!!refreshing} onRefresh={onRefresh} tintColor="#FFFFFF" progressViewOffset={barH} /> : undefined}
       >
         <View onLayout={(e) => setBandH(e.nativeEvent.layout.height)} style={[s.band, { paddingTop: barH }]}>
@@ -217,7 +220,7 @@ export function ProfileBandPage({ name, photo, phone, line, chips, onBack, onEdi
       </HeroScroll>
       <View pointerEvents="box-none" style={[s.bar, { height: barH, paddingTop: insets.top + HEADER_GAP }]}>
         <BandArt height={bandH ?? barH} />
-        <IconButton icon={backIcon} tone="glass" onPress={onBack} />
+        {onBack ? <IconButton icon={backIcon} tone="glass" onPress={onBack} /> : leading}
         <View pointerEvents="none" style={[s.barTitle, { top: insets.top + HEADER_GAP }]}>
           <Animated.View style={barName}>
             <Text variant="h3" tone="white" numberOfLines={1} onLayout={(e) => setNameW(e.nativeEvent.layout.width)} style={s.barName}>{name}</Text>
@@ -230,14 +233,14 @@ export function ProfileBandPage({ name, photo, phone, line, chips, onBack, onEdi
 
 const s = StyleSheet.create({
   fill: { flex: 1 },
-  band: { paddingHorizontal: SIDE, paddingBottom: 18, gap: 12, overflow: "hidden" },
+  band: { paddingHorizontal: SIDE, paddingBottom: 18, gap: 12, overflow: "hidden", borderBottomLeftRadius: 24, borderBottomRightRadius: 24 },
   art: { position: "absolute", top: 0, left: 0, right: 0, overflow: "hidden" },
   artFill: { bottom: 0 },
   bar: { position: "absolute", top: 0, left: 0, right: 0, paddingHorizontal: SIDE, overflow: "hidden" },
   barTitle: { position: "absolute", left: SIDE + HEADER_ROW + 8, right: SIDE + HEADER_ROW + 8, height: HEADER_ROW, alignItems: "center", justifyContent: "center" },
   barName: { fontSize: BAR_NAME_SIZE, lineHeight: 22 },
-  shadowRight: { position: "absolute", top: 0, right: 0, width: 180, height: 180 },
-  shadowLeft: { position: "absolute", bottom: 0, left: 0, width: 100, height: 100 },
+  ringOuter: { position: "absolute", top: -50, right: -70, width: 220, height: 220, borderRadius: 110, backgroundColor: "rgba(255,255,255,0.025)" },
+  ring: { position: "absolute", top: -30, right: -50, width: 180, height: 180, borderRadius: 90, borderWidth: 1, borderColor: "rgba(255,255,255,0.08)" },
   who: { flexDirection: "row", alignItems: "center", gap: 12 },
   cam: { position: "absolute", right: -4, bottom: -4, width: 24, height: 24, borderRadius: 12, borderWidth: 2, backgroundColor: "#FFFFFF", alignItems: "center", justifyContent: "center" },
   name: { fontSize: NAME_SIZE, lineHeight: 27 },
@@ -245,7 +248,7 @@ const s = StyleSheet.create({
   dim: { color: "rgba(255,255,255,0.85)" },
   edit: { width: 34, height: 34, borderRadius: radius.sm, alignItems: "center", justifyContent: "center", backgroundColor: "rgba(240,236,236,0.43)" },
   chips: { flexDirection: "row", flexWrap: "wrap", gap: 8 },
-  chip: { backgroundColor: "rgba(255,255,255,0.16)", borderRadius: radius.pill, paddingHorizontal: 12, paddingVertical: 6 },
+  chip: { backgroundColor: "rgba(255,255,255,0.10)", borderWidth: 1, borderColor: "rgba(255,255,255,0.15)", borderRadius: radius.pill, paddingHorizontal: 11, paddingVertical: 6 },
   group: { gap: 8, paddingHorizontal: 16, marginTop: 20 },
   head: { letterSpacing: 1, marginLeft: 4 },
   card: { borderRadius: radius.rl, borderWidth: 1, overflow: "hidden" },

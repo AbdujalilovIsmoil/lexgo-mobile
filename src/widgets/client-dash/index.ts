@@ -1,8 +1,7 @@
 export { DashHero } from "./DashHero";
 export { DashTopBar } from "./DashTopBar";
 export { DashAsk } from "./DashAsk";
-export { DashTiles } from "./DashTiles";
-export { DashQuick } from "./DashQuick";
+export { DashServices } from "./DashServices";
 export { DashRequests } from "./DashRequests";
 export { ActiveRequestsList } from "./ActiveRequestsList";
 export { DashReferral } from "./DashReferral";

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Platform, StyleSheet } from "react-native";
+import { StyleSheet } from "react-native";
 import { useRouter } from "expo-router";
 import { SquarePen } from "lucide-react-native";
 import { EmptyState, PressableScale } from "@/shared/ui";
@@ -28,7 +28,7 @@ export function MessagesPage() {
   const insets = useInsets();
   // Top edge of the tab bar, from the screen's bottom. On iOS the system bar is part of the screen's safe area, so `insets.bottom` already
   // reaches its top; the Android bar floats over the page. The list ends a little above it, the new-chat button sits on it.
-  const barTop = Platform.OS === "ios" ? insets.bottom : insets.bottom + 76;
+  const barTop = insets.bottom + 76;
   const pad = barTop + 16 + 70; // the last row ends above the new-chat button, never under it
   const q = useRooms(useSocketState() === "online", myId);
   const locked = !useSellerActions().chat;
@@ -36,6 +36,8 @@ export function MessagesPage() {
   const seller = useTabRole() === "seller";
   const { dark } = useTheme();
   const ground = seller || dark ? undefined : HOME_BG;
+  // A client reaches the inbox from the header button (their bar's last slot is Profil): it gets a back button.
+  const back = seller ? undefined : () => (router.canGoBack() ? router.back() : router.navigate("/"));
   const reqs = useMine().data ?? [];
   // A professional's rooms are named after the work they belong to (service / document / urgent request, with its number), from the
   // same lists as So'rovlar; a client's urgent rooms after their own request.
@@ -51,10 +53,10 @@ export function MessagesPage() {
   };
   const mine = myRooms(q.data ?? [], myId);
   const unread = unreadTotal(q.data ?? [], myId);
-  if (!myId) return <TabPage navy={seller} secondary={!seller} ground={ground} title={t("tabs.messages")}><EmptyState icon="lock" title={t("ms1.signIn")} text={t("ms1.signInText")} actionLabel={t("guest.login")} onAction={() => router.push("/auth/login")} /></TabPage>;
-  if (locked) return <TabPage navy={seller} secondary={!seller} ground={ground} title={t("tabs.messages")}><EmptyState icon="shield" title={t("ms1.locked")} text={t("ms1.lockedText")} /></TabPage>;
+  if (!myId) return <TabPage navy={seller} secondary={!seller} onBack={back} ground={ground} title={t("tabs.messages")}><EmptyState icon="lock" title={t("ms1.signIn")} text={t("ms1.signInText")} actionLabel={t("guest.login")} onAction={() => router.push("/auth/login")} /></TabPage>;
+  if (locked) return <TabPage navy={seller} secondary={!seller} onBack={back} ground={ground} title={t("tabs.messages")}><EmptyState icon="shield" title={t("ms1.locked")} text={t("ms1.lockedText")} /></TabPage>;
   return (
-    <TabPage navy={seller} secondary={!seller} ground={ground} title={t("tabs.messages")} subtitle={unread ? t("ms1.unreadN", { n: unread }) : t("admChat.count", { n: mine.length })}>
+    <TabPage navy={seller} secondary={!seller} onBack={back} ground={ground} title={t("tabs.messages")} subtitle={unread ? t("ms1.unreadN", { n: unread }) : t("admChat.count", { n: mine.length })}>
       <RoomsList tagOf={tagOf} showRole={!seller} query={q} rooms={mine} myId={myId} bottom={pad} onOpen={(r) => router.push(chatPath(r.id) as never)} header={<PushPermissionCard />} action={{ label: t("ms1.newChat"), onPress: () => setCreating(true) }} />
       <PressableScale onPress={() => setCreating(true)} accessibilityRole="button" accessibilityLabel={t("ms1.newChat")} style={[styles.fab, shadows.blue, { bottom: barTop + 12 }]}>
         <SquarePen size={24} color="#FFFFFF" />

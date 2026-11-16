@@ -11,7 +11,7 @@ export function AvatarPicker({ name, uri, busy, onPick, onRemove }: Props) {
     <View style={{ alignItems: "center", gap: 8 }}>
       <PressableScale onPress={onPick} disabled={busy} style={{ opacity: busy ? 0.6 : 1 }}>
         <Avatar name={name} uri={uri} size={96} />
-        <View style={{ position: "absolute", right: -2, bottom: -2, width: 32, height: 32, borderRadius: 16, backgroundColor: "#1668F0", borderWidth: 3, borderColor: "#FFFFFF", alignItems: "center", justifyContent: "center" }}>
+        <View style={{ position: "absolute", right: -2, bottom: -2, width: 32, height: 32, borderRadius: 16, backgroundColor: "#1D4ED8", borderWidth: 3, borderColor: "#FFFFFF", alignItems: "center", justifyContent: "center" }}>
           <Icon name="camera" size={14} color="#FFFFFF" />
         </View>
       </PressableScale>

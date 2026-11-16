@@ -1,4 +1,4 @@
-import { StyleSheet, View } from "react-native";
+import { Platform, StyleSheet, View } from "react-native";
 import { orderPhase, OrderTrack, StageBadge, orderNumber, type MarketOrder } from "@/entities/order";
 import { phaseStep } from "@/entities/market-flow";
 import { Card, Text } from "@/shared/ui";
@@ -12,17 +12,20 @@ export function DetailHeader({ order: o }: { order: MarketOrder }) {
   return (
     <Card style={s.card}>
       <View style={s.head}>
-        <Text variant="small" weight="bold" tone="accent">{orderNumber(o)}</Text>
+        <Text variant="small" tone="gray" style={s.mono}>{orderNumber(o)}</Text>
         <StageBadge phase={phase} />
       </View>
-      <Text variant="h3">{o.serviceTitle || "—"}</Text>
-      {o.price ? <Text variant="h2" tone="accent">{fmtMoney(o.price)} <Text variant="small" tone="gray2">{t("common.currency")}</Text></Text> : null}
+      <Text variant="h3" style={s.title}>{o.serviceTitle || "—"}</Text>
+      {o.price ? <Text variant="h4" tone="accent" style={s.price}>{fmtMoney(o.price)} <Text variant="small" tone="gray">{t("common.currency")}</Text></Text> : null}
       <OrderTrack step={phaseStep(phase)} labels />
     </Card>
   );
 }
 
 const s = StyleSheet.create({
-  card: { gap: 10 },
+  card: { gap: 10, padding: 16 },
+  mono: { fontFamily: Platform.select({ ios: "Menlo", default: "monospace" }), fontSize: 12.5 },
+  title: { fontSize: 20, lineHeight: 26 },
+  price: { fontSize: 17, lineHeight: 22 },
   head: { flexDirection: "row", alignItems: "center", justifyContent: "space-between" },
 });

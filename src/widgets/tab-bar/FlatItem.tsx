@@ -1,48 +1,34 @@
-import { useEffect } from "react";
-import { StyleSheet } from "react-native";
-import Animated, { useAnimatedStyle, useReducedMotion, useSharedValue, withSequence, withSpring, withTiming } from "react-native-reanimated";
-import { useColors } from "@/shared/theme";
-import { PressableScale, Text } from "@/shared/ui";
+import { Pressable, StyleSheet, View } from "react-native";
+import { brand, mainColor, useTheme } from "@/shared/theme";
+import { Text } from "@/shared/ui";
 import { useT } from "@/shared/i18n";
 import { TabBadge } from "./TabBadge";
 import { TabIcon } from "./tabIcons";
 import type { TabDef } from "./tabConfig";
 
-const BOUNCE = { damping: 9, stiffness: 260, mass: 0.6 };
-
-// One destination: the outline icon, the caption under it (bold when active) and the small accent dot that marks the active one.
-// Becoming active, the icon hops up and settles and the dot pops in.
+// One destination (Adliya): the outline icon, the caption under it. The active one's icon is white on a navy rounded square and its caption
+// navy and bold. A press switches at once, with no press effect (no scale, dim, hop or haptic).
 export function FlatItem({ def, focused, onPress }: { def: TabDef; focused: boolean; onPress: () => void }) {
-  const c = useColors();
+  const { colors: c, dark, glass } = useTheme();
   const { t } = useT();
-  const calm = useReducedMotion();
-  const tint = focused ? c.ink : c.gray;
-  const lift = useSharedValue(0);
-  const dot = useSharedValue(focused ? 1 : 0);
-  useEffect(() => {
-    if (calm) { dot.set(focused ? 1 : 0); return; }
-    if (focused) lift.set(withSequence(withTiming(-7, { duration: 130 }), withSpring(0, BOUNCE)));
-    dot.set(focused ? withSpring(1, BOUNCE) : withTiming(0, { duration: 120 }));
-  }, [focused, calm, lift, dot]);
-  const icon = useAnimatedStyle(() => ({ transform: [{ translateY: lift.get() }] }));
-  const mark = useAnimatedStyle(() => ({ opacity: dot.get(), transform: [{ scale: dot.get() }] }));
+  const tint = focused ? c.accentStrong : c.gray;
   return (
-    <PressableScale onPress={onPress} haptic={false} scale={0.94} style={s.item} accessibilityRole="button" accessibilityState={{ selected: focused }}>
-      <Animated.View collapsable={false} style={[s.icon, icon]}>
-        <TabIcon name={def.icon} color={focused ? c.accent : c.gray} />
+    <Pressable onPress={onPress} style={s.item} accessibilityRole="button" accessibilityState={{ selected: focused }} accessibilityLabel={t(def.labelKey)}>
+      <View collapsable={false} style={s.icon}>
+        {focused ? <View pointerEvents="none" style={[s.square, { backgroundColor: dark || glass ? brand.b600 : mainColor }]} /> : null}
+        <TabIcon name={def.icon} color={focused ? "#FFFFFF" : c.gray} size={focused ? 21 : 24} />
         <TabBadge id={def.badge} />
-      </Animated.View>
+      </View>
       <Text variant="caption" weight={focused ? "bold" : "medium"} numberOfLines={1} maxFontSizeMultiplier={1.1} style={[s.label, { color: tint }]}>
         {t(def.labelKey)}
       </Text>
-      <Animated.View style={[s.dot, { backgroundColor: c.accent }, mark]} />
-    </PressableScale>
+    </Pressable>
   );
 }
 
 const s = StyleSheet.create({
   item: { flex: 1, alignItems: "center", gap: 4, minHeight: 56 },
-  icon: { height: 28, alignItems: "center", justifyContent: "center" },
+  icon: { height: 28, minWidth: 34, alignItems: "center", justifyContent: "center" },
+  square: { position: "absolute", width: 34, height: 34, borderRadius: 10, top: -3 },
   label: { fontSize: 13, lineHeight: 16 },
-  dot: { width: 5, height: 5, borderRadius: 3 },
 });

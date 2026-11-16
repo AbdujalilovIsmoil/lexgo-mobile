@@ -32,7 +32,7 @@ export function InviteCard({ r, onQr }: { r: Referral; onQr: () => void }) {
       </View>
       <View style={s.actions}>
         <PressableScale onPress={share} disabled={!r.link && !has} accessibilityLabel={t("refUx.shareLabel")} style={[s.share, shadows.s2, !r.link && !has && s.off]}>
-          <Icon name="share-2" size={18} color="#1668F0" />
+          <Icon name="share-2" size={18} color="#1D4ED8" />
           <Text variant="body" weight="semibold" style={s.shareTxt} numberOfLines={1}>{t("refUx.share")}</Text>
         </PressableScale>
         <PressableScale onPress={onQr} accessibilityLabel={t("refUx.qrOpen")} style={[s.round, s.glass]}>
@@ -50,7 +50,7 @@ const s = StyleSheet.create({
   code: { flex: 1, color: "#FFFFFF", fontFamily: MONO, fontSize: 34, lineHeight: 42, fontWeight: "700", letterSpacing: 3 },
   actions: { flexDirection: "row", alignItems: "center", gap: 12 },
   share: { flex: 1, minHeight: 48, borderRadius: radius.pill, backgroundColor: "#FFFFFF", flexDirection: "row", alignItems: "center", justifyContent: "center", gap: 8, paddingHorizontal: 20 },
-  shareTxt: { color: "#1668F0" },
+  shareTxt: { color: "#1D4ED8" },
   round: { width: 48, height: 48, borderRadius: 24, alignItems: "center", justifyContent: "center" },
   glass: { backgroundColor: "rgba(255,255,255,0.18)" },
   off: { opacity: 0.5 },

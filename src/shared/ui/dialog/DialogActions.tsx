@@ -16,12 +16,12 @@ export function DialogActions({ cancelLabel, confirmLabel, icon, danger, busy, o
       <View style={s.end}>
         {cancelLabel ? (
           <PressableScale onPress={onCancel} disabled={busy} style={[s.text, { opacity: busy ? 0.5 : 1 }]}>
-            <Text style={{ color: c.accentStrong, fontFamily: "Inter_600SemiBold", fontSize: 15 }}>{cancelLabel}</Text>
+            <Text style={{ color: c.accentStrong, fontFamily: "Manrope_600SemiBold", fontSize: 15 }}>{cancelLabel}</Text>
           </PressableScale>
         ) : null}
         <PressableScale onPress={onConfirm} disabled={busy} style={s.text}>
           {busy ? <ActivityIndicator color={main} /> : null}
-          <Text style={{ color: danger ? "#D92D20" : c.accentStrong, fontFamily: "Inter_700Bold", fontSize: 15 }}>{confirmLabel}</Text>
+          <Text style={{ color: danger ? "#D92D20" : c.accentStrong, fontFamily: "Manrope_700Bold", fontSize: 15 }}>{confirmLabel}</Text>
         </PressableScale>
       </View>
     );
@@ -30,7 +30,7 @@ export function DialogActions({ cancelLabel, confirmLabel, icon, danger, busy, o
     <View style={s.row}>
       {cancelLabel ? (
         <PressableScale onPress={onCancel} disabled={busy} style={[s.btn, { backgroundColor: c.tint2, opacity: busy ? 0.5 : 1 }]}>
-          <Text style={{ color: c.ink, fontFamily: "Inter_600SemiBold", fontSize: 15 }}>{cancelLabel}</Text>
+          <Text style={{ color: c.ink, fontFamily: "Manrope_600SemiBold", fontSize: 15 }}>{cancelLabel}</Text>
         </PressableScale>
       ) : null}
       <PressableScale onPress={onConfirm} disabled={busy} style={[s.btn, shadows.s2, { backgroundColor: main }]}>
@@ -46,5 +46,5 @@ const s = StyleSheet.create({
   end: { flexDirection: "row", gap: 8, alignSelf: "stretch", justifyContent: "flex-end" },
   text: { minHeight: 48, borderRadius: radius.pill, flexDirection: "row", alignItems: "center", justifyContent: "center", gap: 8, paddingHorizontal: 16 },
   btn: { flex: 1, minHeight: 50, borderRadius: radius.pill, flexDirection: "row", alignItems: "center", justifyContent: "center", gap: 8, paddingHorizontal: 12 },
-  confirm: { color: "#FFFFFF", fontFamily: "Inter_600SemiBold", fontSize: 15, flexShrink: 1, textAlign: "center" }, // a long label wraps inside the pill, never past its icon
+  confirm: { color: "#FFFFFF", fontFamily: "Manrope_600SemiBold", fontSize: 15, flexShrink: 1, textAlign: "center" }, // a long label wraps inside the pill, never past its icon
 });

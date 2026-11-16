@@ -18,22 +18,27 @@ export function SellerCard({ order: o }: { order: MarketOrder }) {
   const open = () => o.lawyerUserId && router.push({ pathname: "/specialist/[id]", params: { id: o.lawyerUserId } });
   return (
     <Card onPress={l ? open : undefined} style={s.card}>
-      <Avatar name={name} size={48} square />
+      <Text variant="h4" style={s.head}>{t("mk4.seller")}</Text>
+      <View style={s.line}>
+      <Avatar name={name} size={56} />
       <View style={s.info}>
-        <Text variant="caption" tone="gray">{t("mk4.seller")}</Text>
         <View style={s.row}>
-          <Text variant="body" weight="bold" numberOfLines={1} style={s.flex}>{name}</Text>
+          <Text variant="h4" numberOfLines={1} style={[s.flex, s.name]}>{name}</Text>
           {l?.verified ? <Icon name="check-circle" size={16} color={c.accent} /> : null}
         </View>
-        <Text variant="caption" tone="gray2" numberOfLines={1}>{[kind, l?.publicId || o.lawyerPublicId, l ? (l.rated ? `★ ${l.rating.toFixed(1)}` : t("lawyers.card.unrated")) : ""].filter(Boolean).join(" · ")}</Text>
+        <Text variant="small" tone="gray" numberOfLines={1}>{[kind, l?.publicId || o.lawyerPublicId, l ? (l.rated ? `★ ${l.rating.toFixed(1)}` : t("lawyers.card.unrated")) : ""].filter(Boolean).join(" · ")}</Text>
       </View>
-      {l ? <Icon name="chevron-right" size={18} tone="gray" /> : null}
+      {l ? <Icon name="chevron-right" size={20} color={c.ink} /> : null}
+      </View>
     </Card>
   );
 }
 
 const s = StyleSheet.create({
-  card: { flexDirection: "row", alignItems: "center", gap: 12, padding: 14 },
+  card: { gap: 12, padding: 16 },
+  head: { fontSize: 15.5, lineHeight: 20 },
+  line: { flexDirection: "row", alignItems: "center", gap: 12 },
+  name: { fontSize: 16, lineHeight: 21 },
   info: { flex: 1, gap: 1 },
   row: { flexDirection: "row", alignItems: "center", gap: 6 },
   flex: { flexShrink: 1 },

@@ -21,7 +21,7 @@ import { useTabOverlay } from "./tabOverlay";
 
 // The selected caption in ink (white in the dark), its icon in the accent colour; Liquid Glass picks the rest of the colours itself.
 // Only on iOS: this module is imported by the tabs layout on Android too, where DynamicColorIOS throws.
-const INK = Platform.OS === "ios" ? DynamicColorIOS({ light: "#0A1526", dark: "#FFFFFF" }) : "#0A1526";
+const INK = Platform.OS === "ios" ? DynamicColorIOS({ light: "#0A1F44", dark: "#FFFFFF" }) : "#0A1F44";
 
 installTabReach();
 

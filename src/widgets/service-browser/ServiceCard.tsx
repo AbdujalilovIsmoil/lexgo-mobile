@@ -1,14 +1,14 @@
-import { StyleSheet, View } from "react-native";
+import { Platform, StyleSheet, View } from "react-native";
 import { ChevronRight } from "lucide-react-native";
 import { CategoryIcon } from "@/entities/service";
 import { useT } from "@/shared/i18n";
 import { fmtMoney } from "@/shared/lib/money";
-import { brand, radius, shadows, useTheme } from "@/shared/theme";
+import { brand, radius, useTheme } from "@/shared/theme";
 import { Icon, PressableScale, Text } from "@/shared/ui";
 import type { BrowseCard } from "./model/cards";
 
 export const HUES = [
-  { bg: "#E6F0FF", fg: "#1668F0" },
+  { bg: "#E6F0FF", fg: "#1D4ED8" },
   { bg: "#F1EDFF", fg: "#7C4DFF" },
   { bg: "#E3F7EF", fg: "#0E8F73" },
   { bg: "#FFF1DF", fg: "#C76A0A" },
@@ -34,18 +34,18 @@ export function ServiceCard({ card, category, slugs, hue, bought, onPress }: Pro
       accessibilityRole="button"
       accessibilityLabel={label}
       accessibilityState={{ disabled: off }}
-      style={[s.row, !glass && shadows.s1, { backgroundColor: dark ? c.surface : brand.white }, off && s.off]}
+      style={[s.row, !glass && s.shadow, { backgroundColor: dark ? c.surface : brand.white, borderColor: dark || glass ? c.line : "#E6EBF3" }, off && s.off]}
     >
-      <View style={[s.ico, { backgroundColor: dark ? c.surface2 : hue.bg }]}><CategoryIcon slugs={slugs} size={20} color={dark ? c.accent : hue.fg} /></View>
+      <View style={[s.ico, { backgroundColor: dark ? c.surface2 : hue.bg }]}><CategoryIcon slugs={slugs} size={22} color={dark ? c.accent : hue.fg} /></View>
       <View style={s.body}>
         <Text variant="h4" numberOfLines={2} style={s.title}>{card.title}</Text>
         {category ? <Text variant="caption" tone="gray" numberOfLines={1} style={s.sub}>{category}</Text> : null}
         <View style={s.meta}>
-          {card.basePrice > 0 ? <Text variant="small" weight="bold">{t("tabs.svb.price", { price: fmtMoney(card.basePrice) })}</Text> : null}
+          {card.basePrice > 0 ? <Text variant="small" weight="bold" tone="gray" style={s.price}>{t("tabs.svb.price", { price: fmtMoney(card.basePrice) })}</Text> : null}
           {bought ? (
             <View style={s.fact}>
               <Icon name="check" size={13} color={c.ok} />
-              <Text variant="caption" weight="bold" style={[s.sub, { color: c.ok }]}>{t("tabs.svb.bought")}</Text>
+              <Text variant="caption" weight="semibold" style={[s.sub, { color: c.ok }]}>{t("tabs.svb.bought")}</Text>
             </View>
           ) : (
             <View style={s.fact}>
@@ -55,19 +55,21 @@ export function ServiceCard({ card, category, slugs, hue, bought, onPress }: Pro
           )}
         </View>
       </View>
-      {off ? null : <View style={[s.more, { backgroundColor: c.surface2 }]}><ChevronRight size={14} color={c.gray} /></View>}
+      {off ? null : <View style={[s.more, { backgroundColor: c.tint2 }]}><ChevronRight size={16} color={c.gray} /></View>}
     </PressableScale>
   );
 }
 
 const s = StyleSheet.create({
-  row: { flexDirection: "row", alignItems: "center", gap: 12, padding: 14, borderRadius: radius.rl },
+  row: { flexDirection: "row", alignItems: "center", gap: 14, padding: 16, borderRadius: radius.rl, borderWidth: 1 },
+  shadow: Platform.select({ ios: { shadowColor: "#0B1A33", shadowOpacity: 0.06, shadowRadius: 12, shadowOffset: { width: 0, height: 6 } }, default: { elevation: 1 } })!,
   off: { opacity: 0.6 },
-  ico: { width: 40, height: 40, borderRadius: 12, alignItems: "center", justifyContent: "center" },
+  ico: { width: 46, height: 46, borderRadius: 14, alignItems: "center", justifyContent: "center" },
   body: { flex: 1, minWidth: 0, gap: 2 },
-  title: { fontSize: 15, lineHeight: 20 },
+  title: { fontSize: 15.5, lineHeight: 20 },
+  price: { fontSize: 15, lineHeight: 20 },
   sub: { fontSize: 12, lineHeight: 16 },
   meta: { flexDirection: "row", flexWrap: "wrap", alignItems: "center", columnGap: 10, rowGap: 2, marginTop: 4 },
   fact: { flexDirection: "row", alignItems: "center", gap: 4 },
-  more: { width: 24, height: 24, borderRadius: 12, alignItems: "center", justifyContent: "center" },
+  more: { width: 30, height: 30, borderRadius: 15, alignItems: "center", justifyContent: "center" },
 });

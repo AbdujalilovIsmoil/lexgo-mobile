@@ -133,5 +133,5 @@ const s = StyleSheet.create({
   wrap: { position: "absolute", top: 0, bottom: 0, left: 0, overflow: "hidden", zIndex: 4, borderRightWidth: StyleSheet.hairlineWidth, borderColor: "rgba(120,130,150,0.25)" },
   dock: { width: DOCK_W, flex: 1 },
   tabBox: { position: "absolute", left: 0, zIndex: 5 },
-  tab: { width: 26, height: 84, borderTopRightRadius: 16, borderBottomRightRadius: 16, backgroundColor: "#1668F0", alignItems: "center", justifyContent: "center", shadowColor: "#1668F0", shadowOpacity: 0.5, shadowRadius: 8, shadowOffset: { width: 0, height: 0 } },
+  tab: { width: 26, height: 84, borderTopRightRadius: 16, borderBottomRightRadius: 16, backgroundColor: "#1D4ED8", alignItems: "center", justifyContent: "center", shadowColor: "#1D4ED8", shadowOpacity: 0.5, shadowRadius: 8, shadowOffset: { width: 0, height: 0 } },
 });

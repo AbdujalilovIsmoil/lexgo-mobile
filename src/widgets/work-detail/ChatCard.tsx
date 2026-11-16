@@ -41,5 +41,5 @@ const s = StyleSheet.create({
   ico: { width: 44, height: 44, borderRadius: 22, backgroundColor: "rgba(255,255,255,0.2)", alignItems: "center", justifyContent: "center" },
   sub: { color: "rgba(255,255,255,0.8)" },
   go: { width: 36, height: 36, borderRadius: 18, backgroundColor: "rgba(255,255,255,0.2)", alignItems: "center", justifyContent: "center" },
-  call: { width: 68, borderRadius: radius.rl, backgroundColor: "#0E5FC4", alignItems: "center", justifyContent: "center" },
+  call: { width: 68, borderRadius: radius.rl, backgroundColor: "#1D4ED8", alignItems: "center", justifyContent: "center" },
 });

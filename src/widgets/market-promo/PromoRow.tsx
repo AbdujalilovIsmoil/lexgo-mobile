@@ -16,7 +16,7 @@ export function PromoRow({ item, onPress }: { item: PromoSurface; onPress: () =>
   const title = item.serviceTitle || item.sellerName || item.title || t("prm.bannerTitle");
   return (
     <PressableScale onPress={onPress} scale={0.98} accessibilityRole="button" accessibilityLabel={title}>
-      <LinearGradient colors={["#0B1F45", "#123A86", "#0E5FC4"]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={s.card}>
+      <LinearGradient colors={["#0A1F44", "#13357A", "#1D4ED8"]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={s.card}>
         <Avatar name={item.sellerName || title} size={46} />
         <View style={s.mid}>
           <View style={s.tags}>

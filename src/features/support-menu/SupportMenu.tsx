@@ -39,7 +39,7 @@ export function SupportMenu({ glass, client }: Props) {
           <SupportItem kind="call" icon="phone" title={t("cpd.support.call")} sub={SUPPORT_PHONE} subBold onPress={() => { setOpen(false); openTel(SUPPORT_PHONE); }}>
             <BusinessHoursBadge inline />
           </SupportItem>
-          <PressableScale onPress={() => go("/support")} accessibilityRole="menuitem" style={[s.hub, { borderColor: c.line }]}>
+          <PressableScale onPress={() => go("/support")} accessibilityRole="menuitem" style={[s.hub, { backgroundColor: c.tint2 }]}>
             <Text variant="small" weight="bold" tone="accent">{t("cpd.support.hub")}</Text>
             <Icon name="arrow-right" size={15} tone="accent" />
           </PressableScale>
@@ -51,7 +51,7 @@ export function SupportMenu({ glass, client }: Props) {
 }
 
 const s = StyleSheet.create({
-  col: { paddingHorizontal: 14, paddingTop: 14 },
+  col: { paddingHorizontal: 16, paddingTop: 12 },
   cards: { gap: 10 },
-  hub: { flexDirection: "row", alignItems: "center", justifyContent: "center", gap: 6, paddingVertical: 13, borderRadius: 999, borderWidth: 1.5 },
+  hub: { flexDirection: "row", alignItems: "center", justifyContent: "center", gap: 6, minHeight: 48, borderRadius: 14, marginTop: 2 },
 });

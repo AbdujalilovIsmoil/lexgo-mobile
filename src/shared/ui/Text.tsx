@@ -11,10 +11,10 @@ export type TextProps = RNTextProps & {
 };
 
 const weightFamily = {
-  regular: "Inter_400Regular",
-  medium: "Inter_500Medium",
-  semibold: "Inter_600SemiBold",
-  bold: "Inter_700Bold",
+  regular: "Manrope_400Regular",
+  medium: "Manrope_500Medium",
+  semibold: "Manrope_600SemiBold",
+  bold: "Manrope_700Bold",
 } as const;
 
 // Big headings are announced as headings; the system font size is honoured, but only up to 1.3× so layouts hold.

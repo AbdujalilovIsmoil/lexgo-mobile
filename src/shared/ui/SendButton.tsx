@@ -17,7 +17,7 @@ export function SendButton({ enabled, onPress, size = 44, label = "Send", idle =
     p.value = withTiming(enabled ? 1 : 0, { duration: 180 });
   }, [enabled, p]);
   const box = useAnimatedStyle(() => ({
-    backgroundColor: interpolateColor(p.value, [0, 1], [idle, "#1668F0"]),
+    backgroundColor: interpolateColor(p.value, [0, 1], [idle, "#1D4ED8"]),
     transform: [{ scale: 0.94 + 0.06 * p.value }],
   }));
   const icon = useAnimatedStyle(() => ({ opacity: 0.4 + 0.6 * p.value }));

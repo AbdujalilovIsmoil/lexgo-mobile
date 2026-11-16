@@ -7,7 +7,8 @@ const TURNS = 6; // the light round the disc goes round this many times over the
 
 // The AI button's motion, shared by the Android bar and the iOS raised button. `on` = the button is on view and the app in front;
 // a new `replay` value (the tab that is open) plays it again.
-export function useAiPulse(on: boolean, replay?: string) {
+// `sweepWidth`: the width of the button the Adliya shine runs across (the Android bar's square button).
+export function useAiPulse(on: boolean, replay?: string, sweepWidth = 56) {
   const calm = useReducedMotion();
   const t = useSharedValue(0);
   const turn = useSharedValue(0);
@@ -25,5 +26,11 @@ export function useAiPulse(on: boolean, replay?: string) {
   });
   const ring = useAnimatedStyle(() => ({ opacity: 0.55 * (1 - t.get()) * (t.get() > 0 ? 1 : 0), transform: [{ scale: 1 + t.get() * 0.6 }] }));
   const spin = useAnimatedStyle(() => ({ transform: [{ rotate: `${turn.get() * 360}deg` }] }));
-  return { icon, ring, spin };
+  // The light streak across the button: once per turn, from off its left edge to off its right edge; hidden at rest.
+  const shine = useAnimatedStyle(() => {
+    const p = turn.get() % 1;
+    const moving = turn.get() > 0 && turn.get() < TURNS - 0.001;
+    return { opacity: moving ? 1 : 0, transform: [{ translateX: (p * 2.4 - 1.2) * sweepWidth }] };
+  });
+  return { icon, ring, spin, shine };
 }

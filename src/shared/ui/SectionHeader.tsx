@@ -10,7 +10,7 @@ export function SectionHeader({ title, sub, actionLabel, onAction }: Props) {
   return (
     <View style={s.row}>
       <View style={s.col}>
-        <Text variant="h3">{title}</Text>
+        <Text variant="h3" style={s.title}>{title}</Text>
         {sub ? (
           <Text variant="small" tone="gray">
             {sub}
@@ -19,7 +19,7 @@ export function SectionHeader({ title, sub, actionLabel, onAction }: Props) {
       </View>
       {actionLabel && onAction ? (
         <PressableScale onPress={onAction} style={s.link} hitSlop={8}>
-          <Text variant="small" tone="accent" weight="semibold">
+          <Text variant="small" tone="accent" weight="bold">
             {actionLabel}
           </Text>
           <Icon name="chevron-right" size={16} tone="accent" />
@@ -30,7 +30,8 @@ export function SectionHeader({ title, sub, actionLabel, onAction }: Props) {
 }
 
 const s = StyleSheet.create({
-  row: { flexDirection: "row", alignItems: "flex-end", justifyContent: "space-between", gap: 12, marginBottom: 14 },
+  row: { flexDirection: "row", alignItems: "flex-end", justifyContent: "space-between", gap: 12, marginBottom: 12 },
   col: { flex: 1, gap: 3 },
+  title: { fontSize: 17, lineHeight: 22 },
   link: { flexDirection: "row", alignItems: "center", gap: 2, paddingBottom: 2 },
 });

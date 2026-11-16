@@ -51,7 +51,7 @@ const s = StyleSheet.create({
   wrap: { gap: 8, paddingTop: 6, paddingBottom: 10 },
   row: { flexDirection: "row", alignItems: "center", gap: 8 },
   field: { flex: 1, flexDirection: "row", alignItems: "center", gap: 10, minHeight: 52, paddingHorizontal: 16, borderRadius: radius.pill, borderWidth: 1.5 },
-  input: { flex: 1, fontFamily: "Inter_500Medium", fontSize: 16, paddingVertical: 12 },
+  input: { flex: 1, fontFamily: "Manrope_500Medium", fontSize: 16, paddingVertical: 12 },
   clear: { width: 28, height: 28, borderRadius: 14, alignItems: "center", justifyContent: "center", backgroundColor: "rgba(138,153,172,0.2)" },
   chips: { flexDirection: "row", flexWrap: "wrap", gap: 8 },
 });

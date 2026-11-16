@@ -27,7 +27,7 @@ export function OtherServices() {
   return (
     <View style={s.wrap}>
       <View style={s.head}>
-        <View style={[s.headIco, { backgroundColor: dark ? c.surface2 : "#E6F0FF" }]}><Layers size={17} color={tone("#1668F0")} /></View>
+        <View style={[s.headIco, { backgroundColor: dark ? c.surface2 : "#E6F0FF" }]}><Layers size={17} color={tone("#1D4ED8")} /></View>
         <Text variant="h4" style={s.headTx}>{t("tabs.svt.more")}</Text>
       </View>
       <ScrollView horizontal showsHorizontalScrollIndicator={false} style={s.rail} contentContainerStyle={s.row}>

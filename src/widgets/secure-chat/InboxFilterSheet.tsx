@@ -8,7 +8,7 @@ import type { InboxKind } from "./inbox";
 
 type Opt = { value: InboxKind; label: string; count?: number };
 const ICON: Record<InboxKind, IconName> = { all: "message-circle", unread: "bell", urgent: "zap", doc: "file-text", order: "shopping-bag", case: "briefcase", other: "layers" };
-const TINT: Record<InboxKind, string> = { all: "#1668F0", unread: "#1668F0", urgent: "#EF4444", doc: "#8B5CF6", order: "#3B82F6", case: "#06B6D4", other: "#5C6E85" };
+const TINT: Record<InboxKind, string> = { all: "#1D4ED8", unread: "#1D4ED8", urgent: "#EF4444", doc: "#8B5CF6", order: "#3B82F6", case: "#06B6D4", other: "#5C6E85" };
 
 type Props = { visible: boolean; onClose: () => void; options: Opt[]; value: InboxKind; onChange: (k: InboxKind) => void; total: number };
 
