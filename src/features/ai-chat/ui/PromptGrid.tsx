@@ -6,11 +6,12 @@ import { useT } from "@/shared/i18n";
 import { useInstructorTarget } from "@/shared/instructor";
 
 // Two-column grid of suggested questions (ai.quick): an arrow at the top, the question at the foot of the card; a tap sends it.
-export function PromptGrid({ onPick }: { onPick: (text: string) => void }) {
+// `pro`: a professional's questions about the app (ai.quickPro) instead of the client's legal ones.
+export function PromptGrid({ onPick, pro }: { onPick: (text: string) => void; pro?: boolean }) {
   const { t, tList } = useT();
   const aiTheme = useAiTheme();
   const mark = useInstructorTarget("ai-chat:suggestions", { label: t("ai.welcomeTitle"), type: "list" });
-  const items = tList("ai.quick");
+  const items = tList(pro ? "ai.quickPro" : "ai.quick");
   const rows = Array.from({ length: Math.ceil(items.length / 2) }, (_, r) => items.slice(r * 2, r * 2 + 2));
   return (
     <View {...mark} style={s.grid}>

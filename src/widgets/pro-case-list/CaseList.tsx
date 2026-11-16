@@ -1,24 +1,27 @@
 import { useMemo, useState } from "react";
-import { View } from "react-native";
-import { CASE_STATUSES, CaseRow, dueOf, isClosedCase, useCases, type ProCase } from "@/entities/pro-cases";
+import { ScrollView, StyleSheet, View } from "react-native";
+import { CASE_STATUSES, CaseRow, isClosedCase, useCases, type ProCase } from "@/entities/pro-cases";
 import { useClients } from "@/entities/pro-clients";
 import { useT } from "@/shared/i18n";
 import { tOr } from "@/shared/lib/pro/tOr";
 import { useLocalPaged } from "@/shared/lib/pro/useLocalPaged";
 import { useDebounced } from "@/shared/lib/useDebounced";
 import { PagedList, SearchBox } from "@/shared/ui/admin";
-import { Chip, IconButton } from "@/shared/ui";
+import { IconButton, PressableScale, Text } from "@/shared/ui";
+import { useTheme } from "@/shared/theme";
 import { CasesFilterSheet } from "./CasesFilterSheet";
-import { CasesSummary } from "./CasesSummary";
 
 type Filter = "all" | "open" | (typeof CASE_STATUSES)[number];
+// The quick chips over the list (Adliya): all, in progress, waiting (new), closed; the rest of the statuses stay in the filter sheet.
+const CHIPS: Filter[] = ["all", "open", "new", "completed"];
 
-// Searchable list of the professional's cases with status chips; the client's name is the headline.
+// The professional's cases (Adliya): the status chips, the search with the filter sheet, then one white card per case.
 export function CaseList({ onOpen }: { onOpen: (c: ProCase) => void }) {
   const { t } = useT();
+  const { colors: c, dark, glass } = useTheme();
   const query = useCases();
   const clients = useClients().data;
-  const [filter, setFilter] = useState<Filter>("open");
+  const [filter, setFilter] = useState<Filter>("all");
   const [q, setQ] = useState("");
   const [sheet, setSheet] = useState(false);
   const needle = useDebounced(q, 250).trim().toLowerCase();
@@ -37,7 +40,21 @@ export function CaseList({ onOpen }: { onOpen: (c: ProCase) => void }) {
       query={paged}
       keyExtractor={(c) => c.id}
       renderItem={(c, i) => <CaseRow item={c} index={i} client={names.get(c.clientUserId)} onPress={() => onOpen(c)} />}
-      header={<View style={{ gap: 10, paddingBottom: 12 }}><CasesSummary total={all.length} active={all.filter((c) => !isClosedCase(c.status)).length} soon={all.filter((c) => ["overdue", "today", "soon"].includes(dueOf(c.deadlineAt, isClosedCase(c.status)))).length} done={all.filter((c) => isClosedCase(c.status)).length} /><View style={{ flexDirection: "row", alignItems: "center", marginHorizontal: -16, paddingRight: 16 }}><View style={{ flex: 1 }}><SearchBox value={q} onChangeText={setQ} placeholder={t("aw4.search")} /></View><IconButton icon="sliders" label={t("dm11.filters")} badge={filter !== "open"} onPress={() => setSheet(true)} /></View>{filter !== "open" ? <View style={{ flexDirection: "row" }}><Chip label={label(filter)} active icon="x" onPress={() => setFilter("open")} /></View> : null}</View>}
+      header={
+        <View style={{ gap: 12, paddingBottom: 12 }}>
+          <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: 8, paddingHorizontal: 16 }} style={{ marginHorizontal: -16 }}>
+            {CHIPS.map((f) => {
+              const on = filter === f;
+              return (
+                <PressableScale key={f} onPress={() => setFilter(f)} scale={0.96} accessibilityRole="button" accessibilityState={{ selected: on }} style={[st.chip, on ? { backgroundColor: c.accentStrong, borderColor: c.accentStrong } : { backgroundColor: dark || glass ? c.surface : "#FFFFFF", borderColor: dark || glass ? c.line : "#E2E8F1" }]}>
+                  <Text variant="small" weight="bold" style={{ color: on ? "#FFFFFF" : c.ink, fontSize: 14.5 }}>{label(f)}</Text>
+                </PressableScale>
+              );
+            })}
+          </ScrollView>
+          <View style={{ flexDirection: "row", alignItems: "center", marginHorizontal: -16, paddingRight: 16 }}><View style={{ flex: 1 }}><SearchBox value={q} onChangeText={setQ} placeholder={t("aw4.search")} /></View><IconButton icon="sliders" label={t("dm11.filters")} badge={!CHIPS.includes(filter)} onPress={() => setSheet(true)} /></View>
+        </View>
+      }
       empty={{ icon: "briefcase", title: all.length ? t("aw4.emptyFilter") : t("aw4.empty"), text: all.length ? undefined : t("aw4.emptyText") }}
       skeletonHeight={150}
     />
@@ -45,3 +62,5 @@ export function CaseList({ onOpen }: { onOpen: (c: ProCase) => void }) {
     </>
   );
 }
+
+const st = StyleSheet.create({ chip: { minHeight: 40, paddingHorizontal: 18, borderRadius: 999, borderWidth: 1.5, alignItems: "center", justifyContent: "center" } });

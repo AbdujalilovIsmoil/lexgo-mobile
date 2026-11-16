@@ -12,6 +12,15 @@ export const ai: Messages["ai"] = {
   greeting:
     "Hello! I'm an AI trained on the legislation of Uzbekistan. Describe your problem in two or three sentences and I'll suggest the practice area, case stage and the right service.",
   inputPlaceholder: "Type your question…",
+  proTitle: "How can I help?",
+  proSub: "I'll find the right page and show you where to tap.",
+  proExamples: "For example",
+  quickPro: [
+    "How do I accept a new order?",
+    "How do I get my profile verified?",
+    "How do I pause orders while on vacation?",
+    "Where are my incoming cases?",
+  ],
   quick: [
     "Summoned for questioning",
     "Contract breached, goods not delivered",

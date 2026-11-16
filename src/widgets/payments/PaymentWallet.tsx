@@ -1,7 +1,7 @@
 import { StyleSheet, View } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { fmtUzs, groupOf, type PayGroup, type PaymentRow } from "@/entities/payment";
-import { brand, radius, shadows } from "@/shared/theme";
+import { radius, shadows } from "@/shared/theme";
 import { Icon, PressableScale, Text } from "@/shared/ui";
 import { useT } from "@/shared/i18n";
 
@@ -14,7 +14,7 @@ export function PaymentWallet({ rows, onGroup }: { rows: PaymentRow[]; onGroup: 
   const refunded = rows.filter((p) => groupOf(p.status) === "refunded").length;
   const stats: [string, number, PayGroup, string][] = [["layers", rows.length, "all", t("pyx.count")], ["clock", waiting, "pending", t("pyx.waiting")], ["rotate-ccw", refunded, "refunded", t("pyx.refunded")]];
   return (
-    <LinearGradient colors={[brand.b800, brand.b600, "#0E9FD0"]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={[s.card, shadows.blue]}>
+    <LinearGradient colors={["#13357A", "#0A1F44"]} start={{ x: 0.1, y: 0 }} end={{ x: 0.9, y: 1 }} style={[s.card, shadows.s2]}>
       <Text variant="small" tone="white" style={s.soft}>{t("pyx.total")}</Text>
       <Text variant="hx" tone="white">{fmtUzs(paid, t)}</Text>
       <View style={s.row}>

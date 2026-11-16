@@ -5,7 +5,7 @@ import { deltaPct, fmtCount, sparkHeights, trendOf } from "@/entities/pro-stats"
 import { useT } from "@/shared/i18n";
 import { useCountUp } from "@/shared/lib/useCountUp";
 import { fmtMoney } from "@/shared/lib/money";
-import { gradient, radius } from "@/shared/theme";
+import { radius } from "@/shared/theme";
 import { Icon, Skeleton, Text } from "@/shared/ui";
 import { SparkBar } from "./SparkBar";
 
@@ -29,7 +29,7 @@ export function Hero({ label, amount, series, loading }: Props) {
   const trendWord = trend ? t(`statUx.${trend}`) : "";
   const a11y = `${label}: ${amount == null ? "—" : `${value} ${cur}`}${d != null ? `, ${trendWord} ${Math.abs(d)}%` : ""}`;
   return (
-    <LinearGradient colors={gradient.primary} locations={gradient.primaryStops} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={s.card}>
+    <LinearGradient colors={["#13357A", "#0A1F44"]} start={{ x: 0.1, y: 0 }} end={{ x: 0.9, y: 1 }} style={s.card}> {/* Adliya navy, as the headers */}
       <View accessible accessibilityLabel={a11y} style={s.top}>
         <Text variant="small" weight="semibold" tone="white" style={{ opacity: 0.85 }}>{label}</Text>
         {loading ? <Skeleton onDark width="60%" height={36} /> : (

@@ -7,7 +7,7 @@ import { Button } from "@/shared/ui";
 import { Notice } from "@/shared/ui/sel";
 import { useT } from "@/shared/i18n";
 import { PromoteStrip } from "./PromoteStrip";
-import { ServicesHero } from "./ServicesHero";
+// import { ServicesHero } from "./ServicesHero"; // the counters block is off for now
 import { ServicesToolbar } from "./ServicesToolbar";
 
 export type { ServiceFilter };
@@ -37,7 +37,8 @@ export function ServicesHeader({ before, aboveList, rules, items, loading, filte
   return (
     <View style={{ gap: 14, paddingBottom: 14 }}>
       {before}
-      <ServicesHero items={items} loading={loading} filter={filter} onFilter={onFilter} waiting={waiting} running={running.length} onAdd={onAdd} />
+      {/* Hozircha kerak emas: raqamlar bloki (qo'shish header'dagi "+" da).
+      <ServicesHero items={items} loading={loading} filter={filter} onFilter={onFilter} waiting={waiting} running={running.length} onAdd={onAdd} /> */}
       {onPromoteProfile ? <PromoteStrip onPress={onPromoteProfile} running={running} /> : null}
       {aboveList}
       {rules}

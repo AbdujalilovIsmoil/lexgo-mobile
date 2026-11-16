@@ -14,7 +14,7 @@ export function ClientsPage() {
   const pad = useTabPad();
   const [check, setCheck] = useState(false);
   return (
-    <TabPage navy title={t("tabs.clients")} subtitle={t("aw3.sub")}>
+    <TabPage navy title={t("tabs.clients")} /* subtitle={t("aw3.sub")} — "Siz ishlagan mijozlar": hozircha kerak emas */>
       <ClientList bottomPad={pad} onOpen={(c: ProClient) => router.push(`/pro/clients/${encodeURIComponent(c.id)}` as never)} onAdd={() => router.push("/pro/clients/new" as never)} onCheck={() => setCheck(true)} />
       <ConflictSheet visible={check} onClose={() => setCheck(false)} />
     </TabPage>

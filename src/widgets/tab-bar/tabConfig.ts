@@ -8,7 +8,6 @@ const t = (route: string, icon: TabIconName, labelKey: string, badge?: string): 
 const ai: TabDef = { route: "ai", icon: "zap", labelKey: "tabs.ai", center: true };
 // Adliya: a client's centre button is Tezkor (the urgent advocate); their AI is the floating button in the bottom right corner (FlatBar).
 const urgent: TabDef = { route: "urgent", icon: "bolt", labelKey: "tabs.bar.urgent", center: true };
-const messages = t("messages", "message-circle", "tabs.messages", "messages");
 // A client's (and a visitor's) last slot is Profil (the `me` tab: the profile page itself); their chats sit behind the header button next to the bell.
 const me = t("me", "user", "tabs.profile");
 // A client's fourth slot is the specialists directory (Mutaxassislar); their orders are reached from Home, the profile and a purchase.
@@ -22,7 +21,8 @@ export const TABS: Record<TabRole, TabDef[]> = {
   // The fourth slot is the specialists directory (public; the orders tab stays reachable from Home and the profile).
   guest: [t("index", "home", "tabs.bar.home"), t("services", "grid", "tabs.bar.services"), { ...urgent, auth: true }, experts, { ...me, auth: true }],
   client: [t("index", "home", "tabs.bar.home"), t("services", "grid", "tabs.bar.services"), urgent, experts, me],
-  seller: [t("workspace", "home", "tabs.bar.home"), t("requests", "inbox", "tabs.requests", "requests"), ai, t("clients", "users", "tabs.clients"), messages],
+  // A professional's last slot is Profil too; their chats sit behind the header button (next to the bell), like the client's.
+  seller: [t("workspace", "home", "tabs.bar.home"), t("clients", "users", "tabs.clients"), ai, t("requests", "shopping-bag", "tabs.bar.orders", "requests"), me],
 };
 
 // Tab routes that belong to a role's bar are listed above; these extra routes are
@@ -34,7 +34,7 @@ export const allowedRoutes = (role: TabRole): string[] => [...TABS[role].map((x)
 // review keeps its workspace and the AI button only; the chats tab needs the cabinet's secure_chat action. Unknown
 // (cabinet still loading) hides nothing.
 export function sellerTabHidden(route: string, limited: boolean, actions?: { secureChat: boolean }): boolean {
-  if (limited) return route !== "workspace" && route !== "ai";
+  if (limited) return route !== "workspace" && route !== "ai" && route !== "me"; // an account under review still reaches its own profile
   return route === "messages" && !!actions && !actions.secureChat;
 }
 

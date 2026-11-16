@@ -2,7 +2,7 @@ import { StyleSheet, View } from "react-native";
 import type { ClientDetail } from "@/entities/pro-clients";
 import { useT } from "@/shared/i18n";
 import { openTel } from "@/shared/lib/links";
-import { radius, useColors } from "@/shared/theme";
+import { radius, useTheme } from "@/shared/theme";
 import { Icon, PressableScale, Text, type IconName } from "@/shared/ui";
 
 type Row = { key: string; icon: IconName; label: string; value: string; onPress?: () => void };
@@ -10,7 +10,7 @@ type Row = { key: string; icon: IconName; label: string; value: string; onPress?
 // Contact facts in one grouped card (phone is tappable to call), the lawyer's own note as its last row.
 export function ContactCard({ d }: { d: ClientDetail }) {
   const { t } = useT();
-  const c = useColors();
+  const { colors: c, dark, glass } = useTheme();
   const all: (Row | null)[] = [
     d.phone ? { key: "phone", icon: "phone", label: t("aw3.f.phone"), value: d.phone, onPress: () => openTel(d.phone) } : null,
     d.company ? { key: "company", icon: "briefcase", label: t("aw3.f.company"), value: d.company } : null,
@@ -20,7 +20,7 @@ export function ContactCard({ d }: { d: ClientDetail }) {
   const rows = all.filter((x): x is Row => !!x);
   if (!rows.length) return null;
   return (
-    <View style={[s.card, { backgroundColor: c.glassFill, borderColor: c.glassLine }]}>
+    <View style={[s.card, { backgroundColor: dark || glass ? c.surface : "#FFFFFF", borderColor: dark || glass ? c.line : "#E6EBF3" }]}>
       {rows.map((r, i) => {
         const body = (
           <>

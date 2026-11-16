@@ -5,12 +5,13 @@ import { displayName, useSession } from "@/entities/session";
 import { useUnreadCount } from "@/entities/notification";
 import { SupportMenu } from "@/features/support-menu";
 import { useTabRole } from "@/widgets/tab-bar/useTabRole";
+import { useCabinet } from "@/entities/pro-workspace";
 import { Avatar, IconButton, PressableScale } from "@/shared/ui";
 import { useBadge } from "@/shared/lib/badgeStore";
 import { useT } from "@/shared/i18n";
 
-// Global header actions of every tab page: support, notifications (with the unread dot), then — for a client or a visitor — the chats
-// (Xabarlar, with the unread dot: their bar's last slot is Profil), or for a professional the avatar that opens Profil.
+// Global header actions of every tab page: support, notifications (with the unread dot), then the chats (Xabarlar, with the unread dot) —
+// every bar's last slot is Profil now; a professional whose cabinet closes the chats (or is under review) gets the avatar instead.
 // A visitor has no profile yet: the person button opens the sign-in, like the bell. It is a button of its own — wrapped
 // in another pressable it took the tap itself and nothing happened.
 export function HeaderActions({ glass }: { glass?: boolean }) {
@@ -21,7 +22,8 @@ export function HeaderActions({ glass }: { glass?: boolean }) {
   const name = displayName(session?.user) || session?.user.phone;
   const unreadChats = useBadge("messages");
   const { t } = useT();
-  const chats = role === "client" || role === "guest";
+  const cabinet = useCabinet().data; // a professional's chats need the cabinet's secure_chat action (unknown: shown)
+  const chats = role === "client" || role === "guest" || (role === "seller" && cabinet?.actions.secureChat !== false && !cabinet?.limited);
   return (
     <View style={s.row}>
       {role === "client" || role === "seller" ? <SupportMenu glass={glass} client={role === "client"} /> : null}

@@ -16,7 +16,8 @@ import { useOrderFilters } from "./useOrderFilters";
 
 // "Xizmat buyurtmalari": the seller's paid orders, live. Search and one filter button (with a badge), the active choices as removable
 // chips, the count with a live dot, then the cards; pull to refresh, skeleton, error and two kinds of empty state.
-export function OrderFeed() {
+// `bottomPad`: room under the list (the tab bar when it is the Buyurtmalar tab).
+export function OrderFeed({ bottomPad }: { bottomPad?: number } = {}) {
   const { t } = useT();
   const c = useColors();
   const router = useRouter();
@@ -62,7 +63,7 @@ export function OrderFeed() {
         ListHeaderComponent={header}
         ListEmptyComponent={empty}
         ItemSeparatorComponent={() => <View style={s.gap} />}
-        contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: insets.bottom + 28, flexGrow: 1 }}
+        contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: bottomPad ?? insets.bottom + 28, flexGrow: 1 }}
         refreshing={q.isRefetching}
         onRefresh={() => void q.refetch()}
         keyboardShouldPersistTaps="handled"

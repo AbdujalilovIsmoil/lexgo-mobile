@@ -10,6 +10,15 @@ export const ai = {
   greeting:
     "Assalomu alaykum! Men Sun'iy Intellekt — O'zbekiston qonunchiligiga o'qitilganman. Muammoyingizni ikki-uch gapda yozing, men yo'nalishni, ish bosqichini va mos xizmatni aytaman.",
   inputPlaceholder: "Savolingizni yozing…",
+  proTitle: "Qanday yordam beray?",
+  proSub: "Kerakli sahifani topib, qayerni bosishni ko'rsataman.",
+  proExamples: "Masalan",
+  quickPro: [
+    "Yangi buyurtmani qanday qabul qilaman?",
+    "Profilimni qanday tasdiqlataman?",
+    "Ta'tilda buyurtmalarni qanday to'xtataman?",
+    "Kelgan ishlarim qayerda?",
+  ],
   quick: [
     "Tergovga chaqirishdi",
     "Shartnoma buzildi, tovar kelmadi",

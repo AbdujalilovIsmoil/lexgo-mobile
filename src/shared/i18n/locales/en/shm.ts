@@ -24,6 +24,7 @@ export const shm = {
     "statDocs": "Documents",
     "quickActions": "Quick actions",
     "quickClient": "Add new client",
+    "quickTask": "Add a task",
     "quickCase": "Open new case",
     "quickDoc": "Upload document",
     "quickMeeting": "Schedule meeting",

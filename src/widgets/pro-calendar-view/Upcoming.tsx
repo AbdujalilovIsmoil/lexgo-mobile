@@ -1,16 +1,17 @@
 import { View } from "react-native";
-import { EventRow, type CalEvent } from "@/entities/pro-calendar";
+import type { CalEvent } from "@/entities/pro-calendar";
 import { useT } from "@/shared/i18n";
 import { Text } from "@/shared/ui";
+import { AgendaGroup } from "./AgendaGroup";
 
-// "Upcoming" block under the month grid: the next few events with their dates.
+// "Upcoming" under the day's agenda: the next few events with their dates, as one white card.
 export function Upcoming({ events, onOpen }: { events: CalEvent[]; onOpen: (e: CalEvent) => void }) {
   const { t } = useT();
   if (!events.length) return null;
   return (
-    <View style={{ gap: 8 }}>
-      <Text variant="h4">{t("aw6.upcoming")}</Text>
-      {events.map((e) => <EventRow key={e.id} event={e} withDate onPress={() => onOpen(e)} />)}
+    <View style={{ gap: 10 }}>
+      <Text variant="small" weight="bold" tone="gray" style={{ letterSpacing: 0.8, marginLeft: 4 }}>{t("aw6.upcoming").toUpperCase()}</Text>
+      <AgendaGroup events={events} onOpen={onOpen} withDate />
     </View>
   );
 }

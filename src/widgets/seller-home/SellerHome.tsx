@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ScrollView, View } from "react-native";
+import { ScrollView, StyleSheet, View } from "react-native";
 import { useQueryClient } from "@tanstack/react-query";
 import { useMyRating } from "@/entities/lawyer";
 import { useJobs } from "@/entities/market-feed";
@@ -12,7 +12,7 @@ import { groupTasks, useCabinet } from "@/entities/pro-workspace";
 import { secKeys } from "@/entities/security";
 import { displayName, useSession } from "@/entities/session";
 import { useResync } from "@/shared/realtime";
-import { ErrorView, Skeleton } from "@/shared/ui";
+import { Avatar, ErrorView, PressableScale, Skeleton } from "@/shared/ui";
 import { HeaderExtra } from "@/shared/ui/headerExtra";
 import { useInsets } from "@/shared/lib/insets";
 import { fmtRating, isoDay } from "@/shared/lib/format";
@@ -21,6 +21,9 @@ import { InfoCards, StatusBanner } from "@/widgets/pro-dashboard";
 import { useT } from "@/shared/i18n";
 import { Briefcase, CalendarClock, MessageSquareText, SquareCheckBig, Star, Target, Users, Zap } from "lucide-react-native";
 import { AiCard } from "./AiCard";
+import { Deadlines } from "./Deadlines";
+import { HomeAnalytics } from "./HomeAnalytics";
+import { TodayCard } from "./TodayCard";
 import { AssignedAlert } from "./AssignedAlert";
 import { Chances } from "./Chances";
 import { HeaderChips, type HeroStat } from "./HeaderChips";
@@ -96,12 +99,11 @@ export function SellerHome({ bottomPad }: { bottomPad: number }) {
   const groups = groupTasks(c.cases, todayKey());
   const todays = events.filter((e) => !isCancelled(e) && e.startsAt && isoDay(new Date(e.startsAt)) === today);
   const dueToday = groups.today.length + todays.filter((e) => e.type.endsWith("_deadline")).length;
-  const requests = counts.docs + counts.urgent + counts.orders + counts.meetings;
   const paid = !!features?.active;
   const plan = me?.planName || (paid ? plans?.find((p) => p.id === features?.planId)?.name ?? t("cdash.side.myPlan") : t("shm.ws.freePlan"));
   const stats: HeroStat[] = [
     { key: "cases", icon: Briefcase, value: String(groups.today.length + groups.upcoming.length), label: t("shm.dash.statCases"), to: "/pro/cases" },
-    { key: "requests", icon: MessageSquareText, value: String(requests), label: t("shm.ws.statRequests"), to: "/(tabs)/requests" },
+    { key: "requests", icon: MessageSquareText, value: String(counts.orders), label: t("tabs.bar.orders").toLowerCase(), to: "/(tabs)/requests" }, // the Buyurtmalar tab
     { key: "due", icon: CalendarClock, value: String(dueToday), label: t("shm.ws.statDue"), to: "/pro/calendar" },
     { key: "rating", icon: Star, value: rating?.rated ? fmtRating(rating.rating, locale) : t("shm.ws.ratingNew"), label: t("shm.ws.statRating"), to: "/pro/stats" },
   ];
@@ -116,25 +118,49 @@ export function SellerHome({ bottomPad }: { bottomPad: number }) {
     { key: "urgent", icon: Zap, tint: "#F97316", title: t("lsb.urgentAssigned"), sub: n(counts.urgent, "shm.ws.waiting"), to: "/pro/urgent", badge: counts.urgent || undefined },
     second,
   ];
+  const meetsToday = todays.filter((e) => !e.type.endsWith("_deadline")).length;
+  const nums = [
+    { key: "events", value: meetsToday, label: t("cdash.pro.events"), to: "/pro/calendar" },
+    advocate
+      ? { key: "tasks", value: open.length, label: t("cdash.pro.tasks"), to: "/pro/tasks" }
+      : { key: "cases", value: groups.today.length + groups.upcoming.length, label: t("cdash.pro.cases"), to: "/pro/cases" },
+    { key: "due", value: dueToday, label: t("cdash.pro.due"), to: "/pro/calendar" },
+  ];
+  const alert = c.orders.length || urgent.some((u) => u.active && u.action) ? <AssignedAlert orders={c.orders} urgent={urgent} /> : null;
   return (
     <View style={{ flex: 1 }}>
-      <NavyBar title={name || t("tabs.workspace")} sub={`${role} · ${plan}`} onTitlePress={() => router.push("/pro/profile" as never)}>
+      <NavyBar
+        title={name || t("tabs.workspace")}
+        sub={`${role} · ${plan}`}
+        onTitlePress={() => router.navigate("/(tabs)/me" as never)}
+        avatar={
+          <PressableScale onPress={() => router.navigate("/(tabs)/me" as never)} scale={0.95} accessibilityRole="button" accessibilityLabel={name} style={s.avatar}>
+            <Avatar name={name || "?"} size={48} />
+          </PressableScale>
+        }
+      >
         <HeaderChips stats={stats} />
       </NavyBar>
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: pad }}>
         <HeaderExtra />
-        <View style={body}>
-          <AssignedAlert orders={c.orders} urgent={urgent} />
+        <View style={[body, s.body]}>
+          {/* Adliya's home: the day, the month's numbers, the agenda and the nearest deadlines — then the doors and cards it had before. */}
+          <TodayCard nums={nums} alert={alert} />
           <QuickTiles />
+          <HomeAnalytics />
+          <TodayList events={events} due={groups.today} />
+          <Deadlines cases={[...groups.today, ...groups.upcoming]} />
           <WorkCards items={cards} />
-          <View style={s.gap}><TodayList events={events} due={groups.today} /></View>
-          <View style={s.gap}><StandingRing /></View>
-          <View style={s.gap}><Chances /></View>
-          <View style={s.gap}><AiCard i={0} advocate={advocate} /></View>
+          <StandingRing />
+          <Chances />
+          <AiCard i={0} advocate={advocate} />
         </View>
       </ScrollView>
     </View>
   );
 }
 
-const s = { gap: { marginTop: 8 } } as const;
+const s = StyleSheet.create({
+  body: { gap: 22, paddingTop: 18 },
+  avatar: { borderRadius: 26, borderWidth: 2, borderColor: "rgba(255,255,255,0.55)", padding: 0 },
+});

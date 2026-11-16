@@ -70,7 +70,7 @@ export default function ProServicesPage({ packages, aboveList }: Props = {}) {
   // A native modal is presented only from the one on screen: the rules sheet goes inside the open sheet, else on the page.
   const place = sheet.open ? sheet.kind : "page";
   return (
-    <AdminPage title={t("proSvc.title")} right={<IconButton icon="refresh-cw" label={t("proSvc.refresh")} onPress={() => void q.refetch()} />}>
+    <AdminPage title={t("proSvc.title")} right={<IconButton icon="plus" label={t("proSvc.add")} onPress={() => open("form", null)} />}>
       {tab === "packages" ? (
         <ScrollView contentContainerStyle={{ padding: 16, paddingBottom: insets.bottom + 24, gap: 14 }} showsVerticalScrollIndicator={false} keyboardShouldPersistTaps="handled">
           {tabs}

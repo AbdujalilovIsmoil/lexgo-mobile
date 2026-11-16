@@ -1,66 +1,54 @@
-import { StyleSheet, View } from "react-native";
-import Animated, { FadeInDown } from "react-native-reanimated";
+import { Platform, StyleSheet, View } from "react-native";
 import { useT } from "@/shared/i18n";
-import { fmtDate, initials } from "@/shared/lib/format";
+import { fmtDate } from "@/shared/lib/format";
 import { tOr } from "@/shared/lib/pro/tOr";
-import { radius, useColors } from "@/shared/theme";
-import { Icon, Pill, PressableScale, Text } from "@/shared/ui";
+import { useTheme } from "@/shared/theme";
+import { PressableScale, Text } from "@/shared/ui";
 import { dueOf } from "../lib/deadline";
-import { caseTint, isClosedCase } from "../lib/status";
+import { CASE_STATUSES, isClosedCase } from "../lib/status";
 import type { ProCase } from "../model/types";
 
-// One case as a card: a coloured edge for its status, the client (or the case title) as the headline with a monogram, the case
-// type and number, the stage and status pills, the next step in a tinted box and the deadline chip (red when late, amber today).
-export function CaseRow({ item, client, onPress, index = 0 }: { item: ProCase; client?: string; onPress: () => void; index?: number }) {
+// How far along the case is, from its status (new … completed); archived counts as done.
+const progressOf = (status: string): number => {
+  if (status === "archived") return 1;
+  const i = (CASE_STATUSES as readonly string[]).indexOf(status);
+  return i < 0 ? 0.1 : Math.max(0.1, (i + 1) / (CASE_STATUSES.length - 1));
+};
+
+// One case as a white card (Adliya): the number in monospace grey with the status pill on the right, the title, one grey line (the client ·
+// the next step or the deadline — red when late), and a progress bar for how far the case has come.
+export function CaseRow({ item, client, onPress }: { item: ProCase; client?: string; onPress: () => void; index?: number }) {
   const { t, locale } = useT();
-  const c = useColors();
-  const tint = caseTint(item.status);
-  const due = dueOf(item.deadlineAt, isClosedCase(item.status));
-  const dueTone = due === "overdue" ? c.err : due === "today" ? c.warn : due === "soon" ? c.accent : c.gray;
-  const head = client || item.title || item.number;
+  const { colors: c, dark, glass } = useTheme();
+  const closed = isClosedCase(item.status);
+  const due = dueOf(item.deadlineAt, closed);
+  const when = item.deadlineAt ? `${due === "overdue" ? `${t("mcs.overdue")} · ` : due === "today" ? `${t("mcs.today")} · ` : ""}${fmtDate(item.deadlineAt, locale)}` : "";
+  const sub = [client, item.nextAction || when].filter(Boolean).join(" · ");
+  const status = tOr(t, `aw11.caseStatus.${item.status}`, item.status);
+  const tone = closed ? { bg: c.tint2, fg: c.accentStrong } : item.status === "new" ? { bg: c.warnBg, fg: c.warn } : item.status === "court" ? { bg: c.errBg, fg: c.err } : { bg: c.okBg, fg: c.ok };
+  const title = item.title || item.number;
   return (
-    <Animated.View entering={FadeInDown.delay(Math.min(index, 8) * 40).duration(260)}>
-      <PressableScale onPress={onPress} scale={0.985} accessibilityRole="button" accessibilityLabel={`${head}. ${item.title}`} style={[s.card, { backgroundColor: c.glassFill, borderColor: c.glassLine }]}>
-        <View style={[s.edge, { backgroundColor: tint }]} />
-        <View style={s.body}>
-          <View style={s.top}>
-            <View style={[s.mono, { backgroundColor: `${tint}22` }]}><Text variant="small" weight="bold" style={{ color: tint }}>{initials(head) || "?"}</Text></View>
-            <View style={s.who}>
-              <Text variant="body" weight="bold" numberOfLines={1}>{head}</Text>
-              <Text variant="caption" tone="gray" numberOfLines={1}>{[client ? item.title : "", item.number].filter(Boolean).join(" · ")}</Text>
-            </View>
-            <Pill label={tOr(t, `aw11.caseStatus.${item.status}`, item.status)} tone={isClosedCase(item.status) ? "gray" : item.status === "court" ? "err" : item.status === "new" ? "blue" : "ok"} small />
-          </View>
-          {item.nextAction ? (
-            <View style={[s.next, { backgroundColor: c.surface2 }]}>
-              <Icon name="arrow-right-circle" size={15} color={c.accent} />
-              <View style={s.nextTx}><Text variant="caption" tone="gray2">{t("mcs.next")}</Text><Text variant="small" weight="semibold" numberOfLines={2}>{item.nextAction}</Text></View>
-            </View>
-          ) : null}
-          <View style={s.foot}>
-            {item.stage ? <View style={[s.chip, { backgroundColor: c.tint2 }]}><Icon name="layers" size={12} color={c.accent} /><Text variant="caption" weight="bold" tone="accent">{tOr(t, `aw11.stage.${item.stage}`, item.stage)}</Text></View> : null}
-            {item.deadlineAt ? (
-              <View style={[s.chip, { backgroundColor: `${dueTone}1F` }]}>
-                <Icon name="clock" size={12} color={dueTone} />
-                <Text variant="caption" weight="bold" style={{ color: dueTone }}>{due === "overdue" ? `${t("mcs.overdue")} · ` : due === "today" ? `${t("mcs.today")} · ` : ""}{fmtDate(item.deadlineAt, locale)}</Text>
-              </View>
-            ) : null}
-          </View>
-        </View>
-      </PressableScale>
-    </Animated.View>
+    <PressableScale onPress={onPress} scale={0.985} accessibilityRole="button" accessibilityLabel={`${title}. ${status}`} style={[s.card, { backgroundColor: dark || glass ? c.surface : "#FFFFFF", borderColor: dark || glass ? c.line : "#E6EBF3" }, !glass && s.shadow]}>
+      <View style={s.top}>
+        <Text variant="small" tone="gray" numberOfLines={1} style={s.num}>{item.number || "—"}</Text>
+        <View style={[s.pill, { backgroundColor: tone.bg }]}><Text variant="caption" weight="bold" numberOfLines={1} style={{ color: tone.fg }}>{status}</Text></View>
+      </View>
+      <Text variant="body" weight="bold" numberOfLines={2} style={s.title}>{title}</Text>
+      {sub ? <Text variant="small" numberOfLines={1} style={{ color: due === "overdue" && !item.nextAction ? c.err : c.gray }}>{sub}</Text> : null}
+      <View style={[s.track, { backgroundColor: dark || glass ? c.surface2 : "#E6EBF3" }]}>
+        <View style={[s.fill, { width: `${Math.round(progressOf(item.status) * 100)}%`, backgroundColor: c.accent }]} />
+      </View>
+    </PressableScale>
   );
 }
 
 const s = StyleSheet.create({
-  card: { flexDirection: "row", borderRadius: radius.rl, borderWidth: 1, overflow: "hidden" },
-  edge: { width: 5 },
-  body: { flex: 1, gap: 10, padding: 14 },
-  top: { flexDirection: "row", alignItems: "center", gap: 10 },
-  mono: { width: 40, height: 40, borderRadius: 14, alignItems: "center", justifyContent: "center" },
-  who: { flex: 1, gap: 1 },
-  next: { flexDirection: "row", gap: 8, padding: 10, borderRadius: 12 },
-  nextTx: { flex: 1, gap: 1 },
-  foot: { flexDirection: "row", flexWrap: "wrap", gap: 8 },
-  chip: { flexDirection: "row", alignItems: "center", gap: 5, paddingHorizontal: 9, paddingVertical: 5, borderRadius: 10 },
+  card: { padding: 16, gap: 6, borderRadius: 20, borderWidth: 1 },
+  top: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", gap: 10 },
+  num: { flexShrink: 1, fontFamily: Platform.select({ ios: "Menlo", default: "monospace" }), fontSize: 13.5 },
+  pill: { borderRadius: 999, paddingHorizontal: 11, paddingVertical: 4 },
+  title: { fontSize: 17, lineHeight: 23, marginTop: 2 },
+  track: { height: 8, borderRadius: 4, overflow: "hidden", marginTop: 8 },
+  fill: { height: 8, borderRadius: 4 },
+  shadow: Platform.select({ ios: { shadowColor: "#0B1A33", shadowOpacity: 0.05, shadowRadius: 10, shadowOffset: { width: 0, height: 4 } }, default: { elevation: 1 } })!,
 });

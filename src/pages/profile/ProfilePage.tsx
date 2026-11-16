@@ -32,7 +32,7 @@ export function ProfilePage({ tab }: { tab?: boolean } = {}) {
   const floating = <View style={[s.back, { top: insets.top + HEADER_GAP }]}><IconButton icon={backIcon} tone="glass" onPress={back} /></View>;
   if (!session) return <View style={s.fill}><GuestWelcome />{floating}</View>;
   if (client) return tab ? <ClientProfile user={session.user} bottomPad={clearance} aiFab /> : <ClientProfile user={session.user} onBack={back} />;
-  if (seller) return <SellerProfile user={session.user} onBack={back} />;
+  if (seller) return tab ? <SellerProfile user={session.user} bottomPad={clearance} /> : <SellerProfile user={session.user} onBack={back} />;
   return (
     <View style={s.fill}>
     <HeroScroll style={{ backgroundColor: c.canvas }} contentContainerStyle={{ paddingBottom: insets.bottom + 32 }}>

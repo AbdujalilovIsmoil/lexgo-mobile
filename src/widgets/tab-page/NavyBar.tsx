@@ -2,7 +2,7 @@ import type { ReactNode } from "react";
 import { StyleSheet, View } from "react-native";
 import { HEADER_GAP, useInsets } from "@/shared/lib/insets";
 import { FocusStatusBar, GradientBox, PressableScale, Text } from "@/shared/ui";
-import { MenuButton } from "@/widgets/client-sidebar/MenuButton";
+// import { MenuButton } from "@/widgets/client-sidebar/MenuButton"; // the drawer is off: its rows are on the profile page now
 import { HeaderActions } from "./HeaderActions";
 
 type Props = {
@@ -10,12 +10,13 @@ type Props = {
   sub?: string; // a small light line under the title (Adliya: "Advokat · Pro tarif")
   onTitlePress?: () => void;
   children?: ReactNode; // under the row, inside the band (Adliya: the quick chips)
+  avatar?: ReactNode; // at the left end, before the title (the home: the professional's photo)
 };
 
-// A professional's tab header in the Adliya look: the navy band with rounded bottom corners and a faint ring in the corner — the menu, an
+// A professional's tab header in the Adliya look: the navy band with rounded bottom corners and a faint ring in the corner — an optional avatar, an
 // optional title (Ish maydoni, or the professional's name with a line under it) and the same round tools (support, bell, avatar) as every
 // other header — so the page below starts straight with its content.
-export function NavyBar({ title, sub, onTitlePress, children }: Props) {
+export function NavyBar({ title, sub, onTitlePress, children, avatar }: Props) {
   const insets = useInsets();
   const head = title ? (
     <View style={s.who}>
@@ -29,7 +30,8 @@ export function NavyBar({ title, sub, onTitlePress, children }: Props) {
       <View pointerEvents="none" style={s.ring} />
       <View style={s.bar}>
         <View style={s.left}>
-          <MenuButton glass />
+          {/* <MenuButton glass /> */}
+          {avatar}
           {head && onTitlePress ? (
             <PressableScale onPress={onTitlePress} scale={0.98} accessibilityRole="button" accessibilityLabel={sub ? `${title}, ${sub}` : title} style={s.press}>{head}</PressableScale>
           ) : head}

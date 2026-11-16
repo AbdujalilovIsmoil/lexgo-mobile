@@ -104,5 +104,12 @@ export const cdash = {
     "court": "Court",
     "appeal": "Appeal",
     "archived": "Archived"
+  },
+  "pro": {
+    "today": "Today · {date}", "events": "events", "tasks": "tasks", "cases": "cases", "due": "deadlines",
+    "analytics": "Analytics · {month}", "more": "Details", "income": "Income", "activeCases": "Active cases", "reply": "Avg. reply", "accept": "Acceptance",
+    "minutes": "{n} min", "agenda": "Today's agenda", "calendar": "Calendar", "agendaEmpty": "Nothing planned today", "agendaEmptySub": "Add a court date, meeting or deadline to the calendar",
+    "deadlines": "Upcoming deadlines", "days": "days", "todayShort": "today",
+    "chipActive": "{n} active cases", "chipReq": "{n} requests", "chipDue": "{n} due today", "chipNew": "New"
   }
 };

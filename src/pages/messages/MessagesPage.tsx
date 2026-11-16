@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { StyleSheet } from "react-native";
-import { useRouter } from "expo-router";
+import { useRouter, useSegments } from "expo-router";
 import { SquarePen } from "lucide-react-native";
 import { EmptyState, PressableScale } from "@/shared/ui";
 import { TabPage } from "@/widgets/tab-page";
@@ -28,23 +28,26 @@ export function MessagesPage() {
   const insets = useInsets();
   // Top edge of the tab bar, from the screen's bottom. On iOS the system bar is part of the screen's safe area, so `insets.bottom` already
   // reaches its top; the Android bar floats over the page. The list ends a little above it, the new-chat button sits on it.
-  const barTop = insets.bottom + 76;
+  const inTabs = useSegments()[0] === "(tabs)";
+  const barTop = inTabs ? insets.bottom + 76 : insets.bottom + 8; // no tab bar on the stack page (/m/messages)
   const pad = barTop + 16 + 70; // the last row ends above the new-chat button, never under it
   const q = useRooms(useSocketState() === "online", myId);
   const locked = !useSellerActions().chat;
   const [creating, setCreating] = useState(false);
-  const seller = useTabRole() === "seller";
+  const pro = useTabRole() === "seller";
+  const seller = pro && inTabs; // the navy tab look only as a tab; opened from the header it is a page with a back button
   const { dark } = useTheme();
   const ground = seller || dark ? undefined : HOME_BG;
   // A client reaches the inbox from the header button (their bar's last slot is Profil): it gets a back button.
   const back = seller ? undefined : () => (router.canGoBack() ? router.back() : router.navigate("/"));
+  const named = pro; // a professional's rooms carry the work they belong to
   const reqs = useMine().data ?? [];
   // A professional's rooms are named after the work they belong to (service / document / urgent request, with its number), from the
   // same lists as So'rovlar; a client's urgent rooms after their own request.
   const work = [...(useRequests("orders").data ?? []), ...(useRequests("docs").data ?? []), ...(useRequests("urgent").data ?? [])];
   const label = (x: ReqItem) => [x.title, x.ref].filter(Boolean).join(" · ");
   const tagOf = (r: Room) => {
-    if (seller) {
+    if (named) {
       const hit = work.find((x) => (x.kind === "orders" && x.id === r.orderId) || (x.kind === "docs" && r.docIds.includes(x.id)) || (x.kind === "urgent" && r.urgentIds.includes(x.id)));
       return hit ? label(hit) : "";
     }
@@ -57,7 +60,7 @@ export function MessagesPage() {
   if (locked) return <TabPage navy={seller} secondary={!seller} onBack={back} ground={ground} title={t("tabs.messages")}><EmptyState icon="shield" title={t("ms1.locked")} text={t("ms1.lockedText")} /></TabPage>;
   return (
     <TabPage navy={seller} secondary={!seller} onBack={back} ground={ground} title={t("tabs.messages")} subtitle={unread ? t("ms1.unreadN", { n: unread }) : t("admChat.count", { n: mine.length })}>
-      <RoomsList tagOf={tagOf} showRole={!seller} query={q} rooms={mine} myId={myId} bottom={pad} onOpen={(r) => router.push(chatPath(r.id) as never)} header={<PushPermissionCard />} action={{ label: t("ms1.newChat"), onPress: () => setCreating(true) }} />
+      <RoomsList tagOf={tagOf} showRole={!pro} query={q} rooms={mine} myId={myId} bottom={pad} onOpen={(r) => router.push(chatPath(r.id) as never)} header={<PushPermissionCard />} action={{ label: t("ms1.newChat"), onPress: () => setCreating(true) }} />
       <PressableScale onPress={() => setCreating(true)} accessibilityRole="button" accessibilityLabel={t("ms1.newChat")} style={[styles.fab, shadows.blue, { bottom: barTop + 12 }]}>
         <SquarePen size={24} color="#FFFFFF" />
       </PressableScale>

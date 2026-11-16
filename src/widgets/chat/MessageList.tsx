@@ -3,6 +3,7 @@ import { FlatList, StyleSheet, View } from "react-native";
 import { MessageBubble, type Agent, type ChatLimit, type ChatMessage, type GuestLimit } from "@/entities/chat";
 import { LimitCard, LimitHint, MessageActions } from "@/features/ai-chat";
 import { AiWelcome } from "./AiWelcome";
+import { useTabRole } from "@/widgets/tab-bar/useTabRole";
 import { Thinking } from "./Thinking";
 
 type Props = {
@@ -30,6 +31,7 @@ const Row = memo(function Row({ item, last, sending, question, onPick, onRetry, 
 // Welcome screen while empty, then the conversation. A fresh answer scrolls to its first line
 // (long legal answers are read from the top); a sent question scrolls to the end.
 export function MessageList({ messages, sending, limitErr, limit, onPick, onRetry, onLike, onDislike }: Props) {
+  const pro = useTabRole() === "seller";
   const ref = useRef<FlatList<ChatMessage>>(null);
   const empty = messages.length === 0;
   const last = messages[messages.length - 1];
@@ -64,7 +66,7 @@ export function MessageList({ messages, sending, limitErr, limit, onPick, onRetr
           {limitErr ? <LimitCard limit={limitErr} /> : !sending && limit && last?.role === "assistant" ? <LimitHint limit={limit} /> : null}
         </View>
       }
-      contentContainerStyle={[s.content, empty && s.center]}
+      contentContainerStyle={[s.content, empty && !pro && s.center]} // a professional's welcome starts at the top
       keyboardShouldPersistTaps="handled"
       keyboardDismissMode="interactive"
       showsVerticalScrollIndicator={false}

@@ -6,7 +6,7 @@ import { useLocalPaged } from "@/shared/lib/pro/useLocalPaged";
 import { useDebounced } from "@/shared/lib/useDebounced";
 import { TabList } from "@/shared/ui/pro/TabList";
 import { ChipBar, SearchBox } from "@/shared/ui/admin";
-import { ClientsHero } from "./ClientsHero";
+// import { ClientsHero } from "./ClientsHero"; // the numbers block is off for now
 
 // eslint-disable-next-line @typescript-eslint/no-require-imports -- bundled asset (metro assetExts: lottie)
 const NOT_FOUND = require("../../../assets/lottie/NotFound.lottie") as string;
@@ -36,8 +36,9 @@ export function ClientList({ onOpen, onAdd, onCheck, bottomPad }: Props) {
       keyExtractor={(c) => c.id}
       renderItem={(c, i) => <ClientRow client={c} index={i} onPress={() => onOpen(c)} />}
       header={
-        <View style={{ paddingBottom: 12 }}>
-          <ClientsHero total={all.length} active={all.filter(IN.active).length} conflicts={all.filter(IN.conflict).length} onAdd={onAdd} onCheck={onCheck} />
+        <View style={{ paddingTop: 16, paddingBottom: 12 }}>
+          {/* Hozircha kerak emas: ko'k raqamlar bloki (Jami / Faol ishli / Ziddiyat).
+          <ClientsHero total={all.length} active={all.filter(IN.active).length} conflicts={all.filter(IN.conflict).length} onAdd={onAdd} onCheck={onCheck} /> */}
           <View style={{ gap: 10, marginHorizontal: -16 }}>
             <SearchBox value={q} onChangeText={setQ} placeholder={t("aw3.search")} />
             <ChipBar value={scope} onChange={setScope} options={(["all", "active", "manual", "conflict"] as const).filter((s) => s === "all" || s === scope || count(s) > 0).map((s) => ({ value: s, label: t(`cln.${s}`), count: count(s) }))} />

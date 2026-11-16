@@ -8,6 +8,8 @@ import { useInsets } from "@/shared/lib/insets";
 import { useT } from "@/shared/i18n";
 import { NotFoundPage } from "@/pages/not-found/NotFoundPage";
 import { PaymentsPlanPage } from "./PaymentsPlanPage";
+import { SellerFacts } from "./SellerFacts";
+import { useTabRole } from "@/widgets/tab-bar/useTabRole";
 
 export type ProfileSection = "personal" | "family" | "security" | "payments" | "activity";
 
@@ -15,8 +17,8 @@ export type ProfileSection = "personal" | "family" | "security" | "payments" | "
 //   personal:   Shaxsiy ma'lumotlar → Shaxsni tasdiqlash      family:     Oila a'zolari
 //   security:   2FA → Telegram → Xabarnoma → Aktiv sessiyalar            payments:   its own two-tab page (PaymentsPlanPage)
 //   (complaints have one page for everyone: /complaints)       activity:   Xavfsizlik hodisalari → Harakatlar jurnali
-const BODY: Record<Exclude<ProfileSection, "payments">, { title: string; body: () => React.ReactNode }> = {
-  personal: { title: "profile.pp.personal", body: () => <PersonalForm identity={<IdentityCard />} /> },
+const BODY: Record<Exclude<ProfileSection, "payments">, { title: string; body: (seller: boolean) => React.ReactNode }> = {
+  personal: { title: "profile.pp.personal", body: (seller) => <PersonalForm identity={<>{seller ? <SellerFacts /> : null}<IdentityCard /></>} /> },
   family: { title: "profile.pp.family", body: () => <FamilyGroup /> },
   security: { title: "profile.pp.security", body: () => <><TwoFactorCard /><TelegramCard /><NotifPrefsCard /><SessionsPanel /></> },
   activity: { title: "profile.pp.activity", body: () => <><EventsPanel /><ActivityPanel /></> },
@@ -26,13 +28,14 @@ export function ProfileSectionPage({ section }: { section: string }) {
   const { t } = useT();
   const frame = useClientFrame();
   const insets = useInsets();
+  const seller = useTabRole() === "seller"; // a professional's licence and experience sit on the personal page
   if (section === "payments") return <PaymentsPlanPage />;
   const s = BODY[section as Exclude<ProfileSection, "payments">];
   if (!s) return <NotFoundPage />;
   return (
     <AdminPage {...frame} title={t(s.title)}>
       <ScrollView keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false} contentContainerStyle={{ padding: 16, paddingBottom: insets.bottom + 32 }}>
-        <View style={{ gap: 14 }}>{s.body()}</View>
+        <View style={{ gap: 14 }}>{s.body(seller)}</View>
       </ScrollView>
     </AdminPage>
   );

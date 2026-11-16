@@ -24,6 +24,7 @@ export const shm = {
     "statDocs": "Hujjatlar",
     "quickActions": "Tezkor amallar",
     "quickClient": "Yangi mijoz qo'shish",
+    "quickTask": "Vazifa qo'shish",
     "quickCase": "Yangi ish ochish",
     "quickDoc": "Hujjat yuklash",
     "quickMeeting": "Uchrashuv belgilash",

@@ -5,6 +5,8 @@ import { hoursState, useBusinessHoursQuery } from "@/entities/business-hours";
 import { useT } from "@/shared/i18n";
 import { todayKey } from "@/shared/lib/pro/dates";
 import { useKept } from "@/shared/lib/useKept";
+import { View } from "react-native";
+import { IconButton } from "@/shared/ui";
 import { AdminPage } from "@/shared/ui/admin";
 import { CalendarView } from "@/widgets/pro-calendar-view";
 
@@ -17,7 +19,10 @@ export default function ProCalendarPage() {
   const [calc, setCalc] = useState(false);
   const kept = useKept(sheet);
   return (
-    <AdminPage title={t("aw6.title")} subtitle={hours ? t(hoursState(hours) === "open" ? "aw6.hoursOpen" : "aw6.hoursClosed", { start: hours.start, end: hours.end }) : t("aw6.sub")}>
+    <AdminPage
+      title={t("aw6.title")}
+      right={<View style={{ flexDirection: "row", gap: 8 }}><IconButton icon="clock" label={t("cal.calc")} onPress={() => setCalc(true)} /><IconButton icon="plus" label={t("cal.add")} onPress={() => setSheet({ event: null })} /></View>}
+      subtitle={hours ? t(hoursState(hours) === "open" ? "aw6.hoursOpen" : "aw6.hoursClosed", { start: hours.start, end: hours.end }) : t("aw6.sub")}>
       <CalendarView selected={day} onDay={setDay} onOpen={(event) => setSheet({ event })} onAdd={() => setSheet({ event: null })} onCalc={() => setCalc(true)} />
       <EventFormSheet visible={!!sheet} onClose={() => setSheet(null)} event={kept?.event ?? null} day={day} />
       <DeadlineSheet visible={calc} onClose={() => setCalc(false)} />

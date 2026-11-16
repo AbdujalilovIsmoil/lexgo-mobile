@@ -20,13 +20,13 @@ describe("the mobile app has a visitor, a client and a professional only", () =>
   });
   it("a professional lands on the workspace", () => {
     expect(homeRoute("seller")).toBe("workspace");
-    expect(TABS.seller.map((x) => x.route)).toEqual(["workspace", "requests", "ai", "clients", "messages"]);
+    expect(TABS.seller.map((x) => x.route)).toEqual(["workspace", "clients", "ai", "requests", "me"]);
   });
 });
 
 describe("a professional's bar follows the permission rules (yurist and advokat alike)", () => {
   it("an account under review keeps the workspace and the AI button only", () => {
-    expect(TABS.seller.filter((d) => !sellerTabHidden(d.route, true)).map((d) => d.route)).toEqual(["workspace", "ai"]);
+    expect(TABS.seller.filter((d) => !sellerTabHidden(d.route, true)).map((d) => d.route)).toEqual(["workspace", "ai", "me"]);
   });
   it("the chats tab needs the secure_chat action; unknown hides nothing", () => {
     expect(sellerTabHidden("messages", false, { secureChat: false })).toBe(true);

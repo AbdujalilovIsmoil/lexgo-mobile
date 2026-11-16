@@ -104,5 +104,12 @@ export const cdash = {
     "court": "Sud",
     "appeal": "Apellyatsiya",
     "archived": "Arxivlangan"
+  },
+  "pro": {
+    "today": "Bugun · {date}", "events": "tadbir", "tasks": "vazifa", "cases": "ish", "due": "muddat",
+    "analytics": "Analitika · {month}", "more": "Batafsil", "income": "Daromad", "activeCases": "Faol ishlar", "reply": "O'rtacha javob", "accept": "Qabul qilish",
+    "minutes": "{n} daq", "agenda": "Kun tartibi", "calendar": "Kalendar", "agendaEmpty": "Bugun reja yo'q", "agendaEmptySub": "Kalendarga sud, uchrashuv yoki muddat qo'shing",
+    "deadlines": "Yaqin muddatlar", "days": "kun", "todayShort": "bugun",
+    "chipActive": "{n} faol ish", "chipReq": "{n} so'rov", "chipDue": "{n} muddat bugun", "chipNew": "Yangi"
   }
 };

@@ -104,5 +104,12 @@ export const cdash = {
     "court": "Суд",
     "appeal": "Апелляция",
     "archived": "В архиве"
+  },
+  "pro": {
+    "today": "Сегодня · {date}", "events": "событий", "tasks": "задач", "cases": "дел", "due": "сроков",
+    "analytics": "Аналитика · {month}", "more": "Подробнее", "income": "Доход", "activeCases": "Активные дела", "reply": "Средний ответ", "accept": "Принятие",
+    "minutes": "{n} мин", "agenda": "Распорядок дня", "calendar": "Календарь", "agendaEmpty": "На сегодня планов нет", "agendaEmptySub": "Добавьте в календарь суд, встречу или срок",
+    "deadlines": "Ближайшие сроки", "days": "дн.", "todayShort": "сегодня",
+    "chipActive": "{n} активных дел", "chipReq": "{n} запросов", "chipDue": "{n} сроков сегодня", "chipNew": "Новый"
   }
 };

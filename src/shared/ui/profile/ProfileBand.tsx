@@ -22,17 +22,9 @@ export const PROFILE_HOME_BG = "#F2F5FA"; // the light Home ground (widgets/clie
 
 const HEADER_COLORS = ["#13357A", mainColor, mainColor] as const; // Adliya: linear-gradient(150deg,#13357A,#0A1F44 65%)
 const HEADER_STOPS = [0, 0.65, 1] as const;
-// The icon tiles' colours, handed out in order down the page. `fg: null` is the main colour, which the dark theme swaps for its lighter accent.
-const TONES = [
-  { bg: "#E6F0FF", fg: null },
-  { bg: "#F0FDF4", fg: "#10B981" },
-  { bg: "#FFF7ED", fg: "#F59E0B" },
-  { bg: "#F5F3FF", fg: "#8B5CF6" },
-  { bg: "#FEF2F2", fg: "#EF4444" },
-  { bg: "#EFF6FF", fg: "#3B82F6" },
-] as const;
 
 const AVATAR = 64;
+const ROUND = 92;
 const SIDE = 16;
 const NAME_LEFT = SIDE + AVATAR + 12; // the name's place in the band: after the avatar and its gap
 const NAME_SIZE = 22;
@@ -52,12 +44,12 @@ function BandArt({ height }: { height?: number }) {
 }
 
 // An icon on its soft square tile; `order` picks the colour (the tiles take turns down the page).
-export function ProfileIconTile({ icon: Glyph, order }: { icon: LucideIcon; order: number }) {
+// Every row's tile is the same (Adliya): the icon in blue on a soft blue tile. (`order` is kept for the callers.)
+export function ProfileIconTile({ icon: Glyph }: { icon: LucideIcon; order?: number }) {
   const { colors: c, dark } = useTheme();
-  const tone = TONES[order % TONES.length];
   return (
-    <View style={[s.ico, { backgroundColor: dark ? c.surface2 : tone.bg }]}>
-      <Glyph size={20} color={tone.fg ?? (dark ? c.accent : mainColor)} />
+    <View style={[s.ico, { backgroundColor: dark ? c.surface2 : c.tint2 }]}>
+      <Glyph size={20} color={c.accent} />
     </View>
   );
 }
@@ -67,7 +59,7 @@ export function ProfileGroup({ title, children, padded }: { title: string; child
   const { colors: c } = useTheme();
   return (
     <View style={s.group}>
-      <Text variant="caption" weight="bold" tone="gray" style={s.head}>{title}</Text>
+      <Text variant="caption" weight="bold" tone="gray" style={s.head}>{title.toUpperCase()}</Text>
       <View style={[s.card, { backgroundColor: c.surface, borderColor: c.line }, padded ? s.cardPad : null]}>{children}</View>
     </View>
   );
@@ -127,8 +119,12 @@ type Props = {
   /** Tapping the photo (a camera mark on it) — changing the photo. */
   onPhoto?: () => void;
   photoLabel?: string;
+  /** Under the name's lines, in the same column (the professional's small facts). */
+  underName?: ReactNode;
   /** More of the band, under the chips. */
   bandExtra?: ReactNode;
+  /** A large round photo in a light ring (the professional's profile) instead of the rounded square. */
+  round?: boolean;
   refreshing?: boolean;
   onRefresh?: () => void;
   children: ReactNode;
@@ -137,7 +133,7 @@ type Props = {
 // The profile page: a fixed bar with the back button, under it the page that scrolls whole: the band (photo, name, phone · ID, chips, the pencil
 // to edit), then the body. Once the name has gone half under the bar, the bar's own copy moves from the name's place to the middle; it goes back past
 // a lower point. It runs on a timer, not with the scroll, so a finger's small moves do not shake it.
-export function ProfileBandPage({ name, photo, phone, line, chips, onBack, leading, bottomPad, aiFab, onEdit, editLabel, onPhoto, photoLabel, bandExtra, refreshing, onRefresh, children }: Props) {
+export function ProfileBandPage({ name, photo, phone, line, chips, onBack, leading, bottomPad, aiFab, onEdit, editLabel, onPhoto, photoLabel, bandExtra, underName, round, refreshing, onRefresh, children }: Props) {
   const { width } = useWindowDimensions();
   const [bandH, setBandH] = useState<number>();
   const [whoY, setWhoY] = useState(0);
@@ -180,7 +176,7 @@ export function ProfileBandPage({ name, photo, phone, line, chips, onBack, leadi
       { scale: 1 + (grow - 1) * (1 - inBar.value) },
     ],
   }));
-  const avatar = <Avatar name={name} uri={photo} size={AVATAR} square />;
+  const avatar = round ? <View style={s.ringed}><Avatar name={name} uri={photo} size={ROUND} /></View> : <Avatar name={name} uri={photo} size={AVATAR} square />;
   return (
     <View style={[s.fill, { backgroundColor: dark ? c.canvas : PROFILE_HOME_BG }]}>
       <FocusStatusBar style="light" />
@@ -208,7 +204,8 @@ export function ProfileBandPage({ name, photo, phone, line, chips, onBack, leadi
                   <Text variant="small" style={s.dim} numberOfLines={1}>{formatAnyPhone(phone)}</Text>
                 </View>
               ) : null}
-              {line ? <Text variant="caption" style={s.dim} numberOfLines={1}>{line}</Text> : null}
+              {line ? <Text variant="caption" style={s.dim} numberOfLines={2}>{line}</Text> : null}
+              {underName}
             </View>
             {onEdit ? (
               <PressableScale onPress={onEdit} scale={0.94} hitSlop={8} accessibilityRole="button" accessibilityLabel={editLabel} style={s.edit}>
@@ -240,6 +237,7 @@ export function ProfileBandPage({ name, photo, phone, line, chips, onBack, leadi
 
 const s = StyleSheet.create({
   fill: { flex: 1 },
+  ringed: { borderRadius: ROUND / 2 + 3, borderWidth: 3, borderColor: "rgba(255,255,255,0.55)" },
   band: { paddingHorizontal: SIDE, paddingBottom: 18, gap: 12, overflow: "hidden", borderBottomLeftRadius: 24, borderBottomRightRadius: 24 },
   art: { position: "absolute", top: 0, left: 0, right: 0, overflow: "hidden" },
   artFill: { bottom: 0 },
