@@ -29,7 +29,7 @@ export const cdash = {
     "svcOnline": "Online services",
     "crashT": "Car accident", "crashSub": "Accident advice",
     "urgentSub": "On duty 24/7",
-    "sosT": "SOS", "sosSub": "Emergency",
+    "sosT": "SOS", "sosSub": "Emergency", "sosBar": "SOS — tap in an emergency", "findT": "Specialists", "findN": "{n} specialists",
     "works": { "title": "Active cases", "step": "{n}/4", "waiting": "Assigning a specialist", "empty": "No cases in progress yet", "emptyText": "Order a service or find a specialist — your cases will show up here.", "emptyCta": "Find a specialist", "error": "Could not load your cases", "retry": "Try again" }
   },
   "ref": {

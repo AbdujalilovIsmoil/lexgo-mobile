@@ -1,6 +1,6 @@
 import { StyleSheet, View } from "react-native";
 import { Pill, PressableScale, Text } from "@/shared/ui";
-import { radius, useColors } from "@/shared/theme";
+import { useTheme } from "@/shared/theme";
 import { selectHaptic } from "@/shared/lib/haptics";
 import { useT } from "@/shared/i18n";
 import { fmtMoney } from "@/shared/lib/money";
@@ -8,35 +8,30 @@ import type { LawyerService } from "@/entities/lawyer";
 
 type Props = { service: LawyerService; selected: boolean; onSelect: () => void };
 
-// One service in "Xizmatlar va narxlar": a radio dot, title, category, the specialist's note, a dashed line and the price.
-// Tapping picks it (outlined and tinted); the one "Sotib olish" lives in the bottom bar.
+// One service in "Xizmatlar va narxlar" (Adliya .opt): the title with the category / the specialist's note under it on the left, the price
+// on the right. Tapping picks it (blue edge on the soft blue); the one "Sotib olish" lives in the bottom bar.
 export function ServiceOption({ service: sv, selected, onSelect }: Props) {
-  const c = useColors();
+  const { colors: c, dark, glass } = useTheme();
   const { t } = useT();
+  const sub = [sv.category, sv.note].filter(Boolean);
+  const idle = { backgroundColor: dark || glass ? c.surface : "#FFFFFF", borderColor: dark || glass ? c.line : "#E2E8F1" };
   return (
-    <PressableScale haptic={false} onPress={() => { selectHaptic(); onSelect(); }} accessibilityRole="radio" accessibilityState={{ selected }} style={[s.card, { backgroundColor: selected ? c.tint : c.surface2, borderColor: selected ? c.accent : "transparent" }]}>
-      <View style={s.top}>
-        <View style={[s.radio, { borderColor: selected ? c.accent : c.gray2 }]}>{selected ? <View style={[s.dot, { backgroundColor: c.accent }]} /> : null}</View>
-        <View style={s.col}>
-          {sv.sponsored ? <View style={s.tag}><Pill label={t("promoSeller.ck.sponsored")} tone="cy" icon="trending-up" small /></View> : null}
-          <Text variant="body" weight="bold" numberOfLines={3}>{sv.title}</Text>
-          {sv.category ? <Text variant="small" tone="gray">{sv.category}</Text> : null}
-          {sv.note ? <Text variant="small" tone="gray">{sv.note}</Text> : null}
-        </View>
+    <PressableScale haptic={false} scale={0.99} onPress={() => { selectHaptic(); onSelect(); }} accessibilityRole="radio" accessibilityState={{ selected }} style={[s.card, selected ? { backgroundColor: c.tint2, borderColor: c.accent } : idle]}>
+      <View style={s.col}>
+        {sv.sponsored ? <View style={s.tag}><Pill label={t("promoSeller.ck.sponsored")} tone="cy" icon="trending-up" small /></View> : null}
+        <Text variant="body" weight="bold" numberOfLines={3} style={s.title}>{sv.title}</Text>
+        {sub.map((x) => <Text key={x} variant="small" tone="gray" numberOfLines={2} style={s.sub}>{x}</Text>)}
       </View>
-      <View style={[s.foot, { borderTopColor: c.line }]}>
-        <Text variant="h4" tone={sv.price ? "ink" : "gray2"}>{sv.price ? fmtMoney(sv.price) : t("mk2.priceAsk")}</Text>
-      </View>
+      <Text variant="body" weight="bold" tone={sv.price ? "ink" : "gray2"} style={s.price}>{sv.price ? fmtMoney(sv.price) : t("mk2.priceAsk")}</Text>
     </PressableScale>
   );
 }
 
 const s = StyleSheet.create({
-  card: { gap: 14, padding: 14, borderRadius: radius.rl, borderWidth: 1.5 },
-  top: { flexDirection: "row", gap: 12 },
-  radio: { width: 22, height: 22, borderRadius: 11, borderWidth: 2, alignItems: "center", justifyContent: "center", marginTop: 2 },
-  dot: { width: 10, height: 10, borderRadius: 5 },
-  col: { flex: 1, gap: 3 },
-  tag: { alignSelf: "flex-start" },
-  foot: { flexDirection: "row", alignItems: "center", paddingTop: 12, borderTopWidth: 1, borderStyle: "dashed" },
+  card: { flexDirection: "row", alignItems: "center", gap: 12, paddingHorizontal: 16, paddingVertical: 14, borderRadius: 14, borderWidth: 1.5 },
+  col: { flex: 1, minWidth: 0, gap: 2 },
+  tag: { alignSelf: "flex-start", marginBottom: 2 },
+  title: { fontSize: 15.5, lineHeight: 21 },
+  sub: { fontSize: 13.5, lineHeight: 18 },
+  price: { fontSize: 15.5, lineHeight: 21, maxWidth: "40%", textAlign: "right" },
 });

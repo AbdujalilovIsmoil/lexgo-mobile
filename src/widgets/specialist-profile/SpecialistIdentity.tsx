@@ -1,6 +1,6 @@
 import { StyleSheet, View } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import Animated, { FadeIn, FadeInDown, ZoomIn } from "react-native-reanimated";
+import Animated, { FadeIn, FadeInDown } from "react-native-reanimated";
 import { useGeoLabels, type Lawyer } from "@/entities/lawyer";
 import { Avatar, Icon, Pill, Text } from "@/shared/ui";
 import { brand, useColors } from "@/shared/theme";
@@ -20,19 +20,19 @@ export function SpecialistIdentity({ lawyer: l, top, unrated }: { lawyer: Lawyer
   const place = [l.region ? geo.region(l.region) : "", l.district ?? ""].filter(Boolean).join(" · ");
   return (
     <View style={s.wrap}>
-      <Animated.View entering={ZoomIn.springify().damping(14)} style={[s.ring, { backgroundColor: c.bg }]}>
-        <Avatar name={l.name} size={92} />
-        {l.verified ? <View style={[s.seal, { backgroundColor: c.accent, borderColor: c.bg }]}><Icon name="check" size={13} color={brand.white} /></View> : null}
-      </Animated.View>
+      <View style={[s.ring, { backgroundColor: c.bg }]}>
+        <Avatar name={l.name} size={72} />
+        {l.verified ? <View style={[s.seal, { backgroundColor: c.accent, borderColor: c.bg }]}><Icon name="check" size={11} color={brand.white} /></View> : null}
+      </View>
       <Animated.View entering={FadeInDown.delay(120).duration(320)} style={s.col}>
         <Text variant="h2" numberOfLines={2} style={s.name}>{l.name}</Text>
         {place ? <View style={s.line}><Icon name="map-pin" size={14} tone="gray" /><Text variant="small" tone="gray">{place}</Text></View> : null}
         {l.languages.length ? <View style={s.line}><Icon name="globe" size={14} tone="gray" /><Text variant="small" tone="gray" numberOfLines={1} style={s.flex}>{[...new Set(l.languages.map((x) => LANG[x] ?? x))].join(" · ")}</Text></View> : null}
         <View style={s.line}>
           {[0, 1, 2, 3, 4].map((i) => (
-            <Animated.View key={i} entering={FadeIn.delay(240 + i * 70)}><Ionicons name="star" size={15} color={i < stars ? c.warn : c.line} /></Animated.View>
+            <Animated.View key={i} entering={FadeIn.delay(240 + i * 70)}><Ionicons name="star" size={15} color={i < stars ? "#F5B301" : c.line} /></Animated.View>
           ))}
-          <Text variant="small" tone="gray">{l.rated ? `${l.rating.toFixed(1).replace(".", ",")} · ${t("lw.reviews", { n: l.reviews })}` : unrated || t("lawyers.card.unrated")}</Text>
+          <Text variant="small" tone="gray" style={s.rate}>{l.rated ? `${l.rating.toFixed(1).replace(".", ",")} · ${t("lw.reviews", { n: l.reviews })}` : unrated || t("lawyers.card.unrated")}</Text>
         </View>
         <View style={s.pills}>
           <Pill label={t(l.kind === "advocate" ? "lawyers.card.kindAdvocate" : "lawyers.card.kindLawyer")} tone="blue" icon="user" small />
@@ -48,12 +48,13 @@ export function SpecialistIdentity({ lawyer: l, top, unrated }: { lawyer: Lawyer
 }
 
 const s = StyleSheet.create({
-  wrap: { paddingHorizontal: 20, marginTop: -46, gap: 4 },
-  ring: { alignSelf: "flex-start", padding: 5, borderRadius: 56 },
-  seal: { position: "absolute", right: 2, bottom: 2, width: 26, height: 26, borderRadius: 13, borderWidth: 2, alignItems: "center", justifyContent: "center" },
+  wrap: { paddingHorizontal: 18, marginTop: -40, gap: 4 },
+  ring: { alignSelf: "flex-start", padding: 4, borderRadius: 40 },
+  seal: { position: "absolute", right: 1, bottom: 1, width: 22, height: 22, borderRadius: 11, borderWidth: 2, alignItems: "center", justifyContent: "center" },
   col: { gap: 6 },
-  name: { marginTop: 4 },
-  line: { flexDirection: "row", alignItems: "center", gap: 4 },
+  name: { marginTop: 4, fontSize: 24, lineHeight: 30 },
+  line: { flexDirection: "row", alignItems: "center", gap: 6 },
   flex: { flexShrink: 1 },
-  pills: { flexDirection: "row", flexWrap: "wrap", gap: 6, marginTop: 4 },
+  rate: { marginLeft: 4 },
+  pills: { flexDirection: "row", flexWrap: "wrap", gap: 6, marginTop: 8 },
 });

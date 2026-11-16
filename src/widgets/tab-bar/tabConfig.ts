@@ -1,25 +1,27 @@
 import type { TabIconName } from "./tabIcons";
 
 export type TabRole = "guest" | "client" | "seller";
-// `href`: a slot that opens a stack page instead of a tab (the client's Tezkor button opens the urgent advocate screen).
+// `href`: a slot that opens a stack page instead of a tab (none uses it now: Tezkor is a tab of its own, so the bar stays under it).
 export type TabDef = { route: string; icon: TabIconName; labelKey: string; center?: boolean; badge?: string; auth?: boolean; href?: string };
 
 const t = (route: string, icon: TabIconName, labelKey: string, badge?: string): TabDef => ({ route, icon, labelKey, badge });
 const ai: TabDef = { route: "ai", icon: "zap", labelKey: "tabs.ai", center: true };
 // Adliya: a client's centre button is Tezkor (the urgent advocate); their AI is the floating button in the bottom right corner (FlatBar).
-const urgent: TabDef = { route: "urgent", icon: "bolt", labelKey: "tabs.bar.urgent", center: true, href: "/urgent" };
+const urgent: TabDef = { route: "urgent", icon: "bolt", labelKey: "tabs.bar.urgent", center: true };
 const messages = t("messages", "message-circle", "tabs.messages", "messages");
 // A client's (and a visitor's) last slot is Profil (the `me` tab: the profile page itself); their chats sit behind the header button next to the bell.
 const me = t("me", "user", "tabs.profile");
+// A client's fourth slot is the specialists directory (Mutaxassislar); their orders are reached from Home, the profile and a purchase.
+const experts = t("lawyers", "users", "tabs.bar.experts");
 
 // The bar's captions are short ones of their own (tabs.bar.*); the pages keep their titles. A professional's bar is the client's bar:
 // the same home icon and caption (Asosiy) in the first slot, the same AI centre button, the same one-word captions. The mobile app's roles: a visitor, a client and a professional (advokat or yurist). Both bars keep the AI centre button, so Profil
 // lives behind the avatar in the page headers.
 export const TABS: Record<TabRole, TabDef[]> = {
-  // A visitor gets the client's bar and pages; the two tabs that hold personal data (`auth`) send them to sign in when pressed.
-  // The fourth slot is the client's orders (Buyurtmalarim): the backend closes the works page (client_works) to the client role.
-  guest: [t("index", "home", "tabs.bar.home"), t("services", "grid", "tabs.bar.services"), urgent, { ...t("orders", "shopping-bag", "tabs.bar.orders"), auth: true }, { ...me, auth: true }],
-  client: [t("index", "home", "tabs.bar.home"), t("services", "grid", "tabs.bar.services"), urgent, t("orders", "shopping-bag", "tabs.bar.orders"), me],
+  // A visitor gets the client's bar and pages; the tabs that need an account (`auth`: Tezkor, orders, profile) send them to sign in when pressed.
+  // The fourth slot is the specialists directory (public; the orders tab stays reachable from Home and the profile).
+  guest: [t("index", "home", "tabs.bar.home"), t("services", "grid", "tabs.bar.services"), { ...urgent, auth: true }, experts, { ...me, auth: true }],
+  client: [t("index", "home", "tabs.bar.home"), t("services", "grid", "tabs.bar.services"), urgent, experts, me],
   seller: [t("workspace", "home", "tabs.bar.home"), t("requests", "inbox", "tabs.requests", "requests"), ai, t("clients", "users", "tabs.clients"), messages],
 };
 

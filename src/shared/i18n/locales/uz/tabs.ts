@@ -1,5 +1,5 @@
 export const tabs = {
-  bar: { urgent: "Tezkor", home: "Asosiy", services: "Xizmatlar", works: "Ishlarim", orders: "Buyurtmalar" },
+  bar: { experts: "Mutaxassislar", urgent: "Tezkor", home: "Asosiy", services: "Xizmatlar", works: "Ishlarim", orders: "Buyurtmalar" },
   ceo: "CEO",
   hrm: "HRM",
   analytics: "Tahlil",

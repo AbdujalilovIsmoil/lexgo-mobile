@@ -6,6 +6,7 @@ import { useTabClearance, useTabHeader } from "@/widgets/tab-page";
 import { useT } from "@/shared/i18n";
 import { usePullRefresh } from "@/shared/lib/usePullRefresh";
 import { radius, useTheme } from "@/shared/theme";
+import { useAiFabScroll } from "@/shared/lib/aiFabAway";
 import { EmptyState, ErrorView, Icon, PressableScale, singleLineText, Skeleton } from "@/shared/ui";
 import { CategoryTabs } from "./CategoryTabs";
 import type { BrowseCard } from "./model/cards";
@@ -30,6 +31,7 @@ export function ServiceBrowser({ footer, onPick }: Props) {
   const header = useTabHeader(16);
   const clearance = useTabClearance();
   const b = useServiceBrowser();
+  const aiScroll = useAiFabScroll();
   const pull = usePullRefresh(b.refetch);
   const hueOf = (id: string) => HUES[Math.max(0, b.hueIds.indexOf(id)) % HUES.length];
   const filtered = !!b.q.trim() || !!b.cat;
@@ -73,6 +75,8 @@ export function ServiceBrowser({ footer, onPick }: Props) {
   );
   return (
     <FlatList<Item>
+      onScroll={aiScroll}
+      scrollEventThrottle={16}
       data={[TABS, SEARCH, ...(b.loading || b.error ? [] : b.shown)]}
       keyExtractor={(x) => ("kind" in x ? x.kind : x.id)}
       stickyHeaderIndices={[1]}

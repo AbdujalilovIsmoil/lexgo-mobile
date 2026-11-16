@@ -36,11 +36,11 @@ export function ProfileSection({ accent, icon, title, caption, badge, action, ri
 }
 
 const s = StyleSheet.create({
-  card: { padding: 16, gap: 14, borderRadius: 22 },
+  card: { padding: 16, gap: 14, borderRadius: 18 },
   head: { flexDirection: "row", alignItems: "center", gap: 12 },
   act: { alignItems: "flex-start" },
   col: { flex: 1, gap: 1 },
   line: { flexDirection: "row", alignItems: "center", gap: 8 },
-  title: { flexShrink: 1 },
+  title: { flexShrink: 1, fontSize: 16, lineHeight: 21 },
   badge: { minWidth: 22, height: 22, paddingHorizontal: 7, borderRadius: 11, alignItems: "center", justifyContent: "center" },
 });

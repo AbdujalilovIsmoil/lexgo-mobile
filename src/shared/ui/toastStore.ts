@@ -13,7 +13,7 @@ let seq = 0;
 
 export const useToastStore = create<ToastState>((set) => ({
   toasts: [],
-  show: (text, kind = "info", ms = 3200) => {
+  show: (text, kind = "info", ms = 2500) => {
     const id = ++seq;
     set((s) => ({ toasts: [...s.toasts.slice(-2), { id, text, kind }] }));
     setTimeout(() => set((s) => ({ toasts: s.toasts.filter((t) => t.id !== id) })), ms);

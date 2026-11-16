@@ -1,7 +1,7 @@
 import { ScrollView, View } from "react-native";
 import { IdentityCard } from "@/widgets/identity";
 import { NotifPrefsCard, TelegramCard, TwoFactorCard } from "@/widgets/security";
-import { ActivityPanel, EventsPanel, FamilyPanel, PersonalPanel, SessionsPanel } from "@/widgets/client-profile";
+import { ActivityPanel, EventsPanel, FamilyGroup, PersonalForm, SessionsPanel } from "@/widgets/client-profile";
 import { AdminPage } from "@/shared/ui/admin";
 import { useClientFrame } from "@/widgets/client-dash";
 import { useInsets } from "@/shared/lib/insets";
@@ -16,8 +16,8 @@ export type ProfileSection = "personal" | "family" | "security" | "payments" | "
 //   security:   2FA → Telegram → Xabarnoma → Aktiv sessiyalar            payments:   its own two-tab page (PaymentsPlanPage)
 //   (complaints have one page for everyone: /complaints)       activity:   Xavfsizlik hodisalari → Harakatlar jurnali
 const BODY: Record<Exclude<ProfileSection, "payments">, { title: string; body: () => React.ReactNode }> = {
-  personal: { title: "profile.pp.personal", body: () => <><PersonalPanel /><IdentityCard /></> },
-  family: { title: "profile.pp.family", body: () => <FamilyPanel /> },
+  personal: { title: "profile.pp.personal", body: () => <PersonalForm identity={<IdentityCard />} /> },
+  family: { title: "profile.pp.family", body: () => <FamilyGroup /> },
   security: { title: "profile.pp.security", body: () => <><TwoFactorCard /><TelegramCard /><NotifPrefsCard /><SessionsPanel /></> },
   activity: { title: "profile.pp.activity", body: () => <><EventsPanel /><ActivityPanel /></> },
 };

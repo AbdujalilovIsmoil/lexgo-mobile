@@ -4,6 +4,7 @@ import { useRouter } from "expo-router";
 import { MarketOrderSkeleton, OrderRow } from "@/entities/order";
 import { EmptyState, ErrorView } from "@/shared/ui";
 import { useInsets } from "@/shared/lib/insets";
+import { useAiFabScroll } from "@/shared/lib/aiFabAway";
 import { useT } from "@/shared/i18n";
 import { useTabHeader } from "@/widgets/tab-page";
 import { OrderListCard } from "./OrderListCard";
@@ -19,6 +20,7 @@ export function MyOrders() {
   const router = useRouter();
   const pad = useInsets().bottom + 120; // clears the floating tab bar
   const m = useMyOrders();
+  const aiScroll = useAiFabScroll();
   const [pulling, setPulling] = useState(false);
   const top = useTabHeader(16);
   const open = (id: string) => router.push({ pathname: "/orders/[id]", params: { id } });
@@ -41,6 +43,8 @@ export function MyOrders() {
       onRefresh={() => { setPulling(true); m.refetch(); setTimeout(() => setPulling(false), 800); }}
       keyboardShouldPersistTaps="handled"
       showsVerticalScrollIndicator={false}
+      onScroll={aiScroll}
+      scrollEventThrottle={16}
     />
   );
 }

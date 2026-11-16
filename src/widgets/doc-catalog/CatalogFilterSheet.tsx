@@ -1,8 +1,7 @@
 import { Platform, StyleSheet, View } from "react-native";
 import type { TemplateCategoryInfo } from "@/entities/doc-template";
-import { BottomSheet, Button, Icon, IconButton, PressableScale, SheetScroll, Text } from "@/shared/ui";
-import { radius, useColors } from "@/shared/theme";
-import { selectHaptic } from "@/shared/lib/haptics";
+import { BottomSheet, Button, FilterChips, IconButton, SheetScroll, Text } from "@/shared/ui";
+import { useTheme } from "@/shared/theme";
 import { useInsets } from "@/shared/lib/insets";
 import { useT } from "@/shared/i18n";
 import { categoryLabel, languageLabel } from "./labels";
@@ -12,41 +11,32 @@ type Props = {
   cat: string; lang: string; onCat: (v: string) => void; onLang: (v: string) => void; onReset: () => void; total: number;
 };
 
-// Mobile filters in a bottom sheet (README §19): the category and the language as two radio lists, a pinned bar with reset and "show N".
+// Mobile filters in a bottom sheet (Adliya): the category and the language as wrapped chips (the picked one navy), a pinned bar with reset and
+// "show N".
 export function CatalogFilterSheet({ visible, onClose, cats, keys, languages, cat, lang, onCat, onLang, onReset, total }: Props) {
   const { t } = useT();
-  const c = useColors();
+  const { colors: c, dark, glass } = useTheme();
   const insets = useInsets();
-  const rows = (items: { value: string; label: string; count?: number }[], value: string, set: (v: string) => void) => (
-    <View style={s.list}>
-      {items.map((o) => {
-        const on = value === o.value;
-        return (
-          <PressableScale key={o.value || "all"} haptic={false} onPress={() => { selectHaptic(); set(o.value); }} accessibilityRole="radio" accessibilityState={{ selected: on }} style={[s.row, { backgroundColor: on ? c.tint2 : "transparent", borderColor: on ? c.accent : "transparent" }]}>
-            <Text variant="body" weight={on ? "bold" : "regular"} numberOfLines={1} style={s.flex}>{o.label}</Text>
-            {o.count !== undefined ? <Text variant="caption" tone="gray">{o.count}</Text> : null}
-            <View style={[s.radio, { borderColor: on ? c.accent : c.gray2, backgroundColor: on ? c.accent : "transparent" }]}>{on ? <Icon name="check" size={13} color="#FFFFFF" /> : null}</View>
-          </PressableScale>
-        );
-      })}
-    </View>
-  );
+  const catOpts = [{ value: "", label: t("dcat.allCategories") }, ...keys.map((k) => ({ value: k, label: categoryLabel(t, k, cats.find((x) => x.key === k)?.title) }))];
+  const langOpts = [{ value: "", label: t("dcat.allLanguages") }, ...languages.map((l) => ({ value: l, label: languageLabel(t, l) }))];
   return (
-    <BottomSheet visible={visible} onClose={onClose} title={t("dcat.filters")} snaps={[0.7, 0.92]}>
+    <BottomSheet visible={visible} onClose={onClose} title={t("dcat.filters")} snaps={[0.62, 0.92]}>
       <View style={s.fill}>
         <SheetScroll contentContainerStyle={s.scroll}>
-          <Text variant="small" tone="gray">{t("dcat.category")}</Text>
-          {rows([{ value: "", label: t("dcat.allCategories") }, ...keys.map((k) => { const info = cats.find((x) => x.key === k); return { value: k, label: categoryLabel(t, k, info?.title), count: info?.count }; })], cat, onCat)}
+          <View style={s.group}>
+            <Text variant="small" tone="gray" weight="semibold" style={s.label}>{t("dcat.category")}</Text>
+            <FilterChips options={catOpts} value={cat} onChange={onCat} />
+          </View>
           {languages.length > 1 ? (
-            <>
-              <Text variant="small" tone="gray">{t("dcat.language")}</Text>
-              {rows([{ value: "", label: t("dcat.allLanguages") }, ...languages.map((l) => ({ value: l, label: languageLabel(t, l) }))], lang, onLang)}
-            </>
+            <View style={s.group}>
+              <Text variant="small" tone="gray" weight="semibold" style={s.label}>{t("dcat.language")}</Text>
+              <FilterChips options={langOpts} value={lang} onChange={onLang} />
+            </View>
           ) : null}
         </SheetScroll>
-        <View style={[s.bar, { borderTopColor: c.line, paddingBottom: Platform.OS === "ios" ? 16 : Math.max(insets.bottom - 18, 12) }]}>
-          <IconButton icon="rotate-ccw" size={48} label={t("dcat.reset")} onPress={onReset} />
-          <Button title={t("dcat.show", { n: total })} variant="gradient" full style={s.flex} onPress={onClose} />
+        <View style={[s.bar, { backgroundColor: dark || glass ? c.surface : "#FFFFFF", paddingBottom: Platform.OS === "ios" ? 16 : Math.max(insets.bottom - 18, 12) }]}>
+          <IconButton icon="rotate-ccw" size={54} label={t("dcat.reset")} onPress={onReset} />
+          <Button title={t("dcat.show", { n: total })} variant="primary" size="lg" full style={s.flex} onPress={onClose} />
         </View>
       </View>
     </BottomSheet>
@@ -55,10 +45,9 @@ export function CatalogFilterSheet({ visible, onClose, cats, keys, languages, ca
 
 const s = StyleSheet.create({
   fill: { flex: 1 },
-  scroll: { paddingBottom: 12 },
-  list: { gap: 2 },
-  row: { flexDirection: "row", alignItems: "center", gap: 12, minHeight: 50, paddingHorizontal: 12, borderRadius: 14, borderWidth: 1.5 },
+  scroll: { paddingBottom: 12, gap: 20 },
+  group: { gap: 12 },
+  label: { fontSize: 14.5 },
   flex: { flex: 1 },
-  radio: { width: 22, height: 22, borderRadius: radius.pill, borderWidth: 2, alignItems: "center", justifyContent: "center" },
-  bar: { flexDirection: "row", alignItems: "center", gap: 12, paddingTop: 12, paddingHorizontal: 20, borderTopWidth: 1 },
+  bar: { flexDirection: "row", alignItems: "center", gap: 10, paddingTop: 12, paddingHorizontal: 20 },
 });

@@ -1,13 +1,15 @@
 import { View } from "react-native";
-import { LinearGradient } from "expo-linear-gradient";
+import { useTheme } from "@/shared/theme";
 import { Icon, type IconName } from "../Icon";
 import { ACCENTS, type Accent } from "./accents";
 
-// Rounded gradient tile with a white line icon (the leading mark of a profile section / sheet).
+// The leading mark of a profile section / sheet (Adliya): a soft tile in the section's hue with the line icon in that hue.
 export function IconTile({ accent, icon, size = 40 }: { accent: Accent; icon: IconName; size?: number }) {
+  const { dark } = useTheme();
+  const [from, to] = ACCENTS[accent];
   return (
-    <LinearGradient colors={[...ACCENTS[accent]]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={{ width: size, height: size, borderRadius: size * 0.32, alignItems: "center", justifyContent: "center" }}>
-      <View><Icon name={icon} size={size * 0.5} color="#FFFFFF" /></View>
-    </LinearGradient>
+    <View style={{ width: size, height: size, borderRadius: size * 0.32, alignItems: "center", justifyContent: "center", backgroundColor: `${from}${dark ? "33" : "1A"}` }}>
+      <Icon name={icon} size={size * 0.5} color={dark ? to : from} />
+    </View>
   );
 }

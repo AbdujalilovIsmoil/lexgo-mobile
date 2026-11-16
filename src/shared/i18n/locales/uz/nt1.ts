@@ -1,5 +1,6 @@
 export const nt1 = {
   all: "Barchasi",
+  unread: "O'qilmagan",
   search: "Sarlavha yoki matn bo'yicha qidirish",
   onlyUnread: "O'qilmaganlar",
   onlyRead: "O'qilganlar",

@@ -88,7 +88,7 @@ export function DocCatalog({ top, footer, onOpen }: { top?: ReactElement | null;
   }, [needle, cat, lang]);
 
   const state = list.loading ? (
-    <View style={s.skeletons}>{[0, 1, 2, 3, 4, 5].map((i) => <Skeleton key={i} height={76} round={20} />)}</View>
+    <View style={s.skeletons}>{[0, 1, 2, 3, 4, 5].map((i) => <Skeleton key={i} height={76} round={18} />)}</View>
   ) : list.error ? (
     isOfflineError(list.error) ? <EmptyState icon="wifi-off" title={t("dcat.offline")} text={t("dcat.offlineText")} actionLabel={t("common.retry")} onAction={list.refetch} /> : <ErrorView error={list.error} onRetry={list.refetch} />
   ) : !rows.length ? (
@@ -126,8 +126,8 @@ export function DocCatalog({ top, footer, onOpen }: { top?: ReactElement | null;
         renderItem={({ item }) => !("kind" in item)
           ? <CatalogRow item={item} cats={info} onOpen={() => open(item)} />
           : item.kind === "search"
-            ? <CatalogSearch value={text} onChange={setText} onFilters={() => setSheet(true)} active={active} chips={chips} line={line} field={searchRa} filters={filtersRa} inputRef={input} />
-            : <><CatalogChips cats={info} keys={list.keys} value={cat} onChange={setCat} /><CatalogPills /></>}
+            ? <CatalogSearch value={text} onChange={setText} onFilters={() => setSheet(true)} active={active} chips={chips} line="" field={searchRa} filters={filtersRa} inputRef={input} />
+            : <><CatalogChips cats={info} keys={list.keys} value={cat} onChange={setCat} /><CatalogPills />{line ? <Text variant="small" tone="gray" accessibilityLiveRegion="polite" style={s.line}>{line}</Text> : null}</>}
       />
       <CatalogFilterSheet visible={sheet} onClose={() => setSheet(false)} cats={info} keys={list.keys} languages={languages} cat={cat} lang={lang} onCat={setCat} onLang={setLang} onReset={reset} total={rows.length} />
     </>
@@ -140,6 +140,7 @@ const s = StyleSheet.create({
   cards: { paddingTop: 4, paddingBottom: 8 },
   skeletons: { gap: 10, alignSelf: "stretch" },
   gap: { height: 10 },
+  line: { fontSize: 14.5, marginBottom: 10 },
   foot: { alignItems: "center", gap: 10, paddingTop: 16 },
   loadingMore: { flexDirection: "row", alignItems: "center", gap: 8 },
 });

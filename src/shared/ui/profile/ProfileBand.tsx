@@ -9,6 +9,7 @@ import { formatAnyPhone } from "@/shared/lib/phone";
 import { Avatar } from "../Avatar";
 import { FocusStatusBar } from "../FocusStatusBar";
 import { HeroScroll } from "../HeroScroll";
+import { useAiFabFollow } from "@/shared/lib/aiFabAway";
 import { backIcon } from "../Icon";
 import { IconButton } from "../IconButton";
 import { PressableScale } from "../PressableScale";
@@ -119,6 +120,8 @@ type Props = {
   leading?: ReactNode;
   /** Bottom padding of the page; the default suits a stack page with no tab bar. */
   bottomPad?: number;
+  /** The page is a tab under the floating AI button: scrolling down sends the button away (useAiFabFollow). */
+  aiFab?: boolean;
   onEdit?: () => void;
   editLabel?: string;
   /** Tapping the photo (a camera mark on it) — changing the photo. */
@@ -134,7 +137,7 @@ type Props = {
 // The profile page: a fixed bar with the back button, under it the page that scrolls whole: the band (photo, name, phone · ID, chips, the pencil
 // to edit), then the body. Once the name has gone half under the bar, the bar's own copy moves from the name's place to the middle; it goes back past
 // a lower point. It runs on a timer, not with the scroll, so a finger's small moves do not shake it.
-export function ProfileBandPage({ name, photo, phone, line, chips, onBack, leading, bottomPad, onEdit, editLabel, onPhoto, photoLabel, bandExtra, refreshing, onRefresh, children }: Props) {
+export function ProfileBandPage({ name, photo, phone, line, chips, onBack, leading, bottomPad, aiFab, onEdit, editLabel, onPhoto, photoLabel, bandExtra, refreshing, onRefresh, children }: Props) {
   const { width } = useWindowDimensions();
   const [bandH, setBandH] = useState<number>();
   const [whoY, setWhoY] = useState(0);
@@ -146,6 +149,7 @@ export function ProfileBandPage({ name, photo, phone, line, chips, onBack, leadi
   const onScroll = useAnimatedScrollHandler((e) => {
     scrollY.value = e.contentOffset.y;
   });
+  useAiFabFollow(scrollY, !!aiFab);
   const { colors: c, dark } = useTheme();
   const insets = useInsets();
   const barH = insets.top + HEADER_GAP + HEADER_ROW + 8;

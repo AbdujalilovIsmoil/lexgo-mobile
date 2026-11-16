@@ -27,7 +27,7 @@ export function FlatBar(props: BottomTabBarProps) {
     <>
     <View pointerEvents="box-none" style={s.wrap}>
       <View onLayout={(e) => setH(e.nativeEvent.layout.height)} collapsable={false} style={[s.bar, { backgroundColor: glass ? GLASS_SOLID : dark ? c.surface : "#FFFFFF", paddingBottom: Math.max(insets.bottom - 6, 8) }]}>
-        {items.map((it) => (it.def.center ? (it.def.href ? <UrgentButton key={it.def.route} onPress={it.onPress} labelKey={it.def.labelKey} /> : <AiButton key={it.def.route} focused={it.focused} onPress={it.onPress} labelKey={it.def.labelKey} />) : <FlatItem key={it.def.route} def={it.def} focused={it.focused} onPress={it.onPress} />))}
+        {items.map((it) => (it.def.center ? (it.def.route === "urgent" ? <UrgentButton key={it.def.route} onPress={it.onPress} labelKey={it.def.labelKey} /> : <AiButton key={it.def.route} focused={it.focused} onPress={it.onPress} labelKey={it.def.labelKey} />) : <FlatItem key={it.def.route} def={it.def} focused={it.focused} onPress={it.onPress} />))}
       </View>
     </View>
     {floatingAi(role) && h ? <AiFab bottom={h + AI_FAB_GAP} /> : null}

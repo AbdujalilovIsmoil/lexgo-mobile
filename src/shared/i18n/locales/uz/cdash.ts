@@ -29,7 +29,7 @@ export const cdash = {
     "svcOnline": "Onlayn xizmatlar",
     "crashT": "Avtohalokat", "crashSub": "YTH bo'yicha maslahat",
     "urgentSub": "24/7 navbatchi",
-    "sosT": "SOS", "sosSub": "Favqulodda holat",
+    "sosT": "SOS", "sosSub": "Favqulodda holat", "sosBar": "SOS — favqulodda holatda bosing", "findT": "Mutaxassislar", "findN": "{n} ta mutaxassis",
     "works": { "title": "Faol ishlar", "step": "{n}/4", "waiting": "Mutaxassis tayinlanmoqda", "empty": "Hozircha jarayondagi ish yo'q", "emptyText": "Xizmat buyurtma qiling yoki mutaxassis toping — ishlaringiz shu yerda ko'rinadi.", "emptyCta": "Mutaxassis topish", "error": "Ishlarni yuklab bo'lmadi", "retry": "Qayta urinish" }
   },
   "ref": {

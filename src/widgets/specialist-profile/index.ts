@@ -6,3 +6,4 @@ export { ServicesPanel } from "./ServicesPanel";
 export { SpecialistStats } from "./SpecialistStats";
 export { AboutPanel } from "./AboutPanel";
 export { SpecialistPreview } from "./SpecialistPreview";
+export { SpecialistCover } from "./SpecialistCover";

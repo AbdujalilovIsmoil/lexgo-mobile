@@ -1,28 +1,39 @@
 import { Platform, StyleSheet, View } from "react-native";
-import Animated, { FadeInUp, FadeOutDown } from "react-native-reanimated";
+import Animated, { Easing, Keyframe } from "react-native-reanimated";
 import { useInsets } from "@/shared/lib/insets";
-import { GLASS_SOLID, radius, shadows, useTheme } from "@/shared/theme";
+import { useTheme } from "@/shared/theme";
 import { useToastStore } from "./toastStore";
-import { GlassBackdrop, useGlass } from "./GlassBackdrop";
 import { Text } from "./Text";
 import { Icon, type IconName } from "./Icon";
 
-// Bottom toasts above the tab bar (components/Toaster.tsx on the web).
+// It drops in from above the screen's top edge and goes back up the same way.
+const ENTER = new Keyframe({
+  0: { opacity: 0, transform: [{ translateY: -90 }] },
+  100: { opacity: 1, transform: [{ translateY: 0 }], easing: Easing.out(Easing.cubic) },
+}).duration(260);
+const EXIT = new Keyframe({
+  0: { opacity: 1, transform: [{ translateY: 0 }] },
+  100: { opacity: 0, transform: [{ translateY: -90 }], easing: Easing.in(Easing.cubic) },
+}).duration(220);
+
+const ICON: Record<string, IconName> = { info: "info", ok: "check", err: "alert-circle" };
+const DOT: Record<string, string> = { info: "#2B54D6", ok: "#2B54D6", err: "#E5484D" };
+
+// Toasts at the top of the screen (Adliya): a navy card the width of the page, a round icon on the left, the text in white. Each stays 2.5 s
+// (toastStore), the same on iOS and Android.
 export function Toaster() {
   const toasts = useToastStore((s) => s.toasts);
   const insets = useInsets();
-  const { colors: c, dark, glass } = useTheme();
-  const lens = !!useGlass();
-  const snack = Platform.OS === "android"; // Material 3 snackbar: an inverse surface, 8dp corners, full width, text from the left
+  const { dark } = useTheme();
   if (!toasts.length) return null;
-  const icons: Record<string, IconName> = { info: "info", ok: "check-circle", err: "alert-circle" };
   return (
-    <View pointerEvents="none" accessibilityLiveRegion="polite" style={[s.host, { bottom: insets.bottom + 84 }]}>
+    <View pointerEvents="none" accessibilityLiveRegion="polite" style={[s.host, { top: insets.top + 8 }]}>
       {toasts.map((t) => (
-        <Animated.View key={t.id} accessible accessibilityRole="alert" accessibilityLabel={t.text} entering={FadeInUp.duration(220)} exiting={FadeOutDown.duration(180)} style={[s.toast, { backgroundColor: lens ? "transparent" : snack ? (dark ? "#E2E8F7" : "#2D3446") : glass ? GLASS_SOLID : dark ? c.surface2 : "#0B1F45" }, snack ? s.snack : shadows.s2]}>
-          {lens ? <GlassBackdrop radius={radius.r} tint={dark ? "rgba(8,16,36,0.55)" : "rgba(11,31,69,0.62)"} /> : null}
-          <Icon name={icons[t.kind]} size={18} color={t.kind === "err" ? "#FF9494" : t.kind === "ok" ? "#4ADE9F" : "#93C6FF"} />
-          <Text variant="small" tone="white" style={[s.text, snack && { color: dark ? "#1A2236" : "#F1F4FB" }]}>
+        <Animated.View key={t.id} accessible accessibilityRole="alert" accessibilityLabel={t.text} entering={ENTER} exiting={EXIT} style={[s.toast, { backgroundColor: dark ? "#1A2D5C" : "#0F2149" }]}>
+          <View style={[s.dot, { backgroundColor: DOT[t.kind] }]}>
+            <Icon name={ICON[t.kind]} size={15} color="#FFFFFF" />
+          </View>
+          <Text variant="body" weight="bold" tone="white" style={s.text} maxFontSizeMultiplier={1.3}>
             {t.text}
           </Text>
         </Animated.View>
@@ -32,8 +43,11 @@ export function Toaster() {
 }
 
 const s = StyleSheet.create({
-  host: { position: "absolute", left: 16, right: 16, gap: 8, alignItems: "center" },
-  toast: { flexDirection: "row", alignItems: "center", gap: 10, paddingVertical: 12, paddingHorizontal: 16, borderRadius: radius.r, maxWidth: 420 },
-  text: { flexShrink: 1 },
-  snack: { alignSelf: "stretch", maxWidth: undefined, borderRadius: 8, paddingVertical: 14 },
+  host: { position: "absolute", left: 14, right: 14, gap: 8 },
+  toast: {
+    flexDirection: "row", alignItems: "center", gap: 12, paddingVertical: 14, paddingHorizontal: 14, borderRadius: 18, alignSelf: "stretch", maxWidth: 520,
+    ...Platform.select({ ios: { shadowColor: "#0A1F44", shadowOpacity: 0.3, shadowRadius: 18, shadowOffset: { width: 0, height: 10 } }, default: { elevation: 10 } }),
+  },
+  dot: { width: 30, height: 30, borderRadius: 15, alignItems: "center", justifyContent: "center" },
+  text: { flex: 1, fontSize: 15.5, lineHeight: 21 },
 });

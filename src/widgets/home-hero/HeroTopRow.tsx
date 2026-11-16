@@ -1,10 +1,11 @@
 import { StyleSheet, View } from "react-native";
 import { Text } from "@/shared/ui";
 import { useT } from "@/shared/i18n";
-import { MenuButton } from "@/widgets/client-sidebar/MenuButton";
+// import { MenuButton } from "@/widgets/client-sidebar/MenuButton"; // the drawer button is off on Home for now (UserButton in its place)
 import { HeaderActions } from "@/widgets/tab-page";
+import { UserButton } from "./UserButton";
 
-// Menu button + greeting on the left; on the right the very same round buttons as every other page header (support, bell,
+// The user's photo (UserButton; the menu button is commented out for now) + greeting on the left; on the right the very same round buttons as every other page header (support, bell,
 // avatar) with the same sizes and gaps, so nothing moves when you switch between Home and the other tabs.
 // `onWhite`: the row stands on a white ground (Home scrolled), so it takes the dark type and the plain buttons of the other tabs.
 export function HeroTopRow({ name, onWhite }: { name?: string; onWhite?: boolean }) {
@@ -12,7 +13,8 @@ export function HeroTopRow({ name, onWhite }: { name?: string; onWhite?: boolean
   return (
     <View style={s.row}>
       <View style={s.brand}>
-        <MenuButton glass={!onWhite} />
+        {/* <MenuButton glass={!onWhite} /> */}
+        <UserButton onWhite={onWhite} />
         <View style={s.who}>
           <Text variant="caption" tone="gray" style={onWhite ? undefined : s.hi} numberOfLines={1}>
             {t("home.greeting")}

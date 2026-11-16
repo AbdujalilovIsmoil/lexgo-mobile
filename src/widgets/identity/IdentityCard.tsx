@@ -1,20 +1,32 @@
-import { View } from "react-native";
+import { Platform, StyleSheet, View } from "react-native";
 import { isIdentityPending, useIdentity } from "@/entities/identity";
 import { useIdentityFlow } from "@/features/identity-verify";
-import { Button, Skeleton, Text } from "@/shared/ui";
+import { Button, Icon, Skeleton, Text } from "@/shared/ui";
 import { ProfileSection } from "@/shared/ui/profile";
-import { useColors } from "@/shared/theme";
+import { useTheme } from "@/shared/theme";
 import { useT } from "@/shared/i18n";
 import { IdentityCode } from "./IdentityCode";
 import { IdentityProviders } from "./IdentityProviders";
 
 // "Shaxsni tasdiqlash" panel of the profile (web IdentityVerify): verified / code step / pending / providers.
 export function IdentityCard() {
-  const c = useColors();
+  const { colors: c, dark, glass } = useTheme();
   const { t } = useT();
   const q = useIdentity();
   const f = useIdentityFlow();
   const cur = q.data;
+  // Verified (Adliya): one compact card — the shield on a soft green tile, "Shaxs tasdiqlangan" and the name under it.
+  if (cur?.verified) {
+    return (
+      <View style={[s.done, { backgroundColor: dark || glass ? c.surface : "#FFFFFF", borderColor: dark || glass ? c.line : "#E6EBF3" }, !glass && s.shadow]}>
+        <View style={[s.tile, { backgroundColor: c.okBg }]}><Icon name="shield" size={20} color={c.ok} /></View>
+        <View style={s.col}>
+          <Text variant="body" weight="bold" style={s.title}>{t("cpr.idVerified")}</Text>
+          {cur.fullName ? <Text variant="small" tone="gray" numberOfLines={1}>{cur.fullName}</Text> : null}
+        </View>
+      </View>
+    );
+  }
   const providers = <IdentityProviders disabled={f.busy} wait={f.wait} note={f.note} onStart={(p) => void f.start(p)} />;
   return (
     <ProfileSection accent="green" icon="check-circle" title={t("cpr.idTitle")}>
@@ -40,3 +52,11 @@ export function IdentityCard() {
     </ProfileSection>
   );
 }
+
+const s = StyleSheet.create({
+  done: { flexDirection: "row", alignItems: "center", gap: 14, padding: 16, borderRadius: 18, borderWidth: 1 },
+  tile: { width: 48, height: 48, borderRadius: 14, alignItems: "center", justifyContent: "center" },
+  col: { flex: 1, minWidth: 0, gap: 2 },
+  title: { fontSize: 16.5, lineHeight: 22 },
+  shadow: Platform.select({ ios: { shadowColor: "#0B1A33", shadowOpacity: 0.05, shadowRadius: 10, shadowOffset: { width: 0, height: 4 } }, default: { elevation: 1 } })!,
+});

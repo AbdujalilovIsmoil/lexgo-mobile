@@ -5,9 +5,11 @@ import { ActionList, AdminPage, PagedList } from "@/shared/ui/admin";
 import { Card, IconButton, Text } from "@/shared/ui";
 import { useSlicedList } from "@/shared/lib/pay/useSlicedList";
 import { useT } from "@/shared/i18n";
+import { useClientFrame } from "@/widgets/client-dash";
 
 // Saved cards (masked: brand, last 4, expiry) — add and remove.
 export function MethodsPage() {
+  const frame = useClientFrame(); // the client pages' light frame (Adliya): grey ground, the pinned header
   const { t } = useT();
   const q = useMethods();
   const act = useMethodActions();
@@ -15,7 +17,7 @@ export function MethodsPage() {
   const [form, setForm] = useState(false);
   const { items, query } = useSlicedList(q.data ?? [], q, "m");
   return (
-    <AdminPage title={t("py6.card.title")} right={<IconButton icon="plus" onPress={() => setForm(true)} />}>
+    <AdminPage {...frame} title={t("py6.card.title")} right={<IconButton icon="plus" onPress={() => setForm(true)} />}>
       <PagedList
         data={items}
         query={query}

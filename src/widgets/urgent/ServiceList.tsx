@@ -1,5 +1,5 @@
 import { useState, type ReactNode } from "react";
-import { StyleSheet, View } from "react-native";
+import { Platform, StyleSheet, View } from "react-native";
 import { useRouter } from "expo-router";
 import { BottomSheet, Card, ErrorView, Icon, PressableScale, SheetScroll, Skeleton, Text, type IconName } from "@/shared/ui";
 import { useTheme } from "@/shared/theme";
@@ -19,7 +19,7 @@ const FLOWS: { kind: "custom" | "review"; icon: IconName; title: string; sub: st
 export function ServiceList({ head }: { head?: ReactNode }) {
   const { t } = useT();
   const router = useRouter();
-  const { colors: c } = useTheme();
+  const { colors: c, dark, glass } = useTheme();
   const label = useUrgentLabels();
   const cat = useCatalog();
   const [docs, setDocs] = useState(false);
@@ -53,19 +53,19 @@ export function ServiceList({ head }: { head?: ReactNode }) {
   return (
     <View style={s.wrap}>
       {head ?? <Text variant="caption" weight="bold" tone="gray" style={s.label}>{t("ug1.page.pick").toUpperCase()}</Text>}
-      <View style={[s.card, { backgroundColor: c.surface, borderColor: c.line }]}>
+      <View style={[s.card, { backgroundColor: dark || glass ? c.surface : "#FFFFFF", borderColor: dark || glass ? c.line : "#E6EBF3" }, !glass && s.shadow]}>
         {rows.map((r, i) => (
           <PressableScale key={r.key} onPress={r.onPress} scale={0.99} accessibilityRole="button" style={[s.row, i < rows.length - 1 && { borderBottomWidth: 1, borderBottomColor: line }]}>
             <View style={[s.ico, { backgroundColor: `${r.tint}1A` }]}><Icon name={r.icon} size={20} color={r.tint} /></View>
             <View style={s.flex}>
-              <Text variant="h4" weight="semibold" numberOfLines={2} style={s.name}>{r.title}</Text>
+              <Text variant="h4" weight="bold" numberOfLines={2} style={s.name}>{r.title}</Text>
               <View style={s.subRow}>
                 {r.lock ? <Icon name="lock" size={12} tone="gray" /> : null}
-                <Text variant="small" tone="gray" numberOfLines={2} style={s.flex}>{r.sub}</Text>
-                {r.price ? <Text variant="small" weight="bold" tone="accent" numberOfLines={1}>{r.price}</Text> : null}
+                <Text variant="small" tone="gray" numberOfLines={2} style={[s.flex, s.sub]}>{r.sub}</Text>
+                {r.price ? <Text variant="small" weight="bold" tone="accent" numberOfLines={1} style={s.sub}>{r.price}</Text> : null}
               </View>
             </View>
-            <Icon name="chevron-right" size={18} tone="gray" />
+            <Icon name="chevron-right" size={18} color={c.ink} />
           </PressableScale>
         ))}
       </View>
@@ -90,12 +90,14 @@ export function ServiceList({ head }: { head?: ReactNode }) {
 
 const s = StyleSheet.create({
   wrap: { gap: 10 },
-  label: { letterSpacing: 0.6, marginLeft: 2 },
-  card: { borderRadius: 20, borderWidth: 1 },
-  row: { flexDirection: "row", alignItems: "center", gap: 12, paddingHorizontal: 14, paddingVertical: 13 },
-  ico: { width: 44, height: 44, borderRadius: 13, alignItems: "center", justifyContent: "center" },
+  label: { letterSpacing: 1, marginLeft: 2, fontSize: 12 },
+  card: { borderRadius: 18, borderWidth: 1 },
+  row: { flexDirection: "row", alignItems: "center", gap: 14, paddingHorizontal: 14, paddingVertical: 15 },
+  ico: { width: 46, height: 46, borderRadius: 14, alignItems: "center", justifyContent: "center" },
   flex: { flex: 1, minWidth: 0 },
-  name: { fontSize: 14, lineHeight: 19 },
+  name: { fontSize: 15.5, lineHeight: 21 },
+  sub: { fontSize: 13, lineHeight: 18 },
   subRow: { flexDirection: "row", alignItems: "center", gap: 6, marginTop: 3 },
+  shadow: Platform.select({ ios: { shadowColor: "#0B1A33", shadowOpacity: 0.06, shadowRadius: 12, shadowOffset: { width: 0, height: 6 } }, default: { elevation: 1 } })!,
   flow: { flexDirection: "row", alignItems: "center", gap: 12, padding: 14 },
 });

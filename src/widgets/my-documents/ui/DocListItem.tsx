@@ -1,37 +1,35 @@
-import { StyleSheet, View } from "react-native";
-import { Icon, PressableScale, Text } from "@/shared/ui";
-import { useColors } from "@/shared/theme";
+import { Platform, StyleSheet, View } from "react-native";
+import { PressableScale, Text } from "@/shared/ui";
+import { useTheme } from "@/shared/theme";
 import { useT } from "@/shared/i18n";
 import { fmtDate, humanizeSlug } from "@/shared/lib/format";
-import { MODE_ICON, StatusBadge, flowOf, stepProgress, toneOf, useToneColor, type DocRow } from "@/entities/my-document";
+import { StatusBadge, flowOf, stepProgress, type DocRow } from "@/entities/my-document";
 import { DocCardActions } from "@/features/my-documents";
 
 type Props = { row: DocRow; first?: boolean; last?: boolean; onOpen: (id: string) => void; onSend: (id: string) => void };
 
-// One document as a row of its section's card: mode icon tile, title (2 lines), status pill, one meta line (date · step) and at most one
-// quick action. Everything else is in the detail sheet the row opens. `first` / `last` round the card's corners and close its edges.
-export function DocListItem({ row, first = true, last = true, onOpen, onSend }: Props) {
+// One document as its own white card (Adliya): the status pill and the document's number on top, the title, one grey line (mode · date ·
+// step), then at most one quick action. Everything else is on the page the card opens. (`first` / `last` are kept for the list's calls; every
+// card is whole now.)
+export function DocListItem({ row, onOpen, onSend }: Props) {
   const { t, locale } = useT();
-  const c = useColors();
-  const color = useToneColor();
-  const tone = color(toneOf(row.status));
+  const { colors: c, dark, glass } = useTheme();
   const prog = stepProgress(flowOf(row));
-  const meta = [fmtDate(row.createdAt, locale), prog ? t("docSheet.step", { at: prog.at, total: prog.total }) : ""].filter(Boolean).join(" · ");
+  const modeKey = `dm1.mode.${row.mode}`;
+  const mode = t(modeKey) !== modeKey ? t(modeKey) : "";
+  const meta = [mode, fmtDate(row.createdAt, locale), prog ? t("docSheet.step", { at: prog.at, total: prog.total }) : ""].filter(Boolean).join(" · ");
   const key = `dm2.status.${row.status.toLowerCase()}`;
   const status = t(key) !== key ? t(key) : row.statusLabel || humanizeSlug(row.status);
   const title = row.title || t("dm1.untitled");
   return (
-    <View style={[s.card, { backgroundColor: c.surface, borderColor: c.line }, first && s.first, last && s.last, !last && { borderBottomWidth: StyleSheet.hairlineWidth }]}>
-      <PressableScale onPress={() => onOpen(row.id)} accessibilityRole="button" accessibilityLabel={t("docSheet.openCard", { title, status })} style={s.body}>
-        <View style={[s.tile, { backgroundColor: `${tone}22` }]}><Icon name={MODE_ICON[row.mode]} size={20} color={tone} /></View>
-        <View style={s.col}>
-          <Text variant="body" weight="bold" numberOfLines={2}>{title}</Text>
-          <View style={s.meta}>
-            <StatusBadge status={row.status} label={row.statusLabel} />
-            {meta ? <Text variant="caption" tone="gray" numberOfLines={1} style={s.flex}>{meta}</Text> : null}
-          </View>
+    <View style={[s.card, { backgroundColor: dark || glass ? c.surface : "#FFFFFF", borderColor: dark || glass ? c.line : "#E6EBF3" }, !glass && s.shadow]}>
+      <PressableScale onPress={() => onOpen(row.id)} scale={0.99} accessibilityRole="button" accessibilityLabel={t("docSheet.openCard", { title, status })} style={s.body}>
+        <View style={s.top}>
+          <View style={s.pill}><StatusBadge status={row.status} label={row.statusLabel} /></View>
+          {row.workId ? <Text variant="small" tone="gray" numberOfLines={1} style={s.num}>{row.workId}</Text> : null}
         </View>
-        <Icon name="chevron-right" size={18} color={c.gray2} />
+        <Text variant="h4" weight="bold" numberOfLines={2} style={s.title}>{title}</Text>
+        {meta ? <Text variant="small" tone="gray" numberOfLines={1} style={s.meta}>{meta}</Text> : null}
       </PressableScale>
       <DocCardActions row={row} onSend={onSend} />
     </View>
@@ -39,12 +37,12 @@ export function DocListItem({ row, first = true, last = true, onOpen, onSend }: 
 }
 
 const s = StyleSheet.create({
-  card: { gap: 10, paddingHorizontal: 16, paddingVertical: 14, borderLeftWidth: 1, borderRightWidth: 1 },
-  first: { borderTopWidth: 1, borderTopLeftRadius: 20, borderTopRightRadius: 20 },
-  last: { borderBottomWidth: 1, borderBottomLeftRadius: 20, borderBottomRightRadius: 20 },
-  body: { flexDirection: "row", alignItems: "center", gap: 12 },
-  tile: { width: 42, height: 42, borderRadius: 13, alignItems: "center", justifyContent: "center" },
-  col: { flex: 1, gap: 6 },
-  meta: { flexDirection: "row", alignItems: "center", gap: 8 },
-  flex: { flex: 1 },
+  card: { gap: 12, padding: 16, borderRadius: 18, borderWidth: 1, marginBottom: 12 },
+  body: { gap: 6 },
+  top: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", gap: 10, marginBottom: 2 },
+  pill: { flexShrink: 1, alignItems: "flex-start" },
+  num: { fontSize: 13.5 },
+  title: { fontSize: 16, lineHeight: 22 },
+  meta: { fontSize: 13.5, lineHeight: 18 },
+  shadow: Platform.select({ ios: { shadowColor: "#0B1A33", shadowOpacity: 0.05, shadowRadius: 10, shadowOffset: { width: 0, height: 4 } }, default: { elevation: 1 } })!,
 });

@@ -1,31 +1,32 @@
 import { StyleSheet, View } from "react-native";
 import { useRouter } from "expo-router";
-import { radius, useColors } from "@/shared/theme";
-import { Icon, PressableScale, Text, type IconName } from "@/shared/ui";
+import { useTheme } from "@/shared/theme";
+import { Sparkles, Zap, type LucideIcon } from "lucide-react-native";
+import { PressableScale, Text } from "@/shared/ui";
 import { useT } from "@/shared/i18n";
 
-// The two other ways in, as a quiet pair of pills under the chips (not a hero): the AI intake and urgent help.
+// The two other ways in, as a quiet pair of outlined pills under the chips (Adliya): the AI intake and urgent help.
 export function CatalogPills() {
   const { t } = useT();
-  const c = useColors();
+  const { colors: c, dark, glass } = useTheme();
   const router = useRouter();
-  const pill = (icon: IconName, title: string, color: string, bg: string, go: () => void) => (
-    <PressableScale onPress={go} scale={0.97} accessibilityRole="button" accessibilityLabel={title} style={[s.pill, { backgroundColor: bg, borderColor: c.line }]}>
-      <Icon name={icon} size={18} color={color} />
-      <Text variant="small" weight="bold" numberOfLines={1} style={[s.txt, { color }]}>{title}</Text>
-      <Icon name="arrow-right" size={14} color={color} />
+  const box = { backgroundColor: dark || glass ? c.surface : "#FFFFFF", borderColor: dark || glass ? c.line : "#E2E8F1" };
+  const pill = (Glyph: LucideIcon, title: string, go: () => void) => (
+    <PressableScale onPress={go} scale={0.97} accessibilityRole="button" accessibilityLabel={title} style={[s.pill, box]}>
+      <Glyph size={17} color={c.ink} />
+      <Text variant="small" weight="semibold" numberOfLines={1} style={[s.txt, { color: c.ink }]}>{title}</Text>
     </PressableScale>
   );
   return (
     <View style={s.row}>
-      {pill("zap", t("dcat.quickAi"), c.accentStrong, c.tint, () => router.push("/intake"))}
-      {pill("alert-triangle", t("dcat.quickUrgent"), c.err, c.errBg, () => router.push("/sos"))}
+      {pill(Sparkles, t("dcat.quickAi"), () => router.push("/intake"))}
+      {pill(Zap, t("dcat.quickUrgent"), () => router.push("/sos"))}
     </View>
   );
 }
 
 const s = StyleSheet.create({
-  row: { flexDirection: "row", gap: 10, paddingBottom: 12 },
-  pill: { flex: 1, flexDirection: "row", alignItems: "center", gap: 8, minHeight: 48, paddingHorizontal: 14, borderRadius: radius.r, borderWidth: 1 },
-  txt: { flex: 1 },
+  row: { flexDirection: "row", flexWrap: "wrap", gap: 10, paddingBottom: 12 },
+  pill: { flexDirection: "row", alignItems: "center", gap: 8, minHeight: 40, paddingHorizontal: 16, borderRadius: 999, borderWidth: 1.5 },
+  txt: { fontSize: 14.5 },
 });

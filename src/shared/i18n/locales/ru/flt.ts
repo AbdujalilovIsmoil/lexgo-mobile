@@ -20,6 +20,7 @@ export const flt: Messages["flt"] = {
   experience: "Опыт",
   expN: "{n}+ лет",
   quickAll: "Все",
+  allRegions: "Все регионы",
   sortOptions: {"recommended": "Рекомендуем", "rating": "Рейтинг", "experience": "Опыт", "price_asc": "Дешевле"},
   kindOptions: {"all": "Все", "advokat": "Адвокаты", "yurist": "Юристы"},
 };

@@ -1,5 +1,6 @@
 export { PersonalPanel } from "./PersonalPanel";
 export { FamilyPanel } from "./FamilyPanel";
+export { FamilyGroup } from "./FamilyGroup";
 export { CardsPanel } from "./CardsPanel";
 export { SubscriptionPanel } from "./SubscriptionPanel";
 export { SessionsPanel } from "./SessionsPanel";
@@ -8,3 +9,4 @@ export { ActivityPanel } from "./ActivityPanel";
 export { PaymentsPanel } from "./PaymentsPanel";
 export { ProfileTabs, PROFILE_TABS, type ProfileTab, type TabDef } from "./ProfileTabs";
 export { FactTiles } from "./FactTiles";
+export { PersonalForm } from "./PersonalForm";

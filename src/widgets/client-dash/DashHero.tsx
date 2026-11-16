@@ -36,9 +36,10 @@ function AuthedChips() {
 function Chips({ items }: { items: Chip[] }) {
   const { t } = useT();
   const router = useRouter();
+  const authed = useIsAuthed(); // Tezkor is a client's tab: a visitor signs in first
   const all: Chip[] = [
     ...items,
-    { key: "urgent", label: t("cdash.home.chipUrgent"), href: "/urgent" as Href },
+    { key: "urgent", label: t("cdash.home.chipUrgent"), href: (authed ? "/(tabs)/urgent" : "/auth/login") as Href },
     { key: "docs", label: t("cdash.home.chipDocs"), href: "/(tabs)/services?docs=1" as Href },
   ];
   return (

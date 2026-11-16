@@ -13,7 +13,7 @@ import { OrdersPage } from "@/pages/orders/OrdersPage";
 registerOverlayPage("lawyers", LawyersPage);
 registerOverlayPage("orders", OrdersPage);
 
-const ROUTES = ["index", "services", "works", "messages", "workspace", "requests", "clients", "lawyers", "orders", "me"];
+const ROUTES = ["index", "services", "works", "messages", "workspace", "requests", "clients", "lawyers", "orders", "me", "urgent"];
 
 export default function TabsLayout() {
   const role = useTabRole();

@@ -8,9 +8,8 @@ import { useLawyerServices, useSellerPromos, useSellerRating, type Lawyer, type 
 import { PurchaseFlow } from "@/features/market-purchase";
 import { ProfileTabs, type TabDef } from "@/widgets/client-profile";
 import { PriceExplainer, useBuyGate } from "@/widgets/lawyer-sheet";
-import { ProfileCover } from "@/widgets/profile";
-import { AboutPanel, BuyBar, ServiceOption, ServicesPanel, SpecialistIdentity, SpecialistStats } from "@/widgets/specialist-profile";
-import { BottomSheet, EmptyState, Header, HeroScroll, Reveal, SheetScroll, toast } from "@/shared/ui";
+import { AboutPanel, BuyBar, ServiceOption, ServicesPanel, SpecialistCover, SpecialistIdentity, SpecialistStats } from "@/widgets/specialist-profile";
+import { BottomSheet, EmptyState, HeroScroll, Reveal, SheetScroll, toast } from "@/shared/ui";
 import { useColors } from "@/shared/theme";
 import { useInsets } from "@/shared/lib/insets";
 import { useT } from "@/shared/i18n";
@@ -68,14 +67,11 @@ export function SpecialistView({ lawyer: base, initialTab }: { lawyer: Lawyer; i
   return (
     <View style={[s.fill, { backgroundColor: c.canvas }]}>
       <HeroScroll contentContainerStyle={{ paddingBottom: insets.bottom + 120 }}>
-        <View>
-          <ProfileCover />
-          <View style={s.back} pointerEvents="box-none"><Header transparent light /></View>
-        </View>
+        <SpecialistCover userId={l.userId} />
         <SpecialistIdentity lawyer={l} top={top} unrated={pub?.unratedText} />
         <SpecialistStats lawyer={l} />
         <View style={s.body}>
-          <Reveal i={2}><ProfileTabs value={nav.tab} onChange={go} tabs={TAB_LABEL} /></Reveal>
+          <Reveal i={2}><ProfileTabs seg value={nav.tab} onChange={go} tabs={TAB_LABEL} /></Reveal>
           <Animated.View key={nav.tab} entering={(nav.dir === 1 ? FadeInRight : FadeInLeft).duration(320)}>
             {nav.tab === "services" ? <ServicesPanel sellerId={l.userId} services={services} selected={sel?.id ?? ""} blocked={blocked} onSelect={setPicked} onExplain={() => setExplain(true)} /> : null}
             {nav.tab === "about" ? <AboutPanel lawyer={l} /> : null}
@@ -99,4 +95,4 @@ export function SpecialistView({ lawyer: base, initialTab }: { lawyer: Lawyer; i
   );
 }
 
-const s = StyleSheet.create({ fill: { flex: 1 }, back: { position: "absolute", top: 0, left: 0, right: 0 }, body: { paddingHorizontal: 16, marginTop: 20, gap: 14 } });
+const s = StyleSheet.create({ fill: { flex: 1 }, body: { paddingHorizontal: 18, marginTop: 16, gap: 16 } });

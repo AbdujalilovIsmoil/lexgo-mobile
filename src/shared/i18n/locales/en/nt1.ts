@@ -2,6 +2,7 @@ import type { Messages } from "../uz";
 
 export const nt1: Messages["nt1"] = {
   all: "All",
+  unread: "Unread",
   search: "Search by title or text",
   onlyUnread: "Unread only",
   onlyRead: "Read only",

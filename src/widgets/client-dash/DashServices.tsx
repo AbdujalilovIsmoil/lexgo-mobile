@@ -1,30 +1,30 @@
 import { Platform, StyleSheet, View } from "react-native";
+import { useLawyerCount } from "@/entities/lawyer";
 import { useRouter, type Href } from "expo-router";
-import { ArrowRight, CarFront, FileCheck, Layers, LayoutGrid, Search, TriangleAlert, Zap, type LucideIcon } from "lucide-react-native";
+import { ArrowRight, CarFront, FileCheck, Layers, LayoutGrid, Search, TriangleAlert, type LucideIcon } from "lucide-react-native";
 import { useTemplateCategories } from "@/entities/doc-template";
 import { PressableScale, Text } from "@/shared/ui";
 import { fonts, useTheme } from "@/shared/theme";
 import { useT } from "@/shared/i18n";
 
-type Tile = { key: string; icon: LucideIcon; title: string; sub: string; href: Href; tone?: "sos" | "live" };
+type Tile = { key: string; icon: LucideIcon; title: string; sub: string; href: Href };
 
 // Adliya's "Xizmatlar" block: the section head (title + "Barchasi" → the services tab), the wide document-analysis card with its AI badge,
-// then the ways in two by two — find a specialist, templates (with the catalogue's count), online services, car accident advice, the urgent
-// advocate (24/7, a green "online" dot) and SOS (red). Every tile opens the same page the old Home tiles did.
+// then four ways two by two — online services, specialists (with the directory's count), templates (with the catalogue's count), car accident
+// advice — and the red SOS button under them. (Tezkor advokat is the bar's centre tab now.) Every tile opens the same page the old Home tiles did.
 export function DashServices() {
   const { t } = useT();
   const router = useRouter();
   const { colors: c, dark, glass } = useTheme();
   const cats = useTemplateCategories();
+  const experts = useLawyerCount({}).data ?? 0;
   const docs = (cats.data ?? []).reduce((a, x) => a + x.count, 0);
   const card = { backgroundColor: dark || glass ? c.surface : "#FFFFFF", borderColor: dark || glass ? c.line : "#E6EBF3" };
   const tiles: Tile[] = [
-    { key: "find", icon: Search, title: t("cdash.home.find"), sub: t("cdash.home.findSub"), href: "/(tabs)/lawyers" as Href },
+    { key: "services", icon: LayoutGrid, title: t("cdash.home.services"), sub: t("cdash.home.servicesSub"), href: "/(tabs)/services" as Href },
+    { key: "find", icon: Search, title: t("cdash.home.findT"), sub: experts ? t("cdash.home.findN", { n: experts }) : t("cdash.home.findSub"), href: "/(tabs)/lawyers" as Href },
     { key: "templates", icon: Layers, title: t("cdash.home.templates"), sub: docs ? t("cdash.home.templatesSub", { n: docs }) : t("cdash.home.templatesSub0"), href: "/(tabs)/services?docs=1" as Href },
-    { key: "services", icon: LayoutGrid, title: t("cdash.home.svcOnline"), sub: t("cdash.home.servicesSub"), href: "/(tabs)/services" as Href },
     { key: "crash", icon: CarFront, title: t("cdash.home.crashT"), sub: t("cdash.home.crashSub"), href: "/urgent/new?service=traffic_accident_consultation" as Href },
-    { key: "urgent", icon: Zap, title: t("cdash.home.urgent"), sub: t("cdash.home.urgentSub"), href: "/urgent" as Href, tone: "live" },
-    { key: "sos", icon: TriangleAlert, title: t("cdash.home.sosT"), sub: t("cdash.home.sosSub"), href: "/sos" as Href, tone: "sos" },
   ];
   return (
     <View style={s.sec}>
@@ -46,22 +46,20 @@ export function DashServices() {
         <ArrowRight size={18} color={c.gray} />
       </PressableScale>
       <View style={s.grid}>
-        {tiles.map((x) => {
-          const sos = x.tone === "sos";
-          return (
-            <PressableScale key={x.key} onPress={() => router.navigate(x.href)} scale={0.97} style={[s.tile, card, !glass && s.shadow]} accessibilityRole="button" accessibilityLabel={x.title}>
-              <View style={[s.ico, { backgroundColor: sos ? c.errBg : c.tint2 }]}>
-                <x.icon size={19} color={sos ? c.err : c.accent} />
-                {x.tone === "live" ? <View style={[s.dot, { backgroundColor: c.ok, borderColor: card.backgroundColor }]} /> : null}
-              </View>
-              <View style={s.copy}>
-                <Text variant="h4" numberOfLines={2} maxFontSizeMultiplier={1.15} style={s.tileT}>{x.title}</Text>
-                <Text variant="caption" weight="regular" tone={x.tone === "live" ? "ok" : "gray"} numberOfLines={2} maxFontSizeMultiplier={1.15} style={s.sub}>{x.sub}</Text>
-              </View>
-            </PressableScale>
-          );
-        })}
+        {tiles.map((x) => (
+          <PressableScale key={x.key} onPress={() => router.navigate(x.href)} scale={0.97} style={[s.tile, card, !glass && s.shadow]} accessibilityRole="button" accessibilityLabel={x.title}>
+            <View style={[s.ico, { backgroundColor: c.tint2 }]}><x.icon size={20} color={c.accent} /></View>
+            <View style={s.copy}>
+              <Text variant="h4" numberOfLines={1} maxFontSizeMultiplier={1.15} style={s.tileT}>{x.title}</Text>
+              <Text variant="caption" weight="regular" tone="gray" numberOfLines={1} maxFontSizeMultiplier={1.15} style={s.tileSub}>{x.sub}</Text>
+            </View>
+          </PressableScale>
+        ))}
       </View>
+      <PressableScale onPress={() => router.navigate("/sos")} scale={0.98} style={[s.sos, { backgroundColor: c.err }, !glass && s.sosShadow]} accessibilityRole="button" accessibilityLabel={t("cdash.home.sosBar")}>
+        <TriangleAlert size={19} color="#FFFFFF" />
+        <Text variant="body" weight="bold" numberOfLines={1} maxFontSizeMultiplier={1.15} style={s.sosTx}>{t("cdash.home.sosBar")}</Text>
+      </PressableScale>
     </View>
   );
 }
@@ -77,11 +75,14 @@ const s = StyleSheet.create({
   badge: { borderRadius: 6, paddingHorizontal: 6, paddingVertical: 2 },
   badgeTx: { color: "#FFFFFF", fontSize: 10, lineHeight: 12, fontFamily: fonts.display },
   grid: { flexDirection: "row", flexWrap: "wrap", gap: 10, marginTop: 10 },
-  tile: { flexBasis: "47%", flexGrow: 1, flexDirection: "row", alignItems: "center", gap: 10, padding: 12, minHeight: 68, borderRadius: 18, borderWidth: 1 },
-  ico: { width: 40, height: 40, borderRadius: 12, alignItems: "center", justifyContent: "center" },
-  dot: { position: "absolute", top: -2, right: -2, width: 12, height: 12, borderRadius: 6, borderWidth: 2 },
+  tile: { flexBasis: "47%", flexGrow: 1, flexDirection: "row", alignItems: "center", gap: 10, padding: 12, minHeight: 66, borderRadius: 18, borderWidth: 1 },
+  ico: { width: 38, height: 38, borderRadius: 12, alignItems: "center", justifyContent: "center" },
+  tileSub: { fontSize: 12, lineHeight: 16 },
+  sos: { flexDirection: "row", alignItems: "center", justifyContent: "center", gap: 9, marginTop: 12, minHeight: 52, paddingHorizontal: 16, borderRadius: 14 },
+  sosTx: { flexShrink: 1, color: "#FFFFFF", fontSize: 15 },
+  sosShadow: Platform.select({ ios: { shadowColor: "#D1343B", shadowOpacity: 0.3, shadowRadius: 12, shadowOffset: { width: 0, height: 6 } }, default: { elevation: 3 } })!,
   copy: { flex: 1, minWidth: 0, gap: 2 },
-  tileT: { fontSize: 13.5, lineHeight: 17 },
+  tileT: { fontSize: 14.5, lineHeight: 19 },
   sub: { fontSize: 11.5, lineHeight: 15 },
   shadow: Platform.select({ ios: { shadowColor: "#0B1A33", shadowOpacity: 0.06, shadowRadius: 12, shadowOffset: { width: 0, height: 6 } }, default: { elevation: 1 } })!,
 });

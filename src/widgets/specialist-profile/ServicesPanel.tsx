@@ -1,7 +1,5 @@
-import { View } from "react-native";
+import { StyleSheet, View } from "react-native";
 import { EmptyState, PressableScale, Text } from "@/shared/ui";
-import { ProfileSection } from "@/shared/ui/profile";
-import { useColors } from "@/shared/theme";
 import { useT } from "@/shared/i18n";
 import { useSellerPromos, type LawyerService } from "@/entities/lawyer";
 import { SafeDeal } from "@/widgets/lawyer-sheet";
@@ -13,24 +11,35 @@ type Props = { sellerId: string; services: LawyerService[]; selected: string; bl
 // is) and the backend's guarantees of the picked service (one request for the picked one, not one per row).
 export function ServicesPanel({ sellerId, services, selected, blocked, onSelect, onExplain }: Props) {
   const { t } = useT();
-  const c = useColors();
   // A service is «Tavsiya etilgan» when the server flags it or one of his running service boosts (GET /promotions/active?seller_user_id)
   // names it; those come first.
   const boosted = new Set((useSellerPromos(sellerId).data ?? []).filter((p) => p.placement === "service_boost" && p.serviceId).map((p) => p.serviceId));
   const list = services.map((sv) => ({ ...sv, sponsored: sv.sponsored || boosted.has(sv.id) })).sort((a, b) => Number(b.sponsored) - Number(a.sponsored));
   return (
     <View style={{ gap: 14 }}>
-      <ProfileSection accent="gold" icon="briefcase" title={t("mkd.services")}>
-        <PressableScale onPress={onExplain} accessibilityRole="button" style={{ alignSelf: "flex-start", flexDirection: "row", alignItems: "center", paddingHorizontal: 14, height: 36, borderRadius: 18, backgroundColor: c.surface2 }}>
-          <Text variant="small" weight="bold" tone="accent">{t("mkd.priceHow")}</Text>
-        </PressableScale>
-        <Text variant="small" tone="gray">{t("mkd.servicesLead")}</Text>
+      <View style={s.sec}>
+        <View style={s.head}>
+          <Text variant="h4" numberOfLines={2} style={s.h}>{t("mkd.services")}</Text>
+          <PressableScale onPress={onExplain} hitSlop={8} accessibilityRole="button">
+            <Text variant="small" weight="bold" tone="accent" style={s.link}>{t("mkd.priceHow")}</Text>
+          </PressableScale>
+        </View>
+        <Text variant="small" tone="gray" style={s.lead}>{t("mkd.servicesLead")}</Text>
         {list.length ? (
-          <View style={{ gap: 10 }}>{list.map((sv) => <ServiceOption key={sv.id} service={sv} selected={sv.id === selected} onSelect={() => onSelect(sv.id)} />)}</View>
+          <View style={s.list}>{list.map((sv) => <ServiceOption key={sv.id} service={sv} selected={sv.id === selected} onSelect={() => onSelect(sv.id)} />)}</View>
         ) : <EmptyState compact icon="briefcase" title={t("mkd.noServices")} />}
         {blocked ? <Text variant="small" tone="warn">{blocked}</Text> : null}
-      </ProfileSection>
+      </View>
       <SafeDeal serviceId={selected} />
     </View>
   );
 }
+
+const s = StyleSheet.create({
+  sec: { gap: 8 },
+  head: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", gap: 10 },
+  h: { flex: 1, fontSize: 18, lineHeight: 24 },
+  link: { fontSize: 14 },
+  lead: { fontSize: 14, lineHeight: 20, marginBottom: 4 },
+  list: { gap: 10 },
+});

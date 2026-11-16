@@ -1,38 +1,35 @@
-import { StyleSheet, View } from "react-native";
-import { brand, radius, useColors } from "@/shared/theme";
+import { Platform, StyleSheet, View } from "react-native";
+import { useTheme } from "@/shared/theme";
 import { Icon, PressableScale, Text, type IconName } from "@/shared/ui";
 import { timeAgo } from "@/shared/lib/format";
 import { useT } from "@/shared/i18n";
 import { eventText } from "../model/text";
-import { CATEGORY_COLOR, CATEGORY_ICON, type Notification } from "../model/types";
+import { CATEGORY_ICON, type Notification } from "../model/types";
 
 type Props = { item: Notification; onPress?: () => void; onOpen?: () => void };
 
-// One folded event as a card: a tinted category tile, title + text, a footer with the category and the time.
-// Unread cards get a blue spine and a tinted surface. `onOpen` (a deep-link target the viewer can open) shows the
-// round arrow; tapping the card itself opens the detail sheet.
+// One folded event as a white card (Adliya): the category's icon on a soft blue tile, the title in bold, one grey line (the text · when),
+// and a red dot while it is unread. `onOpen` (a deep-link target the viewer can open) shows a small arrow button; tapping the card itself
+// opens the detail sheet.
 export function NotificationRow({ item, onPress, onOpen }: Props) {
-  const c = useColors();
+  const { colors: c, dark, glass } = useTheme();
   const { t } = useT();
   const text = eventText(item, t);
-  const tone = CATEGORY_COLOR[item.category] ?? c.accent;
+  const when = timeAgo(item.createdAt, t);
+  const line = [text.body || t(`notif.cats.${item.category}`), when].filter(Boolean).join(" · ");
   return (
-    <PressableScale onPress={onPress} scale={0.985} haptic={false} style={[s.card, { borderColor: item.read ? c.line : brand.b600, backgroundColor: item.read ? c.surface : c.tint }]} accessibilityLabel={text.title}>
-      {!item.read ? <View style={s.spine} /> : null}
-      <View style={[s.icon, { backgroundColor: `${tone}26` }]}>
-        <Icon name={(CATEGORY_ICON[item.category] ?? "bell") as IconName} size={19} color={tone} />
+    <PressableScale onPress={onPress} scale={0.985} haptic={false} style={[s.card, { backgroundColor: dark || glass ? c.surface : "#FFFFFF", borderColor: dark || glass ? c.line : "#E6EBF3" }, !glass && s.shadow]} accessibilityLabel={item.read ? text.title : `${text.title}, ${t("nt1.unread")}`}>
+      <View style={[s.icon, { backgroundColor: c.tint2 }]}>
+        <Icon name={(CATEGORY_ICON[item.category] ?? "bell") as IconName} size={21} color={c.accent} />
       </View>
       <View style={s.col}>
-        <Text variant="body" weight={item.read ? "semibold" : "bold"} numberOfLines={2}>{text.title}</Text>
-        {text.body ? <Text variant="small" tone="gray" numberOfLines={3}>{text.body}</Text> : null}
-        <View style={s.foot}>
-          <View style={[s.pill, { backgroundColor: `${tone}1F` }]}><Text variant="caption" weight="semibold" style={{ color: tone }}>{t(`notif.cats.${item.category}`)}</Text></View>
-          <Text variant="caption" tone="gray2">{timeAgo(item.createdAt, t)}</Text>
-        </View>
+        <Text variant="body" weight="bold" numberOfLines={2} style={s.title}>{text.title}</Text>
+        <Text variant="small" tone="gray" numberOfLines={3} style={s.sub}>{line}</Text>
       </View>
+      {!item.read ? <View style={s.dot} /> : null}
       {onOpen ? (
-        <PressableScale onPress={onOpen} hitSlop={10} accessibilityLabel={t("nt1.open")} style={[s.go, { backgroundColor: brand.b600 }]}>
-          <Icon name="arrow-up-right" size={16} tone="white" />
+        <PressableScale onPress={onOpen} hitSlop={10} accessibilityLabel={t("nt1.open")} style={[s.go, { backgroundColor: c.tint2 }]}>
+          <Icon name="arrow-up-right" size={16} color={c.accent} />
         </PressableScale>
       ) : null}
     </PressableScale>
@@ -40,11 +37,12 @@ export function NotificationRow({ item, onPress, onOpen }: Props) {
 }
 
 const s = StyleSheet.create({
-  card: { flexDirection: "row", alignItems: "flex-start", gap: 12, padding: 14, borderRadius: radius.rl, borderWidth: 1, overflow: "hidden" },
-  spine: { position: "absolute", left: 0, top: 0, bottom: 0, width: 4, backgroundColor: brand.b600 },
-  icon: { width: 44, height: 44, borderRadius: 15, alignItems: "center", justifyContent: "center" },
-  col: { flex: 1, gap: 4 },
-  foot: { flexDirection: "row", alignItems: "center", gap: 8, marginTop: 2 },
-  pill: { borderRadius: 999, paddingHorizontal: 9, paddingVertical: 2 },
-  go: { width: 34, height: 34, borderRadius: 17, alignItems: "center", justifyContent: "center", alignSelf: "center" },
+  card: { flexDirection: "row", alignItems: "center", gap: 14, padding: 16, borderRadius: 18, borderWidth: 1 },
+  icon: { width: 50, height: 50, borderRadius: 15, alignItems: "center", justifyContent: "center" },
+  col: { flex: 1, minWidth: 0, gap: 3 },
+  title: { fontSize: 16, lineHeight: 21 },
+  sub: { fontSize: 14, lineHeight: 19 },
+  dot: { width: 10, height: 10, borderRadius: 5, backgroundColor: "#E5484D" },
+  go: { width: 32, height: 32, borderRadius: 16, alignItems: "center", justifyContent: "center" },
+  shadow: Platform.select({ ios: { shadowColor: "#0B1A33", shadowOpacity: 0.05, shadowRadius: 10, shadowOffset: { width: 0, height: 4 } }, default: { elevation: 1 } })!,
 });

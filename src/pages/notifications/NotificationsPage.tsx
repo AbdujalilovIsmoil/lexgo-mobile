@@ -6,7 +6,7 @@ import { TabPage, useTabPad } from "@/widgets/tab-page";
 import { useT } from "@/shared/i18n";
 import { HOME_BG } from "@/widgets/client-dash";
 import { useTheme } from "@/shared/theme";
-import { HeaderRight, Icon, PressableScale, SecondaryHeader } from "@/shared/ui";
+import { IconButton, SecondaryHeader } from "@/shared/ui";
 import { NotificationFeed } from "./NotificationFeed";
 import { useFeed } from "./useFeed";
 
@@ -24,19 +24,18 @@ export function NotificationsPage() {
   const shownUnread = feed.items.filter((n) => !n.read);
   // Unfiltered: mark everything (server-side); narrowed: only the shown ones (web "markShown").
   const markShown = () => (feed.filtering ? markMany.mutate(shownUnread) : markAll.mutate());
+  // Adliya: the header's white square with the check (shown while something here is unread).
   const markAllBtn = feed.unreadTotal > 0 && shownUnread.length > 0 ? (
-    <PressableScale onPress={markShown} hitSlop={8} accessibilityLabel={feed.filtering ? t("nt1.markShown") : t("profile.markAll")}>
-      <Icon name="check-circle" size={22} tone="accent" />
-    </PressableScale>
+    <IconButton icon="check" size={42} label={feed.filtering ? t("nt1.markShown") : t("profile.markAll")} onPress={markShown} />
   ) : undefined;
   if (inTabs) return <TabPage title={t("profile.notifications")} right={markAllBtn}><NotificationFeed feed={feed} bottomPad={tabPad} /></TabPage>;
   return (
-    // The Xizmatlar tab's frame: the white SecondaryHeader (mark-all next to the support button) over Home's ground.
+    // The Adliya frame: the SecondaryHeader with only the mark-all check on the right, over Home's ground.
     <View style={[s.fill, { backgroundColor: dark ? c.canvas : HOME_BG }]}>
-      <SecondaryHeader title={t("profile.notifications")} right={<View style={s.right}>{markAllBtn}<HeaderRight /></View>} />
+      <SecondaryHeader title={t("profile.notifications")} right={markAllBtn ?? <View />} />
       <NotificationFeed feed={feed} />
     </View>
   );
 }
 
-const s = StyleSheet.create({ fill: { flex: 1 }, right: { flexDirection: "row", alignItems: "center", gap: 12 } });
+const s = StyleSheet.create({ fill: { flex: 1 } });

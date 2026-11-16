@@ -38,13 +38,13 @@ export default function MyDocumentsPage() {
   const go = (path: string) => router.push(path as never);
   const filtered = !!(l.group || l.mode || l.status || l.q.trim());
   const modes = ds.offer([
-    { key: "custom", mode: "lawyer" as const, label: t("dm1.menu.custom"), icon: "edit" as const, path: "/documents/new?kind=custom" },
-    { key: "review", mode: "review" as const, label: t("dm1.menu.review"), icon: "search" as const, path: "/documents/new?kind=review" },
-    { key: "analysis", mode: "analysis" as const, label: t("dm1.menu.analysis"), icon: "cpu" as const, path: "/doc-analysis" },
+    { key: "custom", mode: "lawyer" as const, label: t("cxUg.scratchTitle"), sub: t("cxUg.scratchSub"), icon: "edit" as const, path: "/documents/new?kind=custom" },
+    { key: "review", mode: "review" as const, label: t("cxUg.reviewTitle"), sub: t("cxUg.reviewSub"), icon: "file-text" as const, path: "/documents/new?kind=review" },
+    { key: "analysis", mode: "analysis" as const, label: t("dm1.menu.analysis"), sub: t("cdash.home.analysisSub"), icon: "cpu" as const, path: "/doc-analysis" },
   ]);
   const actions = [
-    { key: "svc", label: t("dm1.menu.services"), icon: "grid" as const, onPress: () => go("/services") },
-    ...modes.map((m) => ({ key: m.key, label: m.label, icon: m.gate.state === "locked" ? ("lock" as const) : m.icon, onPress: () => go(m.path) })),
+    { key: "svc", label: t("dm1.menu.services"), sub: t("cdash.home.servicesSub"), icon: "layers" as const, onPress: () => go("/services") },
+    ...modes.map((m) => ({ key: m.key, label: m.label, sub: m.sub, icon: m.gate.state === "locked" ? ("lock" as const) : m.icon, onPress: () => go(m.path) })),
   ];
   return (
     <AdminPage {...frame} title={t("dm1.title")} subtitle={l.countsLoading ? t("dm1.lead") : t("docSheet.count", { n: l.counts.all ?? 0 })} right={<View {...newRa}><IconButton icon="plus" label={t("dm1.new")} onPress={() => setMenu(true)} /></View>}>

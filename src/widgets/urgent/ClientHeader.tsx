@@ -7,9 +7,9 @@ import { UrgentHero } from "./UrgentHero";
 import { UrgentNote } from "./UrgentNote";
 
 // The fixed top of the client's /urgent, above the scroll: the header and the hero as one blue block that never scrolls.
-export function UrgentTop() {
+export function UrgentTop({ noBack }: { noBack?: boolean } = {}) {
   const cat = useCatalog();
-  return <UrgentHero cat={cat.data} loading={cat.isLoading} />;
+  return <UrgentHero cat={cat.data} loading={cat.isLoading} noBack={noBack} />;
 }
 
 // The scrolling part of the client's /urgent, under UrgentTop: the "request sent" note, every service as a row ("Xizmatni tanlang",

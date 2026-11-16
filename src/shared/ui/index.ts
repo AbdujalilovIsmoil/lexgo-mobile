@@ -26,6 +26,8 @@ export { SecondaryHeader } from "./SecondaryHeader";
 export { HeaderExtra, HeaderRight, registerHeaderExtra, registerHeaderRight } from "./headerExtra";
 export { ErrorView, useErrorText } from "./ErrorView";
 export { Toaster } from "./Toaster";
+export { FilterChips, FilterSeg, FilterSelect } from "./FilterControls";
+export { ListGroup, type ListGroupItem } from "./ListGroup";
 export { toast, useToastStore } from "./toastStore";
 export { HeroScroll } from "./HeroScroll";
 export { Carousel } from "./Carousel";

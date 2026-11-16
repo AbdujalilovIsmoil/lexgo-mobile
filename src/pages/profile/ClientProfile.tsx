@@ -2,8 +2,14 @@ import type { ReactNode } from "react";
 import { StyleSheet, View } from "react-native";
 import { useRouter } from "expo-router";
 import {
+  Award,
   Bell,
   Briefcase,
+  ClipboardList,
+  Package,
+  ShieldCheck,
+  Star,
+  Target,
   CircleHelp,
   Clock,
   CreditCard,
@@ -22,28 +28,28 @@ import {
 import { displayName, type User } from "@/entities/session";
 import { needsAction, useClientProfile, useConsents, useReferral } from "@/entities/profile-extras";
 import { useMyFeatures, usePlans } from "@/entities/plan";
-import { useOpenCases } from "@/entities/open-cases";
-import { isFinal, useMine } from "@/entities/urgent";
+import { useActiveWorks } from "@/widgets/client-dash";
 import { AppSettings } from "@/widgets/profile";
 import { PressableScale, Text } from "@/shared/ui";
 import { HeaderExtra } from "@/shared/ui/headerExtra";
 import { ProfileBandPage, ProfileIconTile, ProfileList, type ProfileRow } from "@/shared/ui/profile";
 import { radius, useTheme } from "@/shared/theme";
 import { useT } from "@/shared/i18n";
-import { DIGITAL_SALES } from "@/shared/store-rules";
+import { DIGITAL_SALES, storeRows } from "@/shared/store-rules";
 
 type Row = { key: string; icon: LucideIcon; title: string; sub?: string; badge?: number; href: string };
 
 // The client's profile (ProfileBandPage): the band (photo, name, phone · LexGo ID, plan and invites chips, the pencil to edit), three shortcuts
 // (works, documents, payments), then the sections as rows of two cards — every panel the profile's old tabs held opens on its own page
 // (/profile/section/…), the account screens and the settings on theirs. Theme, language, update, sign out and the version follow below.
-export function ClientProfile({ user, onBack, leading, bottomPad }: { user: User; onBack?: () => void; leading?: ReactNode; bottomPad?: number }) {
+export function ClientProfile({ user, onBack, leading, bottomPad, aiFab }: { user: User; onBack?: () => void; leading?: ReactNode; bottomPad?: number; aiFab?: boolean }) {
   const { t } = useT();
   const { colors: c } = useTheme();
   const router = useRouter();
   const photo = useClientProfile().data?.avatarUrl;
-  const openCases = useOpenCases().open.length;
-  const liveUrgent = (useMine().data ?? []).filter((r) => !isFinal(r)).length;
+  // The same active works as Home's "Faol ishlar" (the unfinished marketplace orders): the old count read client_works, which the backend
+  // closes to the client role, so it always said 0.
+  const activeWorks = useActiveWorks().active.length;
   const referral = useReferral().data;
   const consents = useConsents().data ?? [];
   const features = useMyFeatures().data;
@@ -63,6 +69,16 @@ export function ClientProfile({ user, onBack, leading, bottomPad }: { user: User
     ...(DIGITAL_SALES ? [{ key: "gifts", icon: Gift, title: t("profile.pp.gifts"), href: "/profile/gifts" } as Row] : []),
     { key: "referral", icon: UserPlus, title: t("profile.pp.referral"), sub: referral ? t("profile.pp.invites", { n: Math.min(referral.joined, goal), goal }) : undefined, href: "/profile/referral" },
   ];
+  // The rows that lived in the drawer (the menu button is gone from the Profil tab): the problem intake, packages, matched advocates, plans,
+  // ratings and reviews, the guarantee. Store builds drop what the store rules forbid, as the drawer did.
+  const more: Row[] = storeRows([
+    { key: "intake", icon: ClipboardList, title: t("cpd.menu.intake"), href: "/intake" },
+    { key: "packages", icon: Package, title: t("cpd.menu.packages"), href: "/packages" },
+    { key: "matches", icon: Target, title: t("cpd.menu.matches"), href: "/matches" },
+    { key: "subscription", icon: Award, title: t("cpd.menu.subscription"), href: "/subscription" },
+    { key: "reviews", icon: Star, title: t("cpd.menu.reviews"), href: "/ratings" },
+    { key: "warranty", icon: ShieldCheck, title: t("cpd.menu.warranty"), href: "/warranty" },
+  ], (r) => r.href);
   const settings: Row[] = [
     { key: "security", icon: Lock, title: t("profile.pp.security"), sub: t("profile.pp.securitySub"), href: "/profile/section/security" },
     { key: "notif", icon: Bell, title: t("profile.pp.notif"), href: "/settings/notifications" },
@@ -72,7 +88,7 @@ export function ClientProfile({ user, onBack, leading, bottomPad }: { user: User
     { key: "help", icon: CircleHelp, title: t("profile.pp.help"), href: "/support" },
   ];
   const tiles: { key: string; icon: LucideIcon; title: string; sub: string; href: string }[] = [
-    { key: "works", icon: Briefcase, title: t("profile.pp.works"), sub: t("profile.pp.worksSub", { n: openCases + liveUrgent }), href: "/dashboard-lists/works" },
+    { key: "works", icon: Briefcase, title: t("profile.pp.works"), sub: t("profile.pp.worksSub", { n: activeWorks }), href: "/(tabs)/orders" },
     { key: "docs", icon: File, title: t("profile.pp.docs"), sub: t("cl1.list.docs"), href: "/documents" },
     { key: "pay", icon: CreditCard, title: t("profile.pp.payments"), sub: t("profile.pp.paymentsSub"), href: "/profile/section/payments" },
   ];
@@ -88,6 +104,7 @@ export function ClientProfile({ user, onBack, leading, bottomPad }: { user: User
       onBack={onBack}
       leading={leading}
       bottomPad={bottomPad}
+      aiFab={aiFab}
       onEdit={() => go("/profile/section/personal")}
       editLabel={t("profile.pp.edit")}
     >
@@ -102,7 +119,8 @@ export function ClientProfile({ user, onBack, leading, bottomPad }: { user: User
       </View>
       <View style={{ marginTop: 14 }}><HeaderExtra /></View>
       <ProfileList title={t("profile.pp.sections")} rows={rows(sections)} first={tiles.length} />
-      <ProfileList title={t("profile.pp.settings")} rows={rows(settings)} first={tiles.length + sections.length} />
+      <ProfileList title={t("cdash.home.services")} rows={rows(more)} first={tiles.length + sections.length} />
+      <ProfileList title={t("profile.pp.settings")} rows={rows(settings)} first={tiles.length + sections.length + more.length} />
       <AppSettings soft />
     </ProfileBandPage>
   );

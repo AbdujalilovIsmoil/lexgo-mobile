@@ -1,6 +1,6 @@
 import { StyleSheet, View } from "react-native";
 import { Button, IconButton, Text } from "@/shared/ui";
-import { useColors, usePaneColor } from "@/shared/theme";
+import { useTheme } from "@/shared/theme";
 import { useInsets } from "@/shared/lib/insets";
 import { fmtMoney } from "@/shared/lib/money";
 import { useT } from "@/shared/i18n";
@@ -11,24 +11,26 @@ type Props = { service: LawyerService | null; fallback: number; canChat: boolean
 // The web's purchase card as a bar that stays put: the picked service, its price in so'm, a round chat button (only while a paid order with this specialist is running) and the
 // gradient "Sotib olish" (never dead: with nothing to buy it becomes "Xizmat tanlash", see SpecialistView).
 export function BuyBar({ service, fallback, canChat, chatBusy, onChat, onBuy }: Props) {
-  const c = useColors();
-  const pane = usePaneColor(); // solid in the glass theme: the page must not show through the bar
+  const { colors: c, dark, glass } = useTheme();
+  const pane = dark || glass ? c.surface : "#FFFFFF"; // solid: the page must not show through the bar
   const { t } = useT();
   const insets = useInsets();
   const price = service?.price || fallback;
   return (
     <View style={[s.bar, { backgroundColor: pane, borderTopColor: c.line, paddingBottom: insets.bottom + 12 }]}>
       <View style={s.price}>
-        <Text variant="caption" tone="gray" numberOfLines={1}>{service?.title ?? t("mkd.selectService")}</Text>
-        <Text variant="h4" tone="accent" numberOfLines={1}>{price ? `${fmtMoney(price)} ${t("common.currency")}` : "—"}</Text>
+        <Text variant="caption" tone="gray" numberOfLines={1} style={s.small}>{service?.title ?? t("mkd.selectService")}</Text>
+        <Text variant="h4" weight="bold" tone="accent" numberOfLines={1} style={s.sum}>{price ? `${fmtMoney(price)} ${t("common.currency")}` : "—"}</Text>
       </View>
       {canChat ? <IconButton icon="message-circle" size={48} label={t("spf.chat")} onPress={onChat} badge={chatBusy} /> : null}
-      <Button title={t(service?.price ? "mkd.buy" : "spf.pick")} icon="arrow-right" iconRight variant="gradient" onPress={onBuy} />
+      <Button title={t(service?.price ? "mkd.buy" : "spf.pick")} icon="arrow-right" iconRight variant="primary" onPress={onBuy} />
     </View>
   );
 }
 
 const s = StyleSheet.create({
   bar: { position: "absolute", left: 0, right: 0, bottom: 0, flexDirection: "row", alignItems: "center", gap: 10, paddingHorizontal: 16, paddingTop: 12, borderTopWidth: 1 },
-  price: { flex: 1, minWidth: 80 },
+  price: { flex: 1, minWidth: 80, gap: 1 },
+  small: { fontSize: 12.5 },
+  sum: { fontSize: 17, lineHeight: 22 },
 });

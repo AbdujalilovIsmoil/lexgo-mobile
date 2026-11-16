@@ -34,7 +34,7 @@ export function useTabItems({ state, navigation }: Pick<BottomTabBarProps, "stat
     const focused = current === def.route;
     const onPress = () => {
       if (def.auth && !authed) return router.push("/auth/login"); // personal data: a visitor signs in first
-      if (def.center && !focused) freshAiChat(); // the AI button always opens a new conversation
+      if (def.route === "ai" && !focused) freshAiChat(); // the AI button always opens a new conversation
       const ev = navigation.emit({ type: "tabPress", target: route.key, canPreventDefault: true });
       if (!focused && !ev.defaultPrevented) navigation.navigate(route.name);
     };

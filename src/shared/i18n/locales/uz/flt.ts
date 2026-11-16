@@ -18,6 +18,7 @@ export const flt = {
   experience: "Tajriba",
   expN: "{n}+ yil",
   quickAll: "Barchasi",
+  allRegions: "Barcha hududlar",
   sortOptions: {"recommended": "Tavsiya", "rating": "Reyting", "experience": "Tajriba", "price_asc": "Arzonroq"},
   kindOptions: {"all": "Hammasi", "advokat": "Advokatlar", "yurist": "Yuristlar"},
 };
