@@ -11,7 +11,10 @@ type Opt<T> = { value: T; label: string };
 // Adliya .seg3: a grey track, the picked option on a white thumb (ink, bold), the others grey. `fill`: a white track with a hairline and the
 // picked option solid blue with white text (the directory's type switch).
 // `compact`: a lower switch with smaller type (the directory's, Home's font size).
-export function FilterSeg<T extends string | number>({ options, value, onChange, fill, compact }: { options: Opt<T>[]; value: T; onChange: (v: T) => void; fill?: boolean; compact?: boolean }) {
+// Every switch takes the calendar's look now (white track, navy pick, low): the old grey track with a white thumb is gone app-wide.
+export function FilterSeg<T extends string | number>({ options, value, onChange }: { options: Opt<T>[]; value: T; onChange: (v: T) => void; fill?: boolean; compact?: boolean }) {
+  const fill = true;
+  const compact = true;
   const { colors: c, dark, glass } = useTheme();
   const track = fill ? { backgroundColor: dark || glass ? c.surface : "#FFFFFF", borderWidth: 1, borderColor: dark || glass ? c.line : "#E6EBF3" } : { backgroundColor: dark || glass ? c.surface2 : c.line };
   return (

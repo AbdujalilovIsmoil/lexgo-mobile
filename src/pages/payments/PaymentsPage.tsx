@@ -4,7 +4,7 @@ import { useAccess } from "@/entities/access";
 import { PaymentHistory, PayoutsList } from "@/widgets/payments";
 import { AdminPage } from "@/shared/ui/admin";
 import { useClientFrame } from "@/widgets/client-dash";
-import { Segmented } from "@/shared/ui";
+import { Segmented, SlideSwap } from "@/shared/ui";
 import { useT } from "@/shared/i18n";
 
 // Payments and receipts; sellers also get their payouts (read-only) next to them.
@@ -20,7 +20,9 @@ export function PaymentsPage() {
           <Segmented value={tab} onChange={setTab} options={[{ value: "pay", label: t("py1.earn.tabPay") }, { value: "earn", label: t("py1.earn.tab") }]} />
         </View>
       ) : null}
-      {seller && tab === "earn" ? <PayoutsList /> : <PaymentHistory />}
+      <SlideSwap value={seller ? tab : "pay"} order={["pay", "earn"]} style={{ flex: 1 }}>
+        {seller && tab === "earn" ? <PayoutsList /> : <PaymentHistory />}
+      </SlideSwap>
     </AdminPage>
   );
 }

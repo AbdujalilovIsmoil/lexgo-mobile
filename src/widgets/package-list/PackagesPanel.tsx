@@ -140,7 +140,7 @@ export function PackagesPanel({ refreshing, onRefresh, scroll = true, header }: 
 
 const s = StyleSheet.create({
   root: { paddingHorizontal: 16, paddingTop: 8, gap: 14 },
-  rootEmbedded: { paddingTop: 0 },
+  rootEmbedded: { paddingTop: 0, paddingHorizontal: 0 }, // the host already pads its sides
   gap: { gap: 10 },
   flex: { flex: 1 },
   bleed: { marginHorizontal: -16, gap: 10 },

@@ -28,6 +28,7 @@ export { ErrorView, useErrorText } from "./ErrorView";
 export { Toaster } from "./Toaster";
 export { FilterChips, FilterSeg, FilterSelect } from "./FilterControls";
 export { ListGroup, type ListGroupItem } from "./ListGroup";
+export { SlideSwap } from "./SlideSwap";
 export { toast, useToastStore } from "./toastStore";
 export { HeroScroll } from "./HeroScroll";
 export { Carousel } from "./Carousel";

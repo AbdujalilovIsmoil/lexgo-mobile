@@ -1,10 +1,9 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
 import { StyleSheet, View } from "react-native";
 import Animated, { useAnimatedStyle, useSharedValue, withSpring, type SharedValue } from "react-native-reanimated";
-import { shadows } from "@/shared/theme";
 
-const PAD = 4;
-const GAP = 4;
+const PAD = 3;
+const GAP = 3;
 // Slightly overdamped: the thumb glides in and stops, never poking out of the track.
 const SPRING = { damping: 34, stiffness: 300, mass: 0.8 };
 
@@ -12,11 +11,11 @@ const SPRING = { damping: 34, stiffness: 300, mass: 0.8 };
 const PosCtx = createContext<SharedValue<number> | null>(null);
 export const useSegmentPos = () => useContext(PosCtx);
 
-type Props = { count: number; index: number; track: string; thumb: string; thumbBorder?: string; radius: number; children: ReactNode };
+type Props = { count: number; index: number; track: string; thumb: string; thumbBorder?: string; trackBorder?: string; radius: number; children: ReactNode };
 
 // Track of `count` equal segments with one thumb that glides to the active one
 // (spring) instead of jumping. Segments are passed as children (flex: 1 each).
-export function SegmentTrack({ count, index, track, thumb, thumbBorder, radius, children }: Props) {
+export function SegmentTrack({ count, index, track, thumb, thumbBorder, trackBorder, radius, children }: Props) {
   const [w, setW] = useState(0);
   const x = useSharedValue(Math.max(0, index));
   useEffect(() => {
@@ -25,8 +24,8 @@ export function SegmentTrack({ count, index, track, thumb, thumbBorder, radius, 
   const seg = w ? (w - PAD * 2 - GAP * (count - 1)) / count : 0;
   const thumbStyle = useAnimatedStyle(() => ({ width: seg, transform: [{ translateX: x.value * (seg + GAP) }] }));
   return (
-    <View onLayout={(e) => setW(e.nativeEvent.layout.width)} style={[s.track, { backgroundColor: track, borderRadius: radius }]}>
-      {seg > 0 && index >= 0 ? <Animated.View pointerEvents="none" style={[s.thumb, shadows.s1, { backgroundColor: thumb, borderColor: thumbBorder ?? thumb, borderRadius: radius - PAD / 2 }, thumbStyle]} /> : null}
+    <View onLayout={(e) => setW(e.nativeEvent.layout.width)} style={[s.track, { backgroundColor: track, borderRadius: radius }, trackBorder ? { borderWidth: 1, borderColor: trackBorder } : null]}>
+      {seg > 0 && index >= 0 ? <Animated.View pointerEvents="none" style={[s.thumb, { backgroundColor: thumb, borderColor: thumbBorder ?? thumb, borderRadius: radius - PAD / 2 }, thumbStyle]} /> : null}
       <PosCtx.Provider value={x}>{children}</PosCtx.Provider>
     </View>
   );

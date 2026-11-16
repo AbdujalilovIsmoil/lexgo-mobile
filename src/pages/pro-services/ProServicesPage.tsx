@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
-import { RefreshControl, ScrollView } from "react-native";
+import { RefreshControl, ScrollView, View } from "react-native";
 import { useRouter } from "expo-router";
 import { usePending, usePromotionLive } from "@/entities/promotion";
 import { ServiceRow, filterServices, useProServices, useServiceStatus, type ProSeller, type ProService, type ServiceFilter, type ServiceStatus } from "@/entities/pro-service";
@@ -10,7 +10,7 @@ import { ServiceFormSheet } from "@/features/pro-service-form";
 import { ServiceSheet } from "@/features/pro-service-actions";
 import { ServicesEmpty, ServicesHeader, ServicesTabs, useServicesTab } from "@/widgets/pro-service";
 import { useInsets } from "@/shared/lib/insets";
-import { IconButton } from "@/shared/ui";
+import { IconButton, SlideSwap } from "@/shared/ui";
 import { AdminPage, PagedList } from "@/shared/ui/admin";
 import { afterSheet } from "@/shared/lib/sel";
 import { useT } from "@/shared/i18n";
@@ -65,15 +65,16 @@ export default function ProServicesPage({ packages, aboveList }: Props = {}) {
   const none = !q.isLoading && !q.isError && (d?.items.length ?? 0) === 0;
   const tabs = <ServicesTabs value={tab} onChange={setTab} />;
   const header = (toolbar: boolean) => (
-    <ServicesHeader before={tabs} aboveList={aboveList} rules={<RulesBanner onOpen={() => rules.open()} />} items={d?.items ?? []} loading={q.isLoading} filter={filter} onFilter={setFilter} search={search} onSearch={setSearch} verified={verified} boostDays={boost ? boost.daysLeft : null} waiting={pending.length} toolbar={toolbar} onAdd={() => open("form", null)} onPromoteProfile={DIGITAL_SALES ? () => promote() : undefined} />
+    <ServicesHeader aboveList={aboveList} rules={<RulesBanner onOpen={() => rules.open()} />} items={d?.items ?? []} loading={q.isLoading} filter={filter} onFilter={setFilter} search={search} onSearch={setSearch} verified={verified} boostDays={boost ? boost.daysLeft : null} waiting={pending.length} toolbar={toolbar} onAdd={() => open("form", null)} onPromoteProfile={DIGITAL_SALES ? () => promote() : undefined} />
   );
   // A native modal is presented only from the one on screen: the rules sheet goes inside the open sheet, else on the page.
   const place = sheet.open ? sheet.kind : "page";
   return (
     <AdminPage title={t("proSvc.title")} right={<IconButton icon="plus" label={t("proSvc.add")} onPress={() => open("form", null)} />}>
+      <View style={{ paddingHorizontal: 16, paddingTop: 6, paddingBottom: 12 }}>{tabs}</View>
+      <SlideSwap value={tab} order={["services", "packages"]} style={{ flex: 1 }}>
       {tab === "packages" ? (
-        <ScrollView contentContainerStyle={{ padding: 16, paddingBottom: insets.bottom + 24, gap: 14 }} showsVerticalScrollIndicator={false} keyboardShouldPersistTaps="handled">
-          {tabs}
+        <ScrollView contentContainerStyle={{ padding: 16, paddingTop: 0, paddingBottom: insets.bottom + 24, gap: 14 }} showsVerticalScrollIndicator={false} keyboardShouldPersistTaps="handled">
           {packages ?? null}
         </ScrollView>
       ) : none ? (
@@ -91,6 +92,7 @@ export default function ProServicesPage({ packages, aboveList }: Props = {}) {
           header={header(true)}
         />
       )}
+      </SlideSwap>
       <ServiceSheet
         item={viewing}
         verified={verified}

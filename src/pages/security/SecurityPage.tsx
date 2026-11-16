@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { View } from "react-native";
 import { HistoryTab, ProtectionTab, SessionsTab } from "@/widgets/security";
-import { Segmented } from "@/shared/ui";
+import { Segmented, SlideSwap } from "@/shared/ui";
 import { AdminPage } from "@/shared/ui/admin";
 import { useT } from "@/shared/i18n";
 
@@ -22,7 +22,9 @@ export default function SecurityPage() {
       <View style={{ paddingHorizontal: 16, paddingBottom: 12 }}>
         <Segmented options={options} value={tab} onChange={setTab} />
       </View>
-      {tab === "protect" ? <ProtectionTab /> : tab === "sessions" ? <SessionsTab /> : <HistoryTab />}
+      <SlideSwap value={tab} order={options.map((o) => o.value)} style={{ flex: 1 }}>
+        {tab === "protect" ? <ProtectionTab /> : tab === "sessions" ? <SessionsTab /> : <HistoryTab />}
+      </SlideSwap>
     </AdminPage>
   );
 }

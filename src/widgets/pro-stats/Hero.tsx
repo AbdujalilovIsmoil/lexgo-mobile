@@ -13,7 +13,7 @@ type Props = { label: string; amount: number | undefined; series: number[]; load
 
 const W = "rgba(255,255,255,";
 
-// Headline earnings on the brand gradient: big number, a tiny bar sparkline of the latest payouts (oldest to newest)
+// Headline earnings on the Adliya navy (as the headers): big number, a tiny bar sparkline of the latest payouts (oldest to newest)
 // and the change of the newest payout against the one before it. The amount counts up from 0 and the bars rise one by one
 // (both are skipped when the system asks for reduced motion).
 export function Hero({ label, amount, series, loading }: Props) {
@@ -29,7 +29,7 @@ export function Hero({ label, amount, series, loading }: Props) {
   const trendWord = trend ? t(`statUx.${trend}`) : "";
   const a11y = `${label}: ${amount == null ? "—" : `${value} ${cur}`}${d != null ? `, ${trendWord} ${Math.abs(d)}%` : ""}`;
   return (
-    <LinearGradient colors={["#13357A", "#0A1F44"]} start={{ x: 0.1, y: 0 }} end={{ x: 0.9, y: 1 }} style={s.card}> {/* Adliya navy, as the headers */}
+    <LinearGradient colors={["#13357A", "#0A1F44"]} start={{ x: 0.1, y: 0 }} end={{ x: 0.9, y: 1 }} style={s.card}>
       <View accessible accessibilityLabel={a11y} style={s.top}>
         <Text variant="small" weight="semibold" tone="white" style={{ opacity: 0.85 }}>{label}</Text>
         {loading ? <Skeleton onDark width="60%" height={36} /> : (

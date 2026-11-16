@@ -4,7 +4,7 @@ import type { CalEvent } from "@/entities/pro-calendar";
 import { useT } from "@/shared/i18n";
 import { useInsets } from "@/shared/lib/insets";
 import { dayKey, todayKey } from "@/shared/lib/pro/dates";
-import { ErrorView, FilterSeg, Skeleton } from "@/shared/ui";
+import { ErrorView, FilterSeg, Skeleton, SlideSwap } from "@/shared/ui";
 import { DayAgenda } from "./DayAgenda";
 import { EventList } from "./EventList";
 import { MonthGrid } from "./MonthGrid";
@@ -34,6 +34,7 @@ export function CalendarView({ onOpen, onDay, selected }: Props) {
   return (
     <ScrollView contentContainerStyle={{ padding: 16, gap: 14, paddingBottom: insets.bottom + 40 }} refreshControl={<RefreshControl refreshing={query.isRefetching} onRefresh={() => void query.refetch()} />} showsVerticalScrollIndicator={false}>
       <FilterSeg fill compact options={[{ value: "month", label: t("aw6.view.month") }, { value: "week", label: t("aw6.view.week") }, { value: "list", label: t("aw6.view.list") }]} value={mode} onChange={setMode} />
+      <SlideSwap value={mode} order={["month", "week", "list"]}>
       {query.isLoading ? <Skeleton height={300} round={20} /> : query.isError ? <ErrorView error={query.error} onRetry={() => void query.refetch()} /> : mode === "month" ? (
         <View style={{ gap: 14 }}>
           <MonthGrid year={ym.y} month={ym.m} selected={selected} byDay={byDay} onSelect={pick} onStep={step} />
@@ -41,6 +42,7 @@ export function CalendarView({ onOpen, onDay, selected }: Props) {
           <Upcoming events={upcoming.filter((e) => dayKey(e.startsAt) !== selected).slice(0, 5)} onOpen={onOpen} />
         </View>
       ) : mode === "week" ? <WeekView byDay={byDay} onOpen={onOpen} /> : <EventList events={events} onOpen={onOpen} />}
+      </SlideSwap>
     </ScrollView>
   );
 }
