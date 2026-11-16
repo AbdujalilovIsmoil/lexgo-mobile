@@ -9,6 +9,16 @@ import { create } from "zustand";
 // The page that scrolls sets it; leaving the page clears it, so the button is never left away on another tab.
 export const useAiFabAway = create<{ away: boolean; set: (v: boolean) => void }>((set) => ({ away: false, set: (away) => set((s) => (s.away === away ? s : { away })) }));
 
+// A page may give the floating AI button its own job while it is in view (the directory: "Muammoingizni yozing" — the AI search). The
+// button keeps its look; `label` is what a screen reader says. The page sets it on focus and clears it when it leaves.
+// With a `label` the button grows into a pill that shows it (and `sub` under it) beside the sparkle.
+export const useAiFabAction = create<{ action: (() => void) | null; label: string; sub: string; set: (action: (() => void) | null, label?: string, sub?: string) => void }>((set) => ({
+  action: null,
+  label: "",
+  sub: "",
+  set: (action, label = "", sub = "") => set({ action, label, sub }),
+}));
+
 export const AI_FAB_TOP_ZONE = 40; // near the top the button always shows
 export const AI_FAB_HIDE_AFTER = 12; // points scrolled down before it leaves
 export const AI_FAB_SHOW_AFTER = 18; // points scrolled up before it comes back

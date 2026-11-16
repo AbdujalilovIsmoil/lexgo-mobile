@@ -18,7 +18,7 @@ export type Pick =
 
 type Row = { key: string; icon: IconName; title: string; sub?: string; pick: Pick };
 
-// Google-like suggestions under the directory's search field. With nothing typed: the recent searches and the popular practice areas.
+// Google-like suggestions under the directory's search field. With nothing typed: the recent searches only.
 // While typing: specialists by name, practice areas, services and regions that contain the words (the typed part in bold), then "all
 // results" and "search with AI". Built from what the app already has: the loaded specialists, their services, the area and region lists.
 export function SearchSuggest({ text, lawyers, onPick }: { text: string; lawyers: Lawyer[]; onPick: (p: Pick) => void }) {
@@ -33,7 +33,6 @@ export function SearchSuggest({ text, lawyers, onPick }: { text: string; lawyers
   const groups: { title: string; rows: Row[]; action?: { label: string; onPress: () => void } }[] = [];
   if (!q) {
     if (recent.length) groups.push({ title: t("mk1.dir.recent"), action: { label: t("mk1.dir.clearRecent"), onPress: clearRecent }, rows: recent.map((r) => ({ key: `r${r}`, icon: "clock", title: r, pick: { kind: "text", q: r } })) });
-    groups.push({ title: t("mk1.dir.popular"), rows: AREA_KEYS.slice(0, 5).map((a) => ({ key: `p${a}`, icon: "trending-up", title: geo.area(a), pick: { kind: "area", key: a } })) });
   } else {
     const people = lawyers.filter((l) => has(l.name)).slice(0, 4);
     if (people.length) groups.push({ title: t("mk1.dir.sLawyers"), rows: people.map((l) => ({ key: `l${l.id}`, icon: "user", title: l.name, sub: [t(l.kind === "advocate" ? "mkw.roles.advokat" : "mkw.roles.yurist"), l.region ? geo.region(l.region) : ""].filter(Boolean).join(" · "), pick: { kind: "lawyer", id: l.userId || l.id } })) });
@@ -49,6 +48,7 @@ export function SearchSuggest({ text, lawyers, onPick }: { text: string; lawyers
       { key: "ai", icon: "star", title: t("mk1.dir.askAi", { q }), pick: { kind: "ai", q } },
     ] });
   }
+  if (!groups.length) return null; // nothing typed and no recent searches: no empty panel
   const bold = (s: string) => {
     const i = needle ? fold(s).indexOf(needle) : -1;
     if (i < 0) return <Text variant="body" numberOfLines={1}>{s}</Text>;

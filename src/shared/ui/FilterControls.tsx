@@ -3,21 +3,24 @@ import Animated, { FadeIn } from "react-native-reanimated";
 import { Icon } from "./Icon";
 import { PressableScale } from "./PressableScale";
 import { Text } from "./Text";
-import { useTheme } from "@/shared/theme";
+import { brand, mainColor, useTheme } from "@/shared/theme";
 import { selectHaptic } from "@/shared/lib/haptics";
 
 type Opt<T> = { value: T; label: string };
 
-// Adliya .seg3: a grey track, the picked option on a white thumb (ink, bold), the others grey.
-export function FilterSeg<T extends string | number>({ options, value, onChange }: { options: Opt<T>[]; value: T; onChange: (v: T) => void }) {
+// Adliya .seg3: a grey track, the picked option on a white thumb (ink, bold), the others grey. `fill`: a white track with a hairline and the
+// picked option solid blue with white text (the directory's type switch).
+// `compact`: a lower switch with smaller type (the directory's, Home's font size).
+export function FilterSeg<T extends string | number>({ options, value, onChange, fill, compact }: { options: Opt<T>[]; value: T; onChange: (v: T) => void; fill?: boolean; compact?: boolean }) {
   const { colors: c, dark, glass } = useTheme();
+  const track = fill ? { backgroundColor: dark || glass ? c.surface : "#FFFFFF", borderWidth: 1, borderColor: dark || glass ? c.line : "#E6EBF3" } : { backgroundColor: dark || glass ? c.surface2 : c.line };
   return (
-    <View style={[s.seg, { backgroundColor: dark || glass ? c.surface2 : c.line }]} accessibilityRole="radiogroup">
+    <View style={[s.seg, track, compact && s.segCompact]} accessibilityRole="radiogroup">
       {options.map((o) => {
         const on = o.value === value;
         return (
-          <PressableScale key={String(o.value)} haptic={false} scale={0.97} onPress={() => { selectHaptic(); onChange(o.value); }} accessibilityRole="radio" accessibilityState={{ selected: on }} style={[s.segBtn, on && [s.segOn, { backgroundColor: dark || glass ? c.surface : "#FFFFFF" }]]}>
-            <Text variant="small" weight="bold" numberOfLines={1} adjustsFontSizeToFit style={[s.segTx, { color: on ? c.ink : c.gray }]}>{o.label}</Text>
+          <PressableScale key={String(o.value)} haptic={false} scale={0.97} onPress={() => { selectHaptic(); onChange(o.value); }} accessibilityRole="radio" accessibilityState={{ selected: on }} style={[s.segBtn, compact && s.btnCompact, on && (fill ? { backgroundColor: dark || glass ? brand.b600 : mainColor } /* the bottom bar's active tab colour */ : [s.segOn, { backgroundColor: dark || glass ? c.surface : "#FFFFFF" }])]}>
+            <Text variant="small" weight="bold" numberOfLines={1} adjustsFontSizeToFit style={[s.segTx, compact && s.txCompact, { color: on ? (fill ? "#FFFFFF" : c.ink) : c.gray }]}>{o.label}</Text>
           </PressableScale>
         );
       })}
@@ -74,6 +77,9 @@ const s = StyleSheet.create({
   segBtn: { flex: 1, minHeight: 44, borderRadius: 10, alignItems: "center", justifyContent: "center", paddingHorizontal: 4 },
   segOn: { shadowColor: "#000000", shadowOpacity: 0.12, shadowRadius: 4, shadowOffset: { width: 0, height: 2 }, elevation: 2 },
   segTx: { fontSize: 15 },
+  segCompact: { padding: 3, borderRadius: 12, gap: 3 },
+  btnCompact: { minHeight: 30, borderRadius: 9 },
+  txCompact: { fontSize: 12.5, lineHeight: 16 },
   chips: { flexDirection: "row", flexWrap: "wrap", gap: 8 },
   chip: { minHeight: 38, paddingHorizontal: 14, borderRadius: 999, borderWidth: 1.5, alignItems: "center", justifyContent: "center" },
   chipTx: { fontSize: 14.5 },

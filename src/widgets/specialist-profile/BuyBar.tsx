@@ -20,10 +20,10 @@ export function BuyBar({ service, fallback, canChat, chatBusy, onChat, onBuy }: 
     <View style={[s.bar, { backgroundColor: pane, borderTopColor: c.line, paddingBottom: insets.bottom + 12 }]}>
       <View style={s.price}>
         <Text variant="caption" tone="gray" numberOfLines={1} style={s.small}>{service?.title ?? t("mkd.selectService")}</Text>
-        <Text variant="h4" weight="bold" tone="accent" numberOfLines={1} style={s.sum}>{price ? `${fmtMoney(price)} ${t("common.currency")}` : "—"}</Text>
+        <Text variant="h4" weight="bold" numberOfLines={1} style={s.sum}>{price ? `${fmtMoney(price)} ${t("common.currency")}` : "—"}</Text>
       </View>
       {canChat ? <IconButton icon="message-circle" size={48} label={t("spf.chat")} onPress={onChat} badge={chatBusy} /> : null}
-      <Button title={t(service?.price ? "mkd.buy" : "spf.pick")} icon="arrow-right" iconRight variant="primary" onPress={onBuy} />
+      <Button title={t(service?.price ? "mkd.buy" : "spf.pick")} icon="arrow-right" iconRight variant="gradient" size="lg" onPress={onBuy} />
     </View>
   );
 }
@@ -32,5 +32,5 @@ const s = StyleSheet.create({
   bar: { position: "absolute", left: 0, right: 0, bottom: 0, flexDirection: "row", alignItems: "center", gap: 10, paddingHorizontal: 16, paddingTop: 12, borderTopWidth: 1 },
   price: { flex: 1, minWidth: 80, gap: 1 },
   small: { fontSize: 12.5 },
-  sum: { fontSize: 17, lineHeight: 22 },
+  sum: { fontSize: 18, lineHeight: 23 },
 });

@@ -1,18 +1,17 @@
 import { StyleSheet, View } from "react-native";
-import { Card, GradientBox, Header, Skeleton } from "@/shared/ui";
+import { Card, Skeleton } from "@/shared/ui";
 import { useColors } from "@/shared/theme";
 import { useInsets } from "@/shared/lib/insets";
 
-// The profile's silhouette while it loads — the same layout: dark cover, avatar on its edge, name and chips,
+// The profile's silhouette while it loads — the same layout: back and share, the monogram, name and lines,
 // the tab bar and one section card.
 export function SpecialistSkeleton() {
   const c = useColors();
   const insets = useInsets();
   return (
     <View style={[s.fill, { backgroundColor: c.canvas }]}>
-      <GradientBox variant="dark" round={0} style={[s.cover, { height: insets.top + 118 }]}><Header transparent light /></GradientBox>
+      <View style={{ height: insets.top + 330, backgroundColor: "#0B1A33", justifyContent: "flex-end", padding: 18, gap: 10 }}><Skeleton width={110} height={22} round={11} onDark /><Skeleton width={220} height={30} onDark /><Skeleton width={160} height={16} onDark /></View>
       <View style={s.id}>
-        <View style={[s.ring, { backgroundColor: c.bg }]}><Skeleton width={92} height={92} round={46} /></View>
         <Skeleton width={190} height={26} style={s.gap} />
         <Skeleton width={130} height={14} />
         <Skeleton width={160} height={14} />
@@ -32,9 +31,7 @@ export function SpecialistSkeleton() {
 
 const s = StyleSheet.create({
   fill: { flex: 1 },
-  cover: { borderBottomLeftRadius: 32, borderBottomRightRadius: 32 },
-  id: { paddingHorizontal: 20, marginTop: -46, gap: 8 },
-  ring: { alignSelf: "flex-start", padding: 5, borderRadius: 56 },
+  id: { paddingHorizontal: 18, marginTop: 12, gap: 8 },
   gap: { marginTop: 4 },
   row: { flexDirection: "row", alignItems: "center", gap: 10 },
   half: { flex: 1 },

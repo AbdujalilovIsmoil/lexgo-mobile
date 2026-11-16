@@ -4,6 +4,9 @@ import { isRated } from "../lib/rating";
 import { normReview, normService } from "./normService";
 import type { Lawyer } from "../model/types";
 
+// Only a real https address is shown as a photo; anything else (empty, a relative path, data:) means "no photo".
+const httpsUrl = (v: string): string | undefined => (/^https:\/\//i.test(v.trim()) ? v.trim() : undefined);
+
 const NEW_DAYS = 60;
 
 // Read like normMarketSeller() in lib/services/marketplace.ts on the web, with two rules of the public-profile privacy (contract §22): the
@@ -46,6 +49,7 @@ export function normLawyer(v: unknown): Lawyer {
     successRate: asNum(d.success_rate),
     completed: asNum(d.completed_orders),
     organizationName: asStr(d.organization_name).trim() || undefined,
+    photo: httpsUrl(asStr(d.avatar_url ?? d.photo_url ?? d.photo ?? user.avatar_url ?? user.photo_url)),
     createdAt,
     isNew: reviews < 5 && Number.isFinite(ageDays) && ageDays <= NEW_DAYS,
     promoted: promo.active === true || d.is_sponsored === true,

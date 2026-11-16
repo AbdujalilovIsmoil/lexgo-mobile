@@ -16,6 +16,7 @@ import { useInsets } from "@/shared/lib/insets";
 import { useT } from "@/shared/i18n";
 import { AskSupport } from "./AskSupport";
 import { usePullRefresh } from "@/shared/lib/usePullRefresh";
+import { useAiFabScroll } from "@/shared/lib/aiFabAway";
 
 // eslint-disable-next-line @typescript-eslint/no-require-imports -- bundled asset (metro assetExts: lottie)
 const NOT_FOUND = require("../../../assets/lottie/NotFound.lottie") as string;
@@ -40,6 +41,7 @@ export function LawyerResults({
   const { t } = useT();
   const insets = useInsets();
   const top = useTabHeader(16);
+  const aiScroll = useAiFabScroll(); // the floating button leaves while the list goes down
   const q = useLawyerFilterStore((st) => st.filters.q);
   const {
     data,
@@ -63,6 +65,8 @@ export function LawyerResults({
     );
   return (
     <FlashList // hundreds of lawyers: cards (each with a Skia monogram) are recycled
+      onScroll={aiScroll}
+      scrollEventThrottle={16}
       data={isPending ? [] : items}
       keyExtractor={(l) => l.id || l.userId}
       renderItem={({ item, index }) => (

@@ -23,7 +23,7 @@ export function SpecialistPage() {
       </View>
     );
   }
-  const initial: SpecialistTab = tab === "about" || tab === "reviews" ? tab : "services";
+  const initial: SpecialistTab = tab === "services" || tab === "reviews" ? tab : "about"; // the design opens on "Haqida"
   return <SpecialistView lawyer={q.data} initialTab={initial} />;
 }
 

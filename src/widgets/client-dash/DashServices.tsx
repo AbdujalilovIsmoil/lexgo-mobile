@@ -57,8 +57,8 @@ export function DashServices() {
         ))}
       </View>
       <PressableScale onPress={() => router.navigate("/sos")} scale={0.98} style={[s.sos, { backgroundColor: c.err }, !glass && s.sosShadow]} accessibilityRole="button" accessibilityLabel={t("cdash.home.sosBar")}>
-        <TriangleAlert size={19} color="#FFFFFF" />
-        <Text variant="body" weight="bold" numberOfLines={1} maxFontSizeMultiplier={1.15} style={s.sosTx}>{t("cdash.home.sosBar")}</Text>
+        <TriangleAlert size={16} color="#FFFFFF" />
+        <Text variant="small" weight="bold" numberOfLines={1} maxFontSizeMultiplier={1.15} style={s.sosTx}>{t("cdash.home.sosBar")}</Text>
       </PressableScale>
     </View>
   );
@@ -78,8 +78,8 @@ const s = StyleSheet.create({
   tile: { flexBasis: "47%", flexGrow: 1, flexDirection: "row", alignItems: "center", gap: 10, padding: 12, minHeight: 66, borderRadius: 18, borderWidth: 1 },
   ico: { width: 38, height: 38, borderRadius: 12, alignItems: "center", justifyContent: "center" },
   tileSub: { fontSize: 12, lineHeight: 16 },
-  sos: { flexDirection: "row", alignItems: "center", justifyContent: "center", gap: 9, marginTop: 12, minHeight: 52, paddingHorizontal: 16, borderRadius: 14 },
-  sosTx: { flexShrink: 1, color: "#FFFFFF", fontSize: 15 },
+  sos: { flexDirection: "row", alignItems: "center", justifyContent: "center", gap: 9, marginTop: 12, minHeight: 42, paddingHorizontal: 14, borderRadius: 12 },
+  sosTx: { flexShrink: 1, color: "#FFFFFF", fontSize: 13.5 },
   sosShadow: Platform.select({ ios: { shadowColor: "#D1343B", shadowOpacity: 0.3, shadowRadius: 12, shadowOffset: { width: 0, height: 6 } }, default: { elevation: 3 } })!,
   copy: { flex: 1, minWidth: 0, gap: 2 },
   tileT: { fontSize: 14.5, lineHeight: 19 },

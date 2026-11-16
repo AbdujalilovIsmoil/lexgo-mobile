@@ -1,44 +1,62 @@
 import { Platform, StyleSheet, View } from "react-native";
-import { Icon, Reveal, Text, type IconName } from "@/shared/ui";
+import { Ionicons } from "@expo/vector-icons";
+import { useGeoLabels, type Lawyer } from "@/entities/lawyer";
+import { Icon, Pill, Reveal, Text, type IconName } from "@/shared/ui";
 import { useTheme } from "@/shared/theme";
-import { fmtRating } from "@/shared/lib/format";
 import { useT } from "@/shared/i18n";
-import type { Lawyer } from "@/entities/lawyer";
 
-// The web hero's six numbers (Adliya .sp-stats): a 3 × 2 grid of white tiles — the icon in blue, the number, the label under it.
-// rating · ratings · years · cases · success · orders done; an unknown one is "—".
-export function SpecialistStats({ lawyer: l }: { lawyer: Lawyer }) {
-  const { t, locale } = useT();
+// The white card under the photo (it laps over the photo's foot): the practice areas, the rating and the small pills (TOP / new / busy /
+// public id), then three numbers in a row — years of experience, cases won (or all cases), success — each with its icon on a soft round tile.
+// `unrated` is the backend's own "not rated yet" text (rating v3).
+export function SpecialistStats({ lawyer: l, top, unrated }: { lawyer: Lawyer; top?: boolean; unrated?: string }) {
+  const { t } = useT();
   const { colors: c, dark, glass } = useTheme();
-  const success = l.totalCases > 0;
-  const facts: { icon: IconName; label: string; value?: string }[] = [
-    { icon: "star", label: t("mkd.stats.rating"), value: l.rated ? fmtRating(l.rating, locale).replace(".", ",") : undefined },
-    { icon: "message-circle", label: t("mkd.stats.reviews"), value: String(l.reviews) },
-    { icon: "briefcase", label: t("mkd.stats.experience"), value: String(l.experienceYears) },
-    { icon: "folder", label: t("mkd.stats.cases"), value: l.totalCases ? String(l.totalCases) : undefined },
-    { icon: "trending-up", label: t("mkd.stats.success"), value: success ? `${Math.round(l.successRate)}%` : undefined },
-    { icon: "check-circle", label: t("mkd.stats.completed"), value: String(l.completed) },
+  const geo = useGeoLabels();
+  const areas = l.specializations.map((a) => geo.area(a)).join(", ");
+  const facts: { icon: IconName; value: string; label: string }[] = [
+    { icon: "briefcase", value: l.experienceYears ? t("mkd.hero.years", { n: l.experienceYears }) : "—", label: t("mkd.hero.exp") },
+    l.winsCount > 0 ? { icon: "award", value: String(l.winsCount), label: t("mkd.hero.won") } : { icon: "folder", value: l.totalCases ? String(l.totalCases) : "—", label: t("mkd.hero.cases") },
+    { icon: "trending-up", value: l.totalCases > 0 ? `${Math.round(l.successRate)}%` : "—", label: t("mkd.hero.success") },
   ];
-  const tile = { backgroundColor: dark || glass ? c.surface : "#FFFFFF", borderColor: dark || glass ? c.line : "#E6EBF3" };
+  const line = dark || glass ? c.line : "#E9EEF5";
   return (
     <Reveal i={1}>
-      <View style={s.grid}>
-        {facts.map((f) => (
-          <View key={f.label} style={[s.tile, tile, !glass && s.shadow]}>
-            <Icon name={f.icon} size={17} color={c.accent} />
-            <Text weight="bold" numberOfLines={1} maxFontSizeMultiplier={1.2} style={[s.value, !f.value && { color: c.gray2 }]}>{f.value || "—"}</Text>
-            <Text variant="caption" tone="gray" numberOfLines={2} maxFontSizeMultiplier={1.2} style={s.label}>{f.label}</Text>
+      <View style={[s.card, { backgroundColor: dark || glass ? c.surface : "#FFFFFF", borderColor: dark || glass ? c.line : "#E6EBF3" }, !glass && s.shadow]}>
+        {areas ? <Text variant="body" weight="semibold" numberOfLines={2} style={s.areas}>{areas}</Text> : null}
+        <View style={s.rate}>
+          <Ionicons name="star" size={15} color="#F5B301" />
+          <Text variant="small" tone="gray">{l.rated ? `${l.rating.toFixed(1).replace(".", ",")} · ${t("lw.reviews", { n: l.reviews })}` : unrated || t("lawyers.card.unrated")}</Text>
+          {l.publicId ? <Text variant="small" tone="gray2">{`·  ${l.publicId}`}</Text> : null}
+        </View>
+        {l.promoted || top || l.isNew || !l.available ? (
+          <View style={s.pills}>
+            {l.promoted || top ? <Pill label={t("mkw.promo.top")} tone="warn" icon="volume-2" small /> : null}
+            {l.isNew ? <Pill label={t("common.new")} tone="cy" small /> : null}
+            {l.available ? null : <Pill label={t("mk1.busy")} tone="warn" small />}
           </View>
-        ))}
+        ) : null}
+        <View style={[s.row, { borderTopColor: line }]}>
+          {facts.map((f, i) => (
+            <View key={f.label} style={[s.fact, i > 0 && { borderLeftWidth: 1, borderLeftColor: line }]}>
+              <View style={[s.ico, { backgroundColor: c.tint2 }]}><Icon name={f.icon} size={18} color={c.accent} /></View>
+              <Text variant="body" weight="bold" numberOfLines={1} style={s.value}>{f.value}</Text>
+              <Text variant="caption" tone="gray" numberOfLines={1}>{f.label}</Text>
+            </View>
+          ))}
+        </View>
       </View>
     </Reveal>
   );
 }
 
 const s = StyleSheet.create({
-  grid: { flexDirection: "row", flexWrap: "wrap", gap: 8, paddingHorizontal: 18, marginTop: 16 },
-  tile: { flexBasis: "30%", flexGrow: 1, alignItems: "center", gap: 3, paddingVertical: 12, paddingHorizontal: 6, borderRadius: 18, borderWidth: 1 },
-  value: { fontSize: 18, lineHeight: 23, marginTop: 2 },
-  label: { fontSize: 11.5, lineHeight: 14, textAlign: "center" },
-  shadow: Platform.select({ ios: { shadowColor: "#0B1A33", shadowOpacity: 0.05, shadowRadius: 10, shadowOffset: { width: 0, height: 4 } }, default: { elevation: 1 } })!,
+  card: { marginHorizontal: 16, marginTop: -18, padding: 16, gap: 8, borderRadius: 20, borderWidth: 1 },
+  areas: { fontSize: 15, lineHeight: 21 },
+  rate: { flexDirection: "row", alignItems: "center", gap: 5 },
+  pills: { flexDirection: "row", flexWrap: "wrap", gap: 6 },
+  row: { flexDirection: "row", marginTop: 6, paddingTop: 14, borderTopWidth: 1 },
+  fact: { flex: 1, minWidth: 0, alignItems: "center", gap: 4, paddingHorizontal: 4 },
+  ico: { width: 40, height: 40, borderRadius: 20, alignItems: "center", justifyContent: "center", marginBottom: 2 },
+  value: { fontSize: 16.5, lineHeight: 21 },
+  shadow: Platform.select({ ios: { shadowColor: "#0B1A33", shadowOpacity: 0.08, shadowRadius: 14, shadowOffset: { width: 0, height: 6 } }, default: { elevation: 3 } })!,
 });

@@ -152,7 +152,10 @@ export function ProfileBandPage({ name, photo, phone, line, chips, onBack, leadi
   useAiFabFollow(scrollY, !!aiFab);
   const { colors: c, dark } = useTheme();
   const insets = useInsets();
-  const barH = insets.top + HEADER_GAP + HEADER_ROW + 8;
+  // With no button in the bar (the Profil tab: no back, no drawer) there is no bar row to keep room for: the band starts right under the
+  // status bar, and the fixed strip only covers the status bar.
+  const compact = !onBack && !leading;
+  const barH = compact ? insets.top + 14 : insets.top + HEADER_GAP + HEADER_ROW + 8;
   const on = whoY + colY - barH + NAME_SIZE / 2;
   const off = on - 12;
   // Until the band is measured (whoY is still 0) the threshold is meaningless (negative): the name stays in the band.
@@ -222,14 +225,14 @@ export function ProfileBandPage({ name, photo, phone, line, chips, onBack, leadi
         </View>
         {children}
       </HeroScroll>
-      <View pointerEvents="box-none" style={[s.bar, { height: barH, paddingTop: insets.top + HEADER_GAP }]}>
+      <View pointerEvents="box-none" style={[s.bar, { height: compact ? insets.top : barH, paddingTop: insets.top + HEADER_GAP }]}>
         <BandArt height={bandH ?? barH} />
         {onBack ? <IconButton icon={backIcon} tone="glass" onPress={onBack} /> : leading}
-        <View pointerEvents="none" style={[s.barTitle, { top: insets.top + HEADER_GAP }]}>
+        {compact ? null : <View pointerEvents="none" style={[s.barTitle, { top: insets.top + HEADER_GAP }]}>
           <Animated.View style={barName}>
             <Text variant="h3" tone="white" numberOfLines={1} onLayout={(e) => setNameW(e.nativeEvent.layout.width)} style={s.barName}>{name}</Text>
           </Animated.View>
-        </View>
+        </View>}
       </View>
     </View>
   );

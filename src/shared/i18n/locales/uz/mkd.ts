@@ -26,6 +26,7 @@ export const mkd = {
   noReviewsText: "Birinchi buyurtmadan keyin sharhlar shu yerda chiqadi.",
   anonymous: "Mijoz",
   sellerReply: "Mutaxassis javobi",
+  hero: { verified: "Tasdiqlangan", years: "{n} yil", exp: "tajriba", won: "yutgan ish", cases: "ish", success: "muvaffaqiyat", reviewsN: "Fikrlar ({n})" },
   stats: {
     rating: "Reyting",
     reviews: "Baho",

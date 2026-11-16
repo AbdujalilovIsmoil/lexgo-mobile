@@ -8,7 +8,7 @@ import { useLawyerServices, useSellerPromos, useSellerRating, type Lawyer, type 
 import { PurchaseFlow } from "@/features/market-purchase";
 import { ProfileTabs, type TabDef } from "@/widgets/client-profile";
 import { PriceExplainer, useBuyGate } from "@/widgets/lawyer-sheet";
-import { AboutPanel, BuyBar, ServiceOption, ServicesPanel, SpecialistCover, SpecialistIdentity, SpecialistStats } from "@/widgets/specialist-profile";
+import { AboutPanel, BuyBar, ServiceOption, ServicesPanel, SpecialistCover, SpecialistStats } from "@/widgets/specialist-profile";
 import { BottomSheet, EmptyState, HeroScroll, Reveal, SheetScroll, toast } from "@/shared/ui";
 import { useColors } from "@/shared/theme";
 import { useInsets } from "@/shared/lib/insets";
@@ -16,12 +16,12 @@ import { useT } from "@/shared/i18n";
 import { ReviewsPanel } from "./ReviewsPanel";
 
 export type SpecialistTab = "services" | "about" | "reviews";
+// Haqida · Xizmatlar · Fikrlar (n), in this order (the design's).
 const TABS: TabDef<SpecialistTab>[] = [
-  { key: "services", icon: "briefcase", label: "mkd.services" },
-  { key: "about", icon: "user", label: "mkd.about" },
+  { key: "about", icon: "user", label: "spf.about" },
+  { key: "services", icon: "briefcase", label: "spf.services" },
   { key: "reviews", icon: "star", label: "mkd.tabReviews" },
 ];
-const TAB_LABEL: TabDef<SpecialistTab>[] = [{ ...TABS[0], label: "spf.services" }, { ...TABS[1], label: "spf.about" }, TABS[2]];
 
 // A specialist's page as the web shows it, in the client profile's build: cover and identity, the six numbers, three
 // gliding tabs (services and prices · about · reviews), a bar with the picked service's price and "Sotib olish" — which opens
@@ -67,11 +67,10 @@ export function SpecialistView({ lawyer: base, initialTab }: { lawyer: Lawyer; i
   return (
     <View style={[s.fill, { backgroundColor: c.canvas }]}>
       <HeroScroll contentContainerStyle={{ paddingBottom: insets.bottom + 120 }}>
-        <SpecialistCover userId={l.userId} />
-        <SpecialistIdentity lawyer={l} top={top} unrated={pub?.unratedText} />
-        <SpecialistStats lawyer={l} />
+        <SpecialistCover lawyer={l} />
+        <SpecialistStats lawyer={l} top={top} unrated={pub?.unratedText} />
         <View style={s.body}>
-          <Reveal i={2}><ProfileTabs seg value={nav.tab} onChange={go} tabs={TAB_LABEL} /></Reveal>
+          <Reveal i={2}><ProfileTabs seg="fill" value={nav.tab} onChange={go} tabs={TABS.map((x) => (x.key === "reviews" && l.reviews > 0 ? { ...x, label: t("mkd.hero.reviewsN", { n: l.reviews }) } : x))} /></Reveal>
           <Animated.View key={nav.tab} entering={(nav.dir === 1 ? FadeInRight : FadeInLeft).duration(320)}>
             {nav.tab === "services" ? <ServicesPanel sellerId={l.userId} services={services} selected={sel?.id ?? ""} blocked={blocked} onSelect={setPicked} onExplain={() => setExplain(true)} /> : null}
             {nav.tab === "about" ? <AboutPanel lawyer={l} /> : null}

@@ -38,6 +38,7 @@ export type Lawyer = {
   partialWins: number;
   successRate: number;
   completed: number;
+  photo?: string; // the public profile photo (https), when the backend sends one; none → the app's placeholder
   organizationName?: string; // public; education, licence and bar association are private and never read
   createdAt: string;
   isNew: boolean;

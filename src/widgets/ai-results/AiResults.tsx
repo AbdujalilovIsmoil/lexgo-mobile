@@ -7,6 +7,7 @@ import { useLawyerFilterStore } from "@/features/lawyer-filter";
 import { Button, EmptyState, ErrorView } from "@/shared/ui";
 import { useInsets } from "@/shared/lib/insets";
 import { useT } from "@/shared/i18n";
+import { useAiFabScroll } from "@/shared/lib/aiFabAway";
 import { AiBanner } from "./AiBanner";
 import { AiIntro } from "./AiIntro";
 
@@ -16,6 +17,7 @@ type Props = { header: React.ReactElement; onOpen: (id: string) => void; onExamp
 // match % and reasons. Same header (search + chips) as the normal list.
 export function AiResults({ header, onOpen, onExample, onOff }: Props) {
   const top = useTabHeader(16);
+  const aiScroll = useAiFabScroll(); // the floating button leaves while the list goes down
   const { t } = useT();
   const insets = useInsets();
   const router = useRouter();
@@ -32,6 +34,8 @@ export function AiResults({ header, onOpen, onExample, onOff }: Props) {
     : <EmptyState icon="search" title={t("mk1.aiNone")} text={t("mk1.aiNoneText")} actionLabel={t("mk1.aiOff")} onAction={onOff} />;
   return (
     <FlatList
+      onScroll={aiScroll}
+      scrollEventThrottle={16}
       data={guest || busy || q.isError ? [] : rows}
       keyExtractor={(r) => r.lawyer.userId}
       renderItem={({ item }) => <MarketCard lawyer={item.lawyer} match={item.match} onPress={() => onOpen(item.lawyer.userId)} />}

@@ -26,6 +26,7 @@ export const mkd = {
   noReviewsText: "Отзывы появятся после первых заказов.",
   anonymous: "Клиент",
   sellerReply: "Ответ специалиста",
+  hero: { verified: "Проверен", years: "{n} лет", exp: "опыт", won: "выиграно дел", cases: "дел", success: "успех", reviewsN: "Отзывы ({n})" },
   stats: {
     rating: "Рейтинг",
     reviews: "Оценки",
