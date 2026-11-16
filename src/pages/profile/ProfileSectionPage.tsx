@@ -1,6 +1,6 @@
 import { ScrollView, View } from "react-native";
 import { IdentityCard } from "@/widgets/identity";
-import { NotifPrefsCard, TelegramCard, TwoFactorCard } from "@/widgets/security";
+import { DeleteAccountCard, NotifPrefsCard, TelegramCard, TwoFactorCard } from "@/widgets/security";
 import { ActivityPanel, EventsPanel, FamilyPanel, PersonalPanel, SessionsPanel } from "@/widgets/client-profile";
 import { AdminPage } from "@/shared/ui/admin";
 import { useClientFrame } from "@/widgets/client-dash";
@@ -13,12 +13,12 @@ export type ProfileSection = "personal" | "family" | "security" | "payments" | "
 
 // The client profile's sections on their own pages — the very panels the profile's tabs held, in the same order:
 //   personal:   Shaxsiy ma'lumotlar → Shaxsni tasdiqlash      family:     Oila a'zolari
-//   security:   2FA → Telegram → Xabarnoma → Aktiv sessiyalar            payments:   its own two-tab page (PaymentsPlanPage)
+//   security:   2FA → Telegram → Xabarnoma → Aktiv sessiyalar → Hisobni o'chirish (App Store 5.1.1)   payments:   its own two-tab page (PaymentsPlanPage)
 //   (complaints have one page for everyone: /complaints)       activity:   Xavfsizlik hodisalari → Harakatlar jurnali
 const BODY: Record<Exclude<ProfileSection, "payments">, { title: string; body: () => React.ReactNode }> = {
   personal: { title: "profile.pp.personal", body: () => <><PersonalPanel /><IdentityCard /></> },
   family: { title: "profile.pp.family", body: () => <FamilyPanel /> },
-  security: { title: "profile.pp.security", body: () => <><TwoFactorCard /><TelegramCard /><NotifPrefsCard /><SessionsPanel /></> },
+  security: { title: "profile.pp.security", body: () => <><TwoFactorCard /><TelegramCard /><NotifPrefsCard /><SessionsPanel /><DeleteAccountCard /></> },
   activity: { title: "profile.pp.activity", body: () => <><EventsPanel /><ActivityPanel /></> },
 };
 

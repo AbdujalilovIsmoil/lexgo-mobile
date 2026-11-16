@@ -5,6 +5,7 @@ export type TabRole = "guest" | "client" | "seller";
 export type TabDef = { route: string; icon: TabIconName; labelKey: string; center?: boolean; badge?: string; auth?: boolean; href?: string };
 
 const t = (route: string, icon: TabIconName, labelKey: string, badge?: string): TabDef => ({ route, icon, labelKey, badge });
+// eslint-disable-next-line @typescript-eslint/no-unused-vars -- the AI centre button is hidden for now (seller bar)
 const ai: TabDef = { route: "ai", icon: "zap", labelKey: "tabs.ai", center: true };
 // Adliya: a client's centre button is Tezkor (the urgent advocate); their AI is the floating button in the bottom right corner (FlatBar).
 const urgent: TabDef = { route: "urgent", icon: "bolt", labelKey: "tabs.bar.urgent", center: true, href: "/urgent" };
@@ -20,7 +21,8 @@ export const TABS: Record<TabRole, TabDef[]> = {
   // The fourth slot is the client's orders (Buyurtmalarim): the backend closes the works page (client_works) to the client role.
   guest: [t("index", "home", "tabs.bar.home"), t("services", "grid", "tabs.bar.services"), urgent, { ...t("orders", "shopping-bag", "tabs.bar.orders"), auth: true }, { ...me, auth: true }],
   client: [t("index", "home", "tabs.bar.home"), t("services", "grid", "tabs.bar.services"), urgent, t("orders", "shopping-bag", "tabs.bar.orders"), me],
-  seller: [t("workspace", "home", "tabs.bar.home"), t("requests", "inbox", "tabs.requests", "requests"), ai, t("clients", "users", "tabs.clients"), messages],
+  // Hidden for now: the AI centre button (`ai`) between requests and clients.
+  seller: [t("workspace", "home", "tabs.bar.home"), t("requests", "inbox", "tabs.requests", "requests"), /* ai, */ t("clients", "users", "tabs.clients"), messages],
 };
 
 // Tab routes that belong to a role's bar are listed above; these extra routes are

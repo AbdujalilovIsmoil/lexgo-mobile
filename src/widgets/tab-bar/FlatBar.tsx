@@ -4,10 +4,11 @@ import type { BottomTabBarProps } from "expo-router/build/layouts/Tabs";
 import { useInsets } from "@/shared/lib/insets";
 import { GLASS_SOLID, useTheme } from "@/shared/theme";
 import { AiButton } from "./AiButton";
-import { AI_FAB_GAP, AiFab } from "./AiFab";
-import { floatingAi } from "./tabConfig";
+// Hidden for now (the floating AI button):
+// import { AI_FAB_GAP, AiFab } from "./AiFab";
+// import { floatingAi } from "./tabConfig";
+// import { useTabRole } from "./useTabRole";
 import { UrgentButton } from "./UrgentButton";
-import { useTabRole } from "./useTabRole";
 import { FlatItem } from "./FlatItem";
 import { useTabItems } from "./useTabItems";
 
@@ -21,7 +22,7 @@ export function FlatBar(props: BottomTabBarProps) {
   const { colors: c, dark, glass } = useTheme();
   const insets = useInsets();
   const { items } = useTabItems(props);
-  const role = useTabRole();
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars -- `h` places the floating AI button, hidden for now
   const [h, setH] = useState(0);
   return (
     <>
@@ -30,7 +31,7 @@ export function FlatBar(props: BottomTabBarProps) {
         {items.map((it) => (it.def.center ? (it.def.href ? <UrgentButton key={it.def.route} onPress={it.onPress} labelKey={it.def.labelKey} /> : <AiButton key={it.def.route} focused={it.focused} onPress={it.onPress} labelKey={it.def.labelKey} />) : <FlatItem key={it.def.route} def={it.def} focused={it.focused} onPress={it.onPress} />))}
       </View>
     </View>
-    {floatingAi(role) && h ? <AiFab bottom={h + AI_FAB_GAP} /> : null}
+    {/* Hidden for now: the floating AI button. Restore: {floatingAi(role) && h ? <AiFab bottom={h + AI_FAB_GAP} /> : null} */}
     </>
   );
 }

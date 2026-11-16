@@ -10,7 +10,8 @@ import { useTabRole } from "@/widgets/tab-bar/useTabRole";
 import { GuestWelcome } from "@/widgets/guest-welcome";
 import { HeroScroll, IconButton, backIcon } from "@/shared/ui";
 import { useRaPage } from "@/shared/remote-assist";
-import { MenuButton } from "@/widgets/client-sidebar/MenuButton";
+// Hidden for now: the sidebar (hamburger) button on the client's Profil tab.
+// import { MenuButton } from "@/widgets/client-sidebar/MenuButton";
 import { useTabClearance } from "@/widgets/tab-page";
 import { ClientProfile } from "./ClientProfile";
 import { SellerProfile } from "./SellerProfile";
@@ -31,7 +32,8 @@ export function ProfilePage({ tab }: { tab?: boolean } = {}) {
   const clearance = useTabClearance(24);
   const floating = <View style={[s.back, { top: insets.top + HEADER_GAP }]}><IconButton icon={backIcon} tone="glass" onPress={back} /></View>;
   if (!session) return <View style={s.fill}><GuestWelcome />{floating}</View>;
-  if (client) return tab ? <ClientProfile user={session.user} leading={<MenuButton glass />} bottomPad={clearance} /> : <ClientProfile user={session.user} onBack={back} />;
+  // Hidden for now — restore `leading={<MenuButton glass />}` to bring the hamburger back.
+  if (client) return tab ? <ClientProfile user={session.user} /* leading={<MenuButton glass />} */ bottomPad={clearance} /> : <ClientProfile user={session.user} onBack={back} />;
   if (seller) return <SellerProfile user={session.user} onBack={back} />;
   return (
     <View style={s.fill}>

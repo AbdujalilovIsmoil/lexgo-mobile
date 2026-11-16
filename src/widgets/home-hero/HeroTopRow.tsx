@@ -1,7 +1,7 @@
 import { StyleSheet, View } from "react-native";
 import { Text } from "@/shared/ui";
 import { useT } from "@/shared/i18n";
-import { MenuButton } from "@/widgets/client-sidebar/MenuButton";
+// import { MenuButton } from "@/widgets/client-sidebar/MenuButton"; — hidden for now
 import { HeaderActions } from "@/widgets/tab-page";
 
 // Menu button + greeting on the left; on the right the very same round buttons as every other page header (support, bell,
@@ -12,7 +12,7 @@ export function HeroTopRow({ name, onWhite }: { name?: string; onWhite?: boolean
   return (
     <View style={s.row}>
       <View style={s.brand}>
-        <MenuButton glass={!onWhite} />
+        {/* Hidden for now: the sidebar (hamburger) button. <MenuButton glass={!onWhite} /> */}
         <View style={s.who}>
           <Text variant="caption" tone="gray" style={onWhite ? undefined : s.hi} numberOfLines={1}>
             {t("home.greeting")}

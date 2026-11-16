@@ -6,7 +6,7 @@ import {
   Briefcase,
   CircleHelp,
   Clock,
-  CreditCard,
+  // CreditCard, — used only by the hidden "To'lovlar" tile
   Database,
   File,
   Gift,
@@ -74,7 +74,8 @@ export function ClientProfile({ user, onBack, leading, bottomPad }: { user: User
   const tiles: { key: string; icon: LucideIcon; title: string; sub: string; href: string }[] = [
     { key: "works", icon: Briefcase, title: t("profile.pp.works"), sub: t("profile.pp.worksSub", { n: openCases + liveUrgent }), href: "/dashboard-lists/works" },
     { key: "docs", icon: File, title: t("profile.pp.docs"), sub: t("cl1.list.docs"), href: "/documents" },
-    { key: "pay", icon: CreditCard, title: t("profile.pp.payments"), sub: t("profile.pp.paymentsSub"), href: "/profile/section/payments" },
+    // Hidden for now: the "To'lovlar" tile.
+    // { key: "pay", icon: CreditCard, title: t("profile.pp.payments"), sub: t("profile.pp.paymentsSub"), href: "/profile/section/payments" },
   ];
   const rows = (list: Row[]): ProfileRow[] => list.map(({ href, ...r }) => ({ ...r, onPress: () => go(href) }));
   const chips = [plan, referral ? t("profile.pp.invites", { n: Math.min(referral.joined, goal), goal }) : ""].filter(Boolean) as string[];

@@ -3,7 +3,11 @@ import { errorHaptic, successHaptic, tapHaptic } from "@/shared/lib/haptics";
 import { useT } from "@/shared/i18n";
 import { toast } from "@/shared/ui";
 import { assistInfoOf, settleOf, supportEventOf } from "@/entities/support";
+import { DIGITAL_SALES } from "@/shared/store-rules";
 import { useAssistStore } from "./assistStore";
+
+// iOS sells no plans (store-rules, App Store 3.1.1): an operator's plan offer / plan checkout never opens a sheet there.
+const PLAN_KINDS = new Set(["subscription_preview", "subscription_checkout"]);
 
 const EVENTS = ["support.", "notification.created", "subscription.", "payment.", "marketplace.", "document_request."];
 
@@ -14,6 +18,7 @@ export function useAssistListener() {
   useUserEvents(EVENTS, (raw) => {
     const e = supportEventOf(raw);
     const card = e?.kind === "assist" ? assistInfoOf(e, locale) : null;
+    if (card && !DIGITAL_SALES && PLAN_KINDS.has(card.kind)) return;
     if (card) {
       useAssistStore.getState().show(card);
       tapHaptic();

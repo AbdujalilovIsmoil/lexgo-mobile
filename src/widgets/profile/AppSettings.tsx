@@ -3,6 +3,7 @@ import Constants from "expo-constants";
 import { Card, Text } from "@/shared/ui";
 import { AppUpdateCard } from "./AppUpdateCard";
 import { LogoutButton } from "./LogoutButton";
+import { DeleteAccountButton } from "./DeleteAccountButton";
 import { useT } from "@/shared/i18n";
 import { ThemeSegment } from "@/features/theme-switch";
 import { LocaleSegment } from "@/features/locale-switch";
@@ -39,6 +40,7 @@ export function AppSettings({ soft }: { soft?: boolean }) {
       </Card>
       <AppUpdateCard />
       {authed ? <LogoutButton title={t("profile.logout")} onPress={confirm} outline={soft} /> : null}
+      {authed ? <DeleteAccountButton /> : null}
       <Text variant="caption" tone="gray2" center style={s.version}>
         {t("profile.version", { v: version })}
       </Text>
