@@ -17,6 +17,20 @@ module.exports = ({ config }) => {
     return cfg;
   });
 
+  // Play Console "Required hardware feature declarations are restricting your app's availability": portrait orientation and the
+  // Wi-Fi permission make Android IMPLY required features (screen.portrait, wifi), which hides the app from landscape-only
+  // devices (desktop, Android XR, some tablets) and Wi-Fi-less ones (mobile-data-only tablets). Declare them optional.
+  out = withAndroidManifest(out, (cfg) => {
+    const m = cfg.modResults.manifest;
+    const feats = (m["uses-feature"] = m["uses-feature"] ?? []);
+    for (const name of ["android.hardware.screen.portrait", "android.hardware.wifi"]) {
+      const hit = feats.find((f) => f.$?.["android:name"] === name);
+      if (hit) hit.$["android:required"] = "false";
+      else feats.push({ $: { "android:name": name, "android:required": "false" } });
+    }
+    return cfg;
+  });
+
   // A phone plugged in by USB with a free Apple account ("Personal Team"): that account has no Push Notifications and no Associated Domains
   // capability, so signing fails ("requires a development team" / "doesn't support …") unless both entitlements are left out. Use
   //   IOS_PERSONAL_TEAM=<team id> npx expo prebuild --platform ios --clean   (then build from Xcode or `expo run:ios --device`)

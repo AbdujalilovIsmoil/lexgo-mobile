@@ -95,7 +95,7 @@ Cloud builds need no Android Studio and no Java. (Java/Android SDK are only need
    ```
    As of 2026-11-01 `tsc` reports 3 pre-existing errors in `app/(tabs)/_layout.tsx` and `src/widgets/client-sidebar/useSidebarHidden.ts`. They do not block an EAS build (it does not typecheck) but should be fixed.
 2. **Bump the version** in `app.json`:
-   - `expo.android.versionCode`: increase by at least 1 (it is currently 4; every upload must be higher than the last one Play accepted).
+   - `expo.android.versionCode`: increase by at least 1 (currently 8; EAS had built up to 7 from uncommitted bumps, so always check `eas build:list` for the highest value first).
    - `expo.version`: only when the user-visible version changes.
 3. **Confirm the signing key BEFORE building:**
    ```bash
@@ -140,6 +140,7 @@ All lines must be `True`. If the key line is `False`, do not upload: see section
 Also confirm the build's version code: `npx eas-cli@latest build:list --platform android --limit 1 --non-interactive` shows `Version code`.
 
 Permissions policy for this app (set in `app.json`):
+- `app.config.js` declares `android.hardware.screen.portrait` and `android.hardware.wifi` as **optional** `uses-feature`. Without it Android implies them as required (portrait orientation, Wi-Fi permission) and Play's Publishing overview blocks sending the release for review ("Required hardware feature declarations are restricting your app's availability"). Do not remove it.
 - `android.blockedPermissions` removes `FOREGROUND_SERVICE_MEDIA_PLAYBACK`, storage and `SYSTEM_ALERT_WINDOW` permissions. The media-playback permission is merged in by the media libraries but the app has no background media feature, so declaring it would need a false justification in Play's declaration form. Do not re-add it.
 - No advertising ID (`AD_ID`) is used; the Play declaration answer is **No**. If an ads/attribution SDK is ever added, revisit this and the Data safety form.
 - **Background location (seller location sharing).** `expo-location` is configured with `isAndroidBackgroundLocationEnabled` and `isAndroidForegroundServiceEnabled`, so the manifest declares `ACCESS_BACKGROUND_LOCATION`, `FOREGROUND_SERVICE` and `FOREGROUND_SERVICE_LOCATION`. Before uploading a build with them, complete in Play Console:
