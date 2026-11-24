@@ -27,7 +27,8 @@ Last verified: 2026-11-01 (first internal-test release, version 1.1.0, versionCo
 | API | `EXPO_PUBLIC_API_BASE_URL` (see `.env.example`; production is `https://lexgo.api.cognilabs.org`) |
 | Play listing texts | `play-store/listing/{uz,en,ru}.txt` (uz is the primary language) |
 | Play declarations (data safety, content rating, etc.) | `play-store/data-safety.md`, `play-store/content-rating.md`, `play-store/release-and-store-info.md` |
-| Store images | `play-store/graphics/` (icon) and `play-store/graphics/store-listing/` (feature graphic + screenshots, with generator) |
+| Store icon / brand assets | `logos/` (see `logos/README.md`). The Play listing icon is **`logos/play-market/lexgo-play-icon-512.png`** (orange § chat bubble) and must be the same icon as the installed launcher icon (`app.json` → `icon`, `adaptiveIcon`) |
+| Store graphics | `play-store/graphics/store-listing/` (feature graphic + screenshots, with generator) |
 | Account-deletion URL given to Play | https://law-two-tau.vercel.app/uz/legal/account-deletion |
 | Privacy policy URL | https://law-two-tau.vercel.app/uz/legal/privacy |
 
@@ -219,6 +220,6 @@ Do not sign in with a staff/admin account for captures, and decline notification
 - **Data safety / sharing answers**: confirm with the backend team whether the AI provider and payment providers (Payme/Click) are plain service providers (current assumption) or separate controllers.
 - **Play Billing policy**: plans/subscriptions are paid through the provider's own page. Check whether Google requires Play Billing for them before production.
 - **Status bar**: on light-themed screens (Documents, AI chat) Android's status-bar icons are white on a light background and nearly invisible.
-- **Branding**: three logo variants appear (the "LG" glyph in the launcher/login, an "L" tile in the side menu, and the scales-and-book logo used in the store graphics). Pick one and align the icon/splash/512 px icon.
+- **Icon must match the listing** (Play policy "Misleading Claims: app store listing mismatch", hit on 2026-11-24): the installed launcher icon is the orange § bubble, so every Play listing language (default, uz, ru-RU, en) must use `logos/play-market/lexgo-play-icon-512.png`. An old blue "LG" icon was still in the ru-RU listing. The store graphics generator still draws the older scales-and-book logo in its headers; regenerate it with the § icon.
 - **Test data in production**: remove "Demo …" lawyers and junk requests, or the lawyers/orders screens cannot be used in screenshots.
 - Rotate any credential that was ever pasted into a chat or ticket during the 2026-11-01 setup (the staff/admin test passwords were shared in plain text).

@@ -22,7 +22,7 @@
 | Fayl | Joyi |
 |---|---|
 | **AAB** (Play'ga yuklanadigan) | git'da yo'q (`*.aab` ignor qilingan). Qayta yig'ish va tekshirish: `docs/ANDROID-RELEASE.md` |
-| Ilova ikonkasi 512×512 | `play-store/graphics/icon-512.png` |
+| Ilova ikonkasi 512×512 | `logos/play-market/lexgo-play-icon-512.png` (o'rnatilgan ilova ikonkasi bilan bir xil bo'lishi SHART; barcha tillarda) |
 | Feature graphic 1024×500 | `play-store/graphics/store-listing/out/feature-graphic-1024x500.jpg` |
 | Skrinshotlar (telefon, 1080×1920) | `play-store/graphics/store-listing/out/screenshot-01…06.jpg` (haqiqiy emulyator suratlari; generator: `play-store/graphics/store-listing/build.mjs`) |
 | Matnlar | `play-store/listing/uz.txt` (asosiy), `en.txt`, `ru.txt` (ru hali yangilanmagan) |
