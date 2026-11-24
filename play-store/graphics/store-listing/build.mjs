@@ -34,9 +34,8 @@ const FONTS = `
 html,body{overflow:hidden}
 `;
 
-// The logo image is a white rounded tile on a white page: clip it to the tile so it sits cleanly on a dark background.
-const LOGO = (size) => `<div style="width:${size}px;height:${size}px;border-radius:${size * 0.22}px;overflow:hidden;box-shadow:0 14px 40px rgba(0,8,40,.45)">
-  <img src="${u("assets/logo.png")}" style="width:${size / 0.865}px;height:${size / 0.865}px;margin:${-size * 0.0787}px 0 0 ${-size * 0.0787}px;display:block"></div>`;
+// The launcher icon (orange § chat bubble, logos/play-market/lexgo-play-icon-512.png): Play requires the listing to match the installed icon.
+const LOGO = (size) => `<img src="${u("assets/icon.png")}" style="width:${size}px;height:${size}px;border-radius:${size * 0.22}px;display:block;box-shadow:0 14px 40px rgba(0,8,40,.45)">`;
 
 const hl = (t) => t.replace(/\*(.+?)\*/g, '<span class="hl">$1</span>');
 
