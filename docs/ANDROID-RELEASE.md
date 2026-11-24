@@ -27,7 +27,7 @@ Last verified: 2026-11-01 (first internal-test release, version 1.1.0, versionCo
 | API | `EXPO_PUBLIC_API_BASE_URL` (see `.env.example`; production is `https://lexgo.api.cognilabs.org`) |
 | Play listing texts | `play-store/listing/{uz,en,ru}.txt` (uz is the primary language) |
 | Play declarations (data safety, content rating, etc.) | `play-store/data-safety.md`, `play-store/content-rating.md`, `play-store/release-and-store-info.md` |
-| Store icon / brand assets | `logos/` (see `logos/README.md`). The Play listing icon is **`logos/play-market/lexgo-play-icon-512.png`** (blue "LG" glyph on navy; see `logos/README.md`) and must be the same icon as the installed launcher icon (`app.json` → `icon`, `adaptiveIcon`) |
+| Store icon / brand assets | `logos/` (see `logos/README.md`). The Play listing icon is **`logos/play-market/play-icon-512.png`** (the Tezkor Himoya shield "TH"; see `logos/README.md`) and must be the same icon as the installed launcher icon (`app.json` → `icon`, `adaptiveIcon`) |
 | Store graphics | `play-store/graphics/store-listing/` (feature graphic + screenshots, with generator) |
 | Account-deletion URL given to Play | https://law-two-tau.vercel.app/uz/legal/account-deletion |
 | Privacy policy URL | https://law-two-tau.vercel.app/uz/legal/privacy |
@@ -209,7 +209,7 @@ Do not sign in with a staff/admin account for captures, and decline notification
 
 ## 10. History (why things look like this)
 
-- **2026-11-24: the product was renamed LexGo → Tezkor Himoya** (website and policy first, then the app: installed name, all in-app texts, listing, graphics; versionCode 10). Play rejected the privacy policy because it named a different app than the listing, and earlier an icon/name mismatch. Rule: **installed name = Play listing name = name in the privacy policy.** The Android package `org.cognilabs.lexgo.app` can never change. The "LG" icon still stands for the old name; changing it needs a rebuild and new listing icon.
+- **2026-11-24: the product was renamed LexGo → Tezkor Himoya** (website and policy first, then the app: installed name, all in-app texts, listing, graphics; versionCode 10). Play rejected the privacy policy because it named a different app than the listing, and earlier an icon/name mismatch. Rule: **installed name = Play listing name = name in the privacy policy.** The Android package `org.cognilabs.lexgo.app` can never change. The icon changed to the "TH" shield in the same release.
 
 - The first Play app used `org.cognilabs.lexgo`. Its original upload key (SHA-1 `54:7C:BF:E1:E5:5B:3E:46:03:25:31:F2:83:51:CE:55:22:27:CB:7F`) was lost and could not be recovered from anyone. Google's upload-key reset takes 1–2 days and the team could not wait, and no one had installed the app yet, so on 2026-11-01 a **new Play app** with package `org.cognilabs.lexgo.app` was created. A package name can never be reused, so the old app is abandoned. iOS keeps `org.cognilabs.lexgo`.
 - The project was moved from a personal Expo account to the company account `cognilabs-dev` (new `projectId`), so the project no longer depends on one person.
@@ -223,6 +223,6 @@ Do not sign in with a staff/admin account for captures, and decline notification
 - **Data safety / sharing answers**: confirm with the backend team whether the AI provider and payment providers (Payme/Click) are plain service providers (current assumption) or separate controllers.
 - **Play Billing policy**: plans/subscriptions are paid through the provider's own page. Check whether Google requires Play Billing for them before production.
 - **Status bar**: on light-themed screens (Documents, AI chat) Android's status-bar icons are white on a light background and nearly invisible.
-- **Icon must match the listing** (Play policy "Misleading Claims: app store listing mismatch", hit on 2026-11-24): the installed launcher icon and the icon in **every** Play listing language must be the same picture. The brand is the blue "LG" glyph (`logos/`, built in versionCode 9); an orange § icon had been committed earlier and a blue one stayed in the listing. Whenever the icon changes: rebuild, then replace the listing icon, feature graphic and screenshots (`play-store/graphics/store-listing/build.mjs`).
+- **Icon must match the listing** (Play policy "Misleading Claims: app store listing mismatch", hit on 2026-11-24): the installed launcher icon and the icon in **every** Play listing language must be the same picture. The brand mark is the "TH" shield (versionCode 10; earlier an orange § icon and the blue "LG" glyph were used). Whenever the icon changes: rebuild, then replace the listing icon, feature graphic and screenshots (`play-store/graphics/store-listing/build.mjs`).
 - **Test data in production**: remove "Demo …" lawyers and junk requests, or the lawyers/orders screens cannot be used in screenshots.
 - Rotate any credential that was ever pasted into a chat or ticket during the 2026-11-01 setup (the staff/admin test passwords were shared in plain text).

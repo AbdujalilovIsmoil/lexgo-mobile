@@ -1,8 +1,8 @@
-import { Canvas, Group, vec } from "@shopify/react-native-skia";
-import { useDerivedValue, type SharedValue } from "react-native-reanimated";
-import { LOGO_SIZE, SHAPES } from "../model/logoPaths";
+import { Image, StyleSheet } from "react-native";
+import Animated, { useAnimatedStyle, type SharedValue } from "react-native-reanimated";
 import type { useSplashTimeline } from "../model/useSplashTimeline";
-import { LogoLayer } from "./LogoLayer";
+
+const SOURCE = require("../../../../assets/logo.png") as number;
 
 type Props = {
   size: number;
@@ -11,27 +11,27 @@ type Props = {
   ty: SharedValue<number>;
 };
 
-// The logo canvas. It pops in, floats gently and tilts with the finger.
+// The logo: the Tezkor Himoya shield on a white tile. It fades and pops in, floats gently and tilts with the finger.
 export function LogoCanvas({ size, t, tx, ty }: Props) {
-  const k = size / LOGO_SIZE;
-  const transform = useDerivedValue(() => {
+  const style = useAnimatedStyle(() => {
     const float = Math.sin(t.time.value * Math.PI * 16) * 5;
-    return [
-      { translateX: tx.value * 16 },
-      { translateY: ty.value * 16 + float },
-      { rotate: tx.value * 0.08 },
-      { scale: t.pop.value },
-    ];
+    return {
+      opacity: t.fill.value,
+      transform: [
+        { translateX: tx.value * 16 },
+        { translateY: ty.value * 16 + float },
+        { rotate: `${tx.value * 0.08}rad` },
+        { scale: t.pop.value },
+      ],
+    };
   });
   return (
-    <Canvas style={{ width: size, height: size }}>
-      <Group transform={transform} origin={vec(size / 2, size / 2)}>
-        <Group transform={[{ scale: k }]}>
-          {SHAPES.map((shape, i) => (
-            <LogoLayer key={shape.key} shape={shape} draw={t.draws[i]} strokeOp={t.strokeOp} fill={t.fill} shine={t.shine} />
-          ))}
-        </Group>
-      </Group>
-    </Canvas>
+    <Animated.View style={[s.tile, { width: size, height: size, borderRadius: size * 0.22 }, style]}>
+      <Image source={SOURCE} resizeMode="contain" style={{ width: size, height: size }} />
+    </Animated.View>
   );
 }
+
+const s = StyleSheet.create({
+  tile: { backgroundColor: "#FFFFFF", overflow: "hidden", shadowColor: "#000", shadowOpacity: 0.35, shadowRadius: 24, shadowOffset: { width: 0, height: 12 }, elevation: 12 },
+});
