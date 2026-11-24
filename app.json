@@ -153,6 +153,16 @@
         }
       ],
       [
+        "expo-build-properties",
+        {
+          "android": {
+            "enableMinifyInReleaseBuilds": true,
+            "enableShrinkResourcesInReleaseBuilds": true,
+            "extraProguardRules": "# R8 keep rules (Play wants the code shrunk; these are the places R8 cannot see through)\n# LexGo's own Expo modules (net-path, pdf-pages, screen-guard, text-ocr)\n-keep class org.cognilabs.** { *; }\n# Tesseract OCR is called through JNI\n-keep class cz.adaptech.tesseract4android.** { *; }\n-keep class com.googlecode.tesseract.android.** { *; }\n# LiveKit / WebRTC: JNI + reflection\n-keep class org.webrtc.** { *; }\n-keep class livekit.org.webrtc.** { *; }\n-keep class com.oney.WebRTCModule.** { *; }\n-keep class com.livekit.reactnative.** { *; }\n# Skia, Reanimated/Worklets\n-keep class com.shopify.reactnative.skia.** { *; }\n-keep class com.swmansion.** { *; }\n-dontwarn org.webrtc.**\n-dontwarn livekit.org.webrtc.**"
+          }
+        }
+      ],
+      [
         "expo-notifications",
         {
           "icon": "./logos/android/notification-icon.png",
