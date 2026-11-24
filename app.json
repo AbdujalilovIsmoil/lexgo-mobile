@@ -35,9 +35,8 @@
       "allowBackup": false,
       "adaptiveIcon": {
         "foregroundImage": "./logos/android/adaptive-foreground.png",
-        "backgroundImage": "./logos/android/adaptive-background.png",
         "monochromeImage": "./logos/android/adaptive-monochrome.png",
-        "backgroundColor": "#FF7438"
+        "backgroundColor": "#0B1F45"
       },
       "predictiveBackGestureEnabled": false,
       "intentFilters": [
@@ -88,7 +87,7 @@
         "android.permission.READ_MEDIA_VIDEO",
         "android.permission.READ_MEDIA_AUDIO"
       ],
-      "versionCode": 8
+      "versionCode": 9
     },
     "web": {
       "favicon": "./assets/favicon.png",
@@ -157,7 +156,7 @@
         "expo-notifications",
         {
           "icon": "./logos/android/notification-icon.png",
-          "color": "#E8552A",
+          "color": "#3B82F6",
           "defaultChannel": "default",
           "enableBackgroundRemoteNotifications": true
         }

@@ -34,7 +34,7 @@ const FONTS = `
 html,body{overflow:hidden}
 `;
 
-// The launcher icon (orange § chat bubble, logos/play-market/lexgo-play-icon-512.png): Play requires the listing to match the installed icon.
+// The launcher icon (blue LG on navy, logos/play-market/lexgo-play-icon-512.png): Play requires the listing to match the installed icon.
 const LOGO = (size) => `<img src="${u("assets/icon.png")}" style="width:${size}px;height:${size}px;border-radius:${size * 0.22}px;display:block;box-shadow:0 14px 40px rgba(0,8,40,.45)">`;
 
 const hl = (t) => t.replace(/\*(.+?)\*/g, '<span class="hl">$1</span>');
