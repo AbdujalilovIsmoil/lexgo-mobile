@@ -19,7 +19,7 @@ const u = (p) => pathToFileURL(join(SRC, p)).href;
 // kicker = small pill; title = headline, *word* is highlighted in cyan.
 const SLIDES = [
   { n: "01", shot: "home.png", kicker: "Tezkor Himoya", title: "Yuridik yordam *bir necha tegishda*" },
-  { n: "02", shot: "ai-answer.png", kicker: "Tezkor Himoya.AI", title: "AI javobi *qonun moddalari bilan*" },
+  { n: "02", shot: "services.png", kicker: "Xizmatlar", title: "Xizmatlar va narxlar *bir joyda*" },
   { n: "03", shot: "ai-start.png", kicker: "Tezkor Himoya.AI", title: "Muammoni yozing, *AI yo'l ko'rsatadi*" },
   { n: "04", shot: "documents.png", kicker: "Hujjatlar", title: "Yuzlab tayyor hujjat *bir joyda*" },
   { n: "05", shot: "menu.png", kicker: "Menyu", title: "Tahlil, akademiya va kafolat *bir menyuda*" },
@@ -77,7 +77,7 @@ h1{position:absolute;left:56px;top:176px;width:520px;font:800 50px/1.06 Onest;co
 <h1>Yuridik yordam endi <span class="hl">bir necha tegishda</span></h1>
 <div class="chips"><span>Advokat</span><span>Hujjat</span><span>AI yordamchi</span></div>
 <div class="a">${phone("home.png", 232)}</div>
-<div class="b">${phone("ai-answer.png", 232)}</div>`;
+<div class="b">${phone("ai-start.png", 232)}</div>`;
 
 function render(name, html, w, h) {
   const f = join(TMP, name + ".html");

@@ -39,10 +39,11 @@ AI yordamchi umumiy ma'lumot beradi va advokat maslahatining o'rnini bosmaydi. M
 Til: o'zbek, rus, ingliz.
 Savollar bo'lsa, ilovadagi "Yordam" bo'limi orqali yozing.
 
-[Release notes — 1.1.0 (4), ichki test] (max 500 belgi; Play'da <uz> ... </uz> teglari ichida)
-Tezkor Himoya 1.1.0 — birinchi sinov versiyasi.
+[Release notes — 1.1.0 (10)] (max 500 belgi; Play'da <uz> ... </uz> — faqat uz listing tili qo'shilgan bo'lsa)
+Tezkor Himoya 1.1.0 — yuridik yordam bitta ilovada.
+• Ilova yangi nom va yangi belgi bilan: Tezkor Himoya
 • Qonunga havola qiladigan AI yuridik yordamchi
 • Tayyor hujjatlar va hujjat tahlili
 • Advokatlar katalogi, tezkor advokat va SOS
 • Chat, ovozli va video qo'ng'iroqlar
-Iltimos, kirish, qo'ng'iroq va hujjatlar bilan ishlashni sinab ko'ring va xatolarni "Yordam" bo'limi orqali yuboring.
+• Tezlik va barqarorlik yaxshilandi

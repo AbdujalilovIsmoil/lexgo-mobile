@@ -39,10 +39,11 @@ The AI assistant gives general information and does not replace a lawyer's advic
 Languages: Uzbek, Russian, English.
 Questions? Write to us from the "Help" section in the app.
 
-[Release notes — 1.1.0 (4), internal test] (max 500 characters; inside <en-US> ... </en-US> in Play Console)
-Tezkor Himoya 1.1.0 — first test build.
+[Release notes — 1.1.0 (10)] (max 500 characters; inside <en-US> ... </en-US> in Play Console)
+Tezkor Himoya 1.1.0 — legal help in one app.
+• New name and new icon: Tezkor Himoya
 • AI legal assistant with answers that cite the law
 • Ready-made documents and document analysis
 • Lawyer catalog, urgent lawyer and SOS
 • Chat, voice and video calls
-Please test sign-in, calls and documents, and report any bugs via the Help section.
+• Faster and more stable
