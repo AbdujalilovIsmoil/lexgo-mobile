@@ -37,7 +37,7 @@ export const admSt: Messages["admSt"] = {
   connected: "Подключено",
   ago: { now: "только что", min: "{n} мин назад", hour: "{n} ч назад", day: "{n} дн назад" },
   picked: "Выбрано: {n}",
-  userSearchPh: "Имя, телефон или LexGo ID",
+  userSearchPh: "Имя, телефон или Tezkor Himoya ID",
   userNone: "Никого не найдено",
   userHint: "Введите минимум 2 символа для поиска",
 };

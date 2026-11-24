@@ -30,8 +30,8 @@ export const srt = {
       within: "Срок решения: {time}",
     },
     safe: {
-      title: "Покупка через LexGo",
-      fact: "Оплата, чат и звонки проходят через LexGo.",
+      title: "Покупка через Tezkor Himoya",
+      fact: "Оплата, чат и звонки проходят через Tezkor Himoya.",
     },
     w: {
       subtitle: "Если с заказом проблема, отправьте заявку здесь.",

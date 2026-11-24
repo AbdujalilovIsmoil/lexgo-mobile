@@ -11,7 +11,7 @@ export const sp3 = {
   noMessages: "Hali xabar yo'q.",
   connecting: "Operator ulanmoqda…",
   aiHandling: "AI javob bermoqda",
-  team: "LexGo yordam",
+  team: "Tezkor Himoya yordam",
   operatorIs: "Operator: {name}",
   hours: "Ish vaqti: {hours}",
   waitTitle: "Xabaringiz qabul qilindi",

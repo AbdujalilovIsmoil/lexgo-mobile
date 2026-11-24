@@ -14,7 +14,7 @@ export const admSec: Messages["admSec"] = {
   mTelegram: "Telegram code",
   mSms: "SMS code",
   mTotp: "Authenticator app",
-  mTelegramText: "A 6-digit code is sent to the LexGo Telegram bot at every sign-in.",
+  mTelegramText: "A 6-digit code is sent to the Tezkor Himoya Telegram bot at every sign-in.",
   mTotpText: "The code refreshes every 30 seconds in your authenticator app.",
   mandatory: "Two-factor authentication is required for your role and can't be turned off.",
   mandatoryEnable: "Two-factor authentication is required for your role — turn it on now.",

@@ -6,7 +6,7 @@ import { useRoomCall } from "@/features/secure-chat";
 // The order's call buttons (TZ §8) go through the room's own call flow: a call already running in the order's room is joined instead of
 // a second one being started, and the seller is invited with it. `calling` names the button that is busy.
 export function useOrderCall(order: MarketOrder) {
-  const room = useRoomCall(order.roomId, order.serviceTitle || order.workId || "LexGo", "", order.lawyerUserId ? [order.lawyerUserId] : []);
+  const room = useRoomCall(order.roomId, order.serviceTitle || order.workId || "Tezkor Himoya", "", order.lawyerUserId ? [order.lawyerUserId] : []);
   const [kind, setKind] = useState<CallType | "">("");
   const call = async (k: CallType) => {
     if (!order.roomId) return;

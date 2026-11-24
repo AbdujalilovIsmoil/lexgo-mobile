@@ -1,13 +1,13 @@
-=== LexGo — Google Play listing (ENGLISH) ===
+=== Tezkor Himoya — Google Play listing (ENGLISH) ===
 
 [App name] (max 30 characters)
-LexGo — Legal Help
+Tezkor Himoya — Legal Help
 
 [Short description] (max 80 characters)
 Find a lawyer, prepare documents and get AI legal help — all in one app.
 
 [Full description] (max 4000 characters)
-LexGo brings legal services in Uzbekistan into one app. Describe your problem and the AI points the way, prepare a document in minutes, or connect with a verified lawyer.
+Tezkor Himoya brings legal services in Uzbekistan into one app. Describe your problem and the AI points the way, prepare a document in minutes, or connect with a verified lawyer.
 
 WHAT YOU CAN DO
 
@@ -40,7 +40,7 @@ Languages: Uzbek, Russian, English.
 Questions? Write to us from the "Help" section in the app.
 
 [Release notes — 1.1.0 (4), internal test] (max 500 characters; inside <en-US> ... </en-US> in Play Console)
-LexGo 1.1.0 — first test build.
+Tezkor Himoya 1.1.0 — first test build.
 • AI legal assistant with answers that cite the law
 • Ready-made documents and document analysis
 • Lawyer catalog, urgent lawyer and SOS

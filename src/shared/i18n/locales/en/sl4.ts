@@ -5,7 +5,7 @@ export const sl4: Messages["sl4"] = {
   kind: "Role and professional kind",
   empty: "Not filled in yet",
   verification: "Verification",
-  vstate: { approved: "Verified by LexGo", pending: "Waiting for a check", rejected: "Not verified" },
+  vstate: { approved: "Verified by Tezkor Himoya", pending: "Waiting for a check", rejected: "Not verified" },
   vtext: {
     approved: "Clients can see you in the marketplace.",
     pending: "Clients cannot see the profile until it is verified.",

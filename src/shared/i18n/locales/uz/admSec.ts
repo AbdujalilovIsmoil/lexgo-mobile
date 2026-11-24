@@ -12,7 +12,7 @@ export const admSec = {
   mTelegram: "Telegram kodi",
   mSms: "SMS kodi",
   mTotp: "Authenticator ilova",
-  mTelegramText: "Har kirishda 6 xonali kod LexGo Telegram botiga yuboriladi.",
+  mTelegramText: "Har kirishda 6 xonali kod Tezkor Himoya Telegram botiga yuboriladi.",
   mTotpText: "Kod Authenticator ilovasida har 30 soniyada yangilanadi.",
   mandatory: "Sizning rolingiz uchun ikki bosqichli himoya majburiy — uni o'chirib bo'lmaydi.",
   mandatoryEnable: "Sizning rolingiz uchun ikki bosqichli himoya majburiy — uni hozir yoqing.",

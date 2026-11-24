@@ -12,7 +12,7 @@ export const lw: Messages["lw"] = {
   noBio: "Специалист ещё не добавил информацию о себе.",
   choose: "Выбрать услугу",
   chat: "Приватный чат",
-  verified: "LexGo проверил личность и лицензию",
+  verified: "Tezkor Himoya проверил личность и лицензию",
   reviews: "{n} оценок",
   yearsShort: "лет",
 };

@@ -16,7 +16,7 @@ Last verified: 2026-11-01 (first internal-test release, version 1.1.0, versionCo
 
 | Thing | Value |
 |---|---|
-| App name | LexGo |
+| App name | **Tezkor Himoya** (renamed from LexGo on 2026-11-24; the website, privacy policy and Play listing must use the same name). Technical identifiers keep `lexgo`: package, slug, `lexgo://` scheme, `lexgo.uz` hosts, API host, plan ids |
 | Android package (`applicationId`) | `org.cognilabs.lexgo.app` |
 | iOS bundle id | `org.cognilabs.lexgo` (different on purpose; see History) |
 | Expo account that owns the project | `cognilabs-dev` (project slug `lexgo`) |
@@ -208,6 +208,8 @@ Do not sign in with a staff/admin account for captures, and decline notification
 - Play App Signing is on. Release builds must be signed with the upload key in section 2.
 
 ## 10. History (why things look like this)
+
+- **2026-11-24: the product was renamed LexGo → Tezkor Himoya** (website and policy first, then the app: installed name, all in-app texts, listing, graphics; versionCode 10). Play rejected the privacy policy because it named a different app than the listing, and earlier an icon/name mismatch. Rule: **installed name = Play listing name = name in the privacy policy.** The Android package `org.cognilabs.lexgo.app` can never change. The "LG" icon still stands for the old name; changing it needs a rebuild and new listing icon.
 
 - The first Play app used `org.cognilabs.lexgo`. Its original upload key (SHA-1 `54:7C:BF:E1:E5:5B:3E:46:03:25:31:F2:83:51:CE:55:22:27:CB:7F`) was lost and could not be recovered from anyone. Google's upload-key reset takes 1–2 days and the team could not wait, and no one had installed the app yet, so on 2026-11-01 a **new Play app** with package `org.cognilabs.lexgo.app` was created. A package name can never be reused, so the old app is abandoned. iOS keeps `org.cognilabs.lexgo`.
 - The project was moved from a personal Expo account to the company account `cognilabs-dev` (new `projectId`), so the project no longer depends on one person.

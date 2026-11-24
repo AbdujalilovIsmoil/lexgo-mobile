@@ -30,8 +30,8 @@ export const srt = {
       within: "Hal qilish muddati: {time}",
     },
     safe: {
-      title: "LexGo orqali xarid",
-      fact: "To'lov, chat va qo'ng'iroqlar LexGo orqali amalga oshadi.",
+      title: "Tezkor Himoya orqali xarid",
+      fact: "To'lov, chat va qo'ng'iroqlar Tezkor Himoya orqali amalga oshadi.",
     },
     w: {
       subtitle: "Buyurtma bo'yicha muammo bo'lsa, shu yerdan so'rov yuboring.",

@@ -1,13 +1,13 @@
-=== LexGo — Google Play do'kon sahifasi (O'ZBEKCHA, asosiy til) ===
+=== Tezkor Himoya — Google Play do'kon sahifasi (O'ZBEKCHA, asosiy til) ===
 
 [Ilova nomi] (max 30 belgi)
-LexGo — yuridik yordam
+Tezkor Himoya — yuridik yordam
 
 [Qisqa tavsif] (max 80 belgi)
 Advokat topish, hujjat tayyorlash va AI yuridik maslahat — bitta ilovada.
 
 [To'liq tavsif] (max 4000 belgi)
-LexGo — O'zbekistondagi yuridik xizmatlarni bir joyga to'plagan ilova. Muammoingizni yozing — AI yo'l ko'rsatadi, hujjatni 5 daqiqada tayyorlang yoki tasdiqlangan advokat bilan bog'laning.
+Tezkor Himoya — O'zbekistondagi yuridik xizmatlarni bir joyga to'plagan ilova. Muammoingizni yozing — AI yo'l ko'rsatadi, hujjatni 5 daqiqada tayyorlang yoki tasdiqlangan advokat bilan bog'laning.
 
 NIMA QILA OLASIZ
 
@@ -40,7 +40,7 @@ Til: o'zbek, rus, ingliz.
 Savollar bo'lsa, ilovadagi "Yordam" bo'limi orqali yozing.
 
 [Release notes — 1.1.0 (4), ichki test] (max 500 belgi; Play'da <uz> ... </uz> teglari ichida)
-LexGo 1.1.0 — birinchi sinov versiyasi.
+Tezkor Himoya 1.1.0 — birinchi sinov versiyasi.
 • Qonunga havola qiladigan AI yuridik yordamchi
 • Tayyor hujjatlar va hujjat tahlili
 • Advokatlar katalogi, tezkor advokat va SOS

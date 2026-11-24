@@ -42,7 +42,7 @@ export const mkd = {
   safeTitle: "Safe purchase",
   safe1: "The specialist is not paid until the payment is confirmed.",
   safe2: "Contacts open only after payment.",
-  safe3: "Chat and calls stay inside LexGo, with history kept.",
+  safe3: "Chat and calls stay inside Tezkor Himoya, with history kept.",
   chatError: "Could not open the chat.",
   tabReviews: "Reviews",
   priceHow: "How is the price set?",

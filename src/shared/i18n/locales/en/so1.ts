@@ -27,7 +27,7 @@ export const so1 = {
     errNotFound: "Order not found",
     errChannel: "Choose a contact method",
     errCount: "The number of lawyers must be from {min} to {max}",
-    errPrevious: "To get a group second opinion you first need to use a LexGo lawyer service",
+    errPrevious: "To get a group second opinion you first need to use a Tezkor Himoya lawyer service",
     errNetwork: "No internet connection",
     errOther: "Something went wrong. Please try again",
   },

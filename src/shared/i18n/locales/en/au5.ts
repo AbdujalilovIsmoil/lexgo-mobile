@@ -19,11 +19,11 @@ export const au5: Messages["au5"] = {
   afterTitle: "When to lock",
   after: { "0": "Immediately", "1": "1 minute", "5": "5 minutes", "15": "15 minutes" },
   note: "The lock is asked for when you return to the app after this long in the background.",
-  lockedTitle: "LexGo is locked",
+  lockedTitle: "Tezkor Himoya is locked",
   lockedText: "Confirm it is you to continue.",
   unlock: "Unlock",
   usePassword: "Sign out and use password",
-  prompt: "Unlock LexGo",
+  prompt: "Unlock Tezkor Himoya",
   result: {
     lockout: "Too many attempts. The device asks you to wait.",
     unavailable: "Biometrics are unavailable.",

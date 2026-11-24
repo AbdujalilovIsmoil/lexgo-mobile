@@ -36,7 +36,7 @@ export const nt2: Messages["nt2"] = {
   poll: { active: "Background check is active", restricted: "The phone restricts the background check (battery saver).", off: "Background check is off" },
   test: {
     button: "Send a test notification",
-    title: "LexGo test notification",
+    title: "Tezkor Himoya test notification",
     body: "Notifications work on this device.",
     sent: "The test notification arrives in 5 seconds. Put the app in the background to see it.",
     denied: "Notifications are not allowed",

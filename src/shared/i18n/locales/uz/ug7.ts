@@ -16,6 +16,6 @@ export const ug7 = {
   cancelled: "Bekor qilingan",
   history: "Status tarixi",
   sources: "Ikkinchi fikr asosi",
-  sourcesLead: "Mijoz oldin foydalangan LexGo xizmatlari — shu sababli ikkinchi fikr ochilgan.",
+  sourcesLead: "Mijoz oldin foydalangan Tezkor Himoya xizmatlari — shu sababli ikkinchi fikr ochilgan.",
   created: "Yaratilgan: {when}",
 };

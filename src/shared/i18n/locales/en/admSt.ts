@@ -37,7 +37,7 @@ export const admSt: Messages["admSt"] = {
   connected: "Connected",
   ago: { now: "just now", min: "{n} min ago", hour: "{n} h ago", day: "{n} d ago" },
   picked: "Selected: {n}",
-  userSearchPh: "Name, phone or LexGo ID",
+  userSearchPh: "Name, phone or Tezkor Himoya ID",
   userNone: "No one found",
   userHint: "Type at least 2 characters to search",
 };

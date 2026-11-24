@@ -1,7 +1,7 @@
 // Promotion banners and advertising (TZ.md banner AI localization, advertising activation).
 export const prm = {
   prm: {
-    bannerTitle: "LexGo рекомендует",
+    bannerTitle: "Tezkor Himoya рекомендует",
     bannerBlocked: "С этим фото продолжить нельзя — загрузите другое или удалите его.",
     languageInvalid: "Язык не принят. Смените язык приложения и попробуйте снова.",
     adTest: "Реклама ещё не запущена — сейчас тестовый режим. Попробуйте позже.",

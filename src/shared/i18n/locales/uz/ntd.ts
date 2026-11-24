@@ -98,7 +98,7 @@ export const ntd = {
     "title": "Paketga buyurtma",
     "done": "{n} ta bajarilgan",
     "online": "Onlayn",
-    "verified": "LexGo tasdiqlagan",
+    "verified": "Tezkor Himoya tasdiqlagan",
     "pickLead": "{tier} paketini bajaradigan mutaxassisni tanlang. Tartib backenddan keladi.",
     "noSellers": "Hozircha mutaxassis yo'q",
     "noSellersText": "Bu paketni yoqqan mutaxassis topilmadi. Keyinroq urinib ko'ring.",
@@ -239,7 +239,7 @@ export const ntd = {
       "activate": "Qayta yoqish",
       "empty": "Paketlar yo'q",
       "emptyText": "Studio faol paket e'lon qilganda shu yerda paydo bo'ladi.",
-      "lead": "Paketlarni Studio yaratadi. Siz faqat o'zingiz sotmoqchi bo'lganlarini yoqasiz yoki o'chirasiz. PREMIUM uchun kengaytirilgan LexGo tekshiruvi talab qilinadi."
+      "lead": "Paketlarni Studio yaratadi. Siz faqat o'zingiz sotmoqchi bo'lganlarini yoqasiz yoki o'chirasiz. PREMIUM uchun kengaytirilgan Tezkor Himoya tekshiruvi talab qilinadi."
     },
     "ord": {
       "bought": "Mijoz nimani sotib oldi",

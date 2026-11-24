@@ -2,7 +2,7 @@ import type { csv1 as Shape } from "../uz/csv1";
 
 export const csv1: typeof Shape = {
   title: "Заказать услугу",
-  lead: "Просмотрите каталог LexGo, выберите специалиста и начните.",
+  lead: "Просмотрите каталог Tezkor Himoya, выберите специалиста и начните.",
   aiHelp: "Опишите проблему",
   aiHelpSub: "AI подберёт услугу и адвоката",
   urgent: "Срочный адвокат",

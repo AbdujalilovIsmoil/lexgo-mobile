@@ -34,7 +34,7 @@ export const nt2 = {
   poll: { active: "Orqa fon tekshiruvi faol", restricted: "Orqa fon tekshiruvini telefon cheklagan (quvvat tejash).", off: "Orqa fon tekshiruvi o'chiq" },
   test: {
     button: "Sinov bildirishnomasi",
-    title: "LexGo sinov bildirishnomasi",
+    title: "Tezkor Himoya sinov bildirishnomasi",
     body: "Bildirishnomalar shu qurilmada ishlayapti.",
     sent: "Sinov bildirishnomasi 5 soniyadan so'ng keladi. Ilovani orqa fonga o'tkazib ko'ring.",
     denied: "Bildirishnomalarga ruxsat yo'q",

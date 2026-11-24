@@ -10,7 +10,7 @@ export const mk3 = {
   time: "Qulay vaqt",
   timePh: "Masalan: bugun 18:00 dan keyin",
   quick: { today: "Bugun", evening: "Bugun kechqurun", tomorrow: "Ertaga", week: "Shu hafta ichida" },
-  totalNote: "Narxni LexGo belgilaydi. To'liq to'lov tasdiqlangach buyurtma mutaxassisga yuboriladi.",
+  totalNote: "Narxni Tezkor Himoya belgilaydi. To'liq to'lov tasdiqlangach buyurtma mutaxassisga yuboriladi.",
   soon: "Qanchalik tez",
   speed: "Qachon bog'lanishsin?",
   speeds: { within_15_min: "15 daqiqa ichida", within_1_hour: "1 soat ichida", today: "Bugun", tomorrow: "Ertaga" },

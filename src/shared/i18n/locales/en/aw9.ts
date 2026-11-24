@@ -18,7 +18,7 @@ export const aw9: Messages["aw9"] = {
     earnings_today: "Income today",
     earnings_month: "Income this month",
     pending_payout: "Expected payout",
-    earnings_via_lexgo: "Via LexGo",
+    earnings_via_lexgo: "Via Tezkor Himoya",
     payable: "Payable",
   },
   p: { response: "Response rate", acceptance: "Acceptance rate", avg: "Average response", rating: "Rating" },

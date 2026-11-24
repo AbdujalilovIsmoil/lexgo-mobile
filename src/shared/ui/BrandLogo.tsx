@@ -12,7 +12,7 @@ export function BrandLogo({ size = 40 }: { size?: number }) {
   const radius = Math.round(size * 0.3);
   const inner = Math.round(size * 0.82);
   return (
-    <View accessible accessibilityLabel="LexGo" style={[s.tile, { width: size, height: size, borderRadius: radius }]}>
+    <View accessible accessibilityLabel="Tezkor Himoya" style={[s.tile, { width: size, height: size, borderRadius: radius }]}>
       {failed ? (
         <Text weight="bold" style={[s.mono, { fontSize: size * 0.4 }]}>LG</Text>
       ) : (

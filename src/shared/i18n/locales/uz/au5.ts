@@ -17,11 +17,11 @@ export const au5 = {
   afterTitle: "Qachon qulflansin",
   after: { "0": "Darhol", "1": "1 daqiqa", "5": "5 daqiqa", "15": "15 daqiqa" },
   note: "Fonda shuncha vaqt turgandan keyin ilova qayta ochilganda qulf so'raladi.",
-  lockedTitle: "LexGo qulflangan",
+  lockedTitle: "Tezkor Himoya qulflangan",
   lockedText: "Davom etish uchun o'zingizni tasdiqlang.",
   unlock: "Qulfni ochish",
   usePassword: "Chiqish va parol bilan kirish",
-  prompt: "LexGo qulfini oching",
+  prompt: "Tezkor Himoya qulfini oching",
   result: {
     lockout: "Juda ko'p urinish. Qurilma biroz kutishni so'radi.",
     unavailable: "Biometriya mavjud emas.",

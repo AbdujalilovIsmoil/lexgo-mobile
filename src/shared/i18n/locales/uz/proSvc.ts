@@ -129,7 +129,7 @@ export const proSvc = {
     notePh: "Masalan: 7 yildan beri oilaviy nizolar bo'yicha ishlayman, 120 dan ortiq ish ijobiy hal qilingan.",
     noteHint: "Mijozlar xizmat kartasida ko'radi. Telefon raqami va havolalar yozmang.",
     status: "Holat",
-    policy: "Narx siyosatiga roziman: narx LexGo bergan chegaralar ichida bo'ladi, o'zgarish faqat yangi buyurtmalarga ta'sir qiladi.",
+    policy: "Narx siyosatiga roziman: narx Tezkor Himoya bergan chegaralar ichida bo'ladi, o'zgarish faqat yangi buyurtmalarga ta'sir qiladi.",
     policyRequired: "Saqlash uchun narx siyosatiga rozilik bering.",
     cancel: "Bekor qilish",
     save: "Saqlash",

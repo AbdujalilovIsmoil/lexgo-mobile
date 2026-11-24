@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "LexGo",
+    "name": "Tezkor Himoya",
     "slug": "lexgo",
     "version": "1.1.0",
     "scheme": "lexgo",
@@ -87,7 +87,7 @@
         "android.permission.READ_MEDIA_VIDEO",
         "android.permission.READ_MEDIA_AUDIO"
       ],
-      "versionCode": 9
+      "versionCode": 10
     },
     "web": {
       "favicon": "./assets/favicon.png",
@@ -118,22 +118,22 @@
       [
         "@config-plugins/react-native-webrtc",
         {
-          "cameraPermission": "LexGo video uchrashuvlar uchun kameradan foydalanadi.",
-          "microphonePermission": "LexGo qo'ng'iroq va uchrashuvlar uchun mikrofondan foydalanadi."
+          "cameraPermission": "Tezkor Himoya video uchrashuvlar uchun kameradan foydalanadi.",
+          "microphonePermission": "Tezkor Himoya qo'ng'iroq va uchrashuvlar uchun mikrofondan foydalanadi."
         }
       ],
       [
         "expo-image-picker",
         {
-          "photosPermission": "LexGo suhbatga rasm yuborish va hujjat skanerlash uchun galereyaga kiradi.",
-          "cameraPermission": "LexGo suhbatga rasm yuborish va hujjatlarni skanerlash uchun kameradan foydalanadi."
+          "photosPermission": "Tezkor Himoya suhbatga rasm yuborish va hujjat skanerlash uchun galereyaga kiradi.",
+          "cameraPermission": "Tezkor Himoya suhbatga rasm yuborish va hujjatlarni skanerlash uchun kameradan foydalanadi."
         }
       ],
       "expo-sqlite",
       [
         "expo-audio",
         {
-          "microphonePermission": "LexGo ovozli xabar yozish uchun mikrofondan foydalanadi."
+          "microphonePermission": "Tezkor Himoya ovozli xabar yozish uchun mikrofondan foydalanadi."
         }
       ],
       "expo-web-browser",
@@ -141,14 +141,14 @@
       [
         "expo-local-authentication",
         {
-          "faceIDPermission": "LexGo ilovani Face ID bilan tez va xavfsiz ochish uchun ruxsat so'raydi."
+          "faceIDPermission": "Tezkor Himoya ilovani Face ID bilan tez va xavfsiz ochish uchun ruxsat so'raydi."
         }
       ],
       [
         "expo-media-library",
         {
-          "photosPermission": "LexGo fayllarni galereyaga saqlash uchun ruxsat so'raydi.",
-          "savePhotosPermission": "LexGo faylni galereyaga saqlaydi.",
+          "photosPermission": "Tezkor Himoya fayllarni galereyaga saqlash uchun ruxsat so'raydi.",
+          "savePhotosPermission": "Tezkor Himoya faylni galereyaga saqlaydi.",
           "isAccessMediaLocationEnabled": false
         }
       ],
@@ -175,7 +175,7 @@
       [
         "expo-location",
         {
-          "locationWhenInUsePermission": "LexGo yaqin atrofdagi mijozlarga sizni taxminiy masofa bilan ko'rsatish uchun, ilova ochiq turganda joylashuvingizdan foydalanadi.",
+          "locationWhenInUsePermission": "Tezkor Himoya yaqin atrofdagi mijozlarga sizni taxminiy masofa bilan ko'rsatish uchun, ilova ochiq turganda joylashuvingizdan foydalanadi.",
           "isAndroidBackgroundLocationEnabled": false,
           "isIosBackgroundLocationEnabled": false,
           "locationAlwaysAndWhenInUsePermission": false,
@@ -187,7 +187,7 @@
       [
         "react-native-document-scanner-plugin",
         {
-          "cameraPermission": "LexGo hujjatlarni skanerlash uchun kameradan foydalanadi."
+          "cameraPermission": "Tezkor Himoya hujjatlarni skanerlash uchun kameradan foydalanadi."
         }
       ],
       "expo-asset"

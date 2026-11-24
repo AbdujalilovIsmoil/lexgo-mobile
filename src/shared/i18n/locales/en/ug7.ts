@@ -18,6 +18,6 @@ export const ug7: Messages["ug7"] = {
   cancelled: "Cancelled",
   history: "Status history",
   sources: "Second-opinion basis",
-  sourcesLead: "LexGo services this client has already used — which is what unlocked a second opinion.",
+  sourcesLead: "Tezkor Himoya services this client has already used — which is what unlocked a second opinion.",
   created: "Created: {when}",
 };

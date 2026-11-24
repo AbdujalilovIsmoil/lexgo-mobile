@@ -10,7 +10,7 @@ export const ug3: Messages["ug3"] = {
   closedTitle: "The rating window has closed",
   closedText: "The 15 minutes are up, so this work can no longer be rated.",
   gateTitle: "This option is not open yet",
-  gateText: "A second opinion from a panel of advocates is open to clients who have already used an advocate or lawyer through LexGo.",
+  gateText: "A second opinion from a panel of advocates is open to clients who have already used an advocate or lawyer through Tezkor Himoya.",
   gateHow: "You can get a single advocate's opinion right now, or use one of these and the panel option opens too.",
   ctaSingle: "Get a single advocate's opinion",
   ctaVideo: "Online consultation with an advocate",

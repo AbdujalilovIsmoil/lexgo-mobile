@@ -42,7 +42,7 @@ export const mkd = {
   safeTitle: "Xavfsiz xarid",
   safe1: "To'lov tasdiqlanmaguncha mutaxassisga pul o'tmaydi.",
   safe2: "Kontaktlar faqat to'lovdan keyin ochiladi.",
-  safe3: "Chat va qo'ng'iroq LexGo ichida, yozuvlar saqlanadi.",
+  safe3: "Chat va qo'ng'iroq Tezkor Himoya ichida, yozuvlar saqlanadi.",
   chatError: "Chatni ochib bo'lmadi.",
   tabReviews: "Fikrlar",
   priceHow: "Narx qanday hisoblanadi?",

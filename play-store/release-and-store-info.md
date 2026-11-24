@@ -3,9 +3,9 @@
 ## Ilova
 | Maydon | Qiymat |
 |---|---|
-| Ilova nomi | LexGo — yuridik yordam (uz) / LexGo — юридическая помощь (ru) / LexGo — Legal Help (en) |
+| Ilova nomi | Tezkor Himoya — yuridik yordam (uz, 30 belgi) / Tezkor Himoya (ru) / Tezkor Himoya — Legal Help (en). O'rnatilgan nom (`app.json` → `name`): **Tezkor Himoya** |
 | Paket nomi (applicationId) | `org.cognilabs.lexgo.app` (Android; iOS bundle ID — `org.cognilabs.lexgo`. Eski `org.cognilabs.lexgo` Play ilovasi yo'qolgan upload kaliti sababli tashlandi) |
-| Versiya | 1.1.0 (versionCode **9**) — keyingi har yuklashda `app.json` → `android.versionCode` ni oshiring (batafsil: `docs/ANDROID-RELEASE.md`) |
+| Versiya | 1.1.0 (versionCode **10**) — keyingi har yuklashda `app.json` → `android.versionCode` ni oshiring (batafsil: `docs/ANDROID-RELEASE.md`) |
 | Asosiy til | O'zbekcha (uz) |
 | Ilova yoki o'yin | Ilova |
 | Bepul yoki pullik | Bepul (ilova ichida pullik tariflar bor) |
