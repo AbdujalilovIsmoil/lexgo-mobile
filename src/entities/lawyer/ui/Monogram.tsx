@@ -19,7 +19,7 @@ export function Monogram({ name, rating, size = 58, ring = true }: { name: strin
         {sweep > 0 ? <Path path={arc} style="stroke" strokeWidth={w} strokeCap="round"><LinearGradient start={vec(0, 0)} end={vec(size, size)} colors={[brand.cy, brand.b600]} /></Path> : null}
         <Path path={Skia.Path.Make().addCircle(size / 2, size / 2, (size - w * 2) / 2)} style="fill"><LinearGradient start={vec(0, 0)} end={vec(size, size)} colors={[brand.b600, brand.cy]} /></Path>
       </Canvas>
-      <View style={s.in}><Text style={{ color: "#FFFFFF", fontFamily: "Onest_800ExtraBold", fontSize: size * 0.34, lineHeight: size * 0.44 }}>{initials(name) || "LG"}</Text></View>
+      <View style={s.in}><Text style={{ color: "#FFFFFF", fontFamily: "Onest_800ExtraBold", fontSize: size * 0.34, lineHeight: size * 0.44 }}>{initials(name) || "TH"}</Text></View>
     </View>
   );
 }

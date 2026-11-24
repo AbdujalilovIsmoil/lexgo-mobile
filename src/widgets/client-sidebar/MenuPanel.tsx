@@ -13,7 +13,7 @@ import { useLogout } from "@/features/auth";
 import { useBadge } from "@/shared/lib";
 import { useInsets } from "@/shared/lib/insets";
 import { formatAnyPhone } from "@/shared/lib/phone";
-import { Avatar, Icon, PressableScale, Text, type IconName } from "@/shared/ui";
+import { Avatar, BrandLogo, Icon, PressableScale, Text, type IconName } from "@/shared/ui";
 import { useT } from "@/shared/i18n";
 import { useTabRole } from "@/widgets/tab-bar/useTabRole";
 import { useSidebar } from "./sidebarStore";
@@ -74,8 +74,8 @@ export function MenuPanel({ onGo }: { onGo: (route: string) => void }) {
       <LinearGradient colors={["#12265A", "#0D1A3E", "#0A1430"]} start={{ x: 0, y: 0 }} end={{ x: 0.6, y: 1 }} style={StyleSheet.absoluteFill} />
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={[s.list, { paddingTop: insets.top + 10, paddingBottom: insets.bottom + 16 }]}>
         <View style={s.brand}>
-          <LinearGradient colors={["#2A4C9C", "#13275E"]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={s.logo}><Text variant="h4" style={s.logoTx}>L</Text></LinearGradient>
-          <Text variant="h3" style={[s.flex, { color: INK }]}>LexGo</Text>
+          <BrandLogo size={38} />
+          <Text variant="h3" style={[s.flex, { color: INK }]}>Tezkor Himoya</Text>
           <PressableScale onPress={hide} hitSlop={10} style={s.x} accessibilityRole="button" accessibilityLabel={t("cdash.side.close")}><Icon name="x" size={24} color={INK} /></PressableScale>
         </View>
 
@@ -155,8 +155,6 @@ const s = StyleSheet.create({
   flex: { flex: 1, minWidth: 0 },
   list: { paddingHorizontal: 16, gap: 14 },
   brand: { flexDirection: "row", alignItems: "center", gap: 12, paddingHorizontal: 2, paddingBottom: 4 },
-  logo: { width: 38, height: 38, borderRadius: 11, alignItems: "center", justifyContent: "center" },
-  logoTx: { color: "#FFFFFF", fontSize: 19 },
   x: { width: 40, height: 40, alignItems: "center", justifyContent: "center" },
   card: { borderRadius: 20, borderWidth: 1, borderColor: LINE, backgroundColor: CARD, overflow: "hidden" },
   profile: { flexDirection: "row", alignItems: "center", gap: 14, padding: 14 },

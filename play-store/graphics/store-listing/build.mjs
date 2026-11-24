@@ -18,9 +18,9 @@ const u = (p) => pathToFileURL(join(SRC, p)).href;
 
 // kicker = small pill; title = headline, *word* is highlighted in cyan.
 const SLIDES = [
-  { n: "01", shot: "home.png", kicker: "LexGo", title: "Yuridik yordam *bir necha tegishda*" },
-  { n: "02", shot: "ai-answer.png", kicker: "LexGo.AI", title: "AI javobi *qonun moddalari bilan*" },
-  { n: "03", shot: "ai-start.png", kicker: "LexGo.AI", title: "Muammoni yozing, *AI yo'l ko'rsatadi*" },
+  { n: "01", shot: "home.png", kicker: "Tezkor Himoya", title: "Yuridik yordam *bir necha tegishda*" },
+  { n: "02", shot: "ai-answer.png", kicker: "Tezkor Himoya.AI", title: "AI javobi *qonun moddalari bilan*" },
+  { n: "03", shot: "ai-start.png", kicker: "Tezkor Himoya.AI", title: "Muammoni yozing, *AI yo'l ko'rsatadi*" },
   { n: "04", shot: "documents.png", kicker: "Hujjatlar", title: "Yuzlab tayyor hujjat *bir joyda*" },
   { n: "05", shot: "menu.png", kicker: "Menyu", title: "Tahlil, akademiya va kafolat *bir menyuda*" },
   { n: "06", shot: "login.png", kicker: "Xavfsiz kirish", title: "Telefon raqami bilan *tez kirish*" },
@@ -34,7 +34,7 @@ const FONTS = `
 html,body{overflow:hidden}
 `;
 
-// The launcher icon (blue LG on navy, logos/play-market/lexgo-play-icon-512.png): Play requires the listing to match the installed icon.
+// The launcher icon (the TH shield, logos/play-market/play-icon-512.png): Play requires the listing to match the installed icon.
 const LOGO = (size) => `<img src="${u("assets/icon.png")}" style="width:${size}px;height:${size}px;border-radius:${size * 0.22}px;display:block;box-shadow:0 14px 40px rgba(0,8,40,.45)">`;
 
 const hl = (t) => t.replace(/\*(.+?)\*/g, '<span class="hl">$1</span>');
@@ -65,14 +65,15 @@ h1{position:absolute;left:70px;top:190px;width:940px;font:800 88px/1.04 Onest;co
 
 const featureHtml = `<!doctype html><meta charset=utf-8><style>${FONTS}${PHONE_CSS}
 body{width:1024px;height:500px;${BG}position:relative;font-family:Onest}
-.logo{position:absolute;left:56px;top:54px}
+.logo{position:absolute;left:56px;top:54px;display:flex;align-items:center;gap:20px}
+.brand{font:800 38px Onest;color:#fff;letter-spacing:-.01em}
 h1{position:absolute;left:56px;top:176px;width:520px;font:800 50px/1.06 Onest;color:#fff;letter-spacing:-.02em}
 .chips{position:absolute;left:56px;top:372px;display:flex;gap:10px}
 .chips span{font:600 19px Inter;color:#e8f4ff;background:rgba(255,255,255,.13);border:1px solid rgba(255,255,255,.28);padding:9px 16px;border-radius:99px}
 .a{position:absolute;left:612px;top:70px;transform:rotate(-7deg)}
 .b{position:absolute;left:792px;top:34px;transform:rotate(6deg)}
 </style>
-<div class="logo">${LOGO(104)}</div>
+<div class="logo">${LOGO(104)}<span class="brand">Tezkor Himoya</span></div>
 <h1>Yuridik yordam endi <span class="hl">bir necha tegishda</span></h1>
 <div class="chips"><span>Advokat</span><span>Hujjat</span><span>AI yordamchi</span></div>
 <div class="a">${phone("home.png", 232)}</div>
